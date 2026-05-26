@@ -405,7 +405,7 @@ const MapaEmp = ({ porProv, porCiud, filtros, geoData }) => {
         );
     return (
         <MapContainer bounds={EC} boundsOptions={{padding:[8,8]}} minZoom={6.4} maxZoom={13} maxBounds={[[-5.5,-82.0],[2.0,-74.5]]} maxBoundsViscosity={0.9} style={{width:'100%',height:'100%',borderRadius:8,zIndex:1}} scrollWheelZoom zoomControl>
-            <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" attribution='&copy; CARTO' subdomains="abcd" maxZoom={19}/>
+            <TileLayer url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png" attribution='&copy; CARTO' subdomains="abcd" maxZoom={19}/>
             <GeoJSON key="ec" data={geoData.ecuador} style={estE}/>
             <GeoJSON key={kC} data={geoData.cantones} style={estC} onEachFeature={onE}/>
             <GeoJSON key={kP} data={geoData.provincias} style={estP}/>
