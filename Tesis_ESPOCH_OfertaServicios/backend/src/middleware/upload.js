@@ -27,6 +27,12 @@ const filtroArchivos = (req, file, cb) => {
 const storageGraduados = new CloudinaryStorage({
   cloudinary,
   params: async (req, file) => {
+    console.log('CLOUDINARY CONFIG:', {
+      cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+      api_key: process.env.CLOUDINARY_API_KEY ? '[OK]' : '[VACÍA]',
+      api_secret: process.env.CLOUDINARY_API_SECRET ? '[OK]' : '[VACÍA]',
+    });
+    console.log('FILE INFO:', file?.mimetype, file?.originalname);
     const graduadoId = req.usuario?.id || 'sin_id';
     const tipo = req.query.tipo || 'general';
     return {
