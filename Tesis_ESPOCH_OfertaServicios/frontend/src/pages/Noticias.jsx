@@ -24,7 +24,7 @@ const truncar = (txt = '', max = 180) => {
 const imgUrl = (ruta) => {
     if (!ruta) return null;
     if (/^(javascript|data|vbscript):/i.test(ruta)) return null;
-    if (/^https?:\/\//i.test(ruta) && !ruta.startsWith(BASE)) return null;
+    if (ruta.startsWith('http://') || ruta.startsWith('https://')) return ruta;
     return `${BASE}/${ruta.replace(/^\//, '')}`;
 };
 
