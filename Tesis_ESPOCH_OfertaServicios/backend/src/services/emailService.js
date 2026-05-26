@@ -6,56 +6,57 @@ const nodemailer = require('nodemailer');
 let transporter = null;
 
 const getTransporter = () => {
-    if (transporter) return transporter;
+  if (transporter) return transporter;
 
-    console.log('[EmailService] Inicializando transporter SMTP...');
-    console.log(`  Host: ${process.env.EMAIL_HOST}`);
-    console.log(`  Puerto: ${process.env.EMAIL_PORT}`);
-    console.log(`  Usuario: ${process.env.EMAIL_USER}`);
-    console.log(`  Contraseña: ${process.env.EMAIL_PASS ? '[CONFIGURADA]' : '[NO CONFIGURADA]'}`);
+  console.log('[EmailService] Inicializando transporter SMTP...');
+  console.log(`  Host: ${process.env.EMAIL_HOST}`);
+  console.log(`  Puerto: ${process.env.EMAIL_PORT}`);
+  console.log(`  Usuario: ${process.env.EMAIL_USER}`);
+  console.log(`  Contraseña: ${process.env.EMAIL_PASS ? '[CONFIGURADA]' : '[NO CONFIGURADA]'}`);
 
-    transporter = nodemailer.createTransport({
-        host:   process.env.EMAIL_HOST   || 'smtp.office365.com',
-        port:   parseInt(process.env.EMAIL_PORT) || 587,
-        secure: false,
-        auth: {
-            user: process.env.EMAIL_USER || '',
-            pass: process.env.EMAIL_PASS || '',
-        },
-        tls: {
-            ciphers: 'SSLv3',
-            rejectUnauthorized: false,
-        },
-    });
+  transporter = nodemailer.createTransport({
+    host: process.env.EMAIL_HOST || 'smtp.office365.com',
+    port: parseInt(process.env.EMAIL_PORT) || 587,
+    secure: false,
+    auth: {
+      user: process.env.EMAIL_USER || '',
+      pass: process.env.EMAIL_PASS || '',
+    },
+    tls: {
+      ciphers: 'SSLv3',
+      rejectUnauthorized: false,
+    },
+    family: 4,
+  });
 
-    return transporter;
+  return transporter;
 };
 
 const enviarCredenciales = async ({ nombres, apellidos, emailPersonal, password }) => {
-    console.log('\n╔════════════════════════════════════════════════════════════════╗');
-    console.log('║ [EmailService] ENVIANDO CREDENCIALES                           ║');
-    console.log('╚════════════════════════════════════════════════════════════════╝');
-    console.log(`  📧 Destinatario: ${emailPersonal}`);
-    console.log(`  👤 Nombre: ${nombres} ${apellidos}`);
-    console.log(`  🔑 Contraseña: ${password}`);
-    console.log('');
+  console.log('\n╔════════════════════════════════════════════════════════════════╗');
+  console.log('║ [EmailService] ENVIANDO CREDENCIALES                           ║');
+  console.log('╚════════════════════════════════════════════════════════════════╝');
+  console.log(`  📧 Destinatario: ${emailPersonal}`);
+  console.log(`  👤 Nombre: ${nombres} ${apellidos}`);
+  console.log(`  🔑 Contraseña: ${password}`);
+  console.log('');
 
-    if (!emailPersonal || !emailPersonal.includes('@')) {
-        const err = new Error(`Email inválido: ${emailPersonal}`);
-        console.error('❌ [EmailService]', err.message);
-        throw err;
-    }
+  if (!emailPersonal || !emailPersonal.includes('@')) {
+    const err = new Error(`Email inválido: ${emailPersonal}`);
+    console.error('❌ [EmailService]', err.message);
+    throw err;
+  }
 
-    if (!password) {
-        const err = new Error('Contraseña vacía');
-        console.error('❌ [EmailService]', err.message);
-        throw err;
-    }
+  if (!password) {
+    const err = new Error('Contraseña vacía');
+    console.error('❌ [EmailService]', err.message);
+    throw err;
+  }
 
-    const from = process.env.EMAIL_FROM
-        || `"Portal Graduados ESPOCH" <${process.env.EMAIL_USER}>`;
+  const from = process.env.EMAIL_FROM
+    || `"Portal Graduados ESPOCH" <${process.env.EMAIL_USER}>`;
 
-    const html = `
+  const html = `
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -148,58 +149,58 @@ const enviarCredenciales = async ({ nombres, apellidos, emailPersonal, password 
 </body>
 </html>`;
 
-    try {
-        const trans = getTransporter();
-        
-        console.log('  ⏳ Conectando al servidor SMTP y enviando...');
-        const info = await trans.sendMail({
-            from,
-            to:      emailPersonal,
-            subject: '🎓 Bienvenido al Portal de Graduados ESPOCH — Tus credenciales de acceso',
-            html,
-        });
+  try {
+    const trans = getTransporter();
 
-        console.log('✅ [EmailService] EMAIL ENVIADO EXITOSAMENTE');
-        console.log(`   📬 ID: ${info.messageId}`);
-        console.log(`   📝 Response: ${info.response}`);
-        console.log('');
+    console.log('  ⏳ Conectando al servidor SMTP y enviando...');
+    const info = await trans.sendMail({
+      from,
+      to: emailPersonal,
+      subject: '🎓 Bienvenido al Portal de Graduados ESPOCH — Tus credenciales de acceso',
+      html,
+    });
 
-        return {
-            exito: true,
-            messageId: info.messageId,
-        };
+    console.log('✅ [EmailService] EMAIL ENVIADO EXITOSAMENTE');
+    console.log(`   📬 ID: ${info.messageId}`);
+    console.log(`   📝 Response: ${info.response}`);
+    console.log('');
 
-    } catch (error) {
-        console.error('');
-        console.error('❌ [EmailService] ERROR AL ENVIAR EMAIL');
-        console.error(`   Código: ${error.code}`);
-        console.error(`   Mensaje: ${error.message}`);
-        console.error(`   Detalles: ${JSON.stringify(error, null, 2)}`);
-        console.error('');
+    return {
+      exito: true,
+      messageId: info.messageId,
+    };
 
-        // Re-lanzar el error con contexto
-        const errorConContexto = new Error(
-            `No se pudo enviar credenciales a ${emailPersonal}: ${error.message}`
-        );
-        throw errorConContexto;
-    }
+  } catch (error) {
+    console.error('');
+    console.error('❌ [EmailService] ERROR AL ENVIAR EMAIL');
+    console.error(`   Código: ${error.code}`);
+    console.error(`   Mensaje: ${error.message}`);
+    console.error(`   Detalles: ${JSON.stringify(error, null, 2)}`);
+    console.error('');
+
+    // Re-lanzar el error con contexto
+    const errorConContexto = new Error(
+      `No se pudo enviar credenciales a ${emailPersonal}: ${error.message}`
+    );
+    throw errorConContexto;
+  }
 };
 
 const verificarConexion = async () => {
-    try {
-        console.log('\n[EmailService] Verificando conexión SMTP...');
-        const trans = getTransporter();
-        await trans.verify();
-        console.log('✅ [EmailService] Conexión SMTP verificada\n');
-        return true;
-    } catch (error) {
-        console.error('\n❌ [EmailService] Error en conexión SMTP:');
-        console.error(`   ${error.message}\n`);
-        return false;
-    }
+  try {
+    console.log('\n[EmailService] Verificando conexión SMTP...');
+    const trans = getTransporter();
+    await trans.verify();
+    console.log('✅ [EmailService] Conexión SMTP verificada\n');
+    return true;
+  } catch (error) {
+    console.error('\n❌ [EmailService] Error en conexión SMTP:');
+    console.error(`   ${error.message}\n`);
+    return false;
+  }
 };
 
 module.exports = {
-    enviarCredenciales,
-    verificarConexion,
+  enviarCredenciales,
+  verificarConexion,
 };
