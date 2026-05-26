@@ -609,7 +609,7 @@ const GestionGraduados = () => {
                         <div style={{ ...s.modalHead, borderColor: 'var(--color-espoch-rojo)' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                                 {(gradDetalle?.fotoPerfil || gradSel.fotoPerfil)
-                                    ? <img src={`${BASE}/${gradDetalle?.fotoPerfil || gradSel.fotoPerfil}`} alt=""
+                                    ? <img src={(() => { const f = gradDetalle?.fotoPerfil || gradSel.fotoPerfil; return f?.startsWith('http') ? f : `${BASE}/${f}`; })()} alt=""
                                         style={{ width: 46, height: 46, borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--color-espoch-rojo)' }} />
                                     : <div style={s.avatarModal}>{iniciales(gradSel.nombres, gradSel.apellidos)}</div>
                                 }
@@ -821,7 +821,7 @@ const GestionGraduados = () => {
                                         proysSel.length === 0 ? <p style={s.verVacio}>Sin proyectos registrados.</p>
                                             : proysSel.map(p => (
                                                 <div key={p._id} style={s.verItem}>
-                                                    {p.imagen && <img src={`${BASE}/${p.imagen}`} alt="" style={{ width: 60, height: 46, objectFit: 'cover', borderRadius: 6, flexShrink: 0 }} />}
+                                                    {p.imagen && <img src={p.imagen?.startsWith('http') ? p.imagen : `${BASE}/${p.imagen}`} alt="" style={{ width: 60, height: 46, objectFit: 'cover', borderRadius: 6, flexShrink: 0 }} />}
                                                     <div style={{ flex: 1, minWidth: 0 }}>
                                                         <p style={s.verItemTit}>{p.titulo}</p>
                                                         <p style={s.verItemDesc}>{p.descripcion}</p>
