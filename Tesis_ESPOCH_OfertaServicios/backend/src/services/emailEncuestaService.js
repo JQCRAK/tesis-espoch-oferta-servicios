@@ -20,6 +20,7 @@ const getTransporter = () => {
             ciphers: 'SSLv3',
             rejectUnauthorized: false,
         },
+        family: 4,
     });
 
     return transporter;
