@@ -213,12 +213,12 @@ const GestionEventos = () => {
     const handleImgChange = (e) => {
         const f = e.target.files[0] || null;
         setImgFile(f);
-        setImgPreview(f ? URL.createObjectURL(f) : (imgExistente ? `${BASE}/${imgExistente}` : null));
+        setImgPreview(f ? URL.createObjectURL(f) : (imgExistente ? (imgExistente.startsWith('http') ? imgExistente : `${BASE}/${imgExistente}`) : null));
     };
 
     const quitarImagen = () => {
         setImgFile(null);
-        setImgPreview(imgExistente ? `${BASE}/${imgExistente}` : null);
+        setImgPreview(imgExistente ? (imgExistente.startsWith('http') ? imgExistente : `${BASE}/${imgExistente}`) : null);
         if (imgRef.current) imgRef.current.value = '';
     };
 

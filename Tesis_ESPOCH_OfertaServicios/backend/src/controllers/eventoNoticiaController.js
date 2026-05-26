@@ -87,7 +87,7 @@ exports.crearEvento = async (req, res) => {
             capacidadMaxima: parseInt(capacidadMaxima) || 0,
             estado:          calcEstado(fechaInicio, fechaFin),
             creadoPor:       req.usuario.id,
-            imagen:          req.file ? `uploads/eventos/${req.file.filename}` : '',
+            imagen: req.file ? req.file.path : '',
         });
         res.status(201).json({ msg: 'Evento creado.', evento });
     } catch (err) {
@@ -119,8 +119,7 @@ exports.actualizarEvento = async (req, res) => {
             : calcEstado(evento.fechaInicio, evento.fechaFin);
 
         if (req.file) {
-            borrarImagen(evento.imagen);
-            evento.imagen = `uploads/eventos/${req.file.filename}`;
+            evento.imagen = req.file.path;
         }
         await evento.save();
 
@@ -365,7 +364,7 @@ exports.crearNoticia = async (req, res) => {
             estado:           estadoFinal,
             autor:            req.usuario.id,
             fechaPublicacion: estadoFinal === 'publicada' ? new Date() : null,
-            imagen:           req.file ? `uploads/noticias/${req.file.filename}` : '',
+            imagen: req.file ? req.file.path : '',
         });
         res.status(201).json({ msg: 'Noticia creada.', noticia });
     } catch (err) {
@@ -397,8 +396,7 @@ exports.actualizarNoticia = async (req, res) => {
                 noticia.fechaPublicacion = new Date();
         }
         if (req.file) {
-            borrarImagen(noticia.imagen);
-            noticia.imagen = `uploads/noticias/${req.file.filename}`;
+            noticia.imagen = req.file.path;
         }
         await noticia.save();
 
