@@ -411,7 +411,7 @@ const GestionEventos = () => {
                                         <div style={{
                                             ...s.eventoImg,
                                             background: ev.imagen
-                                                ? `url(${ev.imagen?.startsWith('http') ? ev.imagen : `${BASE}/${ev.imagen}`}) center/cover`
+                                                ? `url(${ev.imagen.startsWith('http') ? ev.imagen : BASE + '/' + ev.imagen}) center/cover`
                                                 : GRADIENTES[(slide * 3 + idx) % GRADIENTES.length],
                                         }}>
                                             <span style={{ ...s.badgeEst, background: bEst.bg, color: bEst.color, border: `1px solid ${bEst.border}` }}>
