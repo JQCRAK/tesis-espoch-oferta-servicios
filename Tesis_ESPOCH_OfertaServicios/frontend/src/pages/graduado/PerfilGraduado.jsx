@@ -38,8 +38,12 @@ const nivelAfinidad = (pct) => {
 
 const urlFoto = (ruta) => {
     if (!ruta) return null;
+    // Si ya es una URL completa de Cloudinary, usarla directamente
+    if (ruta.startsWith('http://') || ruta.startsWith('https://')) {
+        return `${ruta}?t=${Date.now()}`;
+    }
     const BASE = import.meta.env.VITE_BASE_URL || 'http://localhost:4000';
-return `${BASE}/${ruta}?t=${Date.now()}`;
+    return `${BASE}/${ruta}?t=${Date.now()}`;
 };
 
 const contarPalabras = (texto) => texto.trim() === '' ? 0 : texto.trim().split(/\s+/).length;
