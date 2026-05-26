@@ -737,15 +737,14 @@ exports.cargaMasivaGraduados = async (req, res) => {
                 emailsEnCSV.add(emailLimpio);
 
                 let correoEnviado = false;
-                try {
-                    await enviarCredenciales({
-                        nombres: nuevoGraduado.nombres, apellidos: nuevoGraduado.apellidos,
-                        emailPersonal: emailLimpio, password,
-                    });
+                enviarCredenciales({
+                    nombres: nuevoGraduado.nombres, apellidos: nuevoGraduado.apellidos,
+                    emailPersonal: emailLimpio, password,
+                }).then(() => {
                     correoEnviado = true;
-                } catch (emailErr) {
+                }).catch(emailErr => {
                     console.error(`Error enviando correo a ${emailLimpio}:`, emailErr.message);
-                }
+                });
 
                 resultado.estado = 'exitoso';
                 resultado.password = password;
