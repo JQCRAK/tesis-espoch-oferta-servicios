@@ -3,24 +3,22 @@ const nodemailer = require('nodemailer');
 let transporter = null;
 
 const getTransporter = () => {
-    if (transporter) return transporter;
-    transporter = nodemailer.createTransport({
-        host:   process.env.EMAIL_HOST   || 'smtp.office365.com',
-        port:   parseInt(process.env.EMAIL_PORT) || 587,
-        secure: false,
-        auth: {
-            user: process.env.EMAIL_USER || '',
-            pass: process.env.EMAIL_PASS || '',
-        },
-        tls: { ciphers: 'SSLv3', rejectUnauthorized: false },
-        family: 4, 
-    });
-    return transporter;
+  if (transporter) return transporter;
+  transporter = nodemailer.createTransport({
+    host: 'smtp.resend.com',
+    port: 465,
+    secure: true,
+    auth: {
+      user: 'resend',
+      pass: process.env.RESEND_API_KEY || '',
+    },
+  });
+  return transporter;
 };
 
 const FROM = () =>
-    process.env.EMAIL_FROM ||
-    `"Portal Graduados ESPOCH" <${process.env.EMAIL_USER}>`;
+  process.env.EMAIL_FROM ||
+  `"Portal Graduados ESPOCH" <${process.env.EMAIL_USER}>`;
 
 // PLANTILLA BASE
 const layout = (contenido) => `
@@ -69,23 +67,23 @@ const layout = (contenido) => `
 
 // 1. CORREO AL GRADUADO (destino)
 const enviarAlGraduado = async ({
-    emailPersonal, nombresGraduado,
-    nombreRemitente, emailRemitente, empresa, mensaje,
+  emailPersonal, nombresGraduado,
+  nombreRemitente, emailRemitente, empresa, mensaje,
 }) => {
-    if (!emailPersonal) {
-        console.warn('[EmailContacto] Graduado sin emailPersonal — omitido.');
-        return { exito: false, razon: 'sin_email' };
-    }
+  if (!emailPersonal) {
+    console.warn('[EmailContacto] Graduado sin emailPersonal — omitido.');
+    return { exito: false, razon: 'sin_email' };
+  }
 
-    const empresaLine = empresa
-        ? `<tr><td style="padding:5px 0;width:120px;">
+  const empresaLine = empresa
+    ? `<tr><td style="padding:5px 0;width:120px;">
              <span style="font-size:0.76rem;color:#6c757d;font-weight:600;">Empresa:</span>
            </td><td>
              <span style="font-size:0.88rem;color:#2c3e50;">${empresa}</span>
            </td></tr>`
-        : '';
+    : '';
 
-    const cuerpo = `
+  const cuerpo = `
       <p style="margin:0 0 6px;font-size:1rem;color:#2c3e50;font-weight:600;">
         Hola, ${nombresGraduado} 👋
       </p>
@@ -149,27 +147,27 @@ const enviarAlGraduado = async ({
         </p>
       </div>`;
 
-    try {
-        const info = await getTransporter().sendMail({
-            from:    FROM(),
-            to:      emailPersonal,
-            subject: `💼 Alguien está interesado en tu perfil — Portal ESPOCH`,
-            html:    layout(cuerpo),
-        });
-        console.log(`✅ [EmailContacto→Graduado] ${info.messageId}`);
-        return { exito: true, messageId: info.messageId };
-    } catch (err) {
-        console.error(`❌ [EmailContacto→Graduado] ${err.message}`);
-        return { exito: false, error: err.message };
-    }
+  try {
+    const info = await getTransporter().sendMail({
+      from: FROM(),
+      to: emailPersonal,
+      subject: `💼 Alguien está interesado en tu perfil — Portal ESPOCH`,
+      html: layout(cuerpo),
+    });
+    console.log(`✅ [EmailContacto→Graduado] ${info.messageId}`);
+    return { exito: true, messageId: info.messageId };
+  } catch (err) {
+    console.error(`❌ [EmailContacto→Graduado] ${err.message}`);
+    return { exito: false, error: err.message };
+  }
 };
 
 // 2. COPIA AL REMITENTE
 const enviarCopiaRemitente = async ({
-    emailRemitente, nombreRemitente,
-    nombresGraduado, apellidosGraduado,
+  emailRemitente, nombreRemitente,
+  nombresGraduado, apellidosGraduado,
 }) => {
-    const cuerpo = `
+  const cuerpo = `
       <p style="margin:0 0 6px;font-size:1rem;color:#2c3e50;font-weight:600;">
         Hola, ${nombreRemitente} 👋
       </p>
@@ -201,41 +199,41 @@ const enviarCopiaRemitente = async ({
         </p>
       </div>`;
 
-    try {
-        const info = await getTransporter().sendMail({
-            from:    FROM(),
-            to:      emailRemitente,
-            subject: `📋 Copia de tu solicitud — Portal Graduados ESPOCH`,
-            html:    layout(cuerpo),
-        });
-        console.log(`✅ [EmailContacto→Remitente] ${info.messageId}`);
-        return { exito: true, messageId: info.messageId };
-    } catch (err) {
-        console.error(`❌ [EmailContacto→Remitente] ${err.message}`);
-        return { exito: false, error: err.message };
-    }
+  try {
+    const info = await getTransporter().sendMail({
+      from: FROM(),
+      to: emailRemitente,
+      subject: `📋 Copia de tu solicitud — Portal Graduados ESPOCH`,
+      html: layout(cuerpo),
+    });
+    console.log(`✅ [EmailContacto→Remitente] ${info.messageId}`);
+    return { exito: true, messageId: info.messageId };
+  } catch (err) {
+    console.error(`❌ [EmailContacto→Remitente] ${err.message}`);
+    return { exito: false, error: err.message };
+  }
 };
 
 // 3. COPIA A TODOS LOS ADMINS
 const enviarCopiaAdmins = async ({
-    emailsAdmins,
-    nombreRemitente, emailRemitente, empresa, mensaje,
-    nombresGraduado, apellidosGraduado,
+  emailsAdmins,
+  nombreRemitente, emailRemitente, empresa, mensaje,
+  nombresGraduado, apellidosGraduado,
 }) => {
-    if (!emailsAdmins || emailsAdmins.length === 0) {
-        console.warn('[EmailContacto→Admins] Sin admins con email — omitido.');
-        return { exito: false, razon: 'sin_admins' };
-    }
+  if (!emailsAdmins || emailsAdmins.length === 0) {
+    console.warn('[EmailContacto→Admins] Sin admins con email — omitido.');
+    return { exito: false, razon: 'sin_admins' };
+  }
 
-    const empresaLine = empresa
-        ? `<tr><td style="padding:4px 0;width:110px;">
+  const empresaLine = empresa
+    ? `<tr><td style="padding:4px 0;width:110px;">
              <span style="font-size:0.74rem;color:#6c757d;font-weight:600;">Empresa:</span>
            </td><td>
              <span style="font-size:0.85rem;color:#2c3e50;">${empresa}</span>
            </td></tr>`
-        : '';
+    : '';
 
-    const cuerpo = `
+  const cuerpo = `
       <p style="margin:0 0 6px;font-size:1rem;color:#2c3e50;font-weight:600;">
         Nueva solicitud de contacto 📬
       </p>
@@ -306,23 +304,23 @@ const enviarCopiaAdmins = async ({
         </p>
       </div>`;
 
-    try {
-        const info = await getTransporter().sendMail({
-            from:    FROM(),
-            to:      emailsAdmins.join(', '),
-            subject: `🔔 Nueva solicitud de contacto — ${nombresGraduado} ${apellidosGraduado} · ESPOCH`,
-            html:    layout(cuerpo),
-        });
-        console.log(`✅ [EmailContacto→Admins] ${info.messageId} → ${emailsAdmins.join(', ')}`);
-        return { exito: true, messageId: info.messageId };
-    } catch (err) {
-        console.error(`❌ [EmailContacto→Admins] ${err.message}`);
-        return { exito: false, error: err.message };
-    }
+  try {
+    const info = await getTransporter().sendMail({
+      from: FROM(),
+      to: emailsAdmins.join(', '),
+      subject: `🔔 Nueva solicitud de contacto — ${nombresGraduado} ${apellidosGraduado} · ESPOCH`,
+      html: layout(cuerpo),
+    });
+    console.log(`✅ [EmailContacto→Admins] ${info.messageId} → ${emailsAdmins.join(', ')}`);
+    return { exito: true, messageId: info.messageId };
+  } catch (err) {
+    console.error(`❌ [EmailContacto→Admins] ${err.message}`);
+    return { exito: false, error: err.message };
+  }
 };
 
 module.exports = {
-    enviarAlGraduado,
-    enviarCopiaRemitente,
-    enviarCopiaAdmins,
+  enviarAlGraduado,
+  enviarCopiaRemitente,
+  enviarCopiaAdmins,
 };

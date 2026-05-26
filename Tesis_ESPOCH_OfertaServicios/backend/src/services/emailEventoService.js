@@ -8,19 +8,14 @@ let transporter = null;
 const getTransporter = () => {
     if (transporter) return transporter;
     transporter = nodemailer.createTransport({
-        host:   process.env.EMAIL_HOST   || 'smtp.office365.com',
-        port:   parseInt(process.env.EMAIL_PORT) || 587,
-        secure: false,
-        auth: {
-            user: process.env.EMAIL_USER || '',
-            pass: process.env.EMAIL_PASS || '',
-        },
-        tls: {
-            ciphers: 'SSLv3',
-            rejectUnauthorized: false,
-        },
-        family: 4,
-    });
+    host:   'smtp.resend.com',
+    port:   465,
+    secure: true,
+    auth: {
+        user: 'resend',
+        pass: process.env.RESEND_API_KEY || '',
+    },
+});
     return transporter;
 };
 

@@ -6,22 +6,17 @@ const nodemailer = require('nodemailer');
 let transporter = null;
 
 const getTransporter = () => {
-    if (transporter) return transporter;
-    transporter = nodemailer.createTransport({
-        host:   process.env.EMAIL_HOST   || 'smtp.office365.com',
-        port:   parseInt(process.env.EMAIL_PORT) || 587,
-        secure: false,
-        auth: {
-            user: process.env.EMAIL_USER || '',
-            pass: process.env.EMAIL_PASS || '',
-        },
-        tls: {
-            ciphers: 'SSLv3',
-            rejectUnauthorized: false,
-        },
-        family: 4,
-    });
-    return transporter;
+  if (transporter) return transporter;
+  transporter = nodemailer.createTransport({
+    host: 'smtp.resend.com',
+    port: 465,
+    secure: true,
+    auth: {
+      user: 'resend',
+      pass: process.env.RESEND_API_KEY || '',
+    },
+  });
+  return transporter;
 };
 
 /**
@@ -33,31 +28,31 @@ const getTransporter = () => {
  * @param {string} linkEncuesta      - URL única con token
  */
 const enviarNotificacionEmpleador = async ({
-    emailOrganizacion,
-    nombreEmpresa,
-    tituloEncuesta,
-    fechaCierre,
-    linkEncuesta,
+  emailOrganizacion,
+  nombreEmpresa,
+  tituloEncuesta,
+  fechaCierre,
+  linkEncuesta,
 }) => {
-    console.log('\n[EmailEmpleador] Enviando notificación...');
-    console.log(`  📧 Email: ${emailOrganizacion}`);
-    console.log(`  🏢 Empresa: ${nombreEmpresa}`);
-    console.log(`  🔗 Link: ${linkEncuesta}`);
+  console.log('\n[EmailEmpleador] Enviando notificación...');
+  console.log(`  📧 Email: ${emailOrganizacion}`);
+  console.log(`  🏢 Empresa: ${nombreEmpresa}`);
+  console.log(`  🔗 Link: ${linkEncuesta}`);
 
-    if (!emailOrganizacion || !emailOrganizacion.includes('@')) {
-        return { exito: false, error: `Email inválido: ${emailOrganizacion}` };
-    }
+  if (!emailOrganizacion || !emailOrganizacion.includes('@')) {
+    return { exito: false, error: `Email inválido: ${emailOrganizacion}` };
+  }
 
-    const from = process.env.EMAIL_FROM
-        || `"Portal Graduados ESPOCH" <${process.env.EMAIL_USER}>`;
+  const from = process.env.EMAIL_FROM
+    || `"Portal Graduados ESPOCH" <${process.env.EMAIL_USER}>`;
 
-    const fechaLimite = fechaCierre
-        ? new Date(fechaCierre).toLocaleDateString('es-EC', {
-            day: 'numeric', month: 'long', year: 'numeric',
-          })
-        : 'próximamente';
+  const fechaLimite = fechaCierre
+    ? new Date(fechaCierre).toLocaleDateString('es-EC', {
+      day: 'numeric', month: 'long', year: 'numeric',
+    })
+    : 'próximamente';
 
-    const html = `
+  const html = `
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -165,20 +160,20 @@ const enviarNotificacionEmpleador = async ({
 </body>
 </html>`;
 
-    try {
-        const trans = getTransporter();
-        const info = await trans.sendMail({
-            from,
-            to:      emailOrganizacion,
-            subject: `💼 Encuesta de empleadores: ${tituloEncuesta} — ESPOCH`,
-            html,
-        });
-        console.log('✅ [EmailEmpleador] ENVIADO:', info.messageId);
-        return { exito: true, messageId: info.messageId };
-    } catch (error) {
-        console.error('❌ [EmailEmpleador] ERROR:', error.message);
-        return { exito: false, error: error.message };
-    }
+  try {
+    const trans = getTransporter();
+    const info = await trans.sendMail({
+      from,
+      to: emailOrganizacion,
+      subject: `💼 Encuesta de empleadores: ${tituloEncuesta} — ESPOCH`,
+      html,
+    });
+    console.log('✅ [EmailEmpleador] ENVIADO:', info.messageId);
+    return { exito: true, messageId: info.messageId };
+  } catch (error) {
+    console.error('❌ [EmailEmpleador] ERROR:', error.message);
+    return { exito: false, error: error.message };
+  }
 };
 
 module.exports = { enviarNotificacionEmpleador };

@@ -15,19 +15,14 @@ const getTransporter = () => {
   console.log(`  Contraseña: ${process.env.EMAIL_PASS ? '[CONFIGURADA]' : '[NO CONFIGURADA]'}`);
 
   transporter = nodemailer.createTransport({
-    host: process.env.EMAIL_HOST || 'smtp.office365.com',
-    port: parseInt(process.env.EMAIL_PORT) || 587,
-    secure: false,
+    host:   'smtp.resend.com',
+    port:   465,
+    secure: true,
     auth: {
-      user: process.env.EMAIL_USER || '',
-      pass: process.env.EMAIL_PASS || '',
+        user: 'resend',
+        pass: process.env.RESEND_API_KEY || '',
     },
-    tls: {
-      ciphers: 'SSLv3',
-      rejectUnauthorized: false,
-    },
-    family: 4,
-  });
+});
 
   return transporter;
 };
