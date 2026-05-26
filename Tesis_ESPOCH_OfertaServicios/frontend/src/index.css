@@ -1,0 +1,131 @@
+:root {
+  /* =========================================
+     1. IDENTIDAD INSTITUCIONAL (Obligatorio)
+     ========================================= */
+  /* Rojo ESPOCH: Usar en Barra de Navegación (Header) y Botones Principales */
+  --color-espoch-rojo: #BE1E2D; 
+  /* Verde ESPOCH: Usar en Footer, bordes decorativos y Botones de "Confirmar" */
+  --color-espoch-verde: #009444; 
+
+  /* =========================================
+     2. COLORES TECH / PROFESIONAL (Variedad)
+     ========================================= */
+  /* Azul Software: Para enlaces, iconos de perfil y toques "tecnológicos" */
+  --color-tech-azul: #0056b3;
+  /* Azul Claro: Para fondos suaves de tarjetas o secciones destacadas */
+  --color-tech-azul-claro: #e7f1ff;
+  
+  /* Gris Oscuro: Para el texto principal (más elegante que el negro puro) */
+  --color-texto-principal: #2c3e50;
+  /* Gris Medio: Para subtítulos y textos secundarios */
+  --color-texto-secundario: #6c757d;
+  /* Gris Fondo: Para el fondo general de la página (evita el blanco chillón) */
+  --color-fondo-web: #f8f9fa;
+
+
+  /* =========================================
+     4. ETIQUETAS DE PROYECTOS (Tags)
+     ========================================= */
+  /* Para diferenciar tecnologías en el portafolio (ej. React, Python) */
+  --tag-bg-azul: #cfe2ff;   /* Ej: Para tecnologías Web */
+  --tag-text-azul: #084298;
+  
+  --tag-bg-naranja: #ffecb5; /* Ej: Para Bases de Datos */
+  --tag-text-naranja: #664d03;
+  
+  --tag-bg-morado: #e0cffc; /* Ej: Para IA / Python */
+  --tag-text-morado: #2c0b8e;
+
+  /* =========================================
+     5. ESTADOS (Feedback al usuario)
+     ========================================= */
+  --estado-exito: #198754;  /* Guardado correctamente */
+  --estado-error: #dc3545;  /* Error en el formulario */
+  --estado-alerta: #ffc107; /* Advertencia */
+}
+
+/* Configuraciones Globales */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  background-color: var(--color-fondo-web);
+  color: var(--color-texto-principal);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* --- CLASES DE UTILIDAD (Para usar rápido en tus componentes) --- */
+
+/* Fondos */
+.bg-institucional { background-color: var(--color-espoch-rojo); color: white; }
+.bg-tech { background-color: var(--color-tech-azul); color: white; }
+
+/* Botones */
+.btn-principal {
+  background-color: var(--color-espoch-rojo);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.btn-secundario {
+  background-color: var(--color-tech-azul);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-principal:hover { background-color: #a01825; }
+
+/* =========================================
+   SPINNER (spin animation)
+   ========================================= */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.spin {
+  animation: spin 0.8s linear infinite;
+  display: inline-block;
+}
+
+/* =========================================
+   TOAST NOTIFICATIONS
+   Aparecen en la esquina inferior derecha,
+   entran deslizando desde la derecha y
+   salen hacia la derecha al desaparecer.
+   ========================================= */
+@keyframes toastEntrar {
+  from {
+    transform: translateX(110%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes toastSalir {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(110%);
+    opacity: 0;
+  }
+}
+
+.toast-enter {
+  animation: toastEntrar 0.35s cubic-bezier(0.21, 1.02, 0.73, 1) forwards;
+}
+
+.toast-salir {
+  animation: toastSalir 0.3s ease-in forwards;
+}
