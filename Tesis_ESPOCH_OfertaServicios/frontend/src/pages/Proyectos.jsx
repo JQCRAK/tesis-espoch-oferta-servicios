@@ -10,7 +10,11 @@ import {
 
 const API_URL  = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
 const BASE = import.meta.env.VITE_BASE_URL || 'http://localhost:4000';
-const urlMedia = (r) => r ? `${BASE}/${r}` : null;
+const urlMedia = (r) => {
+    if (!r) return null;
+    if (r.startsWith('http://') || r.startsWith('https://')) return r;
+    return `${BASE}/${r}`;
+};
 const FONT     = "'Segoe UI', system-ui, -apple-system, sans-serif";
 
 const CSS = `
