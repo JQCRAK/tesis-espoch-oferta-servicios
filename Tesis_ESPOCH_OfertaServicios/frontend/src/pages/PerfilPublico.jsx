@@ -11,8 +11,9 @@ import {
     FaGlobe, FaLock, FaBell, FaChevronLeft, FaChevronRight,
 } from 'react-icons/fa';
 
-const API_URL = 'http://localhost:4000/api';
-const urlMedia = (ruta) => ruta ? `http://localhost:4000/${ruta}` : null;
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
+const BASE = import.meta.env.VITE_BASE_URL || 'http://localhost:4000';
+const urlMedia = (ruta) => ruta ? `${BASE}/${ruta}` : null;
 const FONT = "'Segoe UI', system-ui, -apple-system, sans-serif";
 
 const DISP = {

@@ -8,8 +8,9 @@ import {
     FaCode, FaArrowRight, FaBriefcase, FaLayerGroup,
 } from 'react-icons/fa';
 
-const API_URL  = 'http://localhost:4000/api';
-const urlMedia = (r) => r ? `http://localhost:4000/${r}` : null;
+const API_URL  = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
+const BASE = import.meta.env.VITE_BASE_URL || 'http://localhost:4000';
+const urlMedia = (r) => r ? `${BASE}/${r}` : null;
 const FONT     = "'Segoe UI', system-ui, -apple-system, sans-serif";
 
 const CSS = `

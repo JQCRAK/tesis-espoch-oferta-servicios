@@ -20,9 +20,9 @@ const hdrs = () => {
     const t = usuario ? usuario.token : '';
     return { Authorization: `Bearer ${t}` };
 };
-
+const BASE = import.meta.env.VITE_BASE_URL || 'http://localhost:4000';
 const urlFoto = (ruta) =>
-    ruta ? `http://localhost:4000/${ruta}` : null;
+    ruta ? `${BASE}/${ruta}` : null;
 
 const fmtFecha = (fecha) =>
     new Date(fecha).toLocaleDateString('es-EC', {

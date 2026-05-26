@@ -16,7 +16,7 @@ import '../../index.css';
 import { leerSesion, guardarSesion } from '../../utils/storageSeguro';
 import { eliminarSesion } from '../../utils/storageSeguro';
 
-const API_URL = 'http://localhost:4000/api';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
 
 const LIMITE_PROYECTOS = 5;
 const LIMITE_CERTIFICADOS = 5;
@@ -38,7 +38,8 @@ const nivelAfinidad = (pct) => {
 
 const urlFoto = (ruta) => {
     if (!ruta) return null;
-    return `http://localhost:4000/${ruta}?t=${Date.now()}`;
+    const BASE = import.meta.env.VITE_BASE_URL || 'http://localhost:4000';
+return `${BASE}/${ruta}?t=${Date.now()}`;
 };
 
 const contarPalabras = (texto) => texto.trim() === '' ? 0 : texto.trim().split(/\s+/).length;

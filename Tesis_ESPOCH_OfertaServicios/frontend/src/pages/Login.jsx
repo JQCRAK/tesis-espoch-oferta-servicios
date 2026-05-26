@@ -13,7 +13,7 @@ import {
 import '../index.css';
 import { guardarSesion } from '../utils/storageSeguro';
 
-const API_URL = 'http://localhost:4000/api/auth';
+const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:4000/api') + '/auth';
 
 const ofuscar = (obj) => btoa(unescape(encodeURIComponent(JSON.stringify(obj))));
 const desofuscar = (str) => JSON.parse(decodeURIComponent(escape(atob(str))));

@@ -9,8 +9,9 @@ import {
     FaRocket, FaUsers, FaMicrochip, FaStar, FaEye,
 } from 'react-icons/fa';
 
-const API_URL  = 'http://localhost:4000/api';
-const urlFoto  = (ruta) => ruta ? `http://localhost:4000/${ruta}` : null;
+const API_URL  = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
+const BASE = import.meta.env.VITE_BASE_URL || 'http://localhost:4000';
+const urlFoto  = (ruta) => ruta ? `${BASE}/${ruta}` : null;
 const FONT     = "'Segoe UI', Roboto, 'Helvetica Neue', sans-serif";
 
 // ══════════════════════════════════════════════

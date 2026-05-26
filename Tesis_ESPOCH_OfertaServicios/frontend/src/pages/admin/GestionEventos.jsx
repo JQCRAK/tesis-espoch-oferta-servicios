@@ -11,7 +11,7 @@ import {
 import { leerSesion } from '../../utils/storageSeguro';
 
 const API  = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
-const BASE = 'http://localhost:4000';
+const BASE = import.meta.env.VITE_BASE_URL || 'http://localhost:4000';
 const hdrs = () => {
     const usuario = leerSesion('usuario');
     const t = usuario ? usuario.token : '';
