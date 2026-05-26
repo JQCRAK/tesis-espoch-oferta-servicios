@@ -207,17 +207,9 @@ const actualizarPerfil = async (req, res) => {
 const subirFotoPerfil = async (req, res) => {
     try {
         if (!req.file) return res.status(400).json({ msg: 'No se recibió ninguna imagen' });
+        
         const graduado = await Graduado.findById(req.usuario.id);
         if (!graduado) return res.status(404).json({ msg: 'Graduado no encontrado' });
-
-        const carpeta = path.join(__dirname, '..', 'uploads', 'graduados', req.usuario.id);
-        if (fs.existsSync(carpeta)) {
-            fs.readdirSync(carpeta).forEach(archivo => {
-                if (archivo.includes('_Perfil.') && archivo !== req.file.filename) {
-                    try { fs.unlinkSync(path.join(carpeta, archivo)); } catch (e) { console.warn('No se pudo eliminar foto anterior:', e.message); }
-                }
-            });
-        }
 
         graduado.fotoPerfil = req.file.path;
         graduado.perfilCompletado = calcularProgreso(graduado);
@@ -225,9 +217,7 @@ const subirFotoPerfil = async (req, res) => {
 
         res.json({ msg: 'Foto actualizada', fotoPerfil: graduado.fotoPerfil, perfilCompletado: graduado.perfilCompletado });
     } catch (err) {
-        console.error('Error en subirFotoPerfil:', JSON.stringify(err, null, 2));
-        console.error('Mensaje:', err.message);
-        console.error('Stack:', err.stack);
+        console.error('Error en subirFotoPerfil:', err.message);
         res.status(500).json({ msg: 'Error al subir la foto', detalle: err.message });
     }
 };
