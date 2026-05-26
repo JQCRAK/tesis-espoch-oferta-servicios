@@ -9,12 +9,6 @@ const getTransporter = () => {
   if (transporter) return transporter;
 
   console.log('RESEND KEY:', process.env.RESEND_API_KEY ? '[OK]' : '[VACÍA]');
-  console.log('[EmailService] Inicializando transporter SMTP...');
-  console.log(`  Host: ${process.env.EMAIL_HOST}`);
-  console.log(`  Puerto: ${process.env.EMAIL_PORT}`);
-  console.log(`  Usuario: ${process.env.EMAIL_USER}`);
-  console.log(`  Contraseña: ${process.env.EMAIL_PASS ? '[CONFIGURADA]' : '[NO CONFIGURADA]'}`);
-
 
   transporter = nodemailer.createTransport({
     host:   'smtp.resend.com',
@@ -24,7 +18,7 @@ const getTransporter = () => {
         user: 'resend',
         pass: process.env.RESEND_API_KEY || '',
     },
-});
+  });
 
   return transporter;
 };
