@@ -19,32 +19,52 @@ const similitud = (a, b) => {
 
 exports.getEstadisticasEmpleadores = async (req, res) => {
     try {
-        // ── 1. Encuestas tipo 'empleadores' ───────────────────
+        // ── 1. Siempre cargar empleadores activos ─────────────
+        const empleadores = await Empleador.find({ activo: true })
+            .select('nombreEmpresa nombreGerente provincia ciudad tipoCapital tipoActividad emailOrganizacion encuestado tokenUsado encuestaAsociada')
+            .lean();
+
+        // ── 2. Encuestas tipo 'empleadores' ───────────────────
         const encuestas = await Encuesta.find({ tipo: 'empleadores' })
             .sort({ fechaInicio: -1 })
             .lean();
 
+        // Si no hay encuestas, devolver empleadores igual (tab Empresas funciona)
         if (!encuestas.length) {
+            const empleadoresRaw = empleadores.map(e => ({
+                _id:               e._id.toString(),
+                nombreEmpresa:     e.nombreEmpresa,
+                nombreGerente:     e.nombreGerente,
+                provincia:         e.provincia    || '',
+                ciudad:            e.ciudad       || '',
+                tipoCapital:       e.tipoCapital,
+                tipoActividad:     e.tipoActividad,
+                emailOrganizacion: e.emailOrganizacion,
+                encuestado:        e.encuestado   || {},
+                encuestasRespondidas: [],
+                respondio:         false,
+            }));
             return res.json({
-                encuestas: [],
-                empleadoresRaw: [],
-                respuestasRaw: [],
+                encuestas:          [],
+                empleadoresRaw,
+                respuestasRaw:      [],
                 preguntasAgrupadas: [],
-                kpis: { totalEmpleadores: 0, totalEncuestas: 0, totalRespuestas: 0, tasaRespuesta: 0 },
+                kpis: {
+                    totalEmpleadores:       empleadores.length,
+                    totalEncuestas:         0,
+                    totalRespuestas:        0,
+                    tasaRespuesta:          0,
+                    empleadoresRespondieron: 0,
+                },
             });
         }
 
         const encuestaIds = encuestas.map(e => e._id);
 
-        // ── 2. Respuestas con populate completo ───────────────
+        // ── 3. Respuestas con populate completo ───────────────
         const respuestas = await RespuestaEmpleador.find({ encuesta: { $in: encuestaIds } })
             .populate('empleador', 'nombreEmpresa nombreGerente provincia ciudad tipoCapital tipoActividad emailOrganizacion encuestado')
             .populate('encuesta', 'titulo fechaInicio fechaCierre estado')
-            .lean();
-
-        // ── 3. Empleadores activos ─────────────────────────────
-        const empleadores = await Empleador.find({ activo: true })
-            .select('nombreEmpresa nombreGerente provincia ciudad tipoCapital tipoActividad emailOrganizacion encuestado tokenUsado encuestaAsociada')
             .lean();
 
         // ── 4. Preguntas (excluye títulos) ─────────────────────
@@ -95,9 +115,7 @@ exports.getEstadisticasEmpleadores = async (req, res) => {
             }
         }
 
-        // ── 6. Construir lookup: preguntaId → respuestas enriquecidas ──
-        // CLAVE: cada respuesta lleva provincia, ciudad, tipoCapital del empleador
-        // para poder filtrar en el frontend sin cruzar datos
+        // ── 6. Lookup: preguntaId → respuestas enriquecidas ───
         const lookupResp = {};
         for (const r of respuestas) {
             if (r.estado !== 'completada') continue;
@@ -125,17 +143,17 @@ exports.getEstadisticasEmpleadores = async (req, res) => {
             }
         }
 
-        // ── 7. Armar grupos con respuestas ─────────────────────
+        // ── 7. Grupos con respuestas ──────────────────────────
         const respCompletadas = respuestas.filter(r => r.estado === 'completada');
 
         const gruposConDatos = grupos.map(g => {
-            const todas = g.preguntaIds.flatMap(pid => lookupResp[pid] || []);
+            const todas        = g.preguntaIds.flatMap(pid => lookupResp[pid] || []);
             const principal    = todas.filter(r => !r.esCondicional);
             const condicionales = todas.filter(r => r.esCondicional);
             return {
                 ...g,
                 totalRespuestas: principal.length,
-                respuestasRaw:   principal,      // cada item tiene provincia, ciudad, tipoCapital, encuestaId
+                respuestasRaw:   principal,
                 condicionalesRaw: condicionales,
                 esComun: g.encuestasAparece.length >= Math.max(2, Math.ceil(encuestas.filter(e => e.estado === 'cerrada').length * 0.5)),
             };
@@ -150,7 +168,7 @@ exports.getEstadisticasEmpleadores = async (req, res) => {
             ? Math.round((empRespondieron.size / totalEmpleadores) * 100)
             : 0;
 
-        // ── 9. Empleadores enriquecidos ───────────────────────
+        // ── 9. Empleadores enriquecidos con historial encuestas
         const empRespMap = {};
         for (const r of respCompletadas) {
             const eid = r.empleador?._id?.toString();
@@ -173,7 +191,7 @@ exports.getEstadisticasEmpleadores = async (req, res) => {
             respondio:         (empRespMap[e._id.toString()] || []).length > 0,
         }));
 
-        // ── 10. Respuestas raw (para tabla de quién respondió) ─
+        // ── 10. Respuestas raw (tabla quién respondió) ────────
         const respuestasRaw = respCompletadas.map(r => ({
             _id:             r._id.toString(),
             encuestaId:      r.encuesta?._id?.toString()  || '',
