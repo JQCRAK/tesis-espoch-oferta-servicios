@@ -101,6 +101,15 @@ cron.schedule('5 0 * * 1', async () => {
 }, { timezone: 'America/Guayaquil' });
 
 const PORT = process.env.PORT || 4000;
+// ── Manejador de errores global ──
+app.use((err, req, res, next) => {
+    console.error('ERROR GLOBAL:', err?.message || String(err));
+    console.error('STACK:', err?.stack);
+    res.status(err?.status || 500).json({
+        msg: err?.message || 'Error interno del servidor',
+        detalle: String(err)
+    });
+});
 app.listen(PORT, () => {
     console.log(`\n🚀 Servidor corriendo en modo ${process.env.NODE_ENV} en el puerto ${PORT}`);
     console.log(`🔗 Url local: http://localhost:4000`);
