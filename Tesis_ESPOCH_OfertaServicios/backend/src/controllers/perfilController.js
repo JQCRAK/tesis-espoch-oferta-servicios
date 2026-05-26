@@ -225,8 +225,10 @@ const subirFotoPerfil = async (req, res) => {
 
         res.json({ msg: 'Foto actualizada', fotoPerfil: graduado.fotoPerfil, perfilCompletado: graduado.perfilCompletado });
     } catch (err) {
-        console.error('Error en subirFotoPerfil:', err);
-        res.status(500).json({ msg: 'Error al subir la foto' });
+        console.error('Error en subirFotoPerfil:', JSON.stringify(err, null, 2));
+        console.error('Mensaje:', err.message);
+        console.error('Stack:', err.stack);
+        res.status(500).json({ msg: 'Error al subir la foto', detalle: err.message });
     }
 };
 
