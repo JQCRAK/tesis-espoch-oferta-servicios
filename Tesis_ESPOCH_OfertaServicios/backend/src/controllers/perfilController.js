@@ -219,8 +219,7 @@ const subirFotoPerfil = async (req, res) => {
             });
         }
 
-        const rutaRelativa = `uploads/graduados/${req.usuario.id}/${req.file.filename}`;
-        graduado.fotoPerfil = rutaRelativa;
+        graduado.fotoPerfil = req.file.path;
         graduado.perfilCompletado = calcularProgreso(graduado);
         await graduado.save();
 

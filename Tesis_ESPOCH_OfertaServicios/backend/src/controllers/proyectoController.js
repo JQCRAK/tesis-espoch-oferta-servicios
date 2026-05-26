@@ -59,7 +59,7 @@ const crearProyecto = async (req, res) => {
             tecnologias: tecArray.slice(0, 20),
             urlRepositorio: urlRepositorio ? urlRepositorio.trim() : '',
             fechaRealizacion: fechaRealizacion ? new Date(fechaRealizacion) : null,
-            imagen: `uploads/graduados/${req.usuario.id}/${req.file.filename}`,
+            imagen: req.file.path,
         });
 
         await proyecto.save();
@@ -110,7 +110,7 @@ const actualizarProyecto = async (req, res) => {
                 const rutaVieja = path.join(__dirname, '..', proyecto.imagen);
                 if (fs.existsSync(rutaVieja)) fs.unlinkSync(rutaVieja);
             }
-            proyecto.imagen = `uploads/graduados/${req.usuario.id}/${req.file.filename}`;
+            proyecto.imagen = req.file.path;
         }
 
         await proyecto.save();

@@ -43,7 +43,6 @@ const crearCertificado = async (req, res) => {
         if (!req.file)
             return res.status(400).json({ msg: 'La imagen del certificado es obligatoria' });
 
-        const archivoRuta = `uploads/graduados/${req.usuario.id}/${req.file.filename}`;
         const ext = path.extname(req.file.originalname).toLowerCase();
         const tipoArchivo = ext === '.pdf' ? 'pdf' : 'imagen';
 
@@ -54,7 +53,7 @@ const crearCertificado = async (req, res) => {
             fechaFinalizacion: new Date(fechaFinalizacion),
             url:               url.trim(),
             descripcion:       descripcion.trim().substring(0, 600),
-            archivo:           archivoRuta,
+            archivo:           req.file.path,
             tipoArchivo
         });
 
@@ -109,7 +108,7 @@ const actualizarCertificado = async (req, res) => {
                 if (fs.existsSync(rutaVieja)) fs.unlinkSync(rutaVieja);
             }
             const ext = path.extname(req.file.originalname).toLowerCase();
-            certificado.archivo    = `uploads/graduados/${req.usuario.id}/${req.file.filename}`;
+            certificado.archivo = req.file.path;
             certificado.tipoArchivo = ext === '.pdf' ? 'pdf' : 'imagen';
         }
 
