@@ -325,9 +325,7 @@ exports.registrarGraduado = async (req, res) => {
 
         await graduado.save();
 
-        const carpeta = path.join(__dirname, '..', 'uploads', 'graduados', graduado._id.toString());
-        if (!fs.existsSync(carpeta)) fs.mkdirSync(carpeta, { recursive: true });
-
+        
         console.log('[AuthController] ✅ Graduado registrado completamente\n');
 
         const token = generarToken(graduado._id, 'graduado', graduado.nombres);

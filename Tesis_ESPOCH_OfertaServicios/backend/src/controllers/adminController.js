@@ -572,8 +572,7 @@ exports.registroIndividualGraduado = async (req, res) => {
 
         await nuevoGraduado.save();
 
-        const carpeta = path.join(__dirname, '..', 'uploads', 'graduados', nuevoGraduado._id.toString());
-        if (!fs.existsSync(carpeta)) fs.mkdirSync(carpeta, { recursive: true });
+        
 
         enviarCredenciales({
             nombres: nuevoGraduado.nombres, apellidos: nuevoGraduado.apellidos,
@@ -729,8 +728,7 @@ exports.cargaMasivaGraduados = async (req, res) => {
 
                 await nuevoGraduado.save();
 
-                const carpeta = path.join(__dirname, '..', 'uploads', 'graduados', nuevoGraduado._id.toString());
-                if (!fs.existsSync(carpeta)) fs.mkdirSync(carpeta, { recursive: true });
+                
 
                 cedulasEnCSV.add(cedulaLimpia);
                 telefonosEnCSV.add(telefonoLimpio);
