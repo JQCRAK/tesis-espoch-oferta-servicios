@@ -207,7 +207,7 @@ const actualizarPerfil = async (req, res) => {
 const subirFotoPerfil = async (req, res) => {
     try {
         if (!req.file) return res.status(400).json({ msg: 'No se recibió ninguna imagen' });
-        
+
         const graduado = await Graduado.findById(req.usuario.id);
         if (!graduado) return res.status(404).json({ msg: 'Graduado no encontrado' });
 
@@ -217,8 +217,14 @@ const subirFotoPerfil = async (req, res) => {
 
         res.json({ msg: 'Foto actualizada', fotoPerfil: graduado.fotoPerfil, perfilCompletado: graduado.perfilCompletado });
     } catch (err) {
-        console.error('Error en subirFotoPerfil:', err.message);
-        res.status(500).json({ msg: 'Error al subir la foto', detalle: err.message });
+        console.error('ERROR FOTO:', err?.message || String(err));
+        console.error('HTTP:', err?.http_code);
+        console.error('STACK:', err?.stack);
+        res.status(500).json({
+            msg: 'Error al subir la foto',
+            detalle: err?.message || String(err),
+            http_code: err?.http_code
+        });
     }
 };
 
