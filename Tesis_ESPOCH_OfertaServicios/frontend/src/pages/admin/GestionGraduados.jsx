@@ -527,7 +527,7 @@ const GestionGraduados = () => {
                                                     <td style={s.td}>
                                                         <div style={s.nomCell}>
                                                             {g.fotoPerfil
-                                                                ? <img src={`${BASE}/${g.fotoPerfil}`} alt="" style={s.avatarImg} />
+                                                                ? <img src={g.fotoPerfil?.startsWith('http') ? g.fotoPerfil : `${BASE}/${g.fotoPerfil}`} alt="" style={s.avatarImg} />
                                                                 : <div style={{ ...s.avatarTbl, background: bEst.bg, color: bEst.color }}>
                                                                     {iniciales(g.nombres, g.apellidos)}
                                                                 </div>
