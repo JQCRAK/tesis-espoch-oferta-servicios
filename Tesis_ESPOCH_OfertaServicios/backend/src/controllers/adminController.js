@@ -736,21 +736,19 @@ exports.cargaMasivaGraduados = async (req, res) => {
                 telefonosEnCSV.add(telefonoLimpio);
                 emailsEnCSV.add(emailLimpio);
 
-                let correoEnviado = false;
-                enviarCredenciales({
-                    nombres: nuevoGraduado.nombres, apellidos: nuevoGraduado.apellidos,
-                    emailPersonal: emailLimpio, password,
-                }).then(() => {
-                    correoEnviado = true;
-                }).catch(emailErr => {
-                    console.error(`Error enviando correo a ${emailLimpio}:`, emailErr.message);
-                });
-
                 resultado.estado = 'exitoso';
-                resultado.password = password;
-                resultado.motivo = correoEnviado
-                    ? 'Correo enviado correctamente.'
-                    : 'Registrado pero el correo no pudo enviarse.';
+resultado.password = password;
+
+try {
+    await enviarCredenciales({
+        nombres: nuevoGraduado.nombres, apellidos: nuevoGraduado.apellidos,
+        emailPersonal: emailLimpio, password,
+    });
+    resultado.motivo = 'Registrado y correo enviado correctamente.';
+} catch (emailErr) {
+    console.error(`Error enviando correo a ${emailLimpio}:`, emailErr.message);
+    resultado.motivo = 'Registrado pero el correo no pudo enviarse.';
+}
                 reporte.exitosos++;
 
             } catch (err) {
