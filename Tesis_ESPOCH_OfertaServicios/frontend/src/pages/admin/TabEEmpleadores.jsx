@@ -879,6 +879,8 @@ const PanelEncuestadores=({empleadoresFiltrados,respuestasRaw,fEmp})=>{
     useEffect(()=>{setExpandidos({});},[fEmp.provincia,fEmp.ciudad]);
     const toggle=(id)=>setExpandidos(p=>({...p,[id]:!p[id]}));
 
+    // Solo visible cuando hay provincia seleccionada
+    if(!fEmp.provincia) return null;
     if(!empsConResp.length) return null;
 
     const construirGrupos=(emp)=>{
@@ -964,87 +966,115 @@ const PanelEncuestadores=({empleadoresFiltrados,respuestasRaw,fEmp})=>{
                                 </div>
                             </div>
 
-                            {/* Encuestadores expandidos */}
+                            {/* Encuestadores expandidos — grid 2×2 */}
                             {abierto&&(
-                                <div style={{padding:'10px 14px',display:'flex',flexDirection:'column',gap:8}}>
-                                    {grupos.map((enc,gi)=>(
+                                <div style={{padding:'10px 14px',display:'grid',gridTemplateColumns:'1fr 1fr',gap:10}}>
+                                    {grupos.map((enc,gi)=>{
+                                        const color=PALETA[gi%PALETA.length];
+                                        return(
                                         <div key={gi} style={{
-                                            background:gi%2===0?'#f8fafc':'white',
-                                            border:`1px solid ${MORADO}15`,
-                                            borderLeft:`3px solid ${PALETA[gi%PALETA.length]}`,
-                                            borderRadius:8,padding:'10px 12px',
+                                            background:'white',
+                                            border:`1px solid ${color}28`,
+                                            borderTop:`3px solid ${color}`,
+                                            borderRadius:9,padding:'12px',
+                                            boxShadow:'0 1px 4px rgba(0,0,0,.05)',
+                                            display:'flex',flexDirection:'column',gap:9,
                                         }}>
-                                            {/* Fila superior: avatar + datos + contacto */}
-                                            <div style={{display:'flex',alignItems:'flex-start',gap:10,marginBottom:10}}>
+                                            {/* Cabecera encuestador */}
+                                            <div style={{display:'flex',alignItems:'flex-start',gap:9}}>
                                                 <div style={{
-                                                    width:38,height:38,borderRadius:'50%',
-                                                    background:`${PALETA[gi%PALETA.length]}18`,
-                                                    border:`2px solid ${PALETA[gi%PALETA.length]}35`,
+                                                    width:40,height:40,borderRadius:'50%',
+                                                    background:`${color}18`,
+                                                    border:`2px solid ${color}35`,
                                                     display:'flex',alignItems:'center',justifyContent:'center',
-                                                    flexShrink:0,fontSize:'0.82rem',fontWeight:800,
-                                                    color:PALETA[gi%PALETA.length],fontFamily:FONT,
+                                                    flexShrink:0,fontSize:'0.88rem',fontWeight:800,
+                                                    color,fontFamily:FONT,
                                                 }}>
                                                     {enc.nombre.charAt(0).toUpperCase()}
                                                 </div>
                                                 <div style={{flex:1,minWidth:0}}>
-                                                    <div style={{fontSize:'0.76rem',fontWeight:700,color:'#0f172a',fontFamily:FONT}}>{enc.nombre}</div>
-                                                    <div style={{display:'flex',gap:5,marginTop:3,flexWrap:'wrap',alignItems:'center'}}>
-                                                        {enc.cargo&&<span style={{fontSize:'0.62rem',fontWeight:600,color:PALETA[gi%PALETA.length],background:`${PALETA[gi%PALETA.length]}12`,border:`1px solid ${PALETA[gi%PALETA.length]}25`,borderRadius:99,padding:'1px 6px',fontFamily:FONT}}>{enc.cargo}</span>}
-                                                        {enc.profesion&&<span style={{fontSize:'0.61rem',color:'#64748b',fontFamily:FONT,padding:'1px 6px',background:'#f1f5f9',borderRadius:99}}>{enc.profesion}</span>}
-                                                        {enc.genero&&<span style={{fontSize:'0.59rem',color:'#94a3b8',fontFamily:FONT}}>{enc.genero}</span>}
-                                                        {enc.edad&&<span style={{fontSize:'0.59rem',color:'#94a3b8',fontFamily:FONT}}>{enc.edad} años</span>}
-                                                        {enc.encuestas.length>1&&<span style={{fontSize:'0.60rem',fontWeight:700,color:VERDE,background:`${VERDE}10`,borderRadius:99,padding:'1px 6px',fontFamily:FONT,border:`1px solid ${VERDE}25`}}>Llenó {enc.encuestas.length} encuestas</span>}
+                                                    <div style={{fontSize:'0.75rem',fontWeight:700,color:'#0f172a',fontFamily:FONT,lineHeight:1.3}}>{enc.nombre}</div>
+                                                    <div style={{display:'flex',gap:4,marginTop:4,flexWrap:'wrap'}}>
+                                                        {enc.cargo&&<span style={{fontSize:'0.60rem',fontWeight:600,color,background:`${color}12`,border:`1px solid ${color}25`,borderRadius:99,padding:'1px 6px',fontFamily:FONT}}>{enc.cargo}</span>}
+                                                        {enc.profesion&&<span style={{fontSize:'0.59rem',color:'#64748b',background:'#f1f5f9',borderRadius:99,padding:'1px 6px',fontFamily:FONT}}>{enc.profesion}</span>}
                                                     </div>
                                                 </div>
-                                                {/* Datos de contacto y extra */}
-                                                <div style={{display:'flex',flexDirection:'column',gap:4,alignItems:'flex-end',flexShrink:0}}>
+                                                {enc.encuestas.length>1&&(
+                                                    <span style={{fontSize:'0.57rem',fontWeight:700,color:VERDE,background:`${VERDE}10`,border:`1px solid ${VERDE}25`,borderRadius:99,padding:'2px 6px',fontFamily:FONT,flexShrink:0,whiteSpace:'nowrap'}}>×{enc.encuestas.length}</span>
+                                                )}
+                                            </div>
+
+                                            {/* Datos personales en grid 2 columnas pequeño */}
+                                            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:4}}>
+                                                {enc.genero&&(
+                                                    <div style={{display:'flex',alignItems:'center',gap:4,padding:'4px 6px',background:'#f8fafc',borderRadius:5}}>
+                                                        <span style={{fontSize:'0.62rem',color:'#94a3b8'}}>👤</span>
+                                                        <span style={{fontSize:'0.60rem',color:'#475569',fontFamily:FONT}}>{enc.genero}</span>
+                                                    </div>
+                                                )}
+                                                {enc.edad&&(
+                                                    <div style={{display:'flex',alignItems:'center',gap:4,padding:'4px 6px',background:'#f8fafc',borderRadius:5}}>
+                                                        <span style={{fontSize:'0.62rem',color:'#94a3b8'}}>🎂</span>
+                                                        <span style={{fontSize:'0.60rem',color:'#475569',fontFamily:FONT}}>{enc.edad} años</span>
+                                                    </div>
+                                                )}
+                                                {enc.aniosServicio&&(
+                                                    <div style={{display:'flex',alignItems:'center',gap:4,padding:'4px 6px',background:'#f8fafc',borderRadius:5}}>
+                                                        <span style={{fontSize:'0.62rem',color:'#94a3b8'}}>📅</span>
+                                                        <span style={{fontSize:'0.60rem',color:'#475569',fontFamily:FONT}}>{enc.aniosServicio} años serv.</span>
+                                                    </div>
+                                                )}
+                                                {enc.estudiosEspoch&&(
+                                                    <div style={{display:'flex',alignItems:'center',gap:4,padding:'4px 6px',background:`${ROJO}06`,border:`1px solid ${ROJO}15`,borderRadius:5}}>
+                                                        <span style={{fontSize:'0.62rem',color:ROJO}}>🎓</span>
+                                                        <span style={{fontSize:'0.59rem',fontWeight:600,color:ROJO,fontFamily:FONT,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{enc.estudiosEspoch}</span>
+                                                    </div>
+                                                )}
+                                            </div>
+
+                                            {/* Contacto */}
+                                            {(enc.email||enc.telefono)&&(
+                                                <div style={{display:'flex',flexDirection:'column',gap:4,paddingTop:6,borderTop:`1px dashed ${color}20`}}>
                                                     {enc.email&&(
-                                                        <div style={{display:'flex',alignItems:'center',gap:4}}>
-                                                            <FaEnvelope style={{color:'#94a3b8',fontSize:'0.56rem'}}/>
-                                                            <span style={{fontSize:'0.62rem',color:'#475569',fontFamily:FONT}}>{enc.email}</span>
+                                                        <div style={{display:'flex',alignItems:'center',gap:5}}>
+                                                            <FaEnvelope style={{color:'#94a3b8',fontSize:'0.58rem',flexShrink:0}}/>
+                                                            <span style={{fontSize:'0.61rem',color:'#475569',fontFamily:FONT,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{enc.email}</span>
                                                         </div>
                                                     )}
                                                     {enc.telefono&&(
-                                                        <div style={{display:'flex',alignItems:'center',gap:4}}>
-                                                            <span style={{fontSize:'0.56rem',color:'#94a3b8'}}>📞</span>
-                                                            <span style={{fontSize:'0.62rem',color:'#475569',fontFamily:FONT}}>{enc.telefono}</span>
+                                                        <div style={{display:'flex',alignItems:'center',gap:5}}>
+                                                            <span style={{fontSize:'0.58rem',color:'#94a3b8',flexShrink:0}}>📞</span>
+                                                            <span style={{fontSize:'0.61rem',color:'#475569',fontFamily:FONT}}>{enc.telefono}</span>
                                                         </div>
-                                                    )}
-                                                    {enc.aniosServicio&&(
-                                                        <span style={{fontSize:'0.59rem',color:'#94a3b8',fontFamily:FONT}}>{enc.aniosServicio} años servicio</span>
-                                                    )}
-                                                    {enc.estudiosEspoch&&(
-                                                        <span style={{fontSize:'0.59rem',fontWeight:600,color:ROJO,background:`${ROJO}08`,border:`1px solid ${ROJO}18`,borderRadius:99,padding:'1px 6px',fontFamily:FONT}}>ESPOCH: {enc.estudiosEspoch}</span>
                                                     )}
                                                 </div>
-                                            </div>
+                                            )}
 
-                                            {/* Encuestas completadas por este encuestador */}
-                                            <div style={{display:'flex',flexDirection:'column',gap:4}}>
+                                            {/* Encuestas completadas */}
+                                            <div style={{display:'flex',flexDirection:'column',gap:4,paddingTop:6,borderTop:`1px solid ${color}15`}}>
+                                                <div style={{fontSize:'0.58rem',fontWeight:700,color:'#94a3b8',textTransform:'uppercase',letterSpacing:'0.4px',fontFamily:FONT,marginBottom:2}}>Encuestas completadas</div>
                                                 {enc.encuestas.map((encu,ei2)=>(
                                                     <div key={ei2} style={{
-                                                        display:'flex',alignItems:'center',gap:8,
-                                                        padding:'6px 10px',background:'white',
-                                                        border:`1px solid ${VERDE}22`,borderRadius:6,
+                                                        display:'flex',alignItems:'center',gap:6,
+                                                        padding:'5px 8px',
+                                                        background:`${VERDE}06`,
+                                                        border:`1px solid ${VERDE}20`,
+                                                        borderRadius:6,
                                                     }}>
-                                                        <div style={{width:20,height:20,borderRadius:5,background:`${VERDE}15`,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
-                                                            <FaClipboardList style={{color:VERDE,fontSize:'0.56rem'}}/>
-                                                        </div>
+                                                        <FaCheckCircle style={{color:VERDE,fontSize:'0.58rem',flexShrink:0}}/>
                                                         <div style={{flex:1,minWidth:0}}>
-                                                            <div style={{fontSize:'0.68rem',fontWeight:600,color:'#1e293b',fontFamily:FONT,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{encu.titulo}</div>
+                                                            <div style={{fontSize:'0.66rem',fontWeight:600,color:'#1e293b',fontFamily:FONT,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{encu.titulo}</div>
+                                                            {encu.fecha&&<div style={{display:'flex',alignItems:'center',gap:3,marginTop:1}}>
+                                                                <FaCalendarAlt style={{color:'#94a3b8',fontSize:'0.50rem'}}/>
+                                                                <span style={{fontSize:'0.57rem',color:'#94a3b8',fontFamily:FONT}}>{fmt(encu.fecha)}</span>
+                                                            </div>}
                                                         </div>
-                                                        {encu.fecha&&(
-                                                            <div style={{display:'flex',alignItems:'center',gap:3,flexShrink:0}}>
-                                                                <FaCalendarAlt style={{color:'#94a3b8',fontSize:'0.52rem'}}/>
-                                                                <span style={{fontSize:'0.59rem',color:'#94a3b8',fontFamily:FONT}}>{fmt(encu.fecha)}</span>
-                                                            </div>
-                                                        )}
-                                                        <span style={{fontSize:'0.57rem',fontWeight:700,color:VERDE,background:`${VERDE}12`,border:`1px solid ${VERDE}25`,borderRadius:99,padding:'1px 6px',fontFamily:FONT,flexShrink:0}}>✓ Completada</span>
                                                     </div>
                                                 ))}
                                             </div>
                                         </div>
-                                    ))}
+                                        );
+                                    })}
                                 </div>
                             )}
                         </div>
