@@ -9,6 +9,7 @@ import {
     FaUserTie, FaMapMarkerAlt, FaLayerGroup, FaQuestion, FaStar,
     FaGlobeAmericas, FaMapMarked, FaLightbulb, FaBullseye,
     FaChevronLeft, FaChevronRight, FaTag, FaCommentDots,
+    FaEnvelope, FaCalendarAlt, FaAward, FaMedal,
 } from 'react-icons/fa';
 
 const API  = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
@@ -49,54 +50,34 @@ if(typeof document!=='undefined'&&!document.getElementById('tee5-kf')){
         .leaflet-control-zoom a{color:#374151 !important;width:32px !important;height:32px !important;line-height:32px !important;background:white !important;}
         .leaflet-control-zoom a:hover{background:#f8fafc !important;color:#BE1E2D !important;}
         .leaflet-control-attribution{font-size:.58rem !important;}
+        .emp-card:hover{box-shadow:0 4px 16px rgba(0,0,0,0.10) !important;transform:translateY(-1px);}
+        .emp-card{transition:all 0.18s ease;}
     `;
     document.head.appendChild(st);
 }
 
 // ═══════════════════════════════════════════════════════════
-// NLP FRONTEND — análisis de texto libre
+// NLP FRONTEND
 // ═══════════════════════════════════════════════════════════
-const STOPWORDS_ES=new Set(['el','la','los','las','un','una','unos','unas','de','del','en','que','y','a','al','se','es','por','con','para','su','sus','lo','le','les','me','mi','mas','si','pero','no','ya','o','como','hay','muy','ser','son','fue','han','has','era','esto','esta','este','estos','estas','son','ser','tener','tiene','tienen','tuvo','que','cual','quien','cuando','donde','como','porque','aunque','sino','pues','entonces','tambien','ademas','asi','bien','mejor','mayor','menor','todo','todos','toda','todas','cada','otro','otros','otra','otras','mismo','misma','mismos','mismas','puede','pueden','debe','deben','hacer','hace','hacen','tener','tiene','tienen','haber','hay','esta','estan','ser','somos','son','fue','fueron','seria','seran','nos','nuestro','nuestra','nuestros','nuestras','vuestro','su','sus','mi','mis','tu','tus','su','entre','sobre','bajo','ante','tras','durante','mediante','segun','sin','sobre','tras','con','mas','menos','muy','bien','mal','tanto','poco','mucho','algo','nada','alguien','nadie','alguno','ninguno','primer','segundo','tercer','primer','nueva','nuevo','nuevos','nuevas']);
+const STOPWORDS_ES=new Set(['el','la','los','las','un','una','unos','unas','de','del','en','que','y','a','al','se','es','por','con','para','su','sus','lo','le','les','me','mi','mas','si','pero','no','ya','o','como','hay','muy','ser','son','fue','han','has','era','esto','esta','este','estos','estas','son','ser','tener','tiene','tienen','tuvo','que','cual','quien','cuando','donde','como','porque','aunque','sino','pues','entonces','tambien','ademas','asi','bien','mejor','mayor','menor','todo','todos','toda','todas','cada','otro','otros','otra','otras','mismo','misma','mismos','mismas','puede','pueden','debe','deben','hacer','hace','hacen','tener','tiene','tienen','haber','hay','esta','estan','ser','somos','son','fue','fueron','seria','seran','nos','nuestro','nuestra','nuestros','nuestras','su','sus','mi','mis','entre','sobre','bajo','ante','tras','durante','mediante','segun','sin','mas','menos','muy','bien','mal','tanto','poco','mucho','algo','nada','alguien','nadie']);
 
 function analizarTexto(textos){
     if(!textos?.length) return {palabras:[],temas:[],frases:[]};
-    const freq={};
-    const bigrams={};
-    const oracionesLimpias=[];
-
+    const freq={},bigrams={};
     textos.forEach(t=>{
         if(!t||typeof t!=='string') return;
         const limpio=t.toLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu,'').replace(/[^a-z0-9\s]/g,' ').replace(/\s+/g,' ').trim();
         if(!limpio) return;
-        oracionesLimpias.push(limpio);
         const words=limpio.split(' ').filter(w=>w.length>3&&!STOPWORDS_ES.has(w));
         words.forEach(w=>{freq[w]=(freq[w]||0)+1;});
-        for(let i=0;i<words.length-1;i++){
-            const bg=`${words[i]} ${words[i+1]}`;
-            bigrams[bg]=(bigrams[bg]||0)+1;
-        }
+        for(let i=0;i<words.length-1;i++){const bg=`${words[i]} ${words[i+1]}`;bigrams[bg]=(bigrams[bg]||0)+1;}
     });
-
     const palabras=Object.entries(freq).filter(([,v])=>v>=1).sort((a,b)=>b[1]-a[1]).slice(0,30).map(([w,c])=>({word:w,count:c}));
     const frasesFrecuentes=Object.entries(bigrams).filter(([,v])=>v>=2).sort((a,b)=>b[1]-a[1]).slice(0,10).map(([bg,c])=>({frase:bg,count:c}));
-
-    // Categorizar en temas comunes
-    const TEMAS={
-        'Habilidades técnicas':['programacion','lenguajes','frameworks','tecnologias','herramientas','software','desarrollo','codigo','bases','datos','sistemas','redes','seguridad','cloud','web','movil','algoritmos','estructuras'],
-        'Habilidades blandas':['comunicacion','trabajo','equipo','liderazgo','gestion','proyectos','tiempo','organizacion','adaptacion','creatividad','proactividad','responsabilidad','etica','profesionalismo','colaboracion'],
-        'Inglés / Idiomas':['ingles','idiomas','lenguaje','certificaciones','internacional','bilingue'],
-        'Experiencia práctica':['practica','proyectos','reales','empresas','pasantias','experiencia','aplicacion','industria','casos','problemas'],
-        'Formación continua':['certificaciones','cursos','actualizacion','capacitacion','especializacion','maestria','posgrado','aprendizaje','continuo'],
-        'Emprendimiento':['emprendimiento','negocios','innovacion','startup','empresa','gestion','administracion','finanzas','marketing'],
-    };
+    const TEMAS={'Habilidades técnicas':['programacion','lenguajes','frameworks','tecnologias','herramientas','software','desarrollo','codigo','bases','datos','sistemas','redes','seguridad','cloud','web','movil'],'Habilidades blandas':['comunicacion','trabajo','equipo','liderazgo','gestion','proyectos','tiempo','organizacion','adaptacion','creatividad','proactividad','responsabilidad'],'Inglés / Idiomas':['ingles','idiomas','lenguaje','certificaciones','internacional','bilingue'],'Experiencia práctica':['practica','proyectos','reales','empresas','pasantias','experiencia','aplicacion','industria'],'Formación continua':['certificaciones','cursos','actualizacion','capacitacion','especializacion','maestria','posgrado'],'Emprendimiento':['emprendimiento','negocios','innovacion','startup','empresa','gestion','administracion']};
     const temaConteo={};
-    Object.entries(TEMAS).forEach(([tema,kws])=>{
-        let cnt=0;
-        kws.forEach(kw=>{cnt+=(freq[kw]||0);});
-        if(cnt>0) temaConteo[tema]=cnt;
-    });
+    Object.entries(TEMAS).forEach(([tema,kws])=>{let cnt=0;kws.forEach(kw=>{cnt+=(freq[kw]||0);});if(cnt>0)temaConteo[tema]=cnt;});
     const temas=Object.entries(temaConteo).sort((a,b)=>b[1]-a[1]).map(([tema,count],i)=>({tema,count,color:PALETA[i%PALETA.length]}));
-
     return {palabras,temas,frases:frasesFrecuentes,total:textos.length};
 }
 
@@ -161,12 +142,7 @@ const Donut=({segs,r=40,g=11,sz=96,label,sublabel})=>{
 };
 
 const Insight=({tipo,titulo,detalle,delay=0})=>{
-    const cfg={
-        ok:{I:FaCheckCircle,color:VERDE,bg:'#f0fdf4',bd:'#bbf7d0',lbl:'Fortaleza'},
-        warn:{I:FaExclamationTriangle,color:NARANJA,bg:'#fff7ed',bd:'#fed7aa',lbl:'Atención'},
-        crit:{I:FaTimesCircle,color:ROJO,bg:'#fef2f2',bd:'#fecaca',lbl:'Crítico'},
-        info:{I:FaLightbulb,color:AZUL,bg:'#eff6ff',bd:'#bfdbfe',lbl:'Sugerencia'},
-    }[tipo]||{I:FaLightbulb,color:AZUL,bg:'#eff6ff',bd:'#bfdbfe',lbl:'Info'};
+    const cfg={ok:{I:FaCheckCircle,color:VERDE,bg:'#f0fdf4',bd:'#bbf7d0',lbl:'Fortaleza'},warn:{I:FaExclamationTriangle,color:NARANJA,bg:'#fff7ed',bd:'#fed7aa',lbl:'Atención'},crit:{I:FaTimesCircle,color:ROJO,bg:'#fef2f2',bd:'#fecaca',lbl:'Crítico'},info:{I:FaLightbulb,color:AZUL,bg:'#eff6ff',bd:'#bfdbfe',lbl:'Sugerencia'}}[tipo]||{I:FaLightbulb,color:AZUL,bg:'#eff6ff',bd:'#bfdbfe',lbl:'Info'};
     const {I}=cfg;
     return <div className="t5a" style={{background:cfg.bg,border:`1px solid ${cfg.bd}`,borderLeft:`3px solid ${cfg.color}`,borderRadius:7,padding:'8px 11px',display:'flex',gap:8,alignItems:'flex-start',animationDelay:`${delay}ms`}}>
         <I style={{color:cfg.color,fontSize:'0.82rem',flexShrink:0,marginTop:1}}/>
@@ -184,13 +160,9 @@ const Insight=({tipo,titulo,detalle,delay=0})=>{
 const GraficaTextoNLP=({resps,pregunta})=>{
     const textos=useMemo(()=>resps.map(r=>r.valor).filter(v=>v&&String(v).trim().length>2),[resps]);
     const {palabras,temas,frases,total}=useMemo(()=>analizarTexto(textos),[textos]);
-
     if(!total) return <p style={{margin:0,fontSize:'0.70rem',color:'#9ca3af',fontFamily:FONT}}>Sin respuestas</p>;
-
     const maxFreq=palabras[0]?.count||1;
-
     return <div>
-        {/* Header de análisis */}
         <div style={{display:'flex',alignItems:'center',gap:8,padding:'8px 12px',background:`${AZUL}08`,border:`1px solid ${AZUL}20`,borderRadius:8,marginBottom:12}}>
             <FaCommentDots style={{color:AZUL,fontSize:'0.78rem',flexShrink:0}}/>
             <div>
@@ -198,9 +170,7 @@ const GraficaTextoNLP=({resps,pregunta})=>{
                 <div style={{fontSize:'0.60rem',color:'#64748b',fontFamily:FONT}}>Detección automática de patrones y palabras clave</div>
             </div>
         </div>
-
         <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:14}}>
-            {/* Nube de palabras visual */}
             <div>
                 <p style={{margin:'0 0 8px',fontSize:'0.63rem',fontWeight:700,color:'#6b7280',textTransform:'uppercase',letterSpacing:'0.4px',fontFamily:FONT}}>Palabras más frecuentes</p>
                 <div style={{display:'flex',flexWrap:'wrap',gap:5,alignItems:'center',minHeight:80}}>
@@ -208,14 +178,7 @@ const GraficaTextoNLP=({resps,pregunta})=>{
                         const size=0.62+((p.count/maxFreq)*0.55);
                         const opacidad=0.45+((p.count/maxFreq)*0.55);
                         const color=PALETA[i%PALETA.length];
-                        return <span key={i} style={{
-                            fontSize:`${size}rem`,fontWeight:p.count===maxFreq?800:p.count>=maxFreq*0.6?700:600,
-                            color,opacity:opacidad,fontFamily:FONT,
-                            padding:'2px 6px',borderRadius:99,
-                            background:`${color}12`,border:`1px solid ${color}22`,
-                            cursor:'default',transition:'opacity .2s',
-                            lineHeight:1.4,
-                        }} title={`${p.word}: ${p.count} vez${p.count!==1?'es':''}`}>{p.word}</span>;
+                        return <span key={i} style={{fontSize:`${size}rem`,fontWeight:p.count===maxFreq?800:p.count>=maxFreq*0.6?700:600,color,opacity:opacidad,fontFamily:FONT,padding:'2px 6px',borderRadius:99,background:`${color}12`,border:`1px solid ${color}22`,cursor:'default',lineHeight:1.4}} title={`${p.word}: ${p.count} vez${p.count!==1?'es':''}`}>{p.word}</span>;
                     })}
                 </div>
                 {frases.length>0&&<div style={{marginTop:12}}>
@@ -227,44 +190,31 @@ const GraficaTextoNLP=({resps,pregunta})=>{
                     </div>)}
                 </div>}
             </div>
-
-            {/* Temas detectados */}
             <div>
                 <p style={{margin:'0 0 8px',fontSize:'0.63rem',fontWeight:700,color:'#6b7280',textTransform:'uppercase',letterSpacing:'0.4px',fontFamily:FONT}}>Temas identificados</p>
-                {temas.length>0
-                    ?<>
-                        {temas.map((t,i)=><Barra key={i} label={t.tema} valor={t.count} total={palabras.reduce((s,p)=>s+p.count,1)} color={t.color} compact/>)}
-                        <div style={{marginTop:10,padding:'8px 10px',background:`${VERDE}08`,border:`1px solid ${VERDE}20`,borderRadius:7}}>
-                            <p style={{margin:0,fontSize:'0.64rem',color:'#14532d',fontFamily:FONT,lineHeight:1.55}}>
-                                <strong>Patrón principal:</strong> "{temas[0]?.tema}" — la mayoría de respuestas converge en este tema. Se recomienda fortalecer esta área en el plan de estudios.
-                            </p>
-                        </div>
-                    </>
-                    :<p style={{margin:0,fontSize:'0.68rem',color:'#9ca3af',fontFamily:FONT}}>No se detectaron temas con suficiente frecuencia.</p>
-                }
-
-                {/* Top palabras en barra */}
+                {temas.length>0?<>
+                    {temas.map((t,i)=><Barra key={i} label={t.tema} valor={t.count} total={palabras.reduce((s,p)=>s+p.count,1)} color={t.color} compact/>)}
+                    <div style={{marginTop:10,padding:'8px 10px',background:`${VERDE}08`,border:`1px solid ${VERDE}20`,borderRadius:7}}>
+                        <p style={{margin:0,fontSize:'0.64rem',color:'#14532d',fontFamily:FONT,lineHeight:1.55}}><strong>Patrón principal:</strong> "{temas[0]?.tema}" — la mayoría de respuestas converge en este tema.</p>
+                    </div>
+                </>:<p style={{margin:0,fontSize:'0.68rem',color:'#9ca3af',fontFamily:FONT}}>No se detectaron temas con suficiente frecuencia.</p>}
                 {palabras.length>0&&<div style={{marginTop:12}}>
                     <p style={{margin:'0 0 6px',fontSize:'0.63rem',fontWeight:700,color:'#6b7280',textTransform:'uppercase',letterSpacing:'0.4px',fontFamily:FONT}}>Top 8 términos</p>
                     {palabras.slice(0,8).map((p,i)=><Barra key={i} label={p.word} valor={p.count} total={maxFreq} color={PALETA[i%PALETA.length]} compact/>)}
                 </div>}
             </div>
         </div>
-
-        {/* Muestra de respuestas representativas */}
         <div style={{marginTop:14,borderTop:'1px solid #f1f5f9',paddingTop:12}}>
             <p style={{margin:'0 0 8px',fontSize:'0.63rem',fontWeight:700,color:'#6b7280',textTransform:'uppercase',letterSpacing:'0.4px',fontFamily:FONT}}>Muestra de respuestas</p>
             <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:6}}>
-                {textos.filter(t=>t.length>20).slice(0,4).map((t,i)=><div key={i} style={{padding:'7px 10px',background:i%2===0?'#f8fafc':'#fff7f7',borderRadius:7,border:'1px solid #e5e7eb',fontSize:'0.69rem',color:'#374151',fontFamily:FONT,lineHeight:1.55,fontStyle:'italic'}}>
-                    "{t.slice(0,120)}{t.length>120?'...':''}"
-                </div>)}
+                {textos.filter(t=>t.length>20).slice(0,4).map((t,i)=><div key={i} style={{padding:'7px 10px',background:i%2===0?'#f8fafc':'#fff7f7',borderRadius:7,border:'1px solid #e5e7eb',fontSize:'0.69rem',color:'#374151',fontFamily:FONT,lineHeight:1.55,fontStyle:'italic'}}>"{t.slice(0,120)}{t.length>120?'...':''}"</div>)}
             </div>
         </div>
     </div>;
 };
 
 // ═══════════════════════════════════════════════════════════
-// RESTO DE GRÁFICAS
+// GRÁFICAS ENCUESTA
 // ═══════════════════════════════════════════════════════════
 const GEscala=({resps,min,max})=>{
     const vals=resps.map(r=>Number(r.valor)).filter(v=>v>=1&&v<=5);
@@ -289,7 +239,6 @@ const GEscala=({resps,min,max})=>{
             </div>
             <span style={{fontSize:'0.60rem',color:'#94a3b8',fontFamily:FONT}}>{max||'5=Excelente'}</span>
         </div>
-        <div style={{marginTop:6,fontSize:'0.60rem',color:'#9ca3af',fontFamily:FONT}}>{vals.length} respuesta{vals.length!==1?'s':''}</div>
     </div>;
 };
 
@@ -317,7 +266,6 @@ const GSiNo=({resps})=>{
                     <span style={{fontSize:'0.60rem',color:'#9ca3af',fontFamily:FONT}}>({pct(v,total)}%)</span>
                 </div>
             ))}
-            <div style={{fontSize:'0.60rem',color:'#9ca3af',fontFamily:FONT,marginTop:4}}>{total} respuestas</div>
         </div>
     </div>;
 };
@@ -423,12 +371,78 @@ const TarjetaGrupo=({grupo,encuestas,filtros,num})=>{
 };
 
 // ═══════════════════════════════════════════════════════════
-// MAPA
+// MAPA — igual que antes
 // ═══════════════════════════════════════════════════════════
 const BOUNDS_PROV={'azuay':[[-3.35,-79.40],[-2.38,-78.55]],'bolivar':[[-1.95,-79.38],[-1.20,-78.60]],'canar':[[-3.10,-79.40],[-2.10,-78.60]],'carchi':[[0.30,-78.35],[0.92,-77.60]],'chimborazo':[[-2.30,-79.10],[-1.25,-78.20]],'cotopaxi':[[-1.50,-79.18],[-0.35,-78.30]],'el oro':[[-3.80,-80.35],[-2.95,-79.55]],'esmeraldas':[[0.50,-80.30],[1.45,-78.85]],'guayas':[[-3.15,-80.35],[-1.55,-79.20]],'imbabura':[[0.10,-78.75],[0.65,-77.80]],'loja':[[-4.70,-80.25],[-3.30,-78.85]],'los rios':[[-1.80,-79.90],[-0.65,-79.20]],'manabi':[[-1.90,-80.90],[-0.05,-79.70]],'morona santiago':[[-3.90,-78.50],[-1.45,-76.70]],'napo':[[-1.50,-78.30],[-0.30,-76.90]],'orellana':[[-1.30,-77.50],[0.50,-75.20]],'pastaza':[[-2.70,-78.20],[-1.00,-75.80]],'pichincha':[[-0.65,-79.10],[0.20,-78.00]],'santa elena':[[-3.20,-81.10],[-1.80,-80.30]],'santo domingo de los tsachilas':[[-0.65,-79.60],[0.05,-78.90]],'sucumbios':[[-0.35,-77.60],[0.60,-75.20]],'tungurahua':[[-1.60,-78.90],[-1.05,-78.20]],'zamora chinchipe':[[-5.00,-79.40],[-3.30,-77.90]]};
-const ZC=({prov})=>{const map=useMap();useEffect(()=>{const b=prov?BOUNDS_PROV[norm(prov)]:null;b?map.fitBounds(b,{padding:[20,20]}):map.fitBounds(EC,{padding:[8,8],maxZoom:8});},[prov]);return null;};
+
+const ZC=({prov})=>{
+    const map=useMap();
+    useEffect(()=>{
+        const b=prov?BOUNDS_PROV[norm(prov)]:null;
+        b?map.fitBounds(b,{padding:[20,20]}):map.fitBounds(EC,{padding:[8,8],maxZoom:8});
+    },[prov]);
+    return null;
+};
+
+// ── Etiquetas de cantones en el mapa (igual que TabIndicadores) ──
+const EtiquetasCantones=({cantonesGeoData,filtroProvNorm,lookupCant,filtroCanton})=>{
+    const map=useMap();
+    useEffect(()=>{
+        if(!cantonesGeoData?.features||!filtroProvNorm) return;
+        const markers=[];
+        const candidatos=[];
+        cantonesGeoData.features.forEach(feature=>{
+            const np=feature.properties?.DPA_DESPRO||feature.properties?.NAME_1||'';
+            if(norm(np)!==filtroProvNorm) return;
+            const nc=feature.properties?.DPA_DESCAN||feature.properties?.DPA_CANTON||feature.properties?.NAME_2||'';
+            if(!nc) return;
+            const g=lookupCant[normCanton(nc)]||lookupCant[norm(nc)]||0;
+            if(g===0) return;
+            try{
+                const layer=window.L.geoJSON(feature);
+                const bounds=layer.getBounds();
+                if(!bounds.isValid()) return;
+                const sw=map.latLngToContainerPoint(bounds.getSouthWest());
+                const ne=map.latLngToContainerPoint(bounds.getNorthEast());
+                const pxW=Math.abs(ne.x-sw.x),pxH=Math.abs(ne.y-sw.y),area=pxW*pxH;
+                candidatos.push({feature,nc,g,bounds,pxW,pxH,area});
+            }catch(_){}
+        });
+        const total=candidatos.length;
+        const cantonSelNorm=filtroCanton?normCanton(filtroCanton):'';
+        candidatos.forEach(({feature,nc,g,bounds,pxW,pxH,area})=>{
+            const center=bounds.getCenter();
+            const esSeleccionado=cantonSelNorm&&(normCanton(nc)===cantonSelNorm||norm(nc)===cantonSelNorm);
+            const palabras=nc.split(' ');
+            let lineas;
+            if(palabras.length===1) lineas=[palabras[0]];
+            else if(palabras.length===2) lineas=palabras;
+            else{const mid=Math.ceil(palabras.length/2);lineas=[palabras.slice(0,mid).join(' '),palabras.slice(mid).join(' ')];}
+            const maxChars=Math.max(...lineas.map(l=>l.length));
+            const numLineas=lineas.length;
+            const lado=Math.sqrt(area);
+            const porArea=Math.floor((lado*0.20)/(maxChars*0.62));
+            const porAncho=Math.floor((pxW*0.65)/(maxChars*0.62));
+            const porAlto=Math.floor((pxH*0.45)/(numLineas*1.3));
+            const limitGlobal=esSeleccionado?13:total<=3?9:total<=6?8:7;
+            let fontSize=Math.min(porArea,porAncho,porAlto,limitGlobal);
+            fontSize=Math.max(6,fontSize);
+            if(fontSize<6) return;
+            const mostrarConteo=esSeleccionado?true:(area>=8000&&total<=3&&fontSize>=8);
+            const iconW=pxW,iconH=pxH;
+            const lineasHTML=lineas.map(linea=>`<div style="font-family:${FONT};font-size:${fontSize}px;font-weight:${esSeleccionado?900:700};color:#ffffff;text-shadow:-1px -1px 0 rgba(0,0,0,0.85),1px -1px 0 rgba(0,0,0,0.85),-1px 1px 0 rgba(0,0,0,0.85),1px 1px 0 rgba(0,0,0,0.85),0 2px 3px rgba(0,0,0,0.95);text-align:center;white-space:nowrap;line-height:1.15;letter-spacing:0px;text-transform:uppercase;max-width:${pxW*0.90}px;overflow:hidden;">${linea}</div>`).join('');
+            const icon=window.L.divIcon({className:'',html:`<div style="width:${iconW}px;height:${iconH}px;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;overflow:hidden;gap:0px;">${lineasHTML}${mostrarConteo?`<div style="font-family:${FONT};font-size:${Math.max(6,fontSize-1)}px;font-weight:600;color:rgba(255,255,255,0.85);text-shadow:0 1px 2px rgba(0,0,0,0.95);text-align:center;white-space:nowrap;margin-top:1px;line-height:1;">${g} emp.</div>`:''}</div>`,iconSize:[iconW,iconH],iconAnchor:[iconW/2,iconH/2]});
+            try{const marker=window.L.marker(center,{icon,interactive:false,zIndexOffset:1000});marker.addTo(map);markers.push(marker);}catch(_){}
+        });
+        return()=>{markers.forEach(m=>{try{map.removeLayer(m);}catch(_){}})};
+    },[cantonesGeoData,filtroProvNorm,lookupCant,filtroCanton,map]);
+    return null;
+};
 
 const MapaEmp=({porProv,porCiud,filtros,geoData})=>{
+    const [zoomKey,setZoomKey]=useState(0);
+    const onZoom=useCallback(()=>setZoomKey(k=>k+1),[]);
+
     const lP=useMemo(()=>{const m={};(porProv||[]).forEach((p,i)=>{m[norm(p.provincia)]={total:p.total,color:PALETA[i%PALETA.length],light:PALETA_LIGHT[i%PALETA_LIGHT.length]};});return m;},[porProv]);
     const lC=useMemo(()=>{const m={};(porCiud||[]).forEach(c=>{m[normCanton(c.ciudad)]=c.total;});return m;},[porCiud]);
     const pN=norm(filtros.provincia||''),hayP=!!filtros.provincia;
@@ -436,6 +450,7 @@ const MapaEmp=({porProv,porCiud,filtros,geoData})=>{
     const getP=f=>f.properties?.DPA_DESPRO||f.properties?.NAME_1||'';
     const lCR=useRef(lC),eCR=useRef(null);
     useEffect(()=>{lCR.current=lC;},[lC]);
+
     const estC=useCallback((f)=>{
         const nc=getC(f),np=getP(f),pn=norm(np);
         const g=lC[normCanton(nc)]||lC[norm(nc)]||0,pv=lP[pn];
@@ -445,31 +460,54 @@ const MapaEmp=({porProv,porCiud,filtros,geoData})=>{
         return {fillColor:pv.color,fillOpacity:0.80,color:'#000',weight:1.2};
     },[lP,lC,hayP,pN]);
     useEffect(()=>{eCR.current=estC;},[estC]);
+
     const estP=useCallback((f)=>{const pn=norm(getP(f)),pv=lP[pn];if(hayP&&pn===pN&&pv)return{fillOpacity:0,color:pv.color,weight:3};return{fillOpacity:0,color:pv?'#475569':'#94a3b8',weight:pv?1.8:0.8};},[lP,hayP,pN]);
     const estE=useCallback(()=>({fillColor:'#e2e8f0',fillOpacity:0.08,color:'#64748b',weight:1.5}),[]);
+
     const onE=useCallback((f,layer)=>{
         const nc=getC(f),np=getP(f);
         layer.on({
-            mouseover(e){const g=lCR.current[normCanton(nc)]||lCR.current[norm(nc)]||0;const pv=lP[norm(np)];if(!pv)return;
+            mouseover(e){
+                const g=lCR.current[normCanton(nc)]||lCR.current[norm(nc)]||0;
+                const pv=lP[norm(np)];if(!pv)return;
                 layer.bindTooltip(`<div style="font-family:${FONT};min-width:110px"><div style="font-weight:700;font-size:.82rem;color:${pv.color};margin-bottom:3px">${nc}</div><div style="font-size:.74rem;color:#374151">${g>0?`<strong>${g}</strong> empresa${g!==1?'s':''}`:'<span style="color:#9ca3af">Sin empresas</span>'}</div><div style="font-size:.64rem;color:#9ca3af;margin-top:2px">${np}</div></div>`,{direction:'top',opacity:1,sticky:true}).openTooltip(e.latlng);
-                e.target.setStyle({fillOpacity:g>0?1:0.5,weight:2.5,color:'#000'});e.target.bringToFront();},
+                e.target.setStyle({fillOpacity:g>0?1:0.5,weight:2.5,color:'#000'});e.target.bringToFront();
+            },
             mouseout(e){layer.unbindTooltip();e.target.setStyle(eCR.current(f));},
         });
     },[lP]);
+
+    // ZoomWatcher inline
+    const ZoomWatcher=({onZoom})=>{const map=useMap();useEffect(()=>{map.on('zoomend',onZoom);return()=>map.off('zoomend',onZoom);},[map,onZoom]);return null;};
+
     const kC=useMemo(()=>`c5-${JSON.stringify(lC)}-${filtros.provincia}-${filtros.ciudad}`,[lC,filtros.provincia,filtros.ciudad]);
     const kP=useMemo(()=>`p5-${JSON.stringify(Object.keys(lP))}-${filtros.provincia}`,[lP,filtros.provincia]);
+
     if(!porProv?.length||!geoData?.ecuador||!geoData?.cantones||!geoData?.provincias)
         return <div style={{width:'100%',height:'100%',background:'linear-gradient(135deg,#f8fafc,#f1f5f9)',borderRadius:8,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:10}}><FaGlobeAmericas style={{fontSize:'2rem',color:'#94a3b8'}}/><p style={{margin:0,fontSize:'0.80rem',color:'#475569',fontFamily:FONT,fontWeight:700}}>{!geoData?.cantones?'Cargando mapa...':'Sin datos geográficos'}</p></div>;
+
     return <MapContainer bounds={EC} boundsOptions={{padding:[8,8]}} minZoom={6.4} maxZoom={13} maxBounds={[[-5.5,-82.0],[2.0,-74.5]]} maxBoundsViscosity={0.9} style={{width:'100%',height:'100%',borderRadius:8,zIndex:1}} scrollWheelZoom zoomControl>
         <TileLayer url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png" attribution='&copy; CARTO' subdomains="abcd" maxZoom={19}/>
         <GeoJSON key="ec5" data={geoData.ecuador} style={estE}/>
         <GeoJSON key={kC} data={geoData.cantones} style={estC} onEachFeature={onE}/>
         <GeoJSON key={kP} data={geoData.provincias} style={estP}/>
         <ZC prov={filtros.provincia}/>
+        <ZoomWatcher onZoom={onZoom}/>
+        {hayP&&geoData.cantones&&(
+            <EtiquetasCantones
+                key={`etq-emp-${pN}-${zoomKey}`}
+                cantonesGeoData={geoData.cantones}
+                filtroProvNorm={pN}
+                lookupCant={lC}
+                filtroCanton={filtros.ciudad}
+            />
+        )}
     </MapContainer>;
 };
 
-// ── Columna izquierda: cantones o provincias primera mitad ──
+// ═══════════════════════════════════════════════════════════
+// COLUMNA IZQUIERDA — cantones o primera mitad provincias
+// ═══════════════════════════════════════════════════════════
 const ColIzq=({filtros,porProv,porCiud,total,mitad})=>{
     const hayP=!!filtros.provincia;
     const lista=hayP?porCiud:porProv.slice(0,mitad);
@@ -498,17 +536,90 @@ const ColIzq=({filtros,porProv,porCiud,total,mitad})=>{
     </div>;
 };
 
-// ── Columna derecha: gerentes (siempre) + respondieron si hay prov ──
-const POR_PAG_G=6,POR_PAG_R=5;
+// ═══════════════════════════════════════════════════════════
+// COLUMNA DERECHA — empresas con sus encuestas
+// ═══════════════════════════════════════════════════════════
+const POR_PAG_E=5;
+
+const TarjetaEmpresa=({empresa,encuestasRespondidas,encCerradas,idx})=>{
+    const respondio=encuestasRespondidas.length>0;
+    const colorFondo=respondio?'#f0fdf4':'#fafafa';
+    const colorBorde=respondio?'#bbf7d0':'#e5e7eb';
+    const colorAcc=respondio?VERDE:GRIS;
+
+    return(
+        <div className="emp-card" style={{
+            background:colorFondo,
+            border:`1px solid ${colorBorde}`,
+            borderLeft:`3px solid ${colorAcc}`,
+            borderRadius:9,
+            padding:'10px 12px',
+            marginBottom:8,
+        }}>
+            {/* Header empresa */}
+            <div style={{display:'flex',alignItems:'flex-start',gap:9,marginBottom:respondio?10:0}}>
+                <div style={{width:32,height:32,borderRadius:8,background:`${colorAcc}18`,border:`1px solid ${colorAcc}28`,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
+                    <FaBuilding style={{color:colorAcc,fontSize:'0.78rem'}}/>
+                </div>
+                <div style={{flex:1,minWidth:0}}>
+                    <div style={{fontSize:'0.76rem',fontWeight:700,color:'#0f172a',fontFamily:FONT,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{empresa.nombreEmpresa}</div>
+                    <div style={{display:'flex',alignItems:'center',gap:5,marginTop:2,flexWrap:'wrap'}}>
+                        <FaUserTie style={{color:'#94a3b8',fontSize:'0.58rem',flexShrink:0}}/>
+                        <span style={{fontSize:'0.65rem',color:'#64748b',fontFamily:FONT,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{empresa.nombreGerente}</span>
+                    </div>
+                    <div style={{display:'flex',gap:4,marginTop:4,flexWrap:'wrap'}}>
+                        <span style={{fontSize:'0.55rem',fontWeight:700,color:VERDE,background:`${VERDE}10`,borderRadius:99,padding:'1px 5px',fontFamily:FONT}}>{empresa.tipoCapital}</span>
+                        <span style={{fontSize:'0.55rem',fontWeight:700,color:NARANJA,background:`${NARANJA}10`,borderRadius:99,padding:'1px 5px',fontFamily:FONT}}>{empresa.tipoActividad}</span>
+                        {!respondio&&<span style={{fontSize:'0.55rem',fontWeight:700,color:GRIS,background:`${GRIS}10`,borderRadius:99,padding:'1px 5px',fontFamily:FONT}}>Sin encuestas</span>}
+                    </div>
+                </div>
+                {/* Indicador de compromiso */}
+                <div style={{flexShrink:0,textAlign:'center'}}>
+                    <div style={{fontSize:'0.90rem',fontWeight:800,color:colorAcc,fontFamily:FONT,lineHeight:1}}>{encuestasRespondidas.length}</div>
+                    <div style={{fontSize:'0.52rem',color:'#94a3b8',fontFamily:FONT,marginTop:1}}>{encuestasRespondidas.length===1?'encuesta':'encuestas'}</div>
+                </div>
+            </div>
+
+            {/* Encuestas respondidas */}
+            {respondio&&(
+                <div style={{borderTop:`1px dashed ${colorBorde}`,paddingTop:8,display:'flex',flexDirection:'column',gap:4}}>
+                    {encuestasRespondidas.map((enc,j)=>(
+                        <div key={j} style={{
+                            display:'flex',alignItems:'center',gap:7,
+                            padding:'5px 8px',
+                            background:'white',
+                            border:`1px solid ${VERDE}22`,
+                            borderRadius:6,
+                        }}>
+                            <div style={{width:20,height:20,borderRadius:5,background:`${VERDE}15`,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
+                                <FaCheckCircle style={{color:VERDE,fontSize:'0.60rem'}}/>
+                            </div>
+                            <div style={{flex:1,minWidth:0}}>
+                                <div style={{fontSize:'0.67rem',fontWeight:600,color:'#1e293b',fontFamily:FONT,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{enc.titulo}</div>
+                                {enc.fechaRespuesta&&(
+                                    <div style={{display:'flex',alignItems:'center',gap:3,marginTop:1}}>
+                                        <FaCalendarAlt style={{color:'#94a3b8',fontSize:'0.52rem'}}/>
+                                        <span style={{fontSize:'0.57rem',color:'#94a3b8',fontFamily:FONT}}>{fmt(enc.fechaRespuesta)}</span>
+                                    </div>
+                                )}
+                            </div>
+                            <span style={{fontSize:'0.56rem',fontWeight:700,color:VERDE,background:`${VERDE}12`,border:`1px solid ${VERDE}25`,borderRadius:99,padding:'1px 5px',fontFamily:FONT,whiteSpace:'nowrap',flexShrink:0}}>Completada</span>
+                        </div>
+                    ))}
+                </div>
+            )}
+        </div>
+    );
+};
+
 const ColDer=({filtros,porProv,emps,total,offset,respuestasRaw,encCerradas})=>{
-    const [pagG,setPagG]=useState(1);
-    const [pagR,setPagR]=useState(1);
-    useEffect(()=>{setPagG(1);setPagR(1);},[filtros.provincia,filtros.ciudad]);
+    const [pag,setPag]=useState(1);
+    useEffect(()=>{setPag(1);},[filtros.provincia,filtros.ciudad]);
 
     const hayP=!!filtros.provincia;
 
     if(!hayP){
-        // Sin filtro provincia: segunda mitad de provincias
+        // Sin filtro: segunda mitad de provincias
         const lista=porProv.slice(offset);
         return <div style={{display:'flex',flexDirection:'column',height:'100%'}}>
             <div style={{padding:'8px 10px 6px',borderBottom:'1px solid #f1f5f9',background:'#fafafa',display:'flex',alignItems:'center',gap:5}}>
@@ -533,75 +644,109 @@ const ColDer=({filtros,porProv,emps,total,offset,respuestasRaw,encCerradas})=>{
         </div>;
     }
 
-    // Con filtro provincia: parte superior gerentes, parte inferior quiénes respondieron
-    const empsEnProv=emps.filter(e=>norm(e.provincia)===norm(filtros.provincia)&&(!filtros.ciudad||norm(e.ciudad)===norm(filtros.ciudad)));
-    const totPagG=Math.ceil(empsEnProv.length/POR_PAG_G);
-    const slG=empsEnProv.slice((pagG-1)*POR_PAG_G,pagG*POR_PAG_G);
+    // ── Con filtro provincia/canton: tarjetas de empresas ──
+    const normProv=norm(filtros.provincia||'');
+    const normCant=filtros.ciudad?normCanton(filtros.ciudad):'';
 
-    // Respondieron: respuestas de empleadores de esta provincia
-    const empIdsEnProv=new Set(empsEnProv.map(e=>e._id));
-    const respondieronAqui=respuestasRaw.filter(r=>empIdsEnProv.has(r.empleadorId));
-    const totPagR=Math.ceil(respondieronAqui.length/POR_PAG_R);
-    const slR=respondieronAqui.slice((pagR-1)*POR_PAG_R,pagR*POR_PAG_R);
+    const empsEnZona=emps.filter(e=>{
+        if(norm(e.provincia||'')!==normProv) return false;
+        if(normCant&&normCanton(e.ciudad||'')!==normCant) return false;
+        return true;
+    });
 
-    return <div style={{display:'flex',flexDirection:'column',height:'100%',overflow:'hidden'}}>
-        {/* Gerentes */}
-        <div style={{padding:'6px 10px 5px',borderBottom:'1px solid #f1f5f9',background:'#fafafa',display:'flex',alignItems:'center',gap:5}}>
-            <FaUserTie style={{color:ROJO,fontSize:'0.58rem'}}/>
-            <span style={{fontSize:'0.60rem',fontWeight:700,color:'#475569',fontFamily:FONT,textTransform:'uppercase',letterSpacing:'0.4px'}}>Gerentes</span>
-            <span style={{fontSize:'0.56rem',color:'#94a3b8',fontFamily:FONT}}>· {filtros.ciudad||filtros.provincia}</span>
-            <span style={{fontSize:'0.56rem',fontWeight:700,color:ROJO,background:`${ROJO}12`,border:`1px solid ${ROJO}25`,borderRadius:99,padding:'0 5px',fontFamily:FONT,marginLeft:'auto'}}>{empsEnProv.length}</span>
-        </div>
-        <div style={{flex:'0 0 auto',maxHeight:'46%',overflowY:'auto',borderBottom:'2px solid #e5e7eb'}}>
-            {slG.length===0?<div style={{padding:'10px',textAlign:'center'}}><span style={{fontSize:'0.65rem',color:'#cbd5e1',fontFamily:FONT}}>Sin empresas aquí</span></div>
-            :slG.map((e,i)=><div key={e._id||i} className="t5r" style={{padding:'6px 10px 6px 8px',background:i%2===0?'#fef9f9':'transparent',minHeight:40,borderBottom:'1px solid #f8fafc'}}>
-                <div style={{fontSize:'0.71rem',fontWeight:600,color:'#1e293b',fontFamily:FONT,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{e.nombreGerente}</div>
-                <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginTop:1}}>
-                    <span style={{fontSize:'0.60rem',color:'#64748b',fontFamily:FONT,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',flex:1}}>{e.nombreEmpresa}</span>
-                    <span style={{fontSize:'0.52rem',fontWeight:700,color:VERDE,background:`${VERDE}10`,borderRadius:99,padding:'1px 4px',fontFamily:FONT,marginLeft:4,flexShrink:0}}>{e.tipoCapital}</span>
+    const totalPag=Math.ceil(empsEnZona.length/POR_PAG_E);
+    const slice=empsEnZona.slice((pag-1)*POR_PAG_E,pag*POR_PAG_E);
+
+    // Stats compromiso
+    const conResp=empsEnZona.filter(e=>e.encuestasRespondidas.length>0).length;
+    const sinResp=empsEnZona.length-conResp;
+    const tasaCompromiso=empsEnZona.length>0?Math.round((conResp/empsEnZona.length)*100):0;
+
+    // Cruzar encuestas respondidas con títulos y fechas
+    const buildEncuestasEmp=(emp)=>{
+        return emp.encuestasRespondidas.map(encId=>{
+            const encInfo=encCerradas.find(e=>e._id===encId);
+            const respInfo=respuestasRaw.find(r=>r.empleadorId===emp._id&&r.encuestaId===encId);
+            return{
+                id:encId,
+                titulo:encInfo?.titulo||'Encuesta',
+                fechaRespuesta:respInfo?.fechaRespuesta||null,
+            };
+        });
+    };
+
+    return(
+        <div style={{display:'flex',flexDirection:'column',height:'100%',overflow:'hidden'}}>
+            {/* Header */}
+            <div style={{padding:'8px 10px 6px',borderBottom:'1px solid #f1f5f9',background:'#fafafa',flexShrink:0}}>
+                <div style={{display:'flex',alignItems:'center',gap:5}}>
+                    <FaBuilding style={{color:ROJO,fontSize:'0.60rem'}}/>
+                    <span style={{fontSize:'0.62rem',fontWeight:700,color:'#475569',fontFamily:FONT,textTransform:'uppercase',letterSpacing:'0.4px'}}>Empresas</span>
+                    <span style={{fontSize:'0.58rem',color:'#94a3b8',fontFamily:FONT}}>· {filtros.ciudad||filtros.provincia}</span>
+                    <span style={{fontSize:'0.58rem',fontWeight:700,color:ROJO,background:`${ROJO}12`,border:`1px solid ${ROJO}25`,borderRadius:99,padding:'0 5px',fontFamily:FONT,marginLeft:'auto'}}>{empsEnZona.length}</span>
                 </div>
-            </div>)}
-        </div>
-        {totPagG>1&&<div style={{padding:'3px 8px',display:'flex',justifyContent:'space-between',alignItems:'center',background:'#fafafa',borderBottom:'1px solid #f1f5f9'}}>
-            <span style={{fontSize:'0.56rem',color:'#94a3b8',fontFamily:FONT}}>{(pagG-1)*POR_PAG_G+1}–{Math.min(pagG*POR_PAG_G,empsEnProv.length)} de {empsEnProv.length}</span>
-            <div style={{display:'flex',gap:2}}>
-                <button className="t5pag" disabled={pagG===1} onClick={()=>setPagG(p=>p-1)} style={{width:18,height:18,borderRadius:4,border:'1px solid #e5e7eb',background:'white',color:pagG===1?'#d1d5db':'#374151',cursor:pagG===1?'not-allowed':'pointer',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'0.55rem',transition:'all .15s'}}><FaChevronLeft/></button>
-                <button className="t5pag" disabled={pagG===totPagG} onClick={()=>setPagG(p=>p+1)} style={{width:18,height:18,borderRadius:4,border:'1px solid #e5e7eb',background:'white',color:pagG===totPagG?'#d1d5db':'#374151',cursor:pagG===totPagG?'not-allowed':'pointer',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'0.55rem',transition:'all .15s'}}><FaChevronRight/></button>
             </div>
-        </div>}
 
-        {/* Respondieron */}
-        <div style={{padding:'6px 10px 5px',borderBottom:'1px solid #f1f5f9',background:'#f0fdf4',display:'flex',alignItems:'center',gap:5}}>
-            <FaCheckCircle style={{color:VERDE,fontSize:'0.58rem'}}/>
-            <span style={{fontSize:'0.60rem',fontWeight:700,color:'#475569',fontFamily:FONT,textTransform:'uppercase',letterSpacing:'0.4px'}}>Respondieron encuesta</span>
-            <span style={{fontSize:'0.56rem',fontWeight:700,color:VERDE,background:`${VERDE}12`,border:`1px solid ${VERDE}25`,borderRadius:99,padding:'0 5px',fontFamily:FONT,marginLeft:'auto'}}>{respondieronAqui.length}</span>
-        </div>
-        <div style={{flex:1,overflowY:'auto'}}>
-            {respondieronAqui.length===0
-                ?<div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'60px'}}><span style={{fontSize:'0.65rem',color:'#cbd5e1',fontFamily:FONT}}>Ninguna empresa de aquí respondió</span></div>
-                :slR.map((r,i)=>{
-                    const encTitulo=encCerradas.find(e=>e._id===r.encuestaId)?.titulo||r.encuestaTitulo||'Encuesta';
-                    const de=r.datosEncuestado||{};
-                    return <div key={r._id||i} className="t5r" style={{padding:'6px 10px 6px 8px',background:i%2===0?'#f0fdf4':'transparent',minHeight:42,borderBottom:'1px solid #f8fafc'}}>
-                        <div style={{fontSize:'0.70rem',fontWeight:600,color:'#1e293b',fontFamily:FONT,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{r.nombreEmpresa}</div>
-                        <div style={{fontSize:'0.60rem',color:'#64748b',fontFamily:FONT,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',marginTop:1}}>{de.nombresApellidos?`${de.nombresApellidos} · `:''}{de.cargo||''}</div>
-                        <div style={{fontSize:'0.56rem',color:VERDE,fontFamily:FONT,marginTop:1,fontWeight:600,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{encTitulo.slice(0,40)}{encTitulo.length>40?'…':''}</div>
-                    </div>;
-                })
-            }
-        </div>
-        {totPagR>1&&<div style={{padding:'3px 8px',display:'flex',justifyContent:'space-between',alignItems:'center',background:'#f0fdf4',borderTop:'1px solid #dcfce7',flexShrink:0}}>
-            <span style={{fontSize:'0.56rem',color:'#94a3b8',fontFamily:FONT}}>{(pagR-1)*POR_PAG_R+1}–{Math.min(pagR*POR_PAG_R,respondieronAqui.length)} de {respondieronAqui.length}</span>
-            <div style={{display:'flex',gap:2}}>
-                <button className="t5pag" disabled={pagR===1} onClick={()=>setPagR(p=>p-1)} style={{width:18,height:18,borderRadius:4,border:'1px solid #dcfce7',background:'white',color:pagR===1?'#d1d5db':'#374151',cursor:pagR===1?'not-allowed':'pointer',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'0.55rem',transition:'all .15s'}}><FaChevronLeft/></button>
-                <button className="t5pag" disabled={pagR===totPagR} onClick={()=>setPagR(p=>p+1)} style={{width:18,height:18,borderRadius:4,border:'1px solid #dcfce7',background:'white',color:pagR===totPagR?'#d1d5db':'#374151',cursor:pagR===totPagR?'not-allowed':'pointer',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'0.55rem',transition:'all .15s'}}><FaChevronRight/></button>
+            {/* Barra de compromiso */}
+            {empsEnZona.length>0&&(
+                <div style={{padding:'8px 10px',borderBottom:'1px solid #f1f5f9',background:'white',flexShrink:0}}>
+                    <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:5}}>
+                        <span style={{fontSize:'0.60rem',fontWeight:700,color:'#475569',fontFamily:FONT,textTransform:'uppercase',letterSpacing:'0.4px'}}>Compromiso institucional</span>
+                        <span style={{fontSize:'0.66rem',fontWeight:800,color:tasaCompromiso>=70?VERDE:tasaCompromiso>=40?NARANJA:ROJO,fontFamily:FONT}}>{tasaCompromiso}%</span>
+                    </div>
+                    <div style={{height:5,background:'#f1f5f9',borderRadius:99,overflow:'hidden',marginBottom:4}}>
+                        <div style={{height:'100%',width:`${tasaCompromiso}%`,background:tasaCompromiso>=70?VERDE:tasaCompromiso>=40?NARANJA:ROJO,borderRadius:99,transition:'width .6s ease'}}/>
+                    </div>
+                    <div style={{display:'flex',gap:8}}>
+                        <div style={{display:'flex',alignItems:'center',gap:3}}>
+                            <div style={{width:6,height:6,borderRadius:'50%',background:VERDE}}/>
+                            <span style={{fontSize:'0.57rem',color:'#6b7280',fontFamily:FONT}}>{conResp} respondieron</span>
+                        </div>
+                        <div style={{display:'flex',alignItems:'center',gap:3}}>
+                            <div style={{width:6,height:6,borderRadius:'50%',background:'#e5e7eb'}}/>
+                            <span style={{fontSize:'0.57rem',color:'#6b7280',fontFamily:FONT}}>{sinResp} sin responder</span>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Lista de empresas con scroll */}
+            <div style={{flex:1,overflowY:'auto',padding:'8px 8px 4px'}}>
+                {empsEnZona.length===0?(
+                    <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',height:'100%',gap:8}}>
+                        <FaBuilding style={{fontSize:'1.6rem',color:'#cbd5e1'}}/>
+                        <span style={{fontSize:'0.68rem',color:'#94a3b8',fontFamily:FONT}}>Sin empresas en esta zona</span>
+                    </div>
+                ):slice.map((emp,i)=>(
+                    <TarjetaEmpresa
+                        key={emp._id}
+                        empresa={emp}
+                        encuestasRespondidas={buildEncuestasEmp(emp)}
+                        encCerradas={encCerradas}
+                        idx={i}
+                    />
+                ))}
             </div>
-        </div>}
-    </div>;
+
+            {/* Paginador */}
+            {totalPag>1&&(
+                <div style={{flexShrink:0,borderTop:'1px solid #f1f5f9',padding:'5px 10px',display:'flex',justifyContent:'space-between',alignItems:'center',background:'#fafafa'}}>
+                    <span style={{fontSize:'0.57rem',color:'#94a3b8',fontFamily:FONT}}>{(pag-1)*POR_PAG_E+1}–{Math.min(pag*POR_PAG_E,empsEnZona.length)} de {empsEnZona.length}</span>
+                    <div style={{display:'flex',gap:3}}>
+                        <button className="t5pag" disabled={pag===1} onClick={()=>setPag(p=>p-1)} style={{width:20,height:20,borderRadius:4,border:'1px solid #e5e7eb',background:'white',color:pag===1?'#d1d5db':'#374151',cursor:pag===1?'not-allowed':'pointer',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'0.58rem',transition:'all .15s'}}><FaChevronLeft/></button>
+                        {Array.from({length:Math.min(totalPag,4)},(_,i)=>i+1).map(p=>(
+                            <button key={p} className="t5pag" onClick={()=>setPag(p)} style={{width:20,height:20,borderRadius:4,border:`1px solid ${pag===p?ROJO:'#e5e7eb'}`,background:pag===p?ROJO:'white',color:pag===p?'white':'#374151',cursor:'pointer',fontSize:'0.58rem',fontWeight:pag===p?700:400,display:'flex',alignItems:'center',justifyContent:'center',fontFamily:FONT,transition:'all .15s'}}>{p}</button>
+                        ))}
+                        <button className="t5pag" disabled={pag===totalPag} onClick={()=>setPag(p=>p+1)} style={{width:20,height:20,borderRadius:4,border:'1px solid #e5e7eb',background:'white',color:pag===totalPag?'#d1d5db':'#374151',cursor:pag===totalPag?'not-allowed':'pointer',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'0.58rem',transition:'all .15s'}}><FaChevronRight/></button>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
 };
 
 // ═══════════════════════════════════════════════════════════
-// INSIGHTS AUTOMÁTICOS
+// INSIGHTS
 // ═══════════════════════════════════════════════════════════
 const calcularInsights=(kpis,comunes,otras,encCerradas)=>{
     const ins=[];
@@ -668,7 +813,7 @@ const TabEEmpleadores=()=>{
 
         let emps=empleadoresRaw;
         if(fEmp.provincia)   emps=emps.filter(e=>norm(e.provincia)===norm(fEmp.provincia));
-        if(fEmp.ciudad)      emps=emps.filter(e=>norm(e.ciudad)===norm(fEmp.ciudad));
+        if(fEmp.ciudad)      emps=emps.filter(e=>normCanton(e.ciudad||'')===normCanton(fEmp.ciudad));
         if(fEmp.tipoCapital) emps=emps.filter(e=>e.tipoCapital===fEmp.tipoCapital);
 
         const cP={},cC={},cCap={},cAct={};
@@ -702,7 +847,7 @@ const TabEEmpleadores=()=>{
         const kE={...kpis,respondieron:respond,tasa:empleadoresRaw.length>0?Math.round((respond/empleadoresRaw.length)*100):0,totalEmps:empleadoresRaw.length};
 
         return{
-            encC,empleadoresFiltrados:emps,respuestasRaw,
+            encC,empleadoresFiltrados:emps,empleadoresRaw,respuestasRaw,
             porProv,porCiud,porCap,porAct,mitad,ciuD,
             comunes,otras,kE,
             insights:calcularInsights(kE,comunes,otras,encC),
@@ -717,14 +862,14 @@ const TabEEmpleadores=()=>{
     if(error)    return <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',minHeight:320}}><FaExclamationTriangle style={{fontSize:'2rem',color:NARANJA,marginBottom:10}}/><p style={{margin:'0 0 14px',fontSize:'0.82rem',color:'#374151',fontFamily:FONT}}>{error}</p><button onClick={cargar} style={{display:'inline-flex',alignItems:'center',gap:6,padding:'8px 14px',background:'white',border:'1px solid #e5e7eb',borderRadius:7,cursor:'pointer',fontSize:'0.74rem',fontWeight:600,color:'#374151',fontFamily:FONT}}><FaSyncAlt style={{fontSize:'0.66rem'}}/>Reintentar</button></div>;
     if(!df) return null;
 
-    const{encC,empleadoresFiltrados,respuestasRaw,porProv,porCiud,porCap,porAct,mitad,ciuD,comunes,otras,kE,insights,plan}=df;
+    const{encC,empleadoresFiltrados,empleadoresRaw,respuestasRaw,porProv,porCiud,porCap,porAct,mitad,ciuD,comunes,otras,kE,insights,plan}=df;
     const hayFE=Object.values(fEmp).some(v=>v!=='');
     const hayFN=Object.values(fEnc).some(v=>v!=='');
     const sinD={margin:0,fontSize:'0.72rem',color:'#9ca3af',textAlign:'center',padding:'16px 0',fontFamily:FONT};
 
     return <div style={{fontFamily:FONT,paddingBottom:56}}>
 
-        {/* Tabs + actualizar */}
+        {/* Tabs */}
         <div style={{display:'flex',gap:8,marginBottom:14,alignItems:'center',borderBottom:'2px solid #f1f5f9',paddingBottom:10}}>
             {[{id:'empresas',lbl:'Información de Empresas',icon:FaBuilding},{id:'encuestas',lbl:'Resultados de Encuestas',icon:FaChartBar}].map(({id,lbl,icon:I})=>{
                 const act=modo===id;
@@ -737,7 +882,7 @@ const TabEEmpleadores=()=>{
 
         {/* ════════ MODO EMPRESAS ════════ */}
         {modo==='empresas'&&<>
-            {/* Filtros empresas */}
+            {/* Filtros */}
             <div className="t5a" style={{background:'white',borderRadius:10,border:'1px solid #e5e7eb',padding:'10px 14px',marginBottom:14}}>
                 <div style={{display:'flex',alignItems:'center',gap:8,flexWrap:'wrap'}}>
                     <div style={{display:'flex',alignItems:'center',gap:5,flexShrink:0}}>
@@ -746,13 +891,13 @@ const TabEEmpleadores=()=>{
                         {hayFE&&<span style={{background:ROJO,color:'white',borderRadius:99,fontSize:'0.55rem',fontWeight:700,padding:'1px 5px',fontFamily:FONT}}>{Object.values(fEmp).filter(v=>v!=='').length}</span>}
                     </div>
                     <div style={{width:1,height:20,background:'#e5e7eb',flexShrink:0}}/>
-                    <select value={fEmp.provincia} onChange={e=>cEmp('provincia',e.target.value)} className={`t5sel${fEmp.provincia?' on':''}`} disabled={opsProv.length===0} style={{opacity:opsProv.length===0?0.45:1}}>
+                    <select value={fEmp.provincia} onChange={e=>cEmp('provincia',e.target.value)} className={`t5sel${fEmp.provincia?' on':''}`} disabled={opsProv.length===0}>
                         <option value="">Provincia</option>{opsProv.map(p=><option key={p} value={p}>{p}</option>)}
                     </select>
                     {fEmp.provincia&&ciuD.length>0&&<select value={fEmp.ciudad} onChange={e=>cEmp('ciudad',e.target.value)} className={`t5sel${fEmp.ciudad?' on':''}`}>
                         <option value="">Cantón</option>{ciuD.map(c=><option key={c} value={c}>{c}</option>)}
                     </select>}
-                    <select value={fEmp.tipoCapital} onChange={e=>cEmp('tipoCapital',e.target.value)} className={`t5sel${fEmp.tipoCapital?' on':''}`} disabled={opsCap.length===0} style={{opacity:opsCap.length===0?0.45:1}}>
+                    <select value={fEmp.tipoCapital} onChange={e=>cEmp('tipoCapital',e.target.value)} className={`t5sel${fEmp.tipoCapital?' on':''}`} disabled={opsCap.length===0}>
                         <option value="">Tipo de empresa</option>{opsCap.map(c=><option key={c} value={c}>{c}</option>)}
                     </select>
                     {hayFE&&<>
@@ -768,15 +913,15 @@ const TabEEmpleadores=()=>{
                 </div>
             </div>
 
-            {/* KPIs empresas */}
+            {/* KPIs */}
             <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:10,marginBottom:14}}>
-                <KPI icon={FaBuilding}      valor={empleadoresFiltrados.length}                          label="Empleadores"         sub="Registrados activos"          color={ROJO}    delay={0}  />
-                <KPI icon={FaCheckCircle}   valor={empleadoresFiltrados.filter(e=>e.respondio).length}   label="Respondieron alguna" sub="Al menos una encuesta"        color={VERDE}   delay={40} />
-                <KPI icon={FaTimesCircle}   valor={empleadoresFiltrados.filter(e=>!e.respondio).length}  label="Sin responder"       sub="Ninguna encuesta"             color={NARANJA} delay={80} />
-                <KPI icon={FaClipboardList} valor={encC.length}                                          label="Encuestas cerradas"  sub="Con resultados"               color={AZUL}    delay={120}/>
+                <KPI icon={FaBuilding}      valor={empleadoresFiltrados.length}                          label="Empleadores"         sub="Registrados activos"     color={ROJO}    delay={0}  />
+                <KPI icon={FaCheckCircle}   valor={empleadoresFiltrados.filter(e=>e.respondio).length}   label="Respondieron alguna" sub="Al menos una encuesta"  color={VERDE}   delay={40} />
+                <KPI icon={FaTimesCircle}   valor={empleadoresFiltrados.filter(e=>!e.respondio).length}  label="Sin responder"       sub="Ninguna encuesta"       color={NARANJA} delay={80} />
+                <KPI icon={FaClipboardList} valor={encC.length}                                          label="Encuestas cerradas"  sub="Con resultados"         color={AZUL}    delay={120}/>
             </div>
 
-            {/* Mapa con gerentes + respondieron en col derecha */}
+            {/* Mapa */}
             <div className="t5a" style={{background:'white',borderRadius:12,border:'1px solid #e2e8f0',boxShadow:'0 2px 8px rgba(0,0,0,.06)',overflow:'hidden',marginBottom:14,animationDelay:'80ms'}}>
                 <div style={{padding:'11px 16px',borderBottom:'1px solid #f1f5f9',background:`linear-gradient(135deg,${CIAN}0a,transparent)`,display:'flex',alignItems:'center',gap:10}}>
                     <div style={{width:28,height:28,borderRadius:7,background:`${CIAN}1a`,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}><FaMapMarked style={{color:CIAN,fontSize:'0.80rem'}}/></div>
@@ -795,7 +940,7 @@ const TabEEmpleadores=()=>{
                     </div>}
                 </div>
                 {geoError&&<div style={{padding:'9px 16px',background:'#fff7ed',borderBottom:'1px solid #fed7aa',display:'flex',alignItems:'center',gap:8}}><FaExclamationTriangle style={{color:'#d97706',fontSize:'0.80rem'}}/><p style={{margin:0,fontSize:'0.72rem',color:'#92400e',fontFamily:FONT}}>No se cargaron GeoJSON. Verifica <code>public/geo/</code></p></div>}
-                <div style={{display:'grid',gridTemplateColumns:'1fr 420px 1fr',gap:0,height:460}}>
+                <div style={{display:'grid',gridTemplateColumns:'1fr 420px 1fr',gap:0,height:480}}>
                     <div style={{borderRight:'1px solid #f1f5f9',overflow:'hidden'}}>
                         <ColIzq filtros={fEmp} porProv={porProv} porCiud={porCiud} total={empleadoresFiltrados.length} mitad={mitad}/>
                     </div>
@@ -803,9 +948,18 @@ const TabEEmpleadores=()=>{
                         <MapaEmp porProv={porProv} porCiud={porCiud} filtros={fEmp} geoData={geoData}/>
                     </div>
                     <div style={{overflow:'hidden'}}>
-                        <ColDer filtros={fEmp} porProv={porProv} emps={empleadoresFiltrados} total={empleadoresFiltrados.length} offset={mitad} respuestasRaw={respuestasRaw} encCerradas={encC}/>
+                        <ColDer
+                            filtros={fEmp}
+                            porProv={porProv}
+                            emps={empleadoresRaw}
+                            total={empleadoresFiltrados.length}
+                            offset={mitad}
+                            respuestasRaw={respuestasRaw}
+                            encCerradas={encC}
+                        />
                     </div>
                 </div>
+                {/* Composición del sector */}
                 <div style={{borderTop:'1px solid #e5e7eb',padding:'14px 20px',background:'#fafafa'}}>
                     <p style={{margin:'0 0 12px',fontSize:'0.63rem',fontWeight:700,color:'#94a3b8',fontFamily:FONT,textTransform:'uppercase',letterSpacing:'0.5px'}}>Composición del sector</p>
                     <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:24}}>
@@ -850,16 +1004,15 @@ const TabEEmpleadores=()=>{
 
         {/* ════════ MODO ENCUESTAS ════════ */}
         {modo==='encuestas'&&<>
-            {/* KPIs encuestas */}
             <div style={{display:'grid',gridTemplateColumns:'repeat(5,1fr)',gap:10,marginBottom:14}}>
-                <KPI icon={FaBuilding}      valor={kE.totalEmps}      label="Empleadores totales" sub="Registrados activos"           color={ROJO}    delay={0}  />
-                <KPI icon={FaClipboardList} valor={encC.length}        label="Encuestas cerradas"  sub="Con resultados"               color={AZUL}    delay={40} />
-                <KPI icon={FaCheckCircle}   valor={kE.respondieron}    label="Respondieron"        sub={`${kE.tasa}% del total`}      color={VERDE}   delay={80} />
-                <KPI icon={FaLayerGroup}    valor={comunes.length}     label="Preguntas recurrentes" sub="En 2+ encuestas"            color={MORADO}  delay={120}/>
-                <KPI icon={FaQuestion}      valor={otras.length}       label="Otras preguntas"     sub="Específicas por encuesta"     color={CIAN}    delay={160}/>
+                <KPI icon={FaBuilding}      valor={kE.totalEmps}      label="Empleadores totales" sub="Registrados activos"      color={ROJO}   delay={0}  />
+                <KPI icon={FaClipboardList} valor={encC.length}        label="Encuestas cerradas"  sub="Con resultados"          color={AZUL}   delay={40} />
+                <KPI icon={FaCheckCircle}   valor={kE.respondieron}    label="Respondieron"        sub={`${kE.tasa}% del total`} color={VERDE}  delay={80} />
+                <KPI icon={FaLayerGroup}    valor={comunes.length}     label="Preguntas recurrentes" sub="En 2+ encuestas"       color={MORADO} delay={120}/>
+                <KPI icon={FaQuestion}      valor={otras.length}       label="Otras preguntas"     sub="Específicas por encuesta" color={CIAN}  delay={160}/>
             </div>
 
-            {/* Filtros encuestas — SOLO encuesta y tipo */}
+            {/* Filtros encuestas */}
             <div className="t5a" style={{background:'white',borderRadius:10,border:'1px solid #e5e7eb',padding:'10px 14px',marginBottom:14}}>
                 <div style={{display:'flex',alignItems:'center',gap:8,flexWrap:'wrap'}}>
                     <div style={{display:'flex',alignItems:'center',gap:5,flexShrink:0}}>
@@ -872,7 +1025,7 @@ const TabEEmpleadores=()=>{
                         <option value="">Todas las encuestas cerradas</option>
                         {encC.map(e=><option key={e._id} value={e._id}>{e.titulo}</option>)}
                     </select>:<span style={{fontSize:'0.70rem',color:'#94a3b8',fontFamily:FONT}}>Sin encuestas cerradas disponibles</span>}
-                    <select value={fEnc.tipoCapital} onChange={e=>cEnc('tipoCapital',e.target.value)} className={`t5sel${fEnc.tipoCapital?' on':''}`} disabled={opsCap.length===0} style={{opacity:opsCap.length===0?0.45:1}}>
+                    <select value={fEnc.tipoCapital} onChange={e=>cEnc('tipoCapital',e.target.value)} className={`t5sel${fEnc.tipoCapital?' on':''}`} disabled={opsCap.length===0}>
                         <option value="">Tipo de empresa</option>{opsCap.map(c=><option key={c} value={c}>{c}</option>)}
                     </select>
                     {hayFN&&<>
@@ -889,19 +1042,17 @@ const TabEEmpleadores=()=>{
                 </div>
             </div>
 
-            {/* Preguntas recurrentes */}
             {comunes.length>0&&<div style={{marginBottom:14}}>
                 <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:10}}>
                     <div style={{width:28,height:28,borderRadius:7,background:`${VERDE}18`,display:'flex',alignItems:'center',justifyContent:'center'}}><FaLayerGroup style={{color:VERDE,fontSize:'0.78rem'}}/></div>
                     <div>
                         <div style={{fontSize:'0.84rem',fontWeight:700,color:'#0f172a',fontFamily:FONT}}>Preguntas Recurrentes</div>
-                        <div style={{fontSize:'0.61rem',color:'#9ca3af',fontFamily:FONT}}>Aparecen en múltiples encuestas · {comunes.length} grupo{comunes.length!==1?'s':''} · Comparación longitudinal</div>
+                        <div style={{fontSize:'0.61rem',color:'#9ca3af',fontFamily:FONT}}>Aparecen en múltiples encuestas · {comunes.length} grupo{comunes.length!==1?'s':''}</div>
                     </div>
                 </div>
                 {comunes.map((g,i)=><TarjetaGrupo key={g.id} grupo={g} encuestas={encC} filtros={fEnc} num={i+1}/>)}
             </div>}
 
-            {/* Otras preguntas */}
             {otras.length>0&&<div style={{marginBottom:14}}>
                 <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:10}}>
                     <div style={{width:28,height:28,borderRadius:7,background:`${AZUL}18`,display:'flex',alignItems:'center',justifyContent:'center'}}><FaQuestion style={{color:AZUL,fontSize:'0.78rem'}}/></div>
@@ -913,7 +1064,6 @@ const TabEEmpleadores=()=>{
                 {otras.map((g,i)=><TarjetaGrupo key={g.id} grupo={g} encuestas={encC} filtros={fEnc} num={comunes.length+i+1}/>)}
             </div>}
 
-            {/* Sin datos */}
             {comunes.length===0&&otras.length===0&&<div style={{padding:'32px',background:'white',borderRadius:10,border:'1px solid #e5e7eb',textAlign:'center',marginBottom:14}}>
                 <FaClipboardList style={{color:'#cbd5e1',fontSize:'2rem',marginBottom:8}}/>
                 <p style={{margin:'0 0 6px',fontSize:'0.78rem',fontWeight:600,color:'#94a3b8',fontFamily:FONT}}>{encC.length===0?'No hay encuestas cerradas aún':'Sin resultados con los filtros actuales'}</p>
@@ -928,11 +1078,6 @@ const TabEEmpleadores=()=>{
                         <div>
                             <div style={{fontSize:'0.82rem',fontWeight:700,color:'#0f172a',fontFamily:FONT}}>Análisis de Situación — Empleadores</div>
                             <div style={{fontSize:'0.61rem',color:'#9ca3af',fontFamily:FONT}}>{insights.length} observaciones · generado automáticamente</div>
-                        </div>
-                        <div style={{marginLeft:'auto',display:'flex',gap:10}}>
-                            {[['crit','Crítico',ROJO],['warn','Atención',NARANJA],['ok','Fortaleza',VERDE],['info','Sugerencia',AZUL]].map(([tipo,lbl,c])=>(
-                                <div key={tipo} style={{display:'flex',alignItems:'center',gap:3}}><div style={{width:6,height:6,borderRadius:'50%',background:c}}/><span style={{fontSize:'0.60rem',color:'#6b7280',fontFamily:FONT}}>{lbl}</span></div>
-                            ))}
                         </div>
                     </div>
                     <div style={{padding:'13px 16px'}}>
