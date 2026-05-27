@@ -772,6 +772,290 @@ const calcularPlan=(kpis,encCerradas)=>{
 };
 
 // ═══════════════════════════════════════════════════════════
+// TABLA EMPRESAS PAGINADA
+// ═══════════════════════════════════════════════════════════
+const TablaEmpresasPaginada=({empleadoresFiltrados,hayFE,sinD,fEmp})=>{
+    const LIMIT_T=10;
+    const [pagTabla,setPagTabla]=useState(1);
+    useEffect(()=>{setPagTabla(1);},[fEmp.provincia,fEmp.ciudad,fEmp.tipoCapital]);
+    const totalPagT=Math.ceil(empleadoresFiltrados.length/LIMIT_T);
+    const sliceT=empleadoresFiltrados.slice((pagTabla-1)*LIMIT_T,pagTabla*LIMIT_T);
+    const ini=(pagTabla-1)*LIMIT_T+1,fin=Math.min(pagTabla*LIMIT_T,empleadoresFiltrados.length);
+    return(
+        <div className="t5a" style={{background:'white',borderRadius:10,border:'1px solid #e5e7eb',boxShadow:'0 1px 3px rgba(0,0,0,.05)',overflow:'hidden',marginBottom:14,animationDelay:'100ms'}}>
+            <div style={{padding:'9px 14px',borderBottom:'1px solid #f1f5f9',background:`linear-gradient(135deg,${ROJO}08,transparent)`,display:'flex',alignItems:'center',gap:8}}>
+                <div style={{width:26,height:26,borderRadius:6,background:`${ROJO}18`,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
+                    <FaBuilding style={{color:ROJO,fontSize:'0.74rem'}}/>
+                </div>
+                <div style={{flex:1}}>
+                    <div style={{fontSize:'0.80rem',fontWeight:700,color:'#0f172a',fontFamily:FONT}}>Empresas Registradas</div>
+                    {empleadoresFiltrados.length>0&&<div style={{fontSize:'0.61rem',color:'#9ca3af',fontFamily:FONT}}>{empleadoresFiltrados.length} organizaciones{hayFE?' · filtrado':''} · página {pagTabla} de {totalPagT}</div>}
+                </div>
+                {empleadoresFiltrados.length>0&&<span style={{fontSize:'0.63rem',fontWeight:700,color:ROJO,background:`${ROJO}10`,border:`1px solid ${ROJO}25`,borderRadius:99,padding:'2px 9px',fontFamily:FONT}}>{empleadoresFiltrados.length} total</span>}
+            </div>
+            <div style={{padding:'12px 14px'}}>
+                {!empleadoresFiltrados.length?<p style={sinD}>Sin empresas</p>:<>
+                    <div style={{display:'grid',gridTemplateColumns:'1.4fr 1fr 1fr 1fr auto',gap:8,padding:'5px 10px',borderBottom:'2px solid #f0f0f0',marginBottom:4}}>
+                        {['Empresa','Gerente','Provincia / Cantón','Tipo','Estado'].map(h=><span key={h} style={{fontSize:'0.58rem',fontWeight:700,color:'#94a3b8',fontFamily:FONT,textTransform:'uppercase',letterSpacing:'0.5px'}}>{h}</span>)}
+                    </div>
+                    {sliceT.map((e,i)=>(
+                        <div key={e._id} className="t5r" style={{display:'grid',gridTemplateColumns:'1.4fr 1fr 1fr 1fr auto',gap:8,padding:'8px 10px',background:i%2===0?'#fafafa':'white',borderRadius:6,alignItems:'center',minHeight:40,marginBottom:2}}>
+                            <div style={{minWidth:0}}>
+                                <div style={{fontSize:'0.74rem',fontWeight:600,color:'#1e293b',fontFamily:FONT,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{e.nombreEmpresa}</div>
+                                {e.emailOrganizacion&&<div style={{fontSize:'0.60rem',color:'#94a3b8',fontFamily:FONT,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{e.emailOrganizacion}</div>}
+                            </div>
+                            <span style={{fontSize:'0.68rem',color:'#475569',fontFamily:FONT,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{e.nombreGerente||'—'}</span>
+                            <span style={{fontSize:'0.66rem',color:'#64748b',fontFamily:FONT,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{[e.provincia,e.ciudad].filter(Boolean).join(' › ')||'—'}</span>
+                            <div style={{display:'flex',gap:3,flexWrap:'wrap'}}>
+                                <span style={{fontSize:'0.55rem',fontWeight:700,color:VERDE,background:`${VERDE}10`,borderRadius:99,padding:'1px 5px',fontFamily:FONT}}>{e.tipoCapital}</span>
+                                <span style={{fontSize:'0.55rem',fontWeight:700,color:NARANJA,background:`${NARANJA}10`,borderRadius:99,padding:'1px 5px',fontFamily:FONT}}>{e.tipoActividad}</span>
+                            </div>
+                            <span style={{fontSize:'0.60rem',fontWeight:700,color:e.respondio?VERDE:GRIS,background:e.respondio?`${VERDE}10`:`${GRIS}10`,border:`1px solid ${e.respondio?VERDE:GRIS}22`,borderRadius:99,padding:'2px 8px',fontFamily:FONT,whiteSpace:'nowrap'}}>
+                                {e.respondio?'✓ Respondió':'Pendiente'}
+                            </span>
+                        </div>
+                    ))}
+                    {totalPagT>1&&(
+                        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginTop:10,paddingTop:10,borderTop:'1px solid #f1f5f9'}}>
+                            <span style={{fontSize:'0.65rem',color:'#94a3b8',fontFamily:FONT}}>Mostrando {ini}–{fin} de {empleadoresFiltrados.length}</span>
+                            <div style={{display:'flex',gap:4,alignItems:'center'}}>
+                                <button className="t5pag" disabled={pagTabla===1} onClick={()=>setPagTabla(p=>p-1)}
+                                    style={{width:28,height:28,borderRadius:6,border:'1px solid #e5e7eb',background:'white',color:pagTabla===1?'#d1d5db':'#374151',cursor:pagTabla===1?'not-allowed':'pointer',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'0.62rem',transition:'all .15s'}}>
+                                    <FaChevronLeft/>
+                                </button>
+                                {Array.from({length:Math.min(totalPagT,5)},(_,i)=>{
+                                    const ini2=Math.max(1,Math.min(pagTabla-2,totalPagT-4));
+                                    return ini2+i;
+                                }).map(p=>(
+                                    <button key={p} className="t5pag" onClick={()=>setPagTabla(p)} style={{
+                                        width:28,height:28,borderRadius:6,
+                                        border:`1px solid ${pagTabla===p?ROJO:'#e5e7eb'}`,
+                                        background:pagTabla===p?ROJO:'white',
+                                        color:pagTabla===p?'white':'#374151',
+                                        cursor:'pointer',fontSize:'0.72rem',
+                                        fontWeight:pagTabla===p?700:400,
+                                        display:'flex',alignItems:'center',justifyContent:'center',
+                                        fontFamily:FONT,transition:'all .15s',
+                                    }}>{p}</button>
+                                ))}
+                                <button className="t5pag" disabled={pagTabla===totalPagT} onClick={()=>setPagTabla(p=>p+1)}
+                                    style={{width:28,height:28,borderRadius:6,border:'1px solid #e5e7eb',background:'white',color:pagTabla===totalPagT?'#d1d5db':'#374151',cursor:pagTabla===totalPagT?'not-allowed':'pointer',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'0.62rem',transition:'all .15s'}}>
+                                    <FaChevronRight/>
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                </>}
+            </div>
+        </div>
+    );
+};
+
+// ═══════════════════════════════════════════════════════════
+// PANEL ENCUESTADORES POR EMPRESA
+// ═══════════════════════════════════════════════════════════
+const PanelEncuestadores=({empleadoresFiltrados,respuestasRaw,fEmp})=>{
+    const mapaEnc=useMemo(()=>{
+        const m={};
+        respuestasRaw.forEach(r=>{
+            const eid=r.empleadorId;
+            if(!eid) return;
+            if(!m[eid]) m[eid]=[];
+            m[eid].push({
+                encuestaId:      r.encuestaId,
+                encuestaTitulo:  r.encuestaTitulo||'Encuesta',
+                fechaRespuesta:  r.fechaRespuesta,
+                datosEncuestado: r.datosEncuestado||{},
+            });
+        });
+        return m;
+    },[respuestasRaw]);
+
+    const empsConResp=useMemo(()=>
+        empleadoresFiltrados.filter(e=>mapaEnc[e._id]&&mapaEnc[e._id].length>0)
+    ,[empleadoresFiltrados,mapaEnc]);
+
+    const [expandidos,setExpandidos]=useState({});
+    useEffect(()=>{setExpandidos({});},[fEmp.provincia,fEmp.ciudad]);
+    const toggle=(id)=>setExpandidos(p=>({...p,[id]:!p[id]}));
+
+    if(!empsConResp.length) return null;
+
+    const construirGrupos=(emp)=>{
+        const respEmp=mapaEnc[emp._id]||[];
+        const porEnc={};
+        respEmp.forEach(r=>{
+            const nombre=(r.datosEncuestado.nombresApellidos||'').trim()||'Encuestador anónimo';
+            if(!porEnc[nombre]) porEnc[nombre]={
+                nombre,
+                cargo:         r.datosEncuestado.cargo||'',
+                profesion:     r.datosEncuestado.profesion||'',
+                email:         r.datosEncuestado.email||'',
+                telefono:      r.datosEncuestado.telefono||'',
+                edad:          r.datosEncuestado.edad||null,
+                genero:        r.datosEncuestado.genero||'',
+                aniosServicio: r.datosEncuestado.aniosServicio||null,
+                estudiosEspoch:r.datosEncuestado.estudiosEspoch||'',
+                encuestas:[],
+            };
+            porEnc[nombre].encuestas.push({
+                encuestaId: r.encuestaId,
+                titulo:     r.encuestaTitulo||'Encuesta',
+                fecha:      r.fechaRespuesta,
+            });
+        });
+        return Object.values(porEnc);
+    };
+
+    return(
+        <div className="t5a" style={{background:'white',borderRadius:10,border:'1px solid #e5e7eb',boxShadow:'0 1px 3px rgba(0,0,0,.05)',overflow:'hidden',marginBottom:14,animationDelay:'140ms'}}>
+            <div style={{padding:'9px 14px',borderBottom:'1px solid #f1f5f9',background:`linear-gradient(135deg,${MORADO}08,transparent)`,display:'flex',alignItems:'center',gap:8}}>
+                <div style={{width:26,height:26,borderRadius:6,background:`${MORADO}18`,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
+                    <FaUserTie style={{color:MORADO,fontSize:'0.74rem'}}/>
+                </div>
+                <div style={{flex:1}}>
+                    <div style={{fontSize:'0.80rem',fontWeight:700,color:'#0f172a',fontFamily:FONT}}>Encuestadores por Empresa</div>
+                    <div style={{fontSize:'0.61rem',color:'#9ca3af',fontFamily:FONT}}>
+                        Personas que completaron encuestas · agrupadas por empresa
+                        {fEmp.provincia&&<span style={{color:MORADO,marginLeft:4,fontWeight:600}}>· {fEmp.ciudad||fEmp.provincia}</span>}
+                    </div>
+                </div>
+                <span style={{fontSize:'0.63rem',fontWeight:700,color:MORADO,background:`${MORADO}10`,border:`1px solid ${MORADO}25`,borderRadius:99,padding:'2px 9px',fontFamily:FONT}}>{empsConResp.length} empresa{empsConResp.length!==1?'s':''}</span>
+            </div>
+
+            <div style={{padding:'12px 14px',display:'flex',flexDirection:'column',gap:8}}>
+                {empsConResp.map((emp)=>{
+                    const grupos=construirGrupos(emp);
+                    const abierto=expandidos[emp._id]!==false;
+                    const totalEncuestas=mapaEnc[emp._id]?.length||0;
+                    const totalEncuestadores=grupos.length;
+
+                    return(
+                        <div key={emp._id} style={{border:'1px solid #e2e8f0',borderRadius:9,overflow:'hidden',boxShadow:'0 1px 3px rgba(0,0,0,.04)'}}>
+                            {/* Header empresa colapsable */}
+                            <div className="t5gh" onClick={()=>toggle(emp._id)} style={{
+                                padding:'10px 14px',display:'flex',alignItems:'center',gap:10,
+                                background:abierto?`${MORADO}05`:'#fafafa',
+                                borderBottom:abierto?'1px solid #f1f5f9':'none',
+                            }}>
+                                <div style={{width:34,height:34,borderRadius:8,background:`${MORADO}15`,border:`1px solid ${MORADO}25`,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
+                                    <FaBuilding style={{color:MORADO,fontSize:'0.82rem'}}/>
+                                </div>
+                                <div style={{flex:1,minWidth:0}}>
+                                    <div style={{fontSize:'0.78rem',fontWeight:700,color:'#0f172a',fontFamily:FONT,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{emp.nombreEmpresa}</div>
+                                    <div style={{display:'flex',gap:6,marginTop:2,flexWrap:'wrap',alignItems:'center'}}>
+                                        {emp.provincia&&<span style={{fontSize:'0.60rem',color:'#64748b',fontFamily:FONT}}>{emp.provincia}{emp.ciudad?` › ${emp.ciudad}`:''}</span>}
+                                        <span style={{fontSize:'0.60rem',color:'#94a3b8',fontFamily:FONT}}>·</span>
+                                        <span style={{fontSize:'0.60rem',fontWeight:600,color:MORADO,fontFamily:FONT}}>{totalEncuestadores} encuestador{totalEncuestadores!==1?'es':''}</span>
+                                        <span style={{fontSize:'0.60rem',color:'#94a3b8',fontFamily:FONT}}>·</span>
+                                        <span style={{fontSize:'0.60rem',color:'#64748b',fontFamily:FONT}}>{totalEncuestas} encuesta{totalEncuestas!==1?'s':''} completada{totalEncuestas!==1?'s':''}</span>
+                                    </div>
+                                </div>
+                                <div style={{display:'flex',gap:5,flexShrink:0,alignItems:'center'}}>
+                                    <div style={{display:'flex',alignItems:'center',gap:4,padding:'3px 8px',background:`${VERDE}10`,border:`1px solid ${VERDE}22`,borderRadius:99}}>
+                                        <FaCheckCircle style={{color:VERDE,fontSize:'0.54rem'}}/>
+                                        <span style={{fontSize:'0.62rem',fontWeight:700,color:VERDE,fontFamily:FONT}}>{totalEncuestas}</span>
+                                    </div>
+                                    <div style={{display:'flex',alignItems:'center',gap:4,padding:'3px 8px',background:`${MORADO}10`,border:`1px solid ${MORADO}22`,borderRadius:99}}>
+                                        <FaUserTie style={{color:MORADO,fontSize:'0.54rem'}}/>
+                                        <span style={{fontSize:'0.62rem',fontWeight:700,color:MORADO,fontFamily:FONT}}>{totalEncuestadores}</span>
+                                    </div>
+                                    <span style={{fontSize:'0.62rem',color:'#94a3b8',fontFamily:FONT,marginLeft:4}}>{abierto?'▲':'▼'}</span>
+                                </div>
+                            </div>
+
+                            {/* Encuestadores expandidos */}
+                            {abierto&&(
+                                <div style={{padding:'10px 14px',display:'flex',flexDirection:'column',gap:8}}>
+                                    {grupos.map((enc,gi)=>(
+                                        <div key={gi} style={{
+                                            background:gi%2===0?'#f8fafc':'white',
+                                            border:`1px solid ${MORADO}15`,
+                                            borderLeft:`3px solid ${PALETA[gi%PALETA.length]}`,
+                                            borderRadius:8,padding:'10px 12px',
+                                        }}>
+                                            {/* Fila superior: avatar + datos + contacto */}
+                                            <div style={{display:'flex',alignItems:'flex-start',gap:10,marginBottom:10}}>
+                                                <div style={{
+                                                    width:38,height:38,borderRadius:'50%',
+                                                    background:`${PALETA[gi%PALETA.length]}18`,
+                                                    border:`2px solid ${PALETA[gi%PALETA.length]}35`,
+                                                    display:'flex',alignItems:'center',justifyContent:'center',
+                                                    flexShrink:0,fontSize:'0.82rem',fontWeight:800,
+                                                    color:PALETA[gi%PALETA.length],fontFamily:FONT,
+                                                }}>
+                                                    {enc.nombre.charAt(0).toUpperCase()}
+                                                </div>
+                                                <div style={{flex:1,minWidth:0}}>
+                                                    <div style={{fontSize:'0.76rem',fontWeight:700,color:'#0f172a',fontFamily:FONT}}>{enc.nombre}</div>
+                                                    <div style={{display:'flex',gap:5,marginTop:3,flexWrap:'wrap',alignItems:'center'}}>
+                                                        {enc.cargo&&<span style={{fontSize:'0.62rem',fontWeight:600,color:PALETA[gi%PALETA.length],background:`${PALETA[gi%PALETA.length]}12`,border:`1px solid ${PALETA[gi%PALETA.length]}25`,borderRadius:99,padding:'1px 6px',fontFamily:FONT}}>{enc.cargo}</span>}
+                                                        {enc.profesion&&<span style={{fontSize:'0.61rem',color:'#64748b',fontFamily:FONT,padding:'1px 6px',background:'#f1f5f9',borderRadius:99}}>{enc.profesion}</span>}
+                                                        {enc.genero&&<span style={{fontSize:'0.59rem',color:'#94a3b8',fontFamily:FONT}}>{enc.genero}</span>}
+                                                        {enc.edad&&<span style={{fontSize:'0.59rem',color:'#94a3b8',fontFamily:FONT}}>{enc.edad} años</span>}
+                                                        {enc.encuestas.length>1&&<span style={{fontSize:'0.60rem',fontWeight:700,color:VERDE,background:`${VERDE}10`,borderRadius:99,padding:'1px 6px',fontFamily:FONT,border:`1px solid ${VERDE}25`}}>Llenó {enc.encuestas.length} encuestas</span>}
+                                                    </div>
+                                                </div>
+                                                {/* Datos de contacto y extra */}
+                                                <div style={{display:'flex',flexDirection:'column',gap:4,alignItems:'flex-end',flexShrink:0}}>
+                                                    {enc.email&&(
+                                                        <div style={{display:'flex',alignItems:'center',gap:4}}>
+                                                            <FaEnvelope style={{color:'#94a3b8',fontSize:'0.56rem'}}/>
+                                                            <span style={{fontSize:'0.62rem',color:'#475569',fontFamily:FONT}}>{enc.email}</span>
+                                                        </div>
+                                                    )}
+                                                    {enc.telefono&&(
+                                                        <div style={{display:'flex',alignItems:'center',gap:4}}>
+                                                            <span style={{fontSize:'0.56rem',color:'#94a3b8'}}>📞</span>
+                                                            <span style={{fontSize:'0.62rem',color:'#475569',fontFamily:FONT}}>{enc.telefono}</span>
+                                                        </div>
+                                                    )}
+                                                    {enc.aniosServicio&&(
+                                                        <span style={{fontSize:'0.59rem',color:'#94a3b8',fontFamily:FONT}}>{enc.aniosServicio} años servicio</span>
+                                                    )}
+                                                    {enc.estudiosEspoch&&(
+                                                        <span style={{fontSize:'0.59rem',fontWeight:600,color:ROJO,background:`${ROJO}08`,border:`1px solid ${ROJO}18`,borderRadius:99,padding:'1px 6px',fontFamily:FONT}}>ESPOCH: {enc.estudiosEspoch}</span>
+                                                    )}
+                                                </div>
+                                            </div>
+
+                                            {/* Encuestas completadas por este encuestador */}
+                                            <div style={{display:'flex',flexDirection:'column',gap:4}}>
+                                                {enc.encuestas.map((encu,ei2)=>(
+                                                    <div key={ei2} style={{
+                                                        display:'flex',alignItems:'center',gap:8,
+                                                        padding:'6px 10px',background:'white',
+                                                        border:`1px solid ${VERDE}22`,borderRadius:6,
+                                                    }}>
+                                                        <div style={{width:20,height:20,borderRadius:5,background:`${VERDE}15`,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
+                                                            <FaClipboardList style={{color:VERDE,fontSize:'0.56rem'}}/>
+                                                        </div>
+                                                        <div style={{flex:1,minWidth:0}}>
+                                                            <div style={{fontSize:'0.68rem',fontWeight:600,color:'#1e293b',fontFamily:FONT,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{encu.titulo}</div>
+                                                        </div>
+                                                        {encu.fecha&&(
+                                                            <div style={{display:'flex',alignItems:'center',gap:3,flexShrink:0}}>
+                                                                <FaCalendarAlt style={{color:'#94a3b8',fontSize:'0.52rem'}}/>
+                                                                <span style={{fontSize:'0.59rem',color:'#94a3b8',fontFamily:FONT}}>{fmt(encu.fecha)}</span>
+                                                            </div>
+                                                        )}
+                                                        <span style={{fontSize:'0.57rem',fontWeight:700,color:VERDE,background:`${VERDE}12`,border:`1px solid ${VERDE}25`,borderRadius:99,padding:'1px 6px',fontFamily:FONT,flexShrink:0}}>✓ Completada</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    );
+                })}
+            </div>
+        </div>
+    );
+};
+
+// ═══════════════════════════════════════════════════════════
 // COMPONENTE PRINCIPAL
 // ═══════════════════════════════════════════════════════════
 const TabEEmpleadores=()=>{
@@ -981,25 +1265,8 @@ const TabEEmpleadores=()=>{
                 </div>
             </div>
 
-            {/* Tabla empresas */}
-            <Panel titulo="Empresas Registradas" sub={`${empleadoresFiltrados.length} organizaciones${hayFE?' · filtrado':''}`} icon={FaBuilding} color={ROJO} delay={100}>
-                {!empleadoresFiltrados.length?<p style={sinD}>Sin empresas</p>:<>
-                    <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr 1fr auto',gap:8,padding:'5px 10px',borderBottom:'1px solid #e5e7eb',marginBottom:4}}>
-                        {['Empresa','Gerente','Provincia / Cantón','Tipo','Estado'].map(h=><span key={h} style={{fontSize:'0.58rem',fontWeight:700,color:'#94a3b8',fontFamily:FONT,textTransform:'uppercase'}}>{h}</span>)}
-                    </div>
-                    {empleadoresFiltrados.slice(0,30).map((e,i)=><div key={e._id} className="t5r" style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr 1fr auto',gap:8,padding:'7px 10px',background:i%2===0?'#fafafa':'white',borderRadius:5,alignItems:'center',minHeight:38}}>
-                        <span style={{fontSize:'0.72rem',fontWeight:600,color:'#1e293b',fontFamily:FONT,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{e.nombreEmpresa}</span>
-                        <span style={{fontSize:'0.68rem',color:'#475569',fontFamily:FONT,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{e.nombreGerente}</span>
-                        <span style={{fontSize:'0.66rem',color:'#64748b',fontFamily:FONT}}>{[e.provincia,e.ciudad].filter(Boolean).join(' › ')||'—'}</span>
-                        <div style={{display:'flex',gap:3,flexWrap:'wrap'}}>
-                            <span style={{fontSize:'0.55rem',fontWeight:700,color:VERDE,background:`${VERDE}10`,borderRadius:99,padding:'1px 5px',fontFamily:FONT}}>{e.tipoCapital}</span>
-                            <span style={{fontSize:'0.55rem',fontWeight:700,color:NARANJA,background:`${NARANJA}10`,borderRadius:99,padding:'1px 5px',fontFamily:FONT}}>{e.tipoActividad}</span>
-                        </div>
-                        <span style={{fontSize:'0.58rem',fontWeight:700,color:e.respondio?VERDE:GRIS,background:e.respondio?`${VERDE}10`:`${GRIS}10`,borderRadius:99,padding:'2px 6px',fontFamily:FONT,whiteSpace:'nowrap'}}>{e.respondio?'✓ Respondió':'Pendiente'}</span>
-                    </div>)}
-                    {empleadoresFiltrados.length>30&&<p style={{margin:'8px 0 0',fontSize:'0.65rem',color:'#94a3b8',fontFamily:FONT,textAlign:'center'}}>Mostrando 30 de {empleadoresFiltrados.length}. Usa los filtros para refinar.</p>}
-                </>}
-            </Panel>
+            <TablaEmpresasPaginada empleadoresFiltrados={empleadoresFiltrados} hayFE={hayFE} sinD={sinD} fEmp={fEmp}/>
+            <PanelEncuestadores empleadoresFiltrados={empleadoresFiltrados} respuestasRaw={respuestasRaw} fEmp={fEmp}/>
         </>}
 
         {/* ════════ MODO ENCUESTAS ════════ */}
