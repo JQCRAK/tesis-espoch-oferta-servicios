@@ -32,13 +32,13 @@ const PER = {
     privado: { label: 'Privado', bg: '#f3e8ff', color: '#6a1b9a', border: '#ddd6fe' },
 };
 const EST = {
-    verificado: { label: 'Verificado', bg: '#e8f5e9', color: '#2e7d32', border: '#c8e6c9' },
-    pendiente:  { label: 'Pendiente',  bg: '#fff8e1', color: '#f57f17', border: '#ffe082' },
+    verificado: { label: 'Tesis ✓',   bg: '#e8f5e9', color: '#2e7d32', border: '#c8e6c9' },
+    pendiente:  { label: 'Sin tesis',  bg: '#fff8e1', color: '#f57f17', border: '#ffe082' },
     bloqueado:  { label: 'Bloqueado',  bg: '#ffebee', color: '#c62828', border: '#ffcdd2' },
 };
 const estadoGrad = (g) => {
-    if (g.cuentaBloqueada) return 'bloqueado';
-    if (g.verificado)      return 'verificado';
+    if (g.cuentaBloqueada)  return 'bloqueado';
+    if (g.tesisVerificada)  return 'verificado';
     return 'pendiente';
 };
 
