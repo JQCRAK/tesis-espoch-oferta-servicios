@@ -1418,7 +1418,6 @@ const TabEEmpleadores=()=>{
                     <I style={{fontSize:'0.72rem'}}/>{lbl}
                 </button>;
             })}
-            <button onClick={cargar} style={{marginLeft:'auto',display:'inline-flex',alignItems:'center',gap:5,padding:'7px 12px',background:'white',border:'1px solid #e5e7eb',borderRadius:7,cursor:'pointer',fontSize:'0.70rem',fontWeight:600,color:'#374151',fontFamily:FONT}}><FaSyncAlt style={{fontSize:'0.62rem'}}/>Actualizar</button>
         </div>
 
         {/* ════════ MODO EMPRESAS ════════ */}

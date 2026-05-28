@@ -59,6 +59,6 @@ router.get('/reportes/anexo25-empleadores', ...guard, ctrl.getReporteAnexo25Empl
 
 // ── ESTADÍSTICAS GENERALES ────────────────────────────────
 router.get('/estadisticas',              ...guard, ctrlStats.obtenerEstadisticasGenerales);
-router.get('/estadisticas/encuesta/:id', ...guard, ctrlStats.obtenerEstadisticasEncuesta);
+router.get('/estadisticas/encuesta', ...guard, ctrlStats.obtenerEstadisticasEncuesta);
 
 module.exports = router;
