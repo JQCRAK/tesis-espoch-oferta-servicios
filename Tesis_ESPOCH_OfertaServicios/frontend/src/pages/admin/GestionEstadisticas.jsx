@@ -23,22 +23,20 @@ const hdrs = () => {
 };
 
 // ── Helpers ───────────────────────────────────────────────────
-const pct        = (v, t) => (t === 0 ? 0 : Math.round((v / t) * 100));
 const norm       = s => s?.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase().trim() ?? '';
 const CANTON_ALIAS = { 'banos': 'banos de agua santa', 'lago agrio': 'nueva loja', 'san miguel de riobamba': 'riobamba' };
 const normCanton = n => { const k = norm(n); return CANTON_ALIAS[k] || k; };
 
 // ── Tabs principales ──────────────────────────────────────────
 const TABS = [
-    { id: 'graduados',   label: 'Indicadores de Seguimiento', icon: FaGraduationCap },
-    { id: 'encuestas',   label: 'Graduados',                  icon: FaClipboardList },
-    { id: 'empleadores', label: 'Empleadores',                icon: FaBuilding      },
+    { id: 'graduados',   label: 'Graduados',   icon: FaGraduationCap },
+    { id: 'empleadores', label: 'Empleadores', icon: FaBuilding      },
 ];
 
 // ── Sub-tabs de Graduados ─────────────────────────────────────
-const SUB_TABS_GRADUADOS = [
-    { id: 'info',       label: 'Información de Graduados' },
-    { id: 'resultados', label: 'Resultados de Encuesta'   },
+const SUB_TABS = [
+    { id: 'info',       label: 'Información de Graduados', icon: FaGraduationCap },
+    { id: 'resultados', label: 'Resultados de Encuestas',  icon: FaClipboardList },
 ];
 
 // ── Animación global (solo una vez) ──────────────────────────
@@ -57,12 +55,12 @@ if (typeof document !== 'undefined' && !document.getElementById('gest-est-kf')) 
 // COMPONENTE MASTER
 // ══════════════════════════════════════════════════════════════
 const GestionEstadisticas = () => {
-    const [tab,              setTab]              = useState('graduados');
-    const [subTabGraduados,  setSubTabGraduados]  = useState('info');
-    const [datos,            setDatos]            = useState(null);
-    const [cargando,         setCargando]         = useState(true);
-    const [error,            setError]            = useState('');
-    const [filtros,          setFiltros]          = useState({
+    const [tab,     setTab]     = useState('graduados');
+    const [subTab,  setSubTab]  = useState('info');
+    const [datos,    setDatos]    = useState(null);
+    const [cargando, setCargando] = useState(true);
+    const [error,    setError]    = useState('');
+    const [filtros,  setFiltros]  = useState({
         anio: '', provincia: '', canton: '', genero: '', disponibilidad: '', especialidad: '',
     });
     const [geoData,  setGeoData]  = useState({ ecuador: null, cantones: null, provincias: null });
@@ -128,9 +126,9 @@ const GestionEstadisticas = () => {
         if (porAnio.length >= 2) {
             const ult = porAnio[porAnio.length - 1], pen = porAnio[porAnio.length - 2];
             const delta = ult.total - pen.total;
-            if      (delta > 0) insights.push({ tipo: 'ok',   titulo: `Crecimiento: +${delta} en ${ult.anio}`,           detalle: `De ${pen.total} (${pen.anio}) a ${ult.total} (${ult.anio}). Carrera en expansión.` });
+            if      (delta > 0) insights.push({ tipo: 'ok',   titulo: `Crecimiento: +${delta} en ${ult.anio}`,            detalle: `De ${pen.total} (${pen.anio}) a ${ult.total} (${ult.anio}). Carrera en expansión.` });
             else if (delta < 0) insights.push({ tipo: 'warn', titulo: `Descenso: ${Math.abs(delta)} menos en ${ult.anio}`, detalle: `De ${pen.total} (${pen.anio}) a ${ult.total} (${ult.anio}). Revisar deserción.` });
-            else                insights.push({ tipo: 'info', titulo: `Graduaciones estables: ${ult.total}/año`,          detalle: 'Número consistente. Evaluar estrategias para mayor tasa oportuna.' });
+            else                insights.push({ tipo: 'info', titulo: `Graduaciones estables: ${ult.total}/año`,           detalle: 'Número consistente. Evaluar estrategias para mayor tasa oportuna.' });
         }
 
         if      (idxConc > 75 && totalProv < 5) insights.push({ tipo: 'warn', titulo: `Alta concentración: ${idxConc}% en top 3 provincias`, detalle: 'Poca distribución. Promover movilidad y alianzas regionales.' });
@@ -166,7 +164,7 @@ const GestionEstadisticas = () => {
         ].filter(Boolean);
     }, []);
 
-    // ── Datos filtrados (recalcula TODO desde el raw) ─────────
+    // ── Datos filtrados ───────────────────────────────────────
     const df = useMemo(() => {
         if (!datos?.graduadosRaw) return datos;
 
@@ -194,13 +192,13 @@ const GestionEstadisticas = () => {
             (g.habilidadesBlandas || []).forEach(h => { if (h) cHa[h] = (cHa[h] || 0) + 1; });
         });
 
-        const porAnio       = Object.entries(cAn).map(([a, t]) => ({ anio: parseInt(a), total: t })).sort((a, b) => a.anio - b.anio);
-        const anioMax       = porAnio.reduce((mx, a) => a.total > mx.total ? a : mx, { anio: 0, total: 0 });
-        const porProvFinal  = Object.entries(cPr).map(([provincia, total]) => ({ provincia, total })).sort((a, b) => b.total - a.total);
+        const porAnio        = Object.entries(cAn).map(([a, t]) => ({ anio: parseInt(a), total: t })).sort((a, b) => a.anio - b.anio);
+        const anioMax        = porAnio.reduce((mx, a) => a.total > mx.total ? a : mx, { anio: 0, total: 0 });
+        const porProvFinal   = Object.entries(cPr).map(([provincia, total]) => ({ provincia, total })).sort((a, b) => b.total - a.total);
         const porCantonFinal = Object.entries(cCa).map(([canton, total]) => ({ canton, total })).sort((a, b) => b.total - a.total);
 
-        const tasaEmp = tot > 0 ? Math.round(totalEmp / tot * 100) : 0;
-        const tasaVis = tot > 0 ? Math.round(totalPub / tot * 100) : 0;
+        const tasaEmp   = tot > 0 ? Math.round(totalEmp / tot * 100) : 0;
+        const tasaVis   = tot > 0 ? Math.round(totalPub / tot * 100) : 0;
         const totalProv = porProvFinal.length;
         const concTop3  = porProvFinal.slice(0, 3).reduce((s, p) => s + p.total, 0);
         const idxConc   = tot > 0 ? Math.round(concTop3 / tot * 100) : 0;
@@ -299,7 +297,7 @@ const GestionEstadisticas = () => {
     return (
         <div style={{ fontFamily: FONT, paddingBottom: 56 }}>
 
-            {/* ── Fila 1: Tabs principales ── */}
+            {/* ── Fila 1: Tabs principales (Graduados | Empleadores) ── */}
             <div style={{ display: 'flex', gap: 8, marginBottom: 8, flexWrap: 'wrap', alignItems: 'center' }}>
                 {TABS.map((t, i) => {
                     const Ico = t.icon;
@@ -326,15 +324,16 @@ const GestionEstadisticas = () => {
                 </div>
             </div>
 
-            {/* ── Fila 2: Sub-tabs solo cuando tab === 'encuestas' ── */}
-            {tab === 'encuestas' && (
+            {/* ── Fila 2: Sub-tabs solo cuando tab === 'graduados' ── */}
+            {tab === 'graduados' && (
                 <div style={{ display: 'flex', gap: 8, marginBottom: 16, flexWrap: 'wrap' }}>
-                    {SUB_TABS_GRADUADOS.map((st, i) => {
-                        const act = subTabGraduados === st.id;
+                    {SUB_TABS.map((st, i) => {
+                        const Ico = st.icon;
+                        const act = subTab === st.id;
                         return (
                             <button
                                 key={st.id}
-                                onClick={() => setSubTabGraduados(st.id)}
+                                onClick={() => setSubTab(st.id)}
                                 className="gest-anim"
                                 style={{
                                     display: 'inline-flex', alignItems: 'center', padding: '7px 14px',
@@ -347,15 +346,15 @@ const GestionEstadisticas = () => {
                                     animationDelay: `${i * 50}ms`,
                                 }}
                             >
-                                {st.label}
+                                <Ico style={{ marginRight: 6, fontSize: '0.76rem' }} />{st.label}
                             </button>
                         );
                     })}
                 </div>
             )}
 
-            {/* ── Contenido del tab activo ── */}
-            {tab === 'graduados' && (
+            {/* ── Contenido ── */}
+            {tab === 'graduados' && subTab === 'info' && (
                 <TabIndicadoresGraduados
                     df={df}
                     datos={datos}
@@ -367,12 +366,7 @@ const GestionEstadisticas = () => {
                 />
             )}
 
-            {tab === 'encuestas' && subTabGraduados === 'info'       && <TabEGraduado />}
-            {tab === 'encuestas' && subTabGraduados === 'resultados'  && (
-                <div style={{ padding: 32, textAlign: 'center', color: '#9ca3af', fontSize: '0.85rem' }}>
-                    Resultados de Encuesta — próximamente
-                </div>
-            )}
+            {tab === 'graduados' && subTab === 'resultados' && <TabEGraduado />}
 
             {tab === 'empleadores' && <TabEEmpleadores />}
 
