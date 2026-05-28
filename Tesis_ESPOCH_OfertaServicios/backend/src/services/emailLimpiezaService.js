@@ -5,29 +5,25 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 const FROM = process.env.EMAIL_FROM || 'Portal Graduados ESPOCH <onboarding@resend.dev>';
 
 /**
- * Envía advertencia al graduado: su cuenta será eliminada pronto
+ * Envía advertencia al graduado: su cuenta será eliminada en 30 días
  * si no verifica su tesis.
  *
  * @param {object} params
  * @param {string} params.nombres
  * @param {string} params.apellidos
  * @param {string} params.emailPersonal
- * @param {number} params.diasRestantes   - número (minutos en prueba, días en producción)
- * @param {string} params.unidad          - 'minuto' | 'día'  (para el texto del email)
- * @param {string} params.fechaEliminacion - string legible de cuándo se elimina
+ * @param {number} params.diasRestantes      - días que tiene antes de la eliminación (30)
+ * @param {string} params.fechaEliminacion   - fecha legible en hora Ecuador
+ *                                             ej: "lunes, 03 de junio de 2026"
  */
 const enviarAdvertenciaSinTesis = async ({
     nombres,
     apellidos,
     emailPersonal,
     diasRestantes,
-    unidad = 'día',
     fechaEliminacion,
 }) => {
     console.log(`\n⚠️  [EmailLimpieza] Enviando advertencia a: ${emailPersonal}`);
-
-    const unidadPlural = diasRestantes === 1 ? unidad : `${unidad}s`;
-    const esModoMinutos = unidad === 'minuto';
 
     const html = `<!DOCTYPE html>
 <html lang="es">
@@ -51,22 +47,27 @@ const enviarAdvertenciaSinTesis = async ({
           </p>
 
           <p style="margin:0 0 20px;font-size:0.88rem;color:#6c757d;line-height:1.7;">
-            Hemos detectado que tu cuenta en el <strong>Portal de Graduados de la Carrera de Software de la ESPOCH</strong>
-            aún no tiene la <strong>tesis de grado verificada</strong>.
+            Hemos detectado que tu cuenta en el <strong>Portal de Graduados de la Carrera de Software
+            de la ESPOCH</strong> lleva <strong>más de un año registrada</strong> sin tener la
+            <strong>tesis de grado verificada</strong>.
           </p>
 
           <!-- ALERTA ROJA -->
           <div style="background:#ffebee;border:1px solid #ffcdd2;border-left:4px solid #c62828;border-radius:8px;padding:20px 24px;margin-bottom:24px;">
             <p style="margin:0 0 8px;font-size:0.8rem;font-weight:700;color:#c62828;letter-spacing:0.5px;text-transform:uppercase;">
-              ⚠️ Aviso importante — Cuenta por eliminar
+              ⚠️ Aviso importante — Cuenta programada para eliminar
+            </p>
+            <p style="margin:0 0 12px;font-size:0.88rem;color:#6c757d;line-height:1.7;">
+              Si no verificas tu tesis antes del:
+            </p>
+            <p style="margin:0 0 12px;font-size:1.1rem;font-weight:800;color:#c62828;text-align:center;padding:10px;background:#fff5f5;border-radius:6px;border:1px solid #ffcdd2;">
+              📅 ${fechaEliminacion}
             </p>
             <p style="margin:0;font-size:0.88rem;color:#6c757d;line-height:1.7;">
-              Si no verificas tu tesis antes de las
-              <strong style="color:#c62828;">${fechaEliminacion}</strong>,
               tu cuenta y <strong>todos tus datos</strong> serán eliminados permanentemente del sistema.
             </p>
-            <p style="margin:10px 0 0;font-size:1rem;font-weight:800;color:#c62828;text-align:center;">
-              Tienes ${diasRestantes} ${unidadPlural} para regularizar tu situación.
+            <p style="margin:12px 0 0;font-size:0.95rem;font-weight:700;color:#c62828;text-align:center;">
+              Tienes ${diasRestantes} días para regularizar tu situación.
             </p>
           </div>
 
@@ -76,30 +77,30 @@ const enviarAdvertenciaSinTesis = async ({
               Datos que serán eliminados
             </p>
             <table width="100%" cellpadding="0" cellspacing="0">
-              <tr><td style="padding:3px 0;font-size:0.82rem;color:#495057;">❌ Información personal y de contacto</td></tr>
-              <tr><td style="padding:3px 0;font-size:0.82rem;color:#495057;">❌ Foto de perfil</td></tr>
-              <tr><td style="padding:3px 0;font-size:0.82rem;color:#495057;">❌ Todos tus proyectos registrados</td></tr>
-              <tr><td style="padding:3px 0;font-size:0.82rem;color:#495057;">❌ Todos tus certificados</td></tr>
-              <tr><td style="padding:3px 0;font-size:0.82rem;color:#495057;">❌ Tu perfil profesional completo</td></tr>
+              <tr><td style="padding:4px 0;font-size:0.82rem;color:#495057;">❌ &nbsp;Información personal y de contacto</td></tr>
+              <tr><td style="padding:4px 0;font-size:0.82rem;color:#495057;">❌ &nbsp;Foto de perfil</td></tr>
+              <tr><td style="padding:4px 0;font-size:0.82rem;color:#495057;">❌ &nbsp;Todos tus proyectos registrados</td></tr>
+              <tr><td style="padding:4px 0;font-size:0.82rem;color:#495057;">❌ &nbsp;Todos tus certificados</td></tr>
+              <tr><td style="padding:4px 0;font-size:0.82rem;color:#495057;">❌ &nbsp;Tu perfil profesional completo</td></tr>
             </table>
           </div>
 
           <!-- QUÉ HACER -->
           <div style="background:#e8f5e9;border:1px solid #c8e6c9;border-radius:8px;padding:16px 20px;margin-bottom:24px;">
-            <p style="margin:0 0 6px;font-size:0.78rem;font-weight:700;color:#2e7d32;letter-spacing:0.5px;text-transform:uppercase;">
+            <p style="margin:0 0 8px;font-size:0.78rem;font-weight:700;color:#2e7d32;letter-spacing:0.5px;text-transform:uppercase;">
               ✅ ¿Cómo evitar la eliminación?
             </p>
             <p style="margin:0;font-size:0.85rem;color:#1b5e20;line-height:1.7;">
-              ${esModoMinutos
-                ? 'Ingresa al portal y verifica tu tesis de grado desde la sección <strong>Mi Tesis</strong> antes de que se cumpla el tiempo.'
-                : 'Comunícate con la <strong>Secretaría de la Carrera de Software de la ESPOCH</strong> para que el administrador del portal verifique tu tesis de grado. Una vez verificada, tu cuenta queda activa de forma permanente.'
-              }
+              Comunícate con la <strong>Secretaría de la Carrera de Software de la ESPOCH</strong>
+              para que el administrador del portal verifique tu tesis de grado.<br><br>
+              Una vez verificada, tu cuenta queda <strong>activa de forma permanente</strong> y
+              no recibirás más avisos de este tipo.
             </p>
           </div>
 
-          <p style="margin:0;font-size:0.78rem;color:#adb5bd;text-align:center;line-height:1.5;">
+          <p style="margin:0;font-size:0.78rem;color:#adb5bd;text-align:center;line-height:1.6;">
             Este es un mensaje automático — No respondas a este correo.<br>
-            Si crees que esto es un error, contacta a la Carrera de Software directamente.
+            Si crees que esto es un error, contacta directamente a la Carrera de Software de la ESPOCH.
           </p>
 
         </td></tr>
@@ -120,7 +121,7 @@ const enviarAdvertenciaSinTesis = async ({
         const { data, error } = await resend.emails.send({
             from:    FROM,
             to:      emailPersonal,
-            subject: `⚠️ Tu cuenta será eliminada en ${diasRestantes} ${unidadPlural} — Portal Graduados ESPOCH`,
+            subject: `⚠️ Aviso: tu cuenta será eliminada el ${fechaEliminacion} — Portal Graduados ESPOCH`,
             html,
         });
 

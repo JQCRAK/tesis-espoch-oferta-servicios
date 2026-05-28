@@ -1,4 +1,4 @@
-// backend/app.js
+// backend/src/app.js
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
@@ -96,44 +96,47 @@ cron.schedule('5 0 * * 1', async () => {
    CRON — Limpieza automática de cuentas sin tesis verificada
    ──────────────────────────────────────────────────────────────────
 
-   ╔══════════════════════════════════════════════════════════╗
-   ║  MODO PRUEBA  (activo ahora)                             ║
-   ║  • 5 min sin tesis  → envía email de advertencia         ║
-   ║  • 10 min sin tesis → elimina la cuenta en cascada       ║
-   ║  • Cron corre cada minuto: * * * * *                     ║
-   ╠══════════════════════════════════════════════════════════╣
-   ║  MODO PRODUCCIÓN  (cambiar cuando esté listo)            ║
-   ║  • 365 días sin tesis → envía email de advertencia       ║
-   ║  • 380 días sin tesis → elimina la cuenta en cascada     ║
-   ║  • Cron corre cada día a las 02:00: 0 2 * * *            ║
-   ╚══════════════════════════════════════════════════════════╝
+   PRODUCCIÓN (activo):
+     • 365 días desde createdAt  → envía email de advertencia
+     • 30 días después del aviso → elimina la cuenta en cascada
 
-   Para pasar a producción cambia SOLO estas 3 líneas:
-     MINS_ADVERTENCIA = 365 * 24 * 60
-     MINS_ELIMINAR    = 380 * 24 * 60
-     cron.schedule('0 2 * * *', ...)
-
+   Se ejecuta todos los días a las 02:00 (America/Guayaquil).
    Solo afecta graduados con tesisVerificada = false.
-   Si la tesis se verifica, advertenciaSinTesisEnviada se resetea
-   a null en tesisController y este cron los ignora para siempre.
+   Si la tesis se verifica en cualquier momento, advertenciaSinTesisEnviada
+   se resetea a null en tesisController y el cron los ignora para siempre.
 ══════════════════════════════════════════════════════════════════ */
-cron.schedule('* * * * *', async () => {
+cron.schedule('0 1 * * *', async () => {
     const TAG = '[Cron-Limpieza]';
     const ahora = new Date();
 
-    // ── Tiempos en MINUTOS ────────────────────────────────────────
-    // PRUEBA:      5 min advertencia,  10 min eliminar
-    // PRODUCCIÓN:  365*24*60 advertencia,  380*24*60 eliminar
-    const MINS_ADVERTENCIA = 5;
-    const MINS_ELIMINAR    = 10;
+    // ── Configuración de tiempos ──────────────────────────────────
+    const DIAS_ADVERTENCIA          = 365;   // 1 año sin tesis → advertencia
+    const DIAS_ESPERA_TRAS_AVISO    = 30;    // 30 días después del aviso → eliminación
     // ─────────────────────────────────────────────────────────────
 
-    const msAdvertencia = MINS_ADVERTENCIA * 60 * 1000;
-    const msEliminar    = MINS_ELIMINAR    * 60 * 1000;
+    const msAdvertencia       = DIAS_ADVERTENCIA       * 24 * 60 * 60 * 1000;
+    const msEsperaTrasDaviso  = DIAS_ESPERA_TRAS_AVISO * 24 * 60 * 60 * 1000;
 
-    const fechaLimiteRegistro   = new Date(ahora.getTime() - msAdvertencia);
-    const msEsperaTrasDaviso    = msEliminar - msAdvertencia;   // 5 min entre aviso y borrado
-    const fechaLimiteTrasDaviso = new Date(ahora.getTime() - msEsperaTrasDaviso);
+    // Límite de registro para mandar advertencia:
+    // createdAt <= hoy - 365 días  Y  aún no se avisó
+    const fechaLimiteRegistro = new Date(ahora.getTime() - msAdvertencia);
+
+    // Límite para eliminar:
+    // advertenciaSinTesisEnviada <= hoy - 30 días
+    const fechaLimiteEliminar = new Date(ahora.getTime() - msEsperaTrasDaviso);
+
+    // ── Helper: fecha legible en zona Ecuador ─────────────────────
+    // Ejemplo: "lunes, 03 de junio de 2026"
+    const fechaEcuador = (date) =>
+        date.toLocaleDateString('es-EC', {
+            timeZone: 'America/Guayaquil',
+            weekday:  'long',
+            day:      '2-digit',
+            month:    'long',
+            year:     'numeric',
+        });
+
+    console.log(`\n${TAG} ${ahora.toLocaleString('es-EC', { timeZone: 'America/Guayaquil' })} — Iniciando ciclo de limpieza`);
 
     try {
         const Graduado    = require('./models/Graduado');
@@ -147,8 +150,8 @@ cron.schedule('* * * * *', async () => {
 
         /* ── PASO 1: Enviar advertencias ──────────────────────────
            - tesisVerificada = false
-           - createdAt <= hace MINS_ADVERTENCIA minutos
-           - advertenciaSinTesisEnviada = null  (aún no avisado)
+           - createdAt <= hace 365 días
+           - advertenciaSinTesisEnviada = null (aún no avisado)
         ──────────────────────────────────────────────────────── */
         const paraAdvertir = await Graduado.find({
             tesisVerificada: false,
@@ -156,27 +159,21 @@ cron.schedule('* * * * *', async () => {
             advertenciaSinTesisEnviada: null,
         }).select('_id nombres apellidos emailPersonal createdAt');
 
+        let advertenciasEnviadas = 0;
+
         for (const graduado of paraAdvertir) {
-            const fechaElim = new Date(graduado.createdAt.getTime() + msEliminar);
-            const minsRestantes = Math.max(
-                1,
-                Math.ceil((fechaElim.getTime() - ahora.getTime()) / (60 * 1000))
+            // Fecha exacta de eliminación = createdAt + 365 días + 30 días
+            const fechaElim = new Date(
+                graduado.createdAt.getTime() + msAdvertencia + msEsperaTrasDaviso
             );
-            // Texto legible según el modo:
-            // Prueba → "X minutos"  |  Producción → "X días"
-            const tiempoRestanteTexto = `${minsRestantes} minuto${minsRestantes === 1 ? '' : 's'}`;
-            const fechaEliminacionStr = fechaElim.toLocaleTimeString('es-EC', {
-                hour: '2-digit', minute: '2-digit', second: '2-digit',
-            });
 
             try {
                 await enviarAdvertenciaSinTesis({
                     nombres:          graduado.nombres,
                     apellidos:        graduado.apellidos,
                     emailPersonal:    graduado.emailPersonal,
-                    diasRestantes:    minsRestantes,           // el template usa esta variable
-                    unidad:           'minuto',                // 'minuto' prueba | 'día' producción
-                    fechaEliminacion: fechaEliminacionStr,
+                    diasRestantes:    DIAS_ESPERA_TRAS_AVISO,
+                    fechaEliminacion: fechaEcuador(fechaElim),
                 });
 
                 await Graduado.findByIdAndUpdate(graduado._id, {
@@ -190,11 +187,12 @@ cron.schedule('* * * * *', async () => {
                     accion:            'ADVERTENCIA_SIN_TESIS',
                     modulo:            'Limpieza automática',
                     coleccionAfectada: 'graduados',
-                    descripcion:       `Advertencia enviada a "${graduado.nombres} ${graduado.apellidos}" (${graduado.emailPersonal}). Eliminación a las ${fechaEliminacionStr}.`,
+                    descripcion:       `Advertencia enviada a "${graduado.nombres} ${graduado.apellidos}" (${graduado.emailPersonal}). Eliminación programada: ${fechaEcuador(fechaElim)}.`,
                     ip:                'cron',
                 }).catch(() => {});
 
-                console.log(`${TAG} ⚠️  Advertencia → ${graduado.nombres} ${graduado.apellidos} | eliminar en ${tiempoRestanteTexto}`);
+                advertenciasEnviadas++;
+                console.log(`${TAG} ⚠️  Advertencia → ${graduado.nombres} ${graduado.apellidos} | eliminación: ${fechaEcuador(fechaElim)}`);
 
             } catch (emailErr) {
                 console.error(`${TAG} ❌ Error enviando advertencia a ${graduado.emailPersonal}:`, emailErr.message);
@@ -203,15 +201,17 @@ cron.schedule('* * * * *', async () => {
 
         /* ── PASO 2: Eliminar cuentas vencidas ────────────────────
            - tesisVerificada = false
-           - advertenciaSinTesisEnviada <= hace (msEliminar - msAdvertencia) ms
+           - advertenciaSinTesisEnviada <= hace 30 días
         ──────────────────────────────────────────────────────── */
         const paraEliminar = await Graduado.find({
             tesisVerificada: false,
             advertenciaSinTesisEnviada: {
                 $ne:  null,
-                $lte: fechaLimiteTrasDaviso,
+                $lte: fechaLimiteEliminar,
             },
         }).select('_id nombres apellidos emailPersonal fotoPerfil');
+
+        let eliminados = 0;
 
         for (const graduado of paraEliminar) {
             const id        = graduado._id.toString();
@@ -275,10 +275,11 @@ cron.schedule('* * * * *', async () => {
                     accion:            'ELIMINACION_AUTOMATICA_SIN_TESIS',
                     modulo:            'Limpieza automática',
                     coleccionAfectada: 'graduados',
-                    descripcion:       `Cuenta eliminada automáticamente por falta de tesis: "${nombreLog}" (${graduado.emailPersonal}).`,
+                    descripcion:       `Cuenta eliminada automáticamente por falta de tesis verificada: "${nombreLog}" (${graduado.emailPersonal}).`,
                     ip:                'cron',
                 }).catch(() => {});
 
+                eliminados++;
                 console.log(`${TAG} 🗑️  Eliminado → ${nombreLog} (${graduado.emailPersonal})`);
 
             } catch (elErr) {
@@ -286,13 +287,15 @@ cron.schedule('* * * * *', async () => {
             }
         }
 
-        // Log silencioso si no hubo nada que hacer
-        if (paraAdvertir.length === 0 && paraEliminar.length === 0) return;
+        if (paraAdvertir.length === 0 && paraEliminar.length === 0) {
+            console.log(`${TAG} Sin acciones pendientes hoy.`);
+            return;
+        }
 
-        console.log(`${TAG} ✅ Advertencias: ${paraAdvertir.length} | Eliminados: ${paraEliminar.length}`);
+        console.log(`${TAG} ✅ Advertencias enviadas: ${advertenciasEnviadas} | Cuentas eliminadas: ${eliminados}\n`);
 
     } catch (err) {
-        console.error(`${TAG} ❌ Error crítico:`, err.message);
+        console.error(`${TAG} ❌ Error crítico en el cron de limpieza:`, err.message);
     }
 
 }, { timezone: 'America/Guayaquil' });
@@ -313,7 +316,7 @@ app.listen(PORT, () => {
     console.log(`⏰ Crons activos:`);
     console.log(`   • Eventos/Encuestas  — cada hora`);
     console.log(`   • Tendencias         — cada lunes 00:05`);
-    console.log(`   • Limpieza sin tesis — cada minuto [MODO PRUEBA: 5min aviso / 10min eliminar]`);
+    coconsole.log(`   • Limpieza sin tesis — cada día 01:00 [365 días aviso / 30 días para eliminar]`);
     console.log('Buscando uploads en:', path.join(__dirname, 'uploads'));
 });
 
