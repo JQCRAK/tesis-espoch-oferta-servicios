@@ -10,6 +10,7 @@ import TabIndicadoresGraduados from './TabIndicadoresGraduados';
 import TabEGraduado            from './TabEGraduado';
 import TabEEmpleadores         from './TabEEmpleadores';
 import { leerSesion } from '../../utils/storageSeguro';
+
 // ── Config ────────────────────────────────────────────────────
 const API  = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
 const FONT = "'Segoe UI', system-ui, -apple-system, sans-serif";
@@ -27,11 +28,17 @@ const norm       = s => s?.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLow
 const CANTON_ALIAS = { 'banos': 'banos de agua santa', 'lago agrio': 'nueva loja', 'san miguel de riobamba': 'riobamba' };
 const normCanton = n => { const k = norm(n); return CANTON_ALIAS[k] || k; };
 
-// ── Tabs ──────────────────────────────────────────────────────
+// ── Tabs principales ──────────────────────────────────────────
 const TABS = [
     { id: 'graduados',   label: 'Indicadores de Seguimiento', icon: FaGraduationCap },
-    { id: 'encuestas',   label: 'Encuestas de Graduados',     icon: FaClipboardList },
+    { id: 'encuestas',   label: 'Graduados',                  icon: FaClipboardList },
     { id: 'empleadores', label: 'Empleadores',                icon: FaBuilding      },
+];
+
+// ── Sub-tabs de Graduados ─────────────────────────────────────
+const SUB_TABS_GRADUADOS = [
+    { id: 'info',       label: 'Información de Graduados' },
+    { id: 'resultados', label: 'Resultados de Encuesta'   },
 ];
 
 // ── Animación global (solo una vez) ──────────────────────────
@@ -50,11 +57,12 @@ if (typeof document !== 'undefined' && !document.getElementById('gest-est-kf')) 
 // COMPONENTE MASTER
 // ══════════════════════════════════════════════════════════════
 const GestionEstadisticas = () => {
-    const [tab,      setTab]      = useState('graduados');
-    const [datos,    setDatos]    = useState(null);
-    const [cargando, setCargando] = useState(true);
-    const [error,    setError]    = useState('');
-    const [filtros,  setFiltros]  = useState({
+    const [tab,              setTab]              = useState('graduados');
+    const [subTabGraduados,  setSubTabGraduados]  = useState('info');
+    const [datos,            setDatos]            = useState(null);
+    const [cargando,         setCargando]         = useState(true);
+    const [error,            setError]            = useState('');
+    const [filtros,          setFiltros]          = useState({
         anio: '', provincia: '', canton: '', genero: '', disponibilidad: '', especialidad: '',
     });
     const [geoData,  setGeoData]  = useState({ ecuador: null, cantones: null, provincias: null });
@@ -90,7 +98,6 @@ const GestionEstadisticas = () => {
     const cambiarFiltro = useCallback((campo, valor) => {
         setFiltros(prev => {
             const n = { ...prev, [campo]: valor };
-            // Al cambiar provincia limpia dependientes
             if (campo === 'provincia') { n.canton = ''; n.genero = ''; n.disponibilidad = ''; n.especialidad = ''; }
             if (campo === 'anio')      { n.genero = ''; n.disponibilidad = ''; n.especialidad = ''; }
             if (campo === 'canton')    { n.genero = ''; n.disponibilidad = ''; n.especialidad = ''; }
@@ -176,7 +183,6 @@ const GestionEstadisticas = () => {
         const totalPub = lista.filter(g => g.perfilPublico).length;
         const totalEmp = tot - totalDis;
 
-        // Conteos
         const cGe = {}, cAn = {}, cPr = {}, cCa = {}, cTe = {}, cAf = {}, cHa = {};
         lista.forEach(g => {
             const kg = g.genero || 'No esp.'; cGe[kg] = (cGe[kg] || 0) + 1;
@@ -293,8 +299,8 @@ const GestionEstadisticas = () => {
     return (
         <div style={{ fontFamily: FONT, paddingBottom: 56 }}>
 
-            {/* Barra de tabs */}
-            <div style={{ display: 'flex', gap: 8, marginBottom: 16, flexWrap: 'wrap', alignItems: 'center' }}>
+            {/* ── Fila 1: Tabs principales ── */}
+            <div style={{ display: 'flex', gap: 8, marginBottom: 8, flexWrap: 'wrap', alignItems: 'center' }}>
                 {TABS.map((t, i) => {
                     const Ico = t.icon;
                     const act = tab === t.id;
@@ -320,7 +326,35 @@ const GestionEstadisticas = () => {
                 </div>
             </div>
 
-            {/* Contenido del tab activo */}
+            {/* ── Fila 2: Sub-tabs solo cuando tab === 'encuestas' ── */}
+            {tab === 'encuestas' && (
+                <div style={{ display: 'flex', gap: 8, marginBottom: 16, flexWrap: 'wrap' }}>
+                    {SUB_TABS_GRADUADOS.map((st, i) => {
+                        const act = subTabGraduados === st.id;
+                        return (
+                            <button
+                                key={st.id}
+                                onClick={() => setSubTabGraduados(st.id)}
+                                className="gest-anim"
+                                style={{
+                                    display: 'inline-flex', alignItems: 'center', padding: '7px 14px',
+                                    borderRadius: 8, cursor: 'pointer', fontSize: '0.78rem', fontFamily: FONT,
+                                    border: `1px solid ${act ? ROJO : '#e5e7eb'}`,
+                                    background: act ? ROJO : 'white',
+                                    color: act ? 'white' : '#6b7280',
+                                    fontWeight: act ? 700 : 500,
+                                    boxShadow: '0 1px 2px rgba(0,0,0,0.04)',
+                                    animationDelay: `${i * 50}ms`,
+                                }}
+                            >
+                                {st.label}
+                            </button>
+                        );
+                    })}
+                </div>
+            )}
+
+            {/* ── Contenido del tab activo ── */}
             {tab === 'graduados' && (
                 <TabIndicadoresGraduados
                     df={df}
@@ -332,7 +366,14 @@ const GestionEstadisticas = () => {
                     geoError={geoError}
                 />
             )}
-            {tab === 'encuestas'   && <TabEGraduado />}
+
+            {tab === 'encuestas' && subTabGraduados === 'info'       && <TabEGraduado />}
+            {tab === 'encuestas' && subTabGraduados === 'resultados'  && (
+                <div style={{ padding: 32, textAlign: 'center', color: '#9ca3af', fontSize: '0.85rem' }}>
+                    Resultados de Encuesta — próximamente
+                </div>
+            )}
+
             {tab === 'empleadores' && <TabEEmpleadores />}
 
         </div>
