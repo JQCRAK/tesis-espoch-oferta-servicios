@@ -746,28 +746,216 @@ const ColDer=({filtros,porProv,emps,total,offset,respuestasRaw,encCerradas})=>{
 };
 
 // ═══════════════════════════════════════════════════════════
-// INSIGHTS
+// ANÁLISIS REAL DE DATOS — INSIGHTS DINÁMICOS
 // ═══════════════════════════════════════════════════════════
-const calcularInsights=(kpis,comunes,otras,encCerradas)=>{
+
+// Helper: promedio de respuestas de escala
+const promedioEscala=(resps)=>{
+    const vals=resps.map(r=>Number(r.valor)).filter(v=>v>=1&&v<=5);
+    if(!vals.length) return null;
+    return vals.reduce((a,b)=>a+b,0)/vals.length;
+};
+
+// Helper: distribución Si/No
+const distSiNo=(resps)=>{
+    const si=resps.filter(r=>r.valor==='Sí').length;
+    const no=resps.filter(r=>r.valor==='No').length;
+    const total=si+no;
+    return total>0?{si,no,total,pctSi:Math.round((si/total)*100)}:null;
+};
+
+// Helper: opción más frecuente
+const modaOpciones=(resps)=>{
+    const c={};
+    resps.forEach(r=>{
+        const v=r.valor;
+        if(Array.isArray(v)) v.forEach(x=>{c[x]=(c[x]||0)+1;});
+        else if(v) c[v]=(c[v]||0)+1;
+    });
+    const entries=Object.entries(c).sort((a,b)=>b[1]-a[1]);
+    return entries.length>0?{valor:entries[0][0],count:entries[0][1],total:resps.length}:null;
+};
+
+const calcularInsights=(kpis,comunes,otras,encCerradas,empleadoresRaw,respuestasRaw)=>{
     const ins=[];
+    const todasPregs=[...comunes,...otras];
     const{tasa,totalEmps,respondieron}=kpis;
-    if(tasa>=80) ins.push({tipo:'ok',titulo:`Alta participación: ${tasa}%`,detalle:`${respondieron} de ${totalEmps} respondieron. Muestra representativa.`});
-    else if(tasa>=50) ins.push({tipo:'warn',titulo:`Participación moderada: ${tasa}%`,detalle:`${totalEmps-respondieron} empleadores no respondieron. Considerar reenvío.`});
-    else ins.push({tipo:'crit',titulo:`Baja participación: ${tasa}%`,detalle:`Solo ${respondieron} de ${totalEmps} respondieron. Datos pueden no ser representativos.`});
-    if(encCerradas.length===0) ins.push({tipo:'warn',titulo:'Sin encuestas cerradas',detalle:'Los análisis aparecerán al cerrar una encuesta activa.'});
-    else if(encCerradas.length>=2) ins.push({tipo:'ok',titulo:`${encCerradas.length} encuestas cerradas`,detalle:'Hay datos históricos para comparar tendencias entre períodos.'});
-    if(comunes.length>0) ins.push({tipo:'ok',titulo:`${comunes.length} pregunta${comunes.length!==1?'s':''} recurrente${comunes.length!==1?'s':''}`,detalle:'Comparación longitudinal disponible entre encuestas.'});
-    const textoGrupos=[...comunes,...otras].filter(g=>g.tipo==='texto_libre');
-    if(textoGrupos.length>0) ins.push({tipo:'info',titulo:`${textoGrupos.length} pregunta${textoGrupos.length!==1?'s':''} de texto con análisis NLP`,detalle:'Detección automática de temas, patrones y palabras clave aplicada.'});
+
+    // ── 1. PARTICIPACIÓN ─────────────────────────────────────
+    const sinResponder=totalEmps-respondieron;
+    if(tasa>=80)
+        ins.push({tipo:'ok',titulo:`Participación alta: ${tasa}% (${respondieron}/${totalEmps})`,detalle:`Solo ${sinResponder} empresa${sinResponder!==1?'s':''} no respondió. La muestra es estadísticamente representativa para análisis.`});
+    else if(tasa>=60)
+        ins.push({tipo:'warn',titulo:`Participación moderada: ${tasa}% (${respondieron}/${totalEmps})`,detalle:`${sinResponder} empresa${sinResponder!==1?'s':''} no respondió. Se recomienda reenvío para mejorar representatividad.`});
+    else if(tasa>=40)
+        ins.push({tipo:'crit',titulo:`Participación baja: ${tasa}% — muestra insuficiente`,detalle:`Solo ${respondieron} de ${totalEmps} respondieron. Con menos del 40% los resultados pueden estar sesgados.`});
+    else if(tasa>0)
+        ins.push({tipo:'crit',titulo:`Participación crítica: ${tasa}% — datos no representativos`,detalle:`Únicamente ${respondieron} empresa${respondieron!==1?'s':''} respondió. Se recomienda replantear la estrategia de convocatoria.`});
+
+    // ── 2. TASA DE RESPUESTA POR TIPO DE CAPITAL ─────────────
+    const porCapital={};
+    empleadoresRaw.forEach(e=>{
+        const t=e.tipoCapital||'Sin clasificar';
+        if(!porCapital[t]) porCapital[t]={total:0,respondieron:0};
+        porCapital[t].total++;
+        if(e.respondio) porCapital[t].respondieron++;
+    });
+    const capitalEntries=Object.entries(porCapital).filter(([,v])=>v.total>=2);
+    if(capitalEntries.length>=2){
+        const mejorCap=capitalEntries.sort((a,b)=>(b[1].respondieron/b[1].total)-(a[1].respondieron/a[1].total))[0];
+        const pctMejor=Math.round((mejorCap[1].respondieron/mejorCap[1].total)*100);
+        const peorCap=capitalEntries[capitalEntries.length-1];
+        const pctPeor=Math.round((peorCap[1].respondieron/peorCap[1].total)*100);
+        if(pctMejor-pctPeor>=20)
+            ins.push({tipo:'info',titulo:`Brecha de participación por tipo de capital`,detalle:`Empresas ${mejorCap[0]}: ${pctMejor}% de respuesta. Empresas ${peorCap[0]}: ${pctPeor}%. Diferencia de ${pctMejor-pctPeor} puntos porcentuales.`});
+    }
+
+    // ── 3. ANÁLISIS DE PREGUNTAS DE ESCALA ───────────────────
+    const pregsEscala=todasPregs.filter(g=>g.tipo==='escala'&&g.respuestasRaw?.length>=3);
+    if(pregsEscala.length>0){
+        const conProm=pregsEscala.map(g=>({
+            texto:g.textoCanonical,
+            prom:promedioEscala(g.respuestasRaw),
+            n:g.respuestasRaw.length,
+        })).filter(x=>x.prom!==null).sort((a,b)=>a.prom-b.prom);
+
+        if(conProm.length>0){
+            const peor=conProm[0];
+            const mejor=conProm[conProm.length-1];
+            if(peor.prom<3.0)
+                ins.push({tipo:'crit',titulo:`Área crítica detectada: "${peor.texto.slice(0,50)}${peor.texto.length>50?'…':''}"`,detalle:`Promedio de ${peor.prom.toFixed(2)}/5 en ${peor.n} respuestas. Es el indicador más bajo y requiere atención inmediata.`});
+            else if(peor.prom<3.5)
+                ins.push({tipo:'warn',titulo:`Área de mejora: "${peor.texto.slice(0,50)}${peor.texto.length>50?'…':''}"`,detalle:`Promedio de ${peor.prom.toFixed(2)}/5. Por debajo del umbral óptimo (3.5). Se recomienda profundizar en esta dimensión.`});
+
+            if(mejor.prom>=4.0&&conProm.length>1)
+                ins.push({tipo:'ok',titulo:`Fortaleza destacada: "${mejor.texto.slice(0,50)}${mejor.texto.length>50?'…':''}"`,detalle:`Promedio de ${mejor.prom.toFixed(2)}/5 en ${mejor.n} respuestas. Es el aspecto mejor valorado por los empleadores.`});
+
+            // Rango de variación entre preguntas
+            if(conProm.length>=3){
+                const rango=mejor.prom-peor.prom;
+                if(rango>=1.5)
+                    ins.push({tipo:'info',titulo:`Alta dispersión entre indicadores (rango ${rango.toFixed(1)} puntos)`,detalle:`Las valoraciones van de ${peor.prom.toFixed(1)} a ${mejor.prom.toFixed(1)}. Esto indica percepciones muy diferenciadas según el tema evaluado.`});
+            }
+        }
+    }
+
+    // ── 4. ANÁLISIS SI/NO ────────────────────────────────────
+    const pregsSiNo=todasPregs.filter(g=>g.tipo==='si_no'&&g.respuestasRaw?.length>=2);
+    pregsSiNo.forEach(g=>{
+        const d=distSiNo(g.respuestasRaw);
+        if(!d) return;
+        const texto=g.textoCanonical.slice(0,55)+(g.textoCanonical.length>55?'…':'');
+        if(d.pctSi<=25)
+            ins.push({tipo:'crit',titulo:`Solo ${d.pctSi}% respondió "Sí" a: "${texto}"`,detalle:`${d.si} de ${d.total} empleadores respondieron afirmativamente. Este indicador binario señala una brecha significativa.`});
+        else if(d.pctSi>=80)
+            ins.push({tipo:'ok',titulo:`${d.pctSi}% respondió "Sí" a: "${texto}"`,detalle:`${d.si} de ${d.total} empleadores con respuesta positiva. Consenso elevado en este aspecto.`});
+    });
+
+    // ── 5. OPCIÓN MÁS FRECUENTE EN OPCIONES MÚLTIPLES ────────
+    const pregsOpc=todasPregs.filter(g=>(g.tipo==='opcion_multiple'||g.tipo==='checkboxes')&&g.respuestasRaw?.length>=3);
+    if(pregsOpc.length>0){
+        const moda=modaOpciones(pregsOpc[0].respuestasRaw);
+        if(moda&&moda.count/moda.total>=0.5)
+            ins.push({tipo:'info',titulo:`Tendencia dominante: "${moda.valor}"`,detalle:`La opción "${moda.valor}" fue seleccionada por ${moda.count} de ${moda.total} empleadores (${Math.round(moda.count/moda.total*100)}%). Preferencia clara del sector.`});
+    }
+
+    // ── 6. VÍNCULO CON ESPOCH ────────────────────────────────
+    const conEspoch=respuestasRaw.filter(r=>(r.datosEncuestado?.estudiosEspoch||'').trim()!=='').length;
+    if(conEspoch>0){
+        const pctEspoch=Math.round((conEspoch/Math.max(respuestasRaw.length,1))*100);
+        ins.push({tipo:'ok',titulo:`${conEspoch} encuestador${conEspoch!==1?'es':''} con vínculo ESPOCH (${pctEspoch}%)`,detalle:`Encuestadores con estudios en ESPOCH. Este dato evidencia el impacto directo de la institución en el sector empleador.`});
+    }
+
+    // ── 7. LONGITUDINAL — 2+ ENCUESTAS ───────────────────────
+    if(encCerradas.length>=2){
+        const pregsComunes=todasPregs.filter(g=>g.esComun&&g.tipo==='escala');
+        if(pregsComunes.length>0){
+            // Comparar promedio de la encuesta más antigua vs más reciente
+            const encOrdenadas=[...encCerradas].sort((a,b)=>new Date(a.fechaCierre)-new Date(b.fechaCierre));
+            const idAntigua=encOrdenadas[0]._id;
+            const idReciente=encOrdenadas[encOrdenadas.length-1]._id;
+            let mejora=0,empeora=0;
+            pregsComunes.forEach(g=>{
+                const rA=g.respuestasRaw.filter(r=>r.encuestaId===idAntigua);
+                const rR=g.respuestasRaw.filter(r=>r.encuestaId===idReciente);
+                const pA=promedioEscala(rA),pR=promedioEscala(rR);
+                if(pA&&pR){ if(pR>pA+0.2) mejora++; else if(pR<pA-0.2) empeora++; }
+            });
+            if(mejora>empeora)
+                ins.push({tipo:'ok',titulo:`Tendencia positiva entre encuestas: ${mejora} indicador${mejora!==1?'es':''} mejoró`,detalle:`Comparando "${encOrdenadas[0].titulo}" vs "${encOrdenadas[encOrdenadas.length-1].titulo}", la mayoría de indicadores de escala muestran mejoría.`});
+            else if(empeora>mejora)
+                ins.push({tipo:'warn',titulo:`Tendencia negativa: ${empeora} indicador${empeora!==1?'es':''} empeoró`,detalle:`Entre la primera y última encuesta, varios indicadores de escala bajaron. Se recomienda analizar los cambios en el contexto.`});
+            else if(mejora>0)
+                ins.push({tipo:'info',titulo:`Tendencia estable entre ${encCerradas.length} encuestas`,detalle:`Los indicadores de escala no muestran variación significativa entre períodos. La percepción del sector se mantiene constante.`});
+        }
+        ins.push({tipo:'ok',titulo:`${encCerradas.length} encuestas cerradas — análisis longitudinal disponible`,detalle:`Datos de múltiples períodos permiten comparar tendencias. Se recomienda mantener preguntas comunes en futuras encuestas.`});
+    } else if(encCerradas.length===1){
+        ins.push({tipo:'info',titulo:`1 encuesta cerrada — base de datos inicial`,detalle:`Con la segunda encuesta se habilitará el análisis de tendencias. Se recomienda reutilizar las preguntas actuales.`});
+    }
+
+    // ── 8. COBERTURA DE TEXTO LIBRE ───────────────────────────
+    const pregsTexto=todasPregs.filter(g=>g.tipo==='texto_libre');
+    if(pregsTexto.length>0){
+        const totalResps=pregsTexto.reduce((s,g)=>s+(g.respuestasRaw?.length||0),0);
+        const promRespTexto=Math.round(totalResps/pregsTexto.length);
+        if(promRespTexto>=5)
+            ins.push({tipo:'ok',titulo:`Buena cobertura cualitativa: ~${promRespTexto} respuestas por pregunta abierta`,detalle:`Las preguntas de texto libre tienen suficiente volumen para análisis NLP confiable de patrones y temas.`});
+        else if(promRespTexto>0)
+            ins.push({tipo:'info',titulo:`Cobertura cualitativa limitada: ~${promRespTexto} respuesta${promRespTexto!==1?'s':''} por pregunta abierta`,detalle:`Con más respuestas el análisis NLP mejora. Actualmente los patrones detectados son referenciales.`});
+    }
+
     return ins;
 };
 
-const calcularPlan=(kpis,encCerradas)=>{
+const calcularPlan=(kpis,encCerradas,empleadoresRaw,todasPregs)=>{
     const plan=[];
-    if(kpis.tasa<50) plan.push({prioridad:1,accion:'Reenviar encuesta a empleadores sin respuesta',impacto:'alto',meta:`Alcanzar 70%+ de participación`});
-    if(kpis.tasa<70&&kpis.tasa>=50) plan.push({prioridad:2,accion:'Recordatorio por email a empleadores pendientes',impacto:'medio',meta:`${kpis.totalEmps-kpis.respondieron} empleadores por contactar`});
-    if(encCerradas.length===0) plan.push({prioridad:3,accion:'Cerrar encuesta activa para habilitar resultados',impacto:'alto',meta:'Los gráficos solo muestran encuestas cerradas'});
-    if(encCerradas.length===1) plan.push({prioridad:4,accion:'Reutilizar preguntas en próxima encuesta',impacto:'medio',meta:'Generar datos comparativos longitudinales'});
+    let prioridad=1;
+    const{tasa,totalEmps,respondieron}=kpis;
+
+    // P1: Participación crítica
+    if(tasa<40)
+        plan.push({prioridad:prioridad++,accion:'Implementar estrategia de reenganche a empleadores inactivos',impacto:'alto',meta:`${totalEmps-respondieron} empresas sin responder — objetivo: superar 60%`});
+
+    // P2: Recordatorio si participación media
+    if(tasa>=40&&tasa<70)
+        plan.push({prioridad:prioridad++,accion:'Enviar recordatorio personalizado a empleadores pendientes',impacto:'medio',meta:`${totalEmps-respondieron} contactos por realizar para superar 70%`});
+
+    // P3: Sin encuestas cerradas
+    if(encCerradas.length===0)
+        plan.push({prioridad:prioridad++,accion:'Cerrar la encuesta activa para habilitar el análisis de resultados',impacto:'alto',meta:'Los gráficos y análisis solo operan sobre encuestas cerradas'});
+
+    // P4: Análisis de preguntas débiles
+    const pregsEscala=(todasPregs||[]).filter(g=>g.tipo==='escala'&&g.respuestasRaw?.length>=2);
+    if(pregsEscala.length>0){
+        const promedios=pregsEscala.map(g=>({texto:g.textoCanonical,prom:promedioEscala(g.respuestasRaw)})).filter(x=>x.prom!==null);
+        const debiles=promedios.filter(x=>x.prom<3.5);
+        if(debiles.length>0)
+            plan.push({prioridad:prioridad++,accion:`Diseñar plan de mejora para ${debiles.length} área${debiles.length!==1?'s':''} con valoración baja`,impacto:'alto',meta:`"${debiles[0].texto.slice(0,40)}${debiles[0].texto.length>40?'…':''}" (${debiles[0].prom.toFixed(2)}/5) y ${debiles.length>1?`${debiles.length-1} más`:'ninguna más'}`});
+    }
+
+    // P5: Longitudinal
+    if(encCerradas.length===1)
+        plan.push({prioridad:prioridad++,accion:'Mantener las preguntas actuales en la próxima encuesta',impacto:'medio',meta:'Habilitar comparación longitudinal y detección de tendencias'});
+
+    // P6: Baja participación por tipo de capital
+    const porCapital={};
+    (empleadoresRaw||[]).forEach(e=>{
+        const t=e.tipoCapital||'Sin clasificar';
+        if(!porCapital[t]) porCapital[t]={total:0,respondieron:0};
+        porCapital[t].total++;
+        if(e.respondio) porCapital[t].respondieron++;
+    });
+    const capitalDebil=Object.entries(porCapital).filter(([,v])=>v.total>=2&&Math.round(v.respondieron/v.total*100)<50);
+    if(capitalDebil.length>0){
+        const [tipo,datos]=capitalDebil[0];
+        plan.push({prioridad:prioridad++,accion:`Reforzar convocatoria a empresas de capital ${tipo}`,impacto:'medio',meta:`Solo ${Math.round(datos.respondieron/datos.total*100)}% de este segmento respondió (${datos.respondieron}/${datos.total})`});
+    }
+
+    // P7: Vínculo ESPOCH sin aprovechar
+    const conEspoch=(todasPregs||[]).flatMap(g=>g.respuestasRaw||[]).filter(r=>(r.datosEncuestado?.estudiosEspoch||'').trim()!=='').length;
+    if(conEspoch>0)
+        plan.push({prioridad:prioridad++,accion:'Aprovechar red de egresados ESPOCH en empresas para fortalecer vínculos',impacto:'bajo',meta:`${conEspoch} encuestador${conEspoch!==1?'es':''} identificado${conEspoch!==1?'s':''} con formación ESPOCH`});
+
     return plan;
 };
 
@@ -1175,12 +1363,14 @@ const TabEEmpleadores=()=>{
         const respond=empleadoresRaw.filter(e=>fEnc.encuestaId?e.encuestasRespondidas.includes(fEnc.encuestaId):e.respondio).length;
         const kE={...kpis,respondieron:respond,tasa:empleadoresRaw.length>0?Math.round((respond/empleadoresRaw.length)*100):0,totalEmps:empleadoresRaw.length};
 
+        const todasPregsF=[...comunes,...otras];
+
         return{
             encC,encFiltradas,empleadoresFiltrados:emps,empleadoresRaw,respuestasRaw,
             porProv,porCiud,porCap,porAct,mitad,ciuD,
             comunes,otras,kE,
-            insights:calcularInsights(kE,comunes,otras,encC),
-            plan:calcularPlan(kE,encC),
+            insights:calcularInsights(kE,comunes,otras,encC,empleadoresRaw,respuestasRaw),
+            plan:calcularPlan(kE,encC,empleadoresRaw,todasPregsF),
         };
     },[datos,fEmp,fEnc]);
 
