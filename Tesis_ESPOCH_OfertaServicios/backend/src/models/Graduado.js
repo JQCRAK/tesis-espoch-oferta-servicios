@@ -34,7 +34,6 @@ const GraduadoSchema = new mongoose.Schema({
     },
 
     // ── UBICACIÓN ACTUAL ─────────────────────────────────────────
-    // El graduado llena esto en su perfil; se usa para el dashboard geográfico del admin
     provinciaActual: { type: String, default: '', trim: true },
     cantonActual:    { type: String, default: '', trim: true },
 
@@ -83,6 +82,12 @@ const GraduadoSchema = new mongoose.Schema({
     // ── VERIFICACIÓN DE GRADUACIÓN ────────────────────────────────
     tesisVerificada:   { type: Boolean, default: false },
     anioGraduacion:    { type: Number,  default: null },
+
+    // ── LIMPIEZA AUTOMÁTICA ──────────────────────────────────────
+    // Fecha en que se envió el correo de advertencia por falta de tesis.
+    // null = advertencia aún no enviada.
+    // Si tesisVerificada pasa a true, este campo se resetea a null.
+    advertenciaSinTesisEnviada: { type: Date, default: null },
 
     // ── CONSENTIMIENTO ───────────────────────────────────────────
     perfilPublico:     { type: Boolean, default: false },

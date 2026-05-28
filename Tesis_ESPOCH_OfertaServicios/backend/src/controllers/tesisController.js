@@ -1,7 +1,7 @@
 // controllers/tesisController.js
-const Tesis    = require('../models/Tesis');
+const Tesis = require('../models/Tesis');
 const Graduado = require('../models/Graduado');
-const axios    = require('axios');
+const axios = require('axios');
 
 // ─────────────────────────────────────────────────────────
 // HELPERS
@@ -21,7 +21,7 @@ const similitudJaccard = (a, b) => {
     const setB = new Set(normalizar(b).split(' ').filter(Boolean));
     if (setA.size === 0 || setB.size === 0) return 0;
     const interseccion = new Set([...setA].filter(x => setB.has(x)));
-    const union        = new Set([...setA, ...setB]);
+    const union = new Set([...setA, ...setB]);
     return interseccion.size / union.size;
 };
 
@@ -96,11 +96,11 @@ const extraerDatosDspace = async (url) => {
         throw new Error('La URL debe pertenecer a dspace.espoch.edu.ec');
     }
 
-    const matchItems  = url.match(/\/items\/([a-f0-9-]{36})/i);
+    const matchItems = url.match(/\/items\/([a-f0-9-]{36})/i);
     const matchHandle = url.match(/\/handle\/(\d+\/\d+)/i);
 
-    let titulo   = '';
-    let autores  = [];
+    let titulo = '';
+    let autores = [];
     let fechaRaw = '';
 
     // ════════════════════════════════════════════════════
@@ -270,9 +270,9 @@ const extraerDatosDspace = async (url) => {
                     headers: { Accept: 'application/xml, text/xml' }
                 });
 
-                const tituloMatch  = xml.match(/<dc:title>([^<]+)<\/dc:title>/i);
+                const tituloMatch = xml.match(/<dc:title>([^<]+)<\/dc:title>/i);
                 const autoresMatch = [...xml.matchAll(/<dc:creator>([^<]+)<\/dc:creator>/gi)];
-                const fechaMatch   = xml.match(/<dc:date>([^<]+)<\/dc:date>/i);
+                const fechaMatch = xml.match(/<dc:date>([^<]+)<\/dc:date>/i);
 
                 if (tituloMatch?.[1]) titulo = tituloMatch[1].trim();
                 if (autoresMatch.length) autores = autoresMatch.map(m => m[1].trim());
@@ -356,8 +356,8 @@ exports.verificarTesis = async (req, res) => {
     if (similitud < 0.75) {
         return res.status(400).json({
             msg: `El título no coincide con el registro del repositorio ESPOCH. ` +
-                 `Título encontrado: "${tituloReal}". ` +
-                 `Verifica que lo hayas escrito exactamente igual.`,
+                `Título encontrado: "${tituloReal}". ` +
+                `Verifica que lo hayas escrito exactamente igual.`,
             tituloEncontrado: tituloReal,
             similitud: Math.round(similitud * 100)
         });
@@ -366,8 +366,8 @@ exports.verificarTesis = async (req, res) => {
     if (autoresReal.length > 0 && !apellidoEnAutores(graduado.apellidos, autoresReal)) {
         return res.status(400).json({
             msg: `Tu nombre no aparece como autor en esta tesis del repositorio. ` +
-                 `Autores encontrados: ${autoresReal.join(', ')}. ` +
-                 `Verifica que estés usando tu cuenta correcta.`,
+                `Autores encontrados: ${autoresReal.join(', ')}. ` +
+                `Verifica que estés usando tu cuenta correcta.`,
             autoresEncontrados: autoresReal
         });
     }
@@ -375,24 +375,24 @@ exports.verificarTesis = async (req, res) => {
     await Tesis.findOneAndUpdate(
         { graduado: req.usuario.id },
         {
-            graduado:           req.usuario.id,
-            titulo:             titulo.trim(),
-            resumen:            resumen.trim(),
-            urlDspace:          urlDspace.trim(),
-            tituloEncontrado:   tituloReal,
+            graduado: req.usuario.id,
+            titulo: titulo.trim(),
+            resumen: resumen.trim(),
+            urlDspace: urlDspace.trim(),
+            tituloEncontrado: tituloReal,
             autoresEncontrados: autoresReal,
-            fechaPublicacion:   fecha,
-            verificada:         false,
+            fechaPublicacion: fecha,
+            verificada: false,
         },
         { upsert: true, new: true }
     );
 
     res.json({
         msg: 'Tesis verificada correctamente en el repositorio ESPOCH.',
-        tituloEncontrado:   tituloReal,
+        tituloEncontrado: tituloReal,
         autoresEncontrados: autoresReal,
-        fechaPublicacion:   fecha,
-        similitud:          Math.round(similitud * 100)
+        fechaPublicacion: fecha,
+        similitud: Math.round(similitud * 100)
     });
 };
 
@@ -412,11 +412,11 @@ exports.aceptarConsentimiento = async (req, res) => {
 
         const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || '';
 
-        tesis.verificada             = true;
-        tesis.fechaVerificacion      = new Date();
+        tesis.verificada = true;
+        tesis.fechaVerificacion = new Date();
         tesis.consentimientoAceptado = true;
-        tesis.fechaConsentimiento    = new Date();
-        tesis.ipConsentimiento       = ip;
+        tesis.fechaConsentimiento = new Date();
+        tesis.ipConsentimiento = ip;
         await tesis.save();
 
         // ── Extraer el año desde la fechaPublicacion guardada en tesis ──
@@ -430,11 +430,12 @@ exports.aceptarConsentimiento = async (req, res) => {
         // Construir el objeto de actualización; si no se detectó año,
         // no tocamos el campo para no sobreescribir con null accidentalmente.
         const actualizacion = {
-            tesisVerificada:   true,
+            tesisVerificada: true,
             terminosAceptados: true,
-            fechaAceptacion:   new Date(),
-            ipAceptacion:      ip,
-            perfilPublico:     true,
+            fechaAceptacion: new Date(),
+            ipAceptacion: ip,
+            perfilPublico: true,
+            advertenciaSinTesisEnviada: null,
         };
 
         // Siempre sobreescribir anioGraduacion cuando la tesis tiene fecha,
@@ -450,10 +451,10 @@ exports.aceptarConsentimiento = async (req, res) => {
         );
 
         res.json({
-            msg:             'Consentimiento aceptado. Tu perfil ahora es público.',
-            perfilPublico:   true,
+            msg: 'Consentimiento aceptado. Tu perfil ahora es público.',
+            perfilPublico: true,
             tesisVerificada: true,
-            anioGraduacion:  anioGraduacion,
+            anioGraduacion: anioGraduacion,
         });
     } catch (err) {
         console.error('Error aceptarConsentimiento:', err);
