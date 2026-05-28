@@ -316,7 +316,7 @@ app.listen(PORT, () => {
     console.log(`⏰ Crons activos:`);
     console.log(`   • Eventos/Encuestas  — cada hora`);
     console.log(`   • Tendencias         — cada lunes 00:05`);
-    coconsole.log(`   • Limpieza sin tesis — cada día 01:00 [365 días aviso / 30 días para eliminar]`);
+    console.log(`   • Limpieza sin tesis — cada día 01:00 [365 días aviso / 30 días para eliminar]`);
     console.log('Buscando uploads en:', path.join(__dirname, 'uploads'));
 });
 
