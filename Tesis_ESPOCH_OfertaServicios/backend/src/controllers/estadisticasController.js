@@ -1,7 +1,10 @@
 // backend/src/controllers/estadisticasController.js
-const Graduado    = require('../models/Graduado');
-const Proyecto    = require('../models/Proyecto');
-const Certificado = require('../models/Certificado');
+const Graduado          = require('../models/Graduado');
+const Proyecto          = require('../models/Proyecto');
+const Certificado       = require('../models/Certificado');
+const RespuestaEncuesta = require('../models/RespuestaEncuesta');
+const Encuesta          = require('../models/Encuesta');
+const Pregunta          = require('../models/Pregunta');
 
 const obtenerEstadisticasGenerales = async (req, res) => {
     try {
@@ -14,9 +17,6 @@ const obtenerEstadisticasGenerales = async (req, res) => {
         const idsVerificados = graduados.map(g => g._id);
         const totalGraduados = graduados.length;
 
-        // ── 2. Distribución REAL de proyectos por graduado ───────────
-        // Usamos aggregate para saber cuántos proyectos/certificados
-        // tiene CADA graduado verificado individualmente
         const [proyPorGraduado, certPorGraduado] = await Promise.all([
             Proyecto.aggregate([
                 { $match: { graduado: { $in: idsVerificados }, activo: true } },
@@ -28,14 +28,9 @@ const obtenerEstadisticasGenerales = async (req, res) => {
             ]),
         ]);
 
-        // Totales reales
         const totalProyectos    = proyPorGraduado.reduce((s, r) => s + r.cantidad, 0);
         const totalCertificados = certPorGraduado.reduce((s, r) => s + r.cantidad, 0);
 
-        // Fallback: si el aggregate devuelve 0 pero countDocuments devuelve más,
-        // significa que el campo graduado usa string en lugar de ObjectId
-        // En ese caso usamos countDocuments para los totales y construimos
-        // la distribución de forma aproximada
         let usarFallback = false;
         if (totalProyectos === 0 && idsVerificados.length > 0) {
             const checkProy = await Proyecto.countDocuments({ activo: true });
@@ -45,11 +40,9 @@ const obtenerEstadisticasGenerales = async (req, res) => {
         let mapProy = {}, mapCert = {};
 
         if (!usarFallback) {
-            // Camino normal — aggregate funcionó correctamente
             proyPorGraduado.forEach(r => { mapProy[r._id.toString()] = r.cantidad; });
             certPorGraduado.forEach(r => { mapCert[r._id.toString()] = r.cantidad; });
         } else {
-            // Fallback: contar por graduado usando string del _id
             const idsStr = idsVerificados.map(id => id.toString());
             const [pF, cF] = await Promise.all([
                 Proyecto.aggregate([
@@ -68,15 +61,12 @@ const obtenerEstadisticasGenerales = async (req, res) => {
             cF.forEach(r => { mapCert[r._id] = r.cantidad; });
         }
 
-        // Totales finales (recalcular si usamos fallback)
         const totalProyectosReal    = Object.values(mapProy).reduce((s, n) => s + n, 0) || totalProyectos;
         const totalCertificadosReal = Object.values(mapCert).reduce((s, n) => s + n, 0) || totalCertificados;
 
-        // Promedio real
         const promedioProyectos    = totalGraduados > 0 ? parseFloat((totalProyectosReal / totalGraduados).toFixed(1)) : 0;
         const promedioCertificados = totalGraduados > 0 ? parseFloat((totalCertificadosReal / totalGraduados).toFixed(1)) : 0;
 
-        // ── 3. Distribución por rangos ────────────────────────────────
         const rangosP = { '0': 0, '1-2': 0, '3-4': 0, '5': 0 };
         const rangosC = { '0': 0, '1-2': 0, '3-4': 0, '5': 0 };
 
@@ -84,12 +74,10 @@ const obtenerEstadisticasGenerales = async (req, res) => {
             const id = g._id.toString();
             const np = mapProy[id] || 0;
             const nc = mapCert[id] || 0;
-
             if      (np === 0) rangosP['0']++;
             else if (np <= 2)  rangosP['1-2']++;
             else if (np <= 4)  rangosP['3-4']++;
             else               rangosP['5']++;
-
             if      (nc === 0) rangosC['0']++;
             else if (nc <= 2)  rangosC['1-2']++;
             else if (nc <= 4)  rangosC['3-4']++;
@@ -110,17 +98,13 @@ const obtenerEstadisticasGenerales = async (req, res) => {
             { rango:'5',   label:'5 (máximo)',        cantidad: rangosC['5'],   color:'#22c55e' },
         ];
 
-        // ── 4. KPIs estándar ─────────────────────────────────────────
         const totalDisponibles = graduados.filter(g => g.disponibilidad === 'disponible').length;
         const totalPublicos    = graduados.filter(g => g.perfilPublico).length;
         const totalEmpleados   = totalGraduados - totalDisponibles;
 
-        // NOTA documentada: 'no_disponible' = no busca empleo activamente
-        // (puede estar empleado, en posgrado o sin actualizar perfil)
         const tasaEmpleabilidad = totalGraduados > 0 ? Math.round(totalEmpleados / totalGraduados * 100) : 0;
         const tasaVisibilidad   = totalGraduados > 0 ? Math.round(totalPublicos / totalGraduados * 100)  : 0;
 
-        // ── 5. Distribuciones demográficas ───────────────────────────
         const cGe = {};
         graduados.forEach(g => { const k = g.genero || 'No especificado'; cGe[k] = (cGe[k] || 0) + 1; });
         const porGenero = Object.entries(cGe)
@@ -147,7 +131,6 @@ const obtenerEstadisticasGenerales = async (req, res) => {
         const promedioAnual = porAnio.length > 0
             ? Math.round(porAnio.reduce((s, a) => s + a.total, 0) / porAnio.length) : 0;
 
-        // ── 6. Distribución geográfica ───────────────────────────────
         const cPr = {}, cCa = {};
         graduados.forEach(g => {
             const p = g.provinciaActual?.trim(); if (p) cPr[p] = (cPr[p] || 0) + 1;
@@ -164,7 +147,6 @@ const obtenerEstadisticasGenerales = async (req, res) => {
         const concentracionTop3  = porProvincia.slice(0, 3).reduce((s, p) => s + p.total, 0);
         const indiceConcentracion = totalGraduados > 0 ? Math.round(concentracionTop3 / totalGraduados * 100) : 0;
 
-        // ── 7. Tecnologías ───────────────────────────────────────────
         const cTe = {};
         graduados.forEach(g => (g.tecnologias || []).forEach(t => { if (t) cTe[t] = (cTe[t] || 0) + 1; }));
         const topTecnologias = Object.entries(cTe)
@@ -185,7 +167,6 @@ const obtenerEstadisticasGenerales = async (req, res) => {
             if (total > 0) tecsPorCategoria[cat] = total;
         });
 
-        // Tecnologías emergentes (últimos 2 años) — ahora se envía y muestra en frontend
         const anioActual = new Date().getFullYear();
         const graduadosRecientes = graduados.filter(g => g.anioGraduacion >= anioActual - 2);
         const cTeRec = {};
@@ -196,7 +177,6 @@ const obtenerEstadisticasGenerales = async (req, res) => {
             .sort((a, b) => b.total - a.total)
             .slice(0, 10);
 
-        // ── 8. Afinidades y habilidades blandas ─────────────────────
         const cAf = {}, cHa = {};
         graduados.forEach(g => {
             (g.afinidades || []).forEach(af => { if (af.categoria) cAf[af.categoria] = (cAf[af.categoria] || 0) + 1; });
@@ -209,7 +189,6 @@ const obtenerEstadisticasGenerales = async (req, res) => {
             .map(([habilidad, total]) => ({ habilidad, total, penetracion: totalGraduados > 0 ? Math.round(total / totalGraduados * 100) : 0 }))
             .sort((a, b) => b.total - a.total).slice(0, 15);
 
-        // ── 9. Helpers para insights ─────────────────────────────────
         const hayIA     = ['Python','TensorFlow','Scikit-learn','Keras','PyTorch'].some(t => cTe[t] > 0);
         const hayCloud  = ['AWS','Docker','Kubernetes','Azure','GCP'].some(t => cTe[t] > 0);
         const hayMobile = ['Flutter','React Native','Kotlin','Swift'].some(t => cTe[t] > 0);
@@ -225,27 +204,19 @@ const obtenerEstadisticasGenerales = async (req, res) => {
         });
 
         res.json({
-            // KPIs
             totalGraduados, totalPublicos, totalDisponibles, totalEmpleados,
             totalProyectos: totalProyectosReal,
             totalCertificados: totalCertificadosReal,
             promedioProyectos, promedioCertificados,
             tasaEmpleabilidad, tasaVisibilidad,
-            // Distribuciones demográficas
             porGenero, porAnio, porProvincia, porCanton,
-            // Distribuciones de portafolio (NUEVO — para análisis real)
             distribucionProyectos,
             distribucionCertificados,
-            // Tecnologías
             topTecnologias, tecsPorCategoria, tecEmergentes,
-            // Especialidades y habilidades
             topAfinidades, topHabilidadesBlandas,
-            // Análisis
             anioMax, anioMin, promedioAnual, tendenciaAnual,
             totalProvincias, indiceConcentracion,
             insights, planAccion,
-            // Raw para filtros frontend
-            // Raw enriquecido con conteos por graduado para recalcular distribuciones en frontend
             graduadosRaw: graduados.map(g => ({
                 ...g,
                 cantidadProyectos:    mapProy[g._id.toString()] || 0,
@@ -280,9 +251,9 @@ function _calcularInsights({ tasaEmpleabilidad, tasaVisibilidad, promedioProyect
     if (porAnio.length >= 2) {
         const ult = porAnio[porAnio.length - 1], pen = porAnio[porAnio.length - 2];
         const delta = ult.total - pen.total;
-        if      (delta > 0) insights.push({ tipo:'ok',   titulo:`Crecimiento: +${delta} en ${ult.anio}`,         detalle:`De ${pen.total} (${pen.anio}) a ${ult.total} (${ult.anio}). Carrera en expansión.` });
+        if      (delta > 0) insights.push({ tipo:'ok',   titulo:`Crecimiento: +${delta} en ${ult.anio}`,             detalle:`De ${pen.total} (${pen.anio}) a ${ult.total} (${ult.anio}). Carrera en expansión.` });
         else if (delta < 0) insights.push({ tipo:'warn', titulo:`Descenso: ${Math.abs(delta)} menos en ${ult.anio}`, detalle:`De ${pen.total} (${pen.anio}) a ${ult.total} (${ult.anio}). Revisar retención.` });
-        else                insights.push({ tipo:'info', titulo:`Graduaciones estables: ${ult.total}/año`,        detalle:'Número consistente. Evaluar estrategias para mayor tasa oportuna.' });
+        else                insights.push({ tipo:'info', titulo:`Graduaciones estables: ${ult.total}/año`,           detalle:'Número consistente. Evaluar estrategias para mayor tasa oportuna.' });
     }
 
     if (indiceConcentracion > 75 && totalProvincias < 5)
@@ -290,10 +261,10 @@ function _calcularInsights({ tasaEmpleabilidad, tasaVisibilidad, promedioProyect
     else if (totalProvincias >= 8)
         insights.push({ tipo:'ok',   titulo:`Distribución en ${totalProvincias} provincias`, detalle:'Buena presencia nacional institucional.' });
     else
-        insights.push({ tipo:'info', titulo:`Presencia en ${totalProvincias} provincias`, detalle:'Objetivo: superar 8 provincias con graduados activos.' });
+        insights.push({ tipo:'info', titulo:`Presencia en ${totalProvincias} provincias`,    detalle:'Objetivo: superar 8 provincias con graduados activos.' });
 
     if (promedioProyectos >= 3)
-        insights.push({ tipo:'ok',   titulo:`Buen portafolio: ${promedioProyectos} proy/graduado`,   detalle:'Nivel adecuado de proyectos publicados. Ventaja competitiva.' });
+        insights.push({ tipo:'ok',   titulo:`Buen portafolio: ${promedioProyectos} proy/graduado`,    detalle:'Nivel adecuado de proyectos publicados. Ventaja competitiva.' });
     else if (promedioProyectos >= 1.5)
         insights.push({ tipo:'info', titulo:`Portafolio moderado: ${promedioProyectos} proy/graduado`, detalle:'Incentivar publicación de proyectos de tesis y personales.' });
     else
@@ -304,9 +275,9 @@ function _calcularInsights({ tasaEmpleabilidad, tasaVisibilidad, promedioProyect
     else if (promedioCertificados < 1)
         insights.push({ tipo:'warn', titulo:`Baja certificación: ${promedioCertificados}/graduado`, detalle:'Organizar talleres de certificaciones AWS, Google, Microsoft.' });
 
-    if (hayIA)     insights.push({ tipo:'ok',   titulo:'Presencia en IA/ML detectada',        detalle:'Skills IA/ML presentes en graduados. Alta demanda global.' });
-    if (hayCloud)  insights.push({ tipo:'ok',   titulo:'Competencias Cloud/DevOps presentes', detalle:'Incentivar certificaciones oficiales AWS/Azure/GCP.' });
-    if (!hayMobile)insights.push({ tipo:'info', titulo:'Escasa presencia en desarrollo móvil',detalle:'Flutter y React Native tienen alta demanda laboral.' });
+    if (hayIA)      insights.push({ tipo:'ok',   titulo:'Presencia en IA/ML detectada',         detalle:'Skills IA/ML presentes en graduados. Alta demanda global.' });
+    if (hayCloud)   insights.push({ tipo:'ok',   titulo:'Competencias Cloud/DevOps presentes',  detalle:'Incentivar certificaciones oficiales AWS/Azure/GCP.' });
+    if (!hayMobile) insights.push({ tipo:'info', titulo:'Escasa presencia en desarrollo móvil', detalle:'Flutter y React Native tienen alta demanda laboral.' });
 
     if (anioMax?.total > 0 && porAnio.length > 1)
         insights.push({ tipo:'info', titulo:`Año récord: ${anioMax.anio} con ${anioMax.total} graduados`, detalle:`Analizar factores de ${anioMax.anio} para replicar ese rendimiento.` });
@@ -317,17 +288,237 @@ function _calcularInsights({ tasaEmpleabilidad, tasaVisibilidad, promedioProyect
 function _calcularPlanAccion({ tasaEmpleabilidad, tasaVisibilidad, promedioProyectos,
     promedioCertificados, totalProvincias, hayMobile }) {
     return [
-        tasaEmpleabilidad  < 70  && { prioridad:1, accion:'Activar bolsa de empleo institucional',       impacto:'alto',  meta:'Reducir disponibilidad activa a menos del 20%' },
-        tasaVisibilidad    < 70  && { prioridad:2, accion:'Campaña de activación de perfiles públicos',  impacto:'alto',  meta:`Llevar visibilidad del ${tasaVisibilidad}% al 80%` },
-        promedioProyectos  < 2   && { prioridad:3, accion:'Campaña de publicación de proyectos y tesis', impacto:'medio', meta:'Alcanzar 2+ proyectos por graduado' },
-        promedioCertificados<1.5 && { prioridad:4, accion:'Talleres de certificación tecnológica',       impacto:'medio', meta:'Alcanzar 2+ certificaciones promedio' },
-        !hayMobile               && { prioridad:5, accion:'Agregar Flutter/React Native al pensum',      impacto:'medio', meta:'Cubrir demanda de desarrollo móvil' },
-        totalProvincias    < 5   && { prioridad:6, accion:'Convenios con empresas fuera de Chimborazo',  impacto:'bajo',  meta:'Graduados activos en 8+ provincias' },
+        tasaEmpleabilidad   < 70  && { prioridad:1, accion:'Activar bolsa de empleo institucional',      impacto:'alto',  meta:'Reducir disponibilidad activa a menos del 20%' },
+        tasaVisibilidad     < 70  && { prioridad:2, accion:'Campaña de activación de perfiles públicos', impacto:'alto',  meta:`Llevar visibilidad del ${tasaVisibilidad}% al 80%` },
+        promedioProyectos   < 2   && { prioridad:3, accion:'Campaña de publicación de proyectos y tesis',impacto:'medio', meta:'Alcanzar 2+ proyectos por graduado' },
+        promedioCertificados<1.5  && { prioridad:4, accion:'Talleres de certificación tecnológica',      impacto:'medio', meta:'Alcanzar 2+ certificaciones promedio' },
+        !hayMobile                && { prioridad:5, accion:'Agregar Flutter/React Native al pensum',     impacto:'medio', meta:'Cubrir demanda de desarrollo móvil' },
+        totalProvincias     < 5   && { prioridad:6, accion:'Convenios con empresas fuera de Chimborazo', impacto:'bajo',  meta:'Graduados activos en 8+ provincias' },
     ].filter(Boolean);
 }
 
+// ═══════════════════════════════════════════════════════════
+// ESTADÍSTICAS DE ENCUESTAS A GRADUADOS
+// ═══════════════════════════════════════════════════════════
+const normEnc = (s = '') =>
+    s.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase().trim();
+
+const similitudEnc = (a, b) => {
+    const na = normEnc(a), nb = normEnc(b);
+    if (na === nb) return 1;
+    const tri = s => new Set([...Array(Math.max(0, s.length - 2))].map((_, i) => s.slice(i, i + 3)));
+    const ta = tri(na), tb = tri(nb);
+    const inter = [...ta].filter(x => tb.has(x)).length;
+    const union = new Set([...ta, ...tb]).size;
+    return union === 0 ? 0 : inter / union;
+};
+
 const obtenerEstadisticasEncuesta = async (req, res) => {
-    res.json({ msg: 'Próximamente', preguntas: [], totalRespuestas: 0 });
+    try {
+        // ── 1. Encuestas tipo graduados ───────────────────────────────
+        const encuestas = await Encuesta.find({ tipo: 'graduados' })
+            .sort({ fechaInicio: -1 }).lean();
+
+        // ── 2. Graduados con tesis verificada (base total) ────────────
+        const graduadosBase = await Graduado.find({ tesisVerificada: true })
+            .select('nombres apellidos emailInstitucional anioGraduacion genero provinciaActual')
+            .lean();
+
+        if (!encuestas.length) {
+            return res.json({
+                encuestas: [],
+                graduadosRaw: graduadosBase.map(g => ({
+                    _id:                  g._id.toString(),
+                    nombres:              g.nombres,
+                    apellidos:            g.apellidos,
+                    emailInstitucional:   g.emailInstitucional,
+                    anioGraduacion:       g.anioGraduacion,
+                    genero:               g.genero,
+                    provinciaActual:      g.provinciaActual,
+                    encuestasRespondidas: [],
+                    respondio:            false,
+                })),
+                respuestasRaw:      [],
+                preguntasAgrupadas: [],
+                kpis: {
+                    totalGraduados:        graduadosBase.length,
+                    totalEncuestas:        0,
+                    totalRespuestas:       0,
+                    tasaRespuesta:         0,
+                    graduadosRespondieron: 0,
+                },
+            });
+        }
+
+        const encuestaIds = encuestas.map(e => e._id);
+
+        // ── 3. Respuestas con datos del graduado y la encuesta ────────
+        const respuestas = await RespuestaEncuesta.find({ encuesta: { $in: encuestaIds } })
+            .populate('graduado', 'nombres apellidos emailInstitucional anioGraduacion genero provinciaActual')
+            .populate('encuesta', 'titulo fechaInicio fechaCierre estado')
+            .lean();
+
+        // ── 4. Preguntas (sin títulos de sección) ─────────────────────
+        const preguntas = await Pregunta.find({
+            encuesta: { $in: encuestaIds },
+            tipo:     { $ne: 'titulo' },
+        }).sort({ encuesta: 1, orden: 1 }).lean();
+
+        // ── 5. Agrupar preguntas similares ────────────────────────────
+        // Normaliza tildes: "Satisfacción" y "Satisfaccion" se fusionan
+        const grupos = [];
+        for (const preg of preguntas) {
+            let encontrado = false;
+            for (const g of grupos) {
+                const mismoTipo =
+                    g.tipo === preg.tipo ||
+                    (g.tipo === 'opcion_multiple' && preg.tipo === 'checkboxes') ||
+                    (g.tipo === 'checkboxes' && preg.tipo === 'opcion_multiple');
+                if (!mismoTipo) continue;
+                if (similitudEnc(g.textoCanonical, preg.texto) >= 0.72) {
+                    g.preguntaIds.push(preg._id.toString());
+                    if (!g.encuestasAparece.includes(preg.encuesta.toString()))
+                        g.encuestasAparece.push(preg.encuesta.toString());
+                    (preg.opciones || []).forEach(op => { if (!g.opciones.includes(op)) g.opciones.push(op); });
+                    if (preg.esMatriz) {
+                        g.esMatriz = true;
+                        g.items = g.items || [];
+                        (preg.items || []).forEach(it => { if (!g.items.includes(it)) g.items.push(it); });
+                    }
+                    encontrado = true;
+                    break;
+                }
+            }
+            if (!encontrado) {
+                grupos.push({
+                    id:              `grupo_${grupos.length}`,
+                    textoCanonical:  preg.texto,
+                    tipo:            preg.tipo,
+                    opciones:        [...(preg.opciones || [])],
+                    esMatriz:        preg.esMatriz || false,
+                    items:           preg.esMatriz ? [...(preg.items || [])] : [],
+                    etiquetaMin:     preg.etiquetaMin || '',
+                    etiquetaMax:     preg.etiquetaMax || '',
+                    encuestasAparece:[preg.encuesta.toString()],
+                    preguntaIds:     [preg._id.toString()],
+                    obligatoria:     preg.obligatoria,
+                });
+            }
+        }
+
+        // ── 6. Lookup: preguntaId → lista de respuestas enriquecidas ──
+        const respCompletadas = respuestas.filter(r => r.estado === 'completada');
+        const lookupResp = {};
+        for (const r of respCompletadas) {
+            const grad = r.graduado || {};
+            const meta = {
+                graduadoId:      grad._id?.toString() || '',
+                nombres:         grad.nombres         || '',
+                apellidos:       grad.apellidos        || '',
+                anioGraduacion:  grad.anioGraduacion   || null,
+                genero:          grad.genero           || '',
+                provinciaActual: grad.provinciaActual  || '',
+                encuestaId:      r.encuesta?._id?.toString() || '',
+            };
+            for (const item of r.respuestas || []) {
+                if (!item.pregunta) continue;
+                const pid = item.pregunta.toString();
+                if (!lookupResp[pid]) lookupResp[pid] = [];
+                lookupResp[pid].push({
+                    ...meta,
+                    valor:            item.respuesta,
+                    esCondicional:    item.esCondicional    || false,
+                    ladoCondicional:  item.ladoCondicional  || null,
+                    textoSubPregunta: item.textoSubPregunta || '',
+                });
+            }
+        }
+
+        // ── 7. Construir grupos con sus respuestas ────────────────────
+        const encCerradas = encuestas.filter(e => e.estado === 'cerrada');
+        const gruposConDatos = grupos.map(g => {
+            const todas     = g.preguntaIds.flatMap(pid => lookupResp[pid] || []);
+            const principal = todas.filter(r => !r.esCondicional);
+            return {
+                ...g,
+                totalRespuestas: principal.length,
+                respuestasRaw:   principal,
+                // esComun: aparece en 2+ encuestas (o en ≥50% de las cerradas si hay varias)
+                esComun: g.encuestasAparece.length >= Math.max(2,
+                    Math.ceil(encCerradas.length * 0.5)),
+            };
+        }).sort((a, b) => b.totalRespuestas - a.totalRespuestas);
+
+        // ── 8. KPIs ───────────────────────────────────────────────────
+        const totalGraduados   = graduadosBase.length;
+        const totalEncuestas   = encuestas.length;
+        const totalRespuestas  = respCompletadas.length;
+        const gradRespondieron = new Set(
+            respCompletadas.map(r => r.graduado?._id?.toString()).filter(Boolean)
+        );
+        const tasaRespuesta = totalGraduados > 0
+            ? Math.round((gradRespondieron.size / totalGraduados) * 100) : 0;
+
+        // ── 9. Historial de encuestas por graduado ────────────────────
+        const gradRespMap = {};
+        for (const r of respCompletadas) {
+            const gid = r.graduado?._id?.toString();
+            if (!gid) continue;
+            if (!gradRespMap[gid]) gradRespMap[gid] = [];
+            gradRespMap[gid].push(r.encuesta?._id?.toString());
+        }
+
+        const graduadosRaw = graduadosBase.map(g => ({
+            _id:                  g._id.toString(),
+            nombres:              g.nombres,
+            apellidos:            g.apellidos,
+            emailInstitucional:   g.emailInstitucional,
+            anioGraduacion:       g.anioGraduacion,
+            genero:               g.genero,
+            provinciaActual:      g.provinciaActual,
+            encuestasRespondidas: gradRespMap[g._id.toString()] || [],
+            respondio:            (gradRespMap[g._id.toString()] || []).length > 0,
+        }));
+
+        // ── 10. Respuestas raw para tabla del frontend ─────────────────
+        const respuestasRaw = respCompletadas.map(r => ({
+            _id:             r._id.toString(),
+            encuestaId:      r.encuesta?._id?.toString()  || '',
+            encuestaTitulo:  r.encuesta?.titulo            || '',
+            graduadoId:      r.graduado?._id?.toString()  || '',
+            nombres:         r.graduado?.nombres          || '',
+            apellidos:       r.graduado?.apellidos        || '',
+            anioGraduacion:  r.graduado?.anioGraduacion   || null,
+            genero:          r.graduado?.genero           || '',
+            provinciaActual: r.graduado?.provinciaActual  || '',
+            fechaRespuesta:  r.fechaRespuesta,
+        }));
+
+        res.json({
+            encuestas: encuestas.map(e => ({
+                _id:             e._id.toString(),
+                titulo:          e.titulo,
+                estado:          e.estado,
+                fechaInicio:     e.fechaInicio,
+                fechaCierre:     e.fechaCierre,
+                totalRespuestas: e.totalRespuestas || 0,
+            })),
+            graduadosRaw,
+            respuestasRaw,
+            preguntasAgrupadas: gruposConDatos,
+            kpis: {
+                totalGraduados,
+                totalEncuestas,
+                totalRespuestas,
+                tasaRespuesta,
+                graduadosRespondieron: gradRespondieron.size,
+            },
+        });
+
+    } catch (err) {
+        console.error('Error en obtenerEstadisticasEncuesta:', err);
+        res.status(500).json({ msg: 'Error al obtener estadísticas de encuestas.', error: err.message });
+    }
 };
 
 module.exports = { obtenerEstadisticasGenerales, obtenerEstadisticasEncuesta };
