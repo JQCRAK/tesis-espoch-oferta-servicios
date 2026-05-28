@@ -5,8 +5,7 @@ import {
     FaGraduationCap, FaSyncAlt, FaExclamationTriangle, FaFilter, FaTimes,
     FaUsers, FaClipboardList, FaChartBar, FaCheckCircle, FaTimesCircle,
     FaLayerGroup, FaQuestion, FaStar, FaLightbulb, FaBullseye,
-    FaChevronLeft, FaChevronRight, FaTag, FaCommentDots,
-    FaCalendarAlt, FaVenusMars, FaMapMarkerAlt,
+    FaChevronLeft, FaChevronRight, FaTag, FaCommentDots, FaCalendarAlt,
 } from 'react-icons/fa';
 
 const API  = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
@@ -21,31 +20,28 @@ const hdrs = () => {
     return { Authorization: `Bearer ${u?.token||''}` };
 };
 
-// ── Normalización con y sin tilde para comparaciones ─────────
+// Normalización con tildes para comparar géneros y otros campos
 const normTxt = s => s?.normalize('NFD').replace(/\p{Diacritic}/gu,'').toLowerCase().trim()??'';
 const pct = (v,t) => t===0?0:Math.round((v/t)*100);
 const fmt = d => d?new Date(d).toLocaleDateString('es-EC',{day:'2-digit',month:'short',year:'numeric'}):'—';
-const MESES=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const MESES_ARR=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 
-// ── Estilos globales ──────────────────────────────────────────
 if(typeof document!=='undefined'&&!document.getElementById('teg-kf')){
     const st=document.createElement('style');st.id='teg-kf';
     st.textContent=`
         @keyframes teg-spin{to{transform:rotate(360deg);}}
         @keyframes teg-in{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
         .teg-a{animation:teg-in 0.28s ease both;}
-        .teg-r:hover{background:#f8fafc !important;}
         .teg-sel{padding:5px 8px;border-radius:6px;border:1px solid #e5e7eb;font-size:0.73rem;font-family:'Segoe UI',system-ui,sans-serif;color:#374151;background:white;outline:none;cursor:pointer;}
         .teg-sel:focus,.teg-sel.on{border-color:#BE1E2D !important;}
         .teg-pag:hover:not(:disabled){background:#BE1E2D !important;color:white !important;border-color:#BE1E2D !important;}
-        .teg-tab:hover{background:#f1f5f9 !important;}
         .teg-gh:hover{background:#f8fafc !important;cursor:pointer;}
     `;
     document.head.appendChild(st);
 }
 
 // ═══════════════════════════════════════════════════════════
-// NLP FRONTEND — análisis texto libre
+// NLP FRONTEND
 // ═══════════════════════════════════════════════════════════
 const STOPWORDS=new Set(['el','la','los','las','un','una','de','del','en','que','y','a','al','se','es','por','con','para','su','sus','lo','le','me','mi','mas','si','pero','no','ya','o','como','hay','muy','ser','son','fue','han','era','esto','esta','este','cada','otro','mismo','puede','debe','hacer','hace','tener','tiene','haber','entre','sobre','sin','nos','nuestro','nuestra']);
 
@@ -77,7 +73,7 @@ function analizarTexto(textos){
 }
 
 // ═══════════════════════════════════════════════════════════
-// COMPONENTES BASE UI
+// COMPONENTES BASE
 // ═══════════════════════════════════════════════════════════
 const KPI=({icon:I,valor,label,sub,color,delay=0})=>(
     <div className="teg-a" style={{background:'white',borderRadius:10,padding:'10px 13px',border:'1px solid #e5e7eb',borderLeft:`4px solid ${color}`,boxShadow:'0 1px 3px rgba(0,0,0,.05)',display:'flex',alignItems:'center',gap:10,animationDelay:`${delay}ms`}}>
@@ -137,7 +133,7 @@ const Insight=({tipo,titulo,detalle,delay=0})=>{
 };
 
 // ═══════════════════════════════════════════════════════════
-// GRÁFICAS POR TIPO DE PREGUNTA
+// GRÁFICAS
 // ═══════════════════════════════════════════════════════════
 const GEscala=({resps,min,max})=>{
     const vals=resps.map(r=>Number(r.valor)).filter(v=>v>=1&&v<=5);
@@ -294,9 +290,9 @@ const GraficaTextoNLP=({resps})=>{
 const GraficaPregunta=({grupo,filtros})=>{
     const resps=useMemo(()=>{
         let r=grupo.respuestasRaw||[];
-        if(filtros.encuestaId) r=r.filter(x=>x.encuestaId===filtros.encuestaId);
+        if(filtros.encuestaId)     r=r.filter(x=>x.encuestaId===filtros.encuestaId);
         if(filtros.anioGraduacion) r=r.filter(x=>String(x.anioGraduacion)===filtros.anioGraduacion);
-        if(filtros.genero) r=r.filter(x=>normTxt(x.genero||'')===normTxt(filtros.genero));
+        if(filtros.genero)         r=r.filter(x=>normTxt(x.genero||'')===normTxt(filtros.genero));
         return r;
     },[grupo.respuestasRaw,filtros]);
     if(grupo.esMatriz) return <GMatriz resps={resps} items={grupo.items} tipo={grupo.tipo} min={grupo.etiquetaMin} max={grupo.etiquetaMax}/>;
@@ -321,9 +317,9 @@ const TarjetaGrupo=({grupo,encuestas,filtros,num})=>{
     const aparece=encuestas.filter(e=>grupo.encuestasAparece.includes(e._id)).map(e=>e.titulo);
     const cnt=useMemo(()=>{
         let r=grupo.respuestasRaw||[];
-        if(filtros.encuestaId) r=r.filter(x=>x.encuestaId===filtros.encuestaId);
+        if(filtros.encuestaId)     r=r.filter(x=>x.encuestaId===filtros.encuestaId);
         if(filtros.anioGraduacion) r=r.filter(x=>String(x.anioGraduacion)===filtros.anioGraduacion);
-        if(filtros.genero) r=r.filter(x=>normTxt(x.genero||'')===normTxt(filtros.genero));
+        if(filtros.genero)         r=r.filter(x=>normTxt(x.genero||'')===normTxt(filtros.genero));
         return r.length;
     },[grupo.respuestasRaw,filtros]);
     return <div className="teg-a" style={{background:'white',borderRadius:10,border:'1px solid #e5e7eb',overflow:'hidden',marginBottom:10}}>
@@ -351,66 +347,7 @@ const TarjetaGrupo=({grupo,encuestas,filtros,num})=>{
 };
 
 // ═══════════════════════════════════════════════════════════
-// TABLA GRADUADOS PAGINADA
-// ═══════════════════════════════════════════════════════════
-const TablaGraduadosPaginada=({graduadosFiltrados,hayF,sinD,fEnc,encFiltradas})=>{
-    const LIMIT=10;
-    const[pag,setPag]=useState(1);
-    useEffect(()=>{setPag(1);},[fEnc.mesAnio,fEnc.anioGraduacion,fEnc.genero]);
-    const totalPag=Math.ceil(graduadosFiltrados.length/LIMIT);
-    const slice=graduadosFiltrados.slice((pag-1)*LIMIT,pag*LIMIT);
-    const ini=(pag-1)*LIMIT+1,fin=Math.min(pag*LIMIT,graduadosFiltrados.length);
-
-    return(
-        <div className="teg-a" style={{background:'white',borderRadius:10,border:'1px solid #e5e7eb',boxShadow:'0 1px 3px rgba(0,0,0,.05)',overflow:'hidden',marginBottom:14,animationDelay:'100ms'}}>
-            <div style={{padding:'9px 14px',borderBottom:'1px solid #f1f5f9',background:`linear-gradient(135deg,${ROJO}08,transparent)`,display:'flex',alignItems:'center',gap:8}}>
-                <div style={{width:26,height:26,borderRadius:6,background:`${ROJO}18`,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
-                    <FaGraduationCap style={{color:ROJO,fontSize:'0.74rem'}}/>
-                </div>
-                <div style={{flex:1}}>
-                    <div style={{fontSize:'0.80rem',fontWeight:700,color:'#0f172a',fontFamily:FONT}}>Graduados Registrados</div>
-                    {graduadosFiltrados.length>0&&<div style={{fontSize:'0.61rem',color:'#9ca3af',fontFamily:FONT}}>{graduadosFiltrados.length} graduados{hayF?' · filtrado':''} · página {pag} de {totalPag||1}</div>}
-                </div>
-                {graduadosFiltrados.length>0&&<span style={{fontSize:'0.63rem',fontWeight:700,color:ROJO,background:`${ROJO}10`,border:`1px solid ${ROJO}25`,borderRadius:99,padding:'2px 9px',fontFamily:FONT}}>{graduadosFiltrados.length} total</span>}
-            </div>
-            <div style={{padding:'12px 14px'}}>
-                {!graduadosFiltrados.length?<p style={sinD}>Sin graduados</p>:<>
-                    <div style={{display:'grid',gridTemplateColumns:'1.6fr 1fr 0.8fr 0.8fr auto',gap:8,padding:'5px 10px',borderBottom:'2px solid #f0f0f0',marginBottom:4}}>
-                        {['Graduado','Correo institucional','Promoción','Género','Encuestas'].map(h=><span key={h} style={{fontSize:'0.58rem',fontWeight:700,color:'#94a3b8',fontFamily:FONT,textTransform:'uppercase',letterSpacing:'0.5px'}}>{h}</span>)}
-                    </div>
-                    {slice.map((g,i)=>(
-                        <div key={g._id} className="teg-r" style={{display:'grid',gridTemplateColumns:'1.6fr 1fr 0.8fr 0.8fr auto',gap:8,padding:'8px 10px',background:i%2===0?'#fafafa':'white',borderRadius:6,alignItems:'center',minHeight:38,marginBottom:2}}>
-                            <div style={{minWidth:0}}>
-                                <div style={{fontSize:'0.74rem',fontWeight:600,color:'#1e293b',fontFamily:FONT,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{g.nombres} {g.apellidos}</div>
-                            </div>
-                            <span style={{fontSize:'0.66rem',color:'#64748b',fontFamily:FONT,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{g.emailInstitucional||'—'}</span>
-                            <span style={{fontSize:'0.68rem',color:'#475569',fontFamily:FONT}}>{g.anioGraduacion||'—'}</span>
-                            <span style={{fontSize:'0.68rem',color:'#475569',fontFamily:FONT}}>{g.genero||'—'}</span>
-                            <span style={{fontSize:'0.60rem',fontWeight:700,color:g.respondio?VERDE:GRIS,background:g.respondio?`${VERDE}10`:`${GRIS}10`,border:`1px solid ${g.respondio?VERDE:GRIS}22`,borderRadius:99,padding:'2px 8px',fontFamily:FONT,whiteSpace:'nowrap'}}>
-                                {g.respondio?`✓ ${g.encuestasRespondidas.length}`:'Pendiente'}
-                            </span>
-                        </div>
-                    ))}
-                    {totalPag>1&&(
-                        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginTop:10,paddingTop:10,borderTop:'1px solid #f1f5f9'}}>
-                            <span style={{fontSize:'0.65rem',color:'#94a3b8',fontFamily:FONT}}>Mostrando {ini}–{fin} de {graduadosFiltrados.length}</span>
-                            <div style={{display:'flex',gap:4,alignItems:'center'}}>
-                                <button className="teg-pag" disabled={pag===1} onClick={()=>setPag(p=>p-1)} style={{width:28,height:28,borderRadius:6,border:'1px solid #e5e7eb',background:'white',color:pag===1?'#d1d5db':'#374151',cursor:pag===1?'not-allowed':'pointer',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'0.62rem',transition:'all .15s'}}><FaChevronLeft/></button>
-                                {Array.from({length:Math.min(totalPag,5)},(_,i)=>{const ini2=Math.max(1,Math.min(pag-2,totalPag-4));return ini2+i;}).map(p=>(
-                                    <button key={p} className="teg-pag" onClick={()=>setPag(p)} style={{width:28,height:28,borderRadius:6,border:`1px solid ${pag===p?ROJO:'#e5e7eb'}`,background:pag===p?ROJO:'white',color:pag===p?'white':'#374151',cursor:'pointer',fontSize:'0.72rem',fontWeight:pag===p?700:400,display:'flex',alignItems:'center',justifyContent:'center',fontFamily:FONT,transition:'all .15s'}}>{p}</button>
-                                ))}
-                                <button className="teg-pag" disabled={pag===totalPag} onClick={()=>setPag(p=>p+1)} style={{width:28,height:28,borderRadius:6,border:'1px solid #e5e7eb',background:'white',color:pag===totalPag?'#d1d5db':'#374151',cursor:pag===totalPag?'not-allowed':'pointer',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'0.62rem',transition:'all .15s'}}><FaChevronRight/></button>
-                            </div>
-                        </div>
-                    )}
-                </>}
-            </div>
-        </div>
-    );
-};
-
-// ═══════════════════════════════════════════════════════════
-// ANÁLISIS DINÁMICO — INSIGHTS GRADUADOS
+// ANÁLISIS DINÁMICO
 // ═══════════════════════════════════════════════════════════
 const promedioEscala=resps=>{
     const vals=resps.map(r=>Number(r.valor)).filter(v=>v>=1&&v<=5);
@@ -418,19 +355,19 @@ const promedioEscala=resps=>{
     return vals.reduce((a,b)=>a+b,0)/vals.length;
 };
 
-const calcularInsightsGraduados=(kpis,comunes,otras,encCerradas,graduadosRaw,respuestasRaw)=>{
+const calcularInsightsGraduados=(kpis,comunes,otras,encCerradas,graduadosRaw)=>{
     const ins=[];
     const todasPregs=[...comunes,...otras];
     const{tasa,totalGraduados,graduadosRespondieron}=kpis;
     const sinResponder=totalGraduados-graduadosRespondieron;
 
     // 1. Participación
-    if(tasa>=80) ins.push({tipo:'ok',titulo:`Alta participación: ${tasa}% (${graduadosRespondieron}/${totalGraduados})`,detalle:`Solo ${sinResponder} graduado${sinResponder!==1?'s':''} no respondió. Muestra estadísticamente representativa.`});
-    else if(tasa>=60) ins.push({tipo:'warn',titulo:`Participación moderada: ${tasa}% (${graduadosRespondieron}/${totalGraduados})`,detalle:`${sinResponder} graduados no respondieron. Se recomienda campaña de recordatorio.`});
-    else if(tasa>=30) ins.push({tipo:'crit',titulo:`Participación baja: ${tasa}% — muestra insuficiente`,detalle:`Solo ${graduadosRespondieron} de ${totalGraduados} respondieron. Los resultados pueden estar sesgados.`});
-    else if(tasa>0) ins.push({tipo:'crit',titulo:`Participación crítica: ${tasa}% — datos no representativos`,detalle:`Urgente revisar la estrategia de convocatoria a graduados.`});
+    if(tasa>=80)       ins.push({tipo:'ok',  titulo:`Alta participación: ${tasa}% (${graduadosRespondieron}/${totalGraduados})`,detalle:`Solo ${sinResponder} graduado${sinResponder!==1?'s':''} no respondió. Muestra representativa.`});
+    else if(tasa>=60)  ins.push({tipo:'warn',titulo:`Participación moderada: ${tasa}% (${graduadosRespondieron}/${totalGraduados})`,detalle:`${sinResponder} graduados no respondieron. Considerar campaña de recordatorio.`});
+    else if(tasa>=30)  ins.push({tipo:'crit',titulo:`Participación baja: ${tasa}% — muestra insuficiente`,detalle:`Solo ${graduadosRespondieron} de ${totalGraduados} respondieron. Los resultados pueden no ser representativos.`});
+    else if(tasa>0)    ins.push({tipo:'crit',titulo:`Participación crítica: ${tasa}% — datos no representativos`,detalle:'Urgente revisar estrategia de convocatoria a graduados.'});
 
-    // 2. Tasa por género
+    // 2. Tasa por género (solo si hay datos reales en BD)
     const porGenero={};
     graduadosRaw.forEach(g=>{
         const gen=g.genero||'Sin especificar';
@@ -444,112 +381,91 @@ const calcularInsightsGraduados=(kpis,comunes,otras,encCerradas,graduadosRaw,res
         const mejor=genEntries[0],peor=genEntries[genEntries.length-1];
         const pMejor=Math.round(mejor[1].respondieron/mejor[1].total*100);
         const pPeor=Math.round(peor[1].respondieron/peor[1].total*100);
-        if(pMejor-pPeor>=20) ins.push({tipo:'info',titulo:`Brecha de participación por género`,detalle:`${mejor[0]}: ${pMejor}% vs ${peor[0]}: ${pPeor}%. Diferencia de ${pMejor-pPeor} puntos.`});
+        if(pMejor-pPeor>=20) ins.push({tipo:'info',titulo:`Brecha de participación por género`,detalle:`${mejor[0]}: ${pMejor}% · ${peor[0]}: ${pPeor}%. Diferencia de ${pMejor-pPeor} puntos porcentuales.`});
     }
 
-    // 3. Tasa por año de graduación
+    // 3. Tasa por año de graduación (solo si hay datos reales en BD)
     const porAnio={};
     graduadosRaw.forEach(g=>{
-        const a=g.anioGraduacion||'Sin año';
+        const a=String(g.anioGraduacion||'Sin año');
         if(!porAnio[a]) porAnio[a]={total:0,respondieron:0};
         porAnio[a].total++;
         if(g.respondio) porAnio[a].respondieron++;
     });
-    const anioEntries=Object.entries(porAnio).filter(([,v])=>v.total>=2).sort((a,b)=>Number(b[0])-Number(a[0]));
-    if(anioEntries.length>=2){
+    const anioEntries=Object.entries(porAnio).filter(([k,v])=>k!=='Sin año'&&v.total>=2).sort((a,b)=>Number(b[0])-Number(a[0]));
+    if(anioEntries.length>=1){
         const masReciente=anioEntries[0];
         const pReciente=Math.round(masReciente[1].respondieron/masReciente[1].total*100);
-        if(pReciente<50) ins.push({tipo:'warn',titulo:`Baja participación de graduados recientes (${masReciente[0]}): ${pReciente}%`,detalle:`Los graduados más recientes tienen menor tasa de respuesta. Considerar comunicación directa.`});
-        else if(pReciente>=80) ins.push({tipo:'ok',titulo:`Alta participación de graduados ${masReciente[0]}: ${pReciente}%`,detalle:`Los graduados recientes muestran alto compromiso con la institución.`});
+        if(pReciente<50)  ins.push({tipo:'warn',titulo:`Baja participación de graduados recientes (${masReciente[0]}): ${pReciente}%`,detalle:'Los graduados más recientes tienen menor tasa. Considerar comunicación directa.'});
+        else if(pReciente>=80) ins.push({tipo:'ok',titulo:`Alta participación de graduados ${masReciente[0]}: ${pReciente}%`,detalle:'Los graduados recientes muestran alto compromiso institucional.'});
     }
 
-    // 4. Análisis preguntas de escala
+    // 4. Preguntas de escala — peor y mejor
     const pregsEscala=todasPregs.filter(g=>g.tipo==='escala'&&g.respuestasRaw?.length>=3);
     if(pregsEscala.length>0){
         const conProm=pregsEscala.map(g=>({texto:g.textoCanonical,prom:promedioEscala(g.respuestasRaw),n:g.respuestasRaw.length})).filter(x=>x.prom!==null).sort((a,b)=>a.prom-b.prom);
         if(conProm.length>0){
             const peor=conProm[0],mejor=conProm[conProm.length-1];
-            if(peor.prom<3.0) ins.push({tipo:'crit',titulo:`Área crítica: "${peor.texto.slice(0,55)}${peor.texto.length>55?'…':''}"`,detalle:`Promedio de ${peor.prom.toFixed(2)}/5 en ${peor.n} respuestas. Requiere atención prioritaria.`});
-            else if(peor.prom<3.5) ins.push({tipo:'warn',titulo:`Área de mejora: "${peor.texto.slice(0,55)}${peor.texto.length>55?'…':''}"`,detalle:`Promedio de ${peor.prom.toFixed(2)}/5. Por debajo del nivel óptimo (3.5).`});
-            if(mejor.prom>=4.0&&conProm.length>1) ins.push({tipo:'ok',titulo:`Fortaleza: "${mejor.texto.slice(0,55)}${mejor.texto.length>55?'…':''}"`,detalle:`Promedio de ${mejor.prom.toFixed(2)}/5 en ${mejor.n} respuestas. Aspecto mejor valorado.`});
-            if(conProm.length>=3&&(mejor.prom-peor.prom)>=1.5) ins.push({tipo:'info',titulo:`Alta dispersión entre indicadores (rango ${(mejor.prom-peor.prom).toFixed(1)} pts)`,detalle:`Percepciones muy diferenciadas según el tema evaluado.`});
+            if(peor.prom<3.0)       ins.push({tipo:'crit',titulo:`Área crítica: "${peor.texto.slice(0,55)}${peor.texto.length>55?'…':''}"`,detalle:`Promedio ${peor.prom.toFixed(2)}/5 en ${peor.n} respuestas. Atención prioritaria.`});
+            else if(peor.prom<3.5)  ins.push({tipo:'warn',titulo:`Área de mejora: "${peor.texto.slice(0,55)}${peor.texto.length>55?'…':''}"`,detalle:`Promedio ${peor.prom.toFixed(2)}/5. Por debajo del nivel óptimo (3.5).`});
+            if(mejor.prom>=4.0&&conProm.length>1) ins.push({tipo:'ok',titulo:`Fortaleza: "${mejor.texto.slice(0,55)}${mejor.texto.length>55?'…':''}"`,detalle:`Promedio ${mejor.prom.toFixed(2)}/5 en ${mejor.n} respuestas. Aspecto mejor valorado.`});
+            if(conProm.length>=3&&(mejor.prom-peor.prom)>=1.5) ins.push({tipo:'info',titulo:`Alta dispersión entre indicadores (rango ${(mejor.prom-peor.prom).toFixed(1)} pts)`,detalle:'Percepciones muy diferenciadas según el tema evaluado.'});
         }
     }
 
     // 5. Si/No
-    const pregsSiNo=todasPregs.filter(g=>g.tipo==='si_no'&&g.respuestasRaw?.length>=2);
-    pregsSiNo.forEach(g=>{
+    todasPregs.filter(g=>g.tipo==='si_no'&&g.respuestasRaw?.length>=2).forEach(g=>{
         const si=g.respuestasRaw.filter(r=>r.valor==='Sí').length;
         const total=g.respuestasRaw.length;
         const pctSi=Math.round(si/total*100);
         const texto=g.textoCanonical.slice(0,55)+(g.textoCanonical.length>55?'…':'');
-        if(pctSi<=25) ins.push({tipo:'crit',titulo:`Solo ${pctSi}% respondió "Sí": "${texto}"`,detalle:`${si} de ${total} respuestas afirmativas. Brecha significativa.`});
+        if(pctSi<=25)  ins.push({tipo:'crit',titulo:`Solo ${pctSi}% respondió "Sí": "${texto}"`,detalle:`${si} de ${total} respuestas afirmativas.`});
         else if(pctSi>=80) ins.push({tipo:'ok',titulo:`${pctSi}% respondió "Sí": "${texto}"`,detalle:`${si} de ${total} con respuesta positiva. Consenso elevado.`});
     });
 
-    // 6. Tendencia longitudinal
+    // 6. Tendencia longitudinal (2+ encuestas)
     if(encCerradas.length>=2){
         const encOrdenadas=[...encCerradas].sort((a,b)=>new Date(a.fechaCierre)-new Date(b.fechaCierre));
-        const idAntigua=encOrdenadas[0]._id;
-        const idReciente=encOrdenadas[encOrdenadas.length-1]._id;
-        const pregsComunes=todasPregs.filter(g=>g.esComun&&g.tipo==='escala');
+        const idAntigua=encOrdenadas[0]._id,idReciente=encOrdenadas[encOrdenadas.length-1]._id;
         let mejora=0,empeora=0;
-        pregsComunes.forEach(g=>{
-            const rA=g.respuestasRaw.filter(r=>r.encuestaId===idAntigua);
-            const rR=g.respuestasRaw.filter(r=>r.encuestaId===idReciente);
-            const pA=promedioEscala(rA),pR=promedioEscala(rR);
+        todasPregs.filter(g=>g.esComun&&g.tipo==='escala').forEach(g=>{
+            const pA=promedioEscala(g.respuestasRaw.filter(r=>r.encuestaId===idAntigua));
+            const pR=promedioEscala(g.respuestasRaw.filter(r=>r.encuestaId===idReciente));
             if(pA&&pR){if(pR>pA+0.2)mejora++;else if(pR<pA-0.2)empeora++;}
         });
-        if(mejora>empeora) ins.push({tipo:'ok',titulo:`Tendencia positiva: ${mejora} indicador${mejora!==1?'es':''} mejoró entre encuestas`,detalle:`Comparando "${encOrdenadas[0].titulo}" vs "${encOrdenadas[encOrdenadas.length-1].titulo}".`});
-        else if(empeora>mejora) ins.push({tipo:'warn',titulo:`Tendencia negativa: ${empeora} indicador${empeora!==1?'es':''} empeoró`,detalle:`Entre la primera y última encuesta. Analizar factores externos del contexto.`});
-        else if(mejora>0) ins.push({tipo:'info',titulo:'Tendencia estable entre encuestas',detalle:'Los indicadores no muestran variación significativa entre períodos.'});
+        if(mejora>empeora)     ins.push({tipo:'ok',  titulo:`Tendencia positiva: ${mejora} indicador${mejora!==1?'es':''} mejoró entre encuestas`,detalle:`"${encOrdenadas[0].titulo}" → "${encOrdenadas[encOrdenadas.length-1].titulo}".`});
+        else if(empeora>mejora)ins.push({tipo:'warn', titulo:`Tendencia negativa: ${empeora} indicador${empeora!==1?'es':''} empeoró`,detalle:'Analizar factores del contexto entre períodos.'});
+        else if(mejora>0)      ins.push({tipo:'info', titulo:'Tendencia estable entre encuestas',detalle:'Los indicadores no muestran variación significativa.'});
         ins.push({tipo:'ok',titulo:`${encCerradas.length} encuestas cerradas — análisis longitudinal activo`,detalle:'Mantener preguntas comunes para seguimiento de tendencias.'});
     } else if(encCerradas.length===1){
-        ins.push({tipo:'info',titulo:'1 encuesta cerrada — base de datos inicial',detalle:'Con la segunda encuesta se activará el análisis de tendencias longitudinales.'});
+        ins.push({tipo:'info',titulo:'1 encuesta cerrada — base de datos inicial',detalle:'Con la segunda encuesta se activará el análisis longitudinal.'});
     }
 
     // 7. Cobertura cualitativa
     const pregsTexto=todasPregs.filter(g=>g.tipo==='texto_libre');
     if(pregsTexto.length>0){
-        const totalR=pregsTexto.reduce((s,g)=>s+(g.respuestasRaw?.length||0),0);
-        const prom=Math.round(totalR/pregsTexto.length);
-        if(prom>=5) ins.push({tipo:'ok',titulo:`Buena cobertura cualitativa: ~${prom} respuestas por pregunta abierta`,detalle:'Volumen suficiente para análisis NLP confiable.'});
-        else if(prom>0) ins.push({tipo:'info',titulo:`Cobertura cualitativa limitada: ~${prom} respuesta${prom!==1?'s':''} por pregunta`,detalle:'Con más respuestas el análisis NLP mejora en precisión.'});
+        const prom=Math.round(pregsTexto.reduce((s,g)=>s+(g.respuestasRaw?.length||0),0)/pregsTexto.length);
+        if(prom>=5)   ins.push({tipo:'ok',  titulo:`Buena cobertura cualitativa: ~${prom} respuestas por pregunta abierta`,detalle:'Volumen suficiente para análisis NLP confiable.'});
+        else if(prom>0)ins.push({tipo:'info',titulo:`Cobertura cualitativa limitada: ~${prom} respuesta${prom!==1?'s':''} por pregunta`,detalle:'Con más respuestas el análisis NLP mejora en precisión.'});
     }
 
     return ins;
 };
 
 const calcularPlanGraduados=(kpis,encCerradas,graduadosRaw,todasPregs)=>{
-    const plan=[];
-    let prioridad=1;
+    const plan=[];let prioridad=1;
     const{tasa,totalGraduados,graduadosRespondieron}=kpis;
-
-    if(tasa<40) plan.push({prioridad:prioridad++,accion:'Implementar campaña de convocatoria urgente a graduados',impacto:'alto',meta:`${totalGraduados-graduadosRespondieron} sin responder — objetivo: superar 60%`});
-    if(tasa>=40&&tasa<70) plan.push({prioridad:prioridad++,accion:'Enviar recordatorio personalizado por email institucional',impacto:'medio',meta:`${totalGraduados-graduadosRespondieron} graduados por contactar para superar 70%`});
-    if(encCerradas.length===0) plan.push({prioridad:prioridad++,accion:'Cerrar la encuesta activa para habilitar el análisis',impacto:'alto',meta:'Los gráficos solo operan sobre encuestas cerradas'});
-
-    const pregsEscala=(todasPregs||[]).filter(g=>g.tipo==='escala'&&g.respuestasRaw?.length>=2);
-    if(pregsEscala.length>0){
-        const debiles=pregsEscala.map(g=>({texto:g.textoCanonical,prom:promedioEscala(g.respuestasRaw)})).filter(x=>x.prom!==null&&x.prom<3.5).sort((a,b)=>a.prom-b.prom);
-        if(debiles.length>0) plan.push({prioridad:prioridad++,accion:`Diseñar plan de mejora para ${debiles.length} área${debiles.length!==1?'s':''} con valoración baja`,impacto:'alto',meta:`"${debiles[0].texto.slice(0,45)}${debiles[0].texto.length>45?'…':''}" (${debiles[0].prom.toFixed(2)}/5)`});
-    }
-
-    if(encCerradas.length===1) plan.push({prioridad:prioridad++,accion:'Mantener preguntas actuales en la próxima encuesta',impacto:'medio',meta:'Habilitar comparación longitudinal de satisfacción'});
-
+    if(tasa<40)         plan.push({prioridad:prioridad++,accion:'Campaña urgente de convocatoria a graduados',impacto:'alto',meta:`${totalGraduados-graduadosRespondieron} sin responder — objetivo: superar 60%`});
+    if(tasa>=40&&tasa<70)plan.push({prioridad:prioridad++,accion:'Recordatorio por email institucional a graduados pendientes',impacto:'medio',meta:`${totalGraduados-graduadosRespondieron} por contactar para superar 70%`});
+    if(encCerradas.length===0)plan.push({prioridad:prioridad++,accion:'Cerrar la encuesta activa para habilitar el análisis',impacto:'alto',meta:'Los gráficos solo operan sobre encuestas cerradas'});
+    const debiles=(todasPregs||[]).filter(g=>g.tipo==='escala'&&g.respuestasRaw?.length>=2).map(g=>({texto:g.textoCanonical,prom:promedioEscala(g.respuestasRaw)})).filter(x=>x.prom!==null&&x.prom<3.5).sort((a,b)=>a.prom-b.prom);
+    if(debiles.length>0) plan.push({prioridad:prioridad++,accion:`Plan de mejora para ${debiles.length} área${debiles.length!==1?'s':''} con valoración baja`,impacto:'alto',meta:`"${debiles[0].texto.slice(0,45)}${debiles[0].texto.length>45?'…':''}" (${debiles[0].prom.toFixed(2)}/5)`});
+    if(encCerradas.length===1)plan.push({prioridad:prioridad++,accion:'Mantener preguntas en la próxima encuesta',impacto:'medio',meta:'Habilitar comparación longitudinal de satisfacción'});
+    // Año con baja participación (solo si hay datos reales)
     const porAnio={};
-    (graduadosRaw||[]).forEach(g=>{
-        const a=g.anioGraduacion||'Sin año';
-        if(!porAnio[a]) porAnio[a]={total:0,respondieron:0};
-        porAnio[a].total++;
-        if(g.respondio) porAnio[a].respondieron++;
-    });
+    (graduadosRaw||[]).forEach(g=>{const a=String(g.anioGraduacion||'');if(!a)return;if(!porAnio[a])porAnio[a]={total:0,respondieron:0};porAnio[a].total++;if(g.respondio)porAnio[a].respondieron++;});
     const anioDebil=Object.entries(porAnio).filter(([,v])=>v.total>=2&&Math.round(v.respondieron/v.total*100)<40);
-    if(anioDebil.length>0){
-        const[anio,datos]=anioDebil[0];
-        plan.push({prioridad:prioridad++,accion:`Reforzar comunicación con promoción ${anio}`,impacto:'medio',meta:`Solo ${Math.round(datos.respondieron/datos.total*100)}% respondió (${datos.respondieron}/${datos.total})`});
-    }
-
+    if(anioDebil.length>0){const[anio,datos]=anioDebil[0];plan.push({prioridad:prioridad++,accion:`Reforzar comunicación con promoción ${anio}`,impacto:'medio',meta:`Solo ${Math.round(datos.respondieron/datos.total*100)}% respondió (${datos.respondieron}/${datos.total})`});}
     return plan;
 };
 
@@ -560,43 +476,60 @@ const TabEGraduado=()=>{
     const[datos,    setDatos]   =useState(null);
     const[cargando, setCargando]=useState(true);
     const[error,    setError]   =useState('');
-    const[fEnc,     setFEnc]    =useState({mesAnio:'',encuestaId:'',anioGraduacion:'',genero:''});
+    // fEnc: solo filtros de encuesta — los valores de género y año vienen de la BD real
+    const[fEnc,setFEnc]=useState({mesAnio:'',encuestaId:'',anioGraduacion:'',genero:''});
 
     const cargar=useCallback(async()=>{
         setCargando(true);setError('');
         try{
             const r=await axios.get(`${API}/admin/estadisticas/encuesta`,{headers:hdrs()});
             setDatos(r.data);
-        }catch{setError('No se pudieron cargar las estadísticas de encuestas.');}
+        }catch{setError('No se pudieron cargar las estadísticas de encuestas de graduados.');}
         finally{setCargando(false);}
     },[]);
     useEffect(()=>{cargar();},[cargar]);
 
     const cEnc=useCallback((k,v)=>setFEnc(p=>{
         const n={...p,[k]:v};
-        if(k==='mesAnio') n.encuestaId='';
+        if(k==='mesAnio') n.encuestaId=''; // al cambiar período, resetear encuesta
         return n;
     }),[]);
     const lEnc=useCallback(()=>setFEnc({mesAnio:'',encuestaId:'',anioGraduacion:'',genero:''}),[]);
 
-    // Opciones mes/año desde fechaCierre
-    const MESES_ARR=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+    // ── Opciones mes/año desde fechaCierre real de la BD ──────
     const opsMesAnio=useMemo(()=>{
         if(!datos) return [];
         const enc=datos.encuestas.filter(e=>e.estado==='cerrada'&&e.fechaCierre);
         const set=new Set();
         enc.forEach(e=>{const d=new Date(e.fechaCierre);set.add(`${d.getMonth()+1}-${d.getFullYear()}`);});
-        return[...set].sort((a,b)=>{const[ma,ya]=a.split('-').map(Number);const[mb,yb]=b.split('-').map(Number);return yb!==ya?yb-ya:mb-ma;})
+        return[...set]
+            .sort((a,b)=>{const[ma,ya]=a.split('-').map(Number);const[mb,yb]=b.split('-').map(Number);return yb!==ya?yb-ya:mb-ma;})
             .map(clave=>{const[m,y]=clave.split('-').map(Number);return{clave,label:`${MESES_ARR[m-1]} ${y}`};});
     },[datos]);
 
-    // Opciones año de graduación y género desde graduadosRaw
-    const opsAnioGrad=useMemo(()=>datos?[...new Set(datos.graduadosRaw.map(g=>g.anioGraduacion).filter(Boolean))].sort((a,b)=>b-a).map(String):[]  ,[datos]);
-    const opsGenero  =useMemo(()=>datos?[...new Set(datos.graduadosRaw.map(g=>g.genero).filter(Boolean))].sort():[]  ,[datos]);
+    // ── Opciones año graduación y género: SOLO los que existen en BD ──
+    const opsAnioGrad=useMemo(()=>{
+        if(!datos?.graduadosRaw) return [];
+        return[...new Set(datos.graduadosRaw.map(g=>g.anioGraduacion).filter(Boolean))]
+            .sort((a,b)=>b-a).map(String);
+    },[datos]);
+
+    const opsGenero=useMemo(()=>{
+        if(!datos?.graduadosRaw) return [];
+        // Deduplica normalizando tildes para no mostrar duplicados como "LGBTQ+" y "Lgbtq+"
+        const mapa={};
+        datos.graduadosRaw.forEach(g=>{
+            const gen=(g.genero||'').trim();
+            if(!gen) return;
+            const clave=normTxt(gen);
+            if(!mapa[clave]) mapa[clave]=gen; // guarda la versión original del primero encontrado
+        });
+        return Object.values(mapa).sort();
+    },[datos]);
 
     const df=useMemo(()=>{
         if(!datos) return null;
-        const{encuestas,graduadosRaw,respuestasRaw,preguntasAgrupadas,kpis}=datos;
+        const{encuestas,graduadosRaw,preguntasAgrupadas,kpis}=datos;
         const encC=encuestas.filter(e=>e.estado==='cerrada');
 
         // Filtro mes/año sobre fechaCierre
@@ -605,29 +538,14 @@ const TabEGraduado=()=>{
             :encC;
         const idsC=new Set(encFiltradas.map(e=>e._id));
 
-        // Graduados filtrados
-        let grads=graduadosRaw;
-        if(fEnc.anioGraduacion) grads=grads.filter(g=>String(g.anioGraduacion)===fEnc.anioGraduacion);
-        if(fEnc.genero)         grads=grads.filter(g=>normTxt(g.genero||'')===normTxt(fEnc.genero));
-        const idsGrad=new Set(grads.map(g=>g._id));
-
-        // Distribución por género y año
-        const cGen={},cAnio={};
-        grads.forEach(g=>{
-            const gen=g.genero||'Sin especificar';cGen[gen]=(cGen[gen]||0)+1;
-            if(g.anioGraduacion)cAnio[g.anioGraduacion]=(cAnio[g.anioGraduacion]||0)+1;
-        });
-        const porGenero=Object.entries(cGen).map(([l,v])=>({label:l,valor:v})).sort((a,b)=>b.valor-a.valor);
-        const porAnio=Object.entries(cAnio).map(([a,t])=>({anio:parseInt(a),total:t})).sort((a,b)=>a.anio-b.anio);
-
-        // Preguntas filtradas
+        // Preguntas filtradas por encuesta/género/año
         const pregsF=preguntasAgrupadas.map(g=>({
             ...g,
             respuestasRaw:(g.respuestasRaw||[]).filter(r=>{
-                if(!idsC.has(r.encuestaId))return false;
-                if(fEnc.encuestaId&&r.encuestaId!==fEnc.encuestaId)return false;
-                if(fEnc.anioGraduacion&&String(r.anioGraduacion)!==fEnc.anioGraduacion)return false;
-                if(fEnc.genero&&normTxt(r.genero||'')!==normTxt(fEnc.genero))return false;
+                if(!idsC.has(r.encuestaId))        return false;
+                if(fEnc.encuestaId&&r.encuestaId!==fEnc.encuestaId) return false;
+                if(fEnc.anioGraduacion&&String(r.anioGraduacion)!==fEnc.anioGraduacion) return false;
+                if(fEnc.genero&&normTxt(r.genero||'')!==normTxt(fEnc.genero)) return false;
                 return true;
             }),
             encuestasAparece:(g.encuestasAparece||[]).filter(id=>idsC.has(id)),
@@ -636,14 +554,19 @@ const TabEGraduado=()=>{
         const comunes=pregsF.filter(g=>g.esComun);
         const otras  =pregsF.filter(g=>!g.esComun);
 
-        const respond=grads.filter(g=>fEnc.encuestaId?g.encuestasRespondidas.includes(fEnc.encuestaId):g.respondio).length;
-        const kE={...kpis,graduadosRespondieron:respond,tasa:grads.length>0?Math.round((respond/grads.length)*100):0,totalGraduados:grads.length};
+        // KPIs del grupo filtrado
+        const totalGrad=graduadosRaw.length;
+        let gradResp=graduadosRaw.filter(g=>fEnc.encuestaId?g.encuestasRespondidas.includes(fEnc.encuestaId):g.respondio);
+        if(fEnc.anioGraduacion) gradResp=gradResp.filter(g=>String(g.anioGraduacion)===fEnc.anioGraduacion);
+        if(fEnc.genero)         gradResp=gradResp.filter(g=>normTxt(g.genero||'')===normTxt(fEnc.genero));
+        const respondieron=gradResp.length;
+        const kE={...kpis,graduadosRespondieron:respondieron,tasa:totalGrad>0?Math.round((respondieron/totalGrad)*100):0,totalGraduados:totalGrad};
 
         return{
-            encC,encFiltradas,graduadosFiltrados:grads,respuestasRaw,
-            porGenero,porAnio,comunes,otras,kE,
-            insights:calcularInsightsGraduados(kE,comunes,otras,encC,grads,respuestasRaw),
-            plan:calcularPlanGraduados(kE,encC,grads,[...comunes,...otras]),
+            encC,encFiltradas,
+            comunes,otras,kE,graduadosRaw,
+            insights:calcularInsightsGraduados(kE,comunes,otras,encC,graduadosRaw),
+            plan:calcularPlanGraduados(kE,encC,graduadosRaw,[...comunes,...otras]),
         };
     },[datos,fEnc]);
 
@@ -651,67 +574,72 @@ const TabEGraduado=()=>{
     if(error)    return <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',minHeight:320}}><FaExclamationTriangle style={{fontSize:'2rem',color:NARANJA,marginBottom:10}}/><p style={{margin:'0 0 14px',fontSize:'0.82rem',color:'#374151',fontFamily:FONT}}>{error}</p><button onClick={cargar} style={{display:'inline-flex',alignItems:'center',gap:6,padding:'8px 14px',background:'white',border:'1px solid #e5e7eb',borderRadius:7,cursor:'pointer',fontSize:'0.74rem',fontWeight:600,color:'#374151',fontFamily:FONT}}><FaSyncAlt style={{fontSize:'0.66rem'}}/>Reintentar</button></div>;
     if(!df) return null;
 
-    const{encC,encFiltradas,graduadosFiltrados,porGenero,porAnio,comunes,otras,kE,insights,plan}=df;
+    const{encC,encFiltradas,comunes,otras,kE,graduadosRaw,insights,plan}=df;
     const hayF=Object.values(fEnc).some(v=>v!=='');
     const sinD={margin:0,fontSize:'0.72rem',color:'#9ca3af',textAlign:'center',padding:'16px 0',fontFamily:FONT};
-    const totalGradAll=datos?.graduadosRaw?.length||0;
 
     return <div style={{fontFamily:FONT,paddingBottom:56}}>
 
-        {/* KPIs */}
+        {/* KPIs — solo de encuestas */}
         <div style={{display:'grid',gridTemplateColumns:'repeat(5,1fr)',gap:10,marginBottom:14}}>
-            <KPI icon={FaGraduationCap} valor={totalGradAll}           label="Graduados totales"    sub="Con tesis verificada"         color={ROJO}   delay={0}  />
-            <KPI icon={FaClipboardList} valor={encC.length}            label="Encuestas cerradas"   sub="Con resultados"              color={AZUL}   delay={40} />
-            <KPI icon={FaCheckCircle}   valor={kE.graduadosRespondieron} label="Respondieron"        sub={`${kE.tasa}% del grupo`}    color={VERDE}  delay={80} />
-            <KPI icon={FaLayerGroup}    valor={comunes.length}         label="Preguntas recurrentes" sub="En 2+ encuestas"            color={MORADO} delay={120}/>
-            <KPI icon={FaQuestion}      valor={otras.length}           label="Otras preguntas"      sub="Específicas por encuesta"    color={CIAN}   delay={160}/>
+            <KPI icon={FaGraduationCap} valor={kE.totalGraduados}          label="Graduados totales"     sub="Con tesis verificada"        color={ROJO}   delay={0}  />
+            <KPI icon={FaClipboardList} valor={encC.length}                 label="Encuestas cerradas"    sub="Con resultados"             color={AZUL}   delay={40} />
+            <KPI icon={FaCheckCircle}   valor={kE.graduadosRespondieron}    label="Respondieron"          sub={`${kE.tasa}% del total`}    color={VERDE}  delay={80} />
+            <KPI icon={FaLayerGroup}    valor={comunes.length}              label="Preguntas recurrentes" sub="En 2+ encuestas"            color={MORADO} delay={120}/>
+            <KPI icon={FaQuestion}      valor={otras.length}               label="Otras preguntas"       sub="Específicas por encuesta"   color={CIAN}   delay={160}/>
         </div>
 
-        {/* Filtros — 4 en cascada */}
+        {/* Filtros — todos desde la BD real */}
         <div className="teg-a" style={{background:'white',borderRadius:10,border:'1px solid #e5e7eb',padding:'10px 14px',marginBottom:14}}>
             <div style={{display:'flex',alignItems:'center',gap:8,flexWrap:'wrap'}}>
                 <div style={{display:'flex',alignItems:'center',gap:5,flexShrink:0}}>
-                    <div style={{width:22,height:22,borderRadius:5,background:`${ROJO}15`,display:'flex',alignItems:'center',justifyContent:'center'}}><FaFilter style={{color:ROJO,fontSize:'0.60rem'}}/></div>
+                    <div style={{width:22,height:22,borderRadius:5,background:`${ROJO}15`,display:'flex',alignItems:'center',justifyContent:'center'}}>
+                        <FaFilter style={{color:ROJO,fontSize:'0.60rem'}}/>
+                    </div>
                     <span style={{fontSize:'0.72rem',fontWeight:700,color:'#374151',fontFamily:FONT}}>Filtrar resultados</span>
                     {hayF&&<span style={{background:ROJO,color:'white',borderRadius:99,fontSize:'0.55rem',fontWeight:700,padding:'1px 5px',fontFamily:FONT}}>{Object.values(fEnc).filter(v=>v!=='').length}</span>}
                 </div>
                 <div style={{width:1,height:20,background:'#e5e7eb',flexShrink:0}}/>
 
-                {/* 1. Período */}
+                {/* 1. Período mes/año — desde fechaCierre real */}
                 {opsMesAnio.length>0
                     ?<select value={fEnc.mesAnio} onChange={e=>cEnc('mesAnio',e.target.value)} className={`teg-sel${fEnc.mesAnio?' on':''}`}>
                         <option value="">Todos los períodos</option>
                         {opsMesAnio.map(o=><option key={o.clave} value={o.clave}>{o.label}</option>)}
                     </select>
-                    :<span style={{fontSize:'0.68rem',color:'#94a3b8',fontFamily:FONT}}>Sin períodos</span>
+                    :<span style={{fontSize:'0.68rem',color:'#94a3b8',fontFamily:FONT}}>Sin períodos cerrados</span>
                 }
 
-                {/* 2. Año de graduación */}
-                <select value={fEnc.anioGraduacion} onChange={e=>cEnc('anioGraduacion',e.target.value)} className={`teg-sel${fEnc.anioGraduacion?' on':''}`} disabled={opsAnioGrad.length===0} style={{opacity:opsAnioGrad.length===0?0.45:1}}>
-                    <option value="">Promoción</option>
-                    {opsAnioGrad.map(a=><option key={a} value={a}>{a}</option>)}
-                </select>
+                {/* 2. Año de graduación — solo los que existen en BD */}
+                {opsAnioGrad.length>0&&(
+                    <select value={fEnc.anioGraduacion} onChange={e=>cEnc('anioGraduacion',e.target.value)} className={`teg-sel${fEnc.anioGraduacion?' on':''}`}>
+                        <option value="">Promoción</option>
+                        {opsAnioGrad.map(a=><option key={a} value={a}>{a}</option>)}
+                    </select>
+                )}
 
-                {/* 3. Género */}
-                <select value={fEnc.genero} onChange={e=>cEnc('genero',e.target.value)} className={`teg-sel${fEnc.genero?' on':''}`} disabled={opsGenero.length===0} style={{opacity:opsGenero.length===0?0.45:1}}>
-                    <option value="">Género</option>
-                    {opsGenero.map(g=><option key={g} value={g}>{g}</option>)}
-                </select>
+                {/* 3. Género — solo los que existen en BD */}
+                {opsGenero.length>0&&(
+                    <select value={fEnc.genero} onChange={e=>cEnc('genero',e.target.value)} className={`teg-sel${fEnc.genero?' on':''}`}>
+                        <option value="">Género</option>
+                        {opsGenero.map(g=><option key={g} value={g}>{g}</option>)}
+                    </select>
+                )}
 
-                {/* 4. Encuesta específica */}
+                {/* 4. Encuesta específica — filtrada por período si está seleccionado */}
                 {(fEnc.mesAnio?encFiltradas:encC).length>0&&(
                     <select value={fEnc.encuestaId} onChange={e=>cEnc('encuestaId',e.target.value)} className={`teg-sel${fEnc.encuestaId?' on':''}`} style={{minWidth:200,maxWidth:320}}>
-                        <option value="">{fEnc.mesAnio?'Todas de este período':'Todas las encuestas'}</option>
+                        <option value="">{fEnc.mesAnio?'Todas de este período':'Todas las encuestas cerradas'}</option>
                         {(fEnc.mesAnio?encFiltradas:encC).map(e=><option key={e._id} value={e._id}>{e.titulo}</option>)}
                     </select>
                 )}
 
-                {/* Chips activos */}
+                {/* Chips de filtros activos */}
                 {hayF&&<>
                     {Object.entries(fEnc).filter(([,v])=>v).map(([k,v])=>{
                         const lblMap={mesAnio:'Período',encuestaId:'Encuesta',anioGraduacion:'Promoción',genero:'Género'};
                         let display=v;
-                        if(k==='mesAnio') display=opsMesAnio.find(o=>o.clave===v)?.label||v;
+                        if(k==='mesAnio')    display=opsMesAnio.find(o=>o.clave===v)?.label||v;
                         if(k==='encuestaId') display=(fEnc.mesAnio?encFiltradas:encC).find(e=>e._id===v)?.titulo?.slice(0,28)||v;
                         return <span key={k} style={{background:`${ROJO}12`,color:ROJO,border:`1px solid ${ROJO}25`,borderRadius:99,fontSize:'0.63rem',fontWeight:600,padding:'2px 7px',fontFamily:FONT,display:'inline-flex',alignItems:'center',gap:3}}>
                             <span style={{color:'#9ca3af',fontSize:'0.58rem'}}>{lblMap[k]}:</span>&nbsp;{display.length>28?display.slice(0,28)+'…':display}
@@ -721,62 +649,18 @@ const TabEGraduado=()=>{
                     <button onClick={lEnc} style={{background:'none',border:'none',cursor:'pointer',color:'#9ca3af',fontSize:'0.65rem',fontFamily:FONT,display:'flex',alignItems:'center',gap:2,padding:'2px 4px'}}><FaTimes style={{fontSize:'0.55rem'}}/>Limpiar</button>
                 </>}
             </div>
-            {fEnc.mesAnio&&<div style={{marginTop:8,paddingTop:8,borderTop:'1px solid #f1f5f9',display:'flex',alignItems:'center',gap:6}}>
-                <FaCalendarAlt style={{color:AZUL,fontSize:'0.60rem'}}/>
-                <span style={{fontSize:'0.62rem',color:'#475569',fontFamily:FONT}}>
-                    Período: <strong style={{color:AZUL}}>{opsMesAnio.find(o=>o.clave===fEnc.mesAnio)?.label}</strong>
-                    {' · '}{encFiltradas.length} encuesta{encFiltradas.length!==1?'s':''} en este período
-                </span>
-            </div>}
-        </div>
 
-        {/* Distribución género + año */}
-        <div style={{display:'grid',gridTemplateColumns:'280px 1fr',gap:14,marginBottom:14}}>
-            {/* Género */}
-            <div className="teg-a" style={{background:'white',borderRadius:10,border:'1px solid #e5e7eb',boxShadow:'0 1px 3px rgba(0,0,0,.05)',padding:'12px 14px',animationDelay:'60ms'}}>
-                <div style={{display:'flex',alignItems:'center',gap:7,marginBottom:12}}>
-                    <div style={{width:22,height:22,borderRadius:5,background:`${AZUL}15`,display:'flex',alignItems:'center',justifyContent:'center'}}><FaVenusMars style={{color:AZUL,fontSize:'0.65rem'}}/></div>
-                    <span style={{fontSize:'0.78rem',fontWeight:700,color:'#0f172a',fontFamily:FONT}}>Por Género</span>
+            {/* Indicador del período activo */}
+            {fEnc.mesAnio&&(
+                <div style={{marginTop:8,paddingTop:8,borderTop:'1px solid #f1f5f9',display:'flex',alignItems:'center',gap:6}}>
+                    <FaCalendarAlt style={{color:AZUL,fontSize:'0.60rem'}}/>
+                    <span style={{fontSize:'0.62rem',color:'#475569',fontFamily:FONT}}>
+                        Período: <strong style={{color:AZUL}}>{opsMesAnio.find(o=>o.clave===fEnc.mesAnio)?.label}</strong>
+                        {' · '}{encFiltradas.length} encuesta{encFiltradas.length!==1?'s':''} en este período
+                    </span>
                 </div>
-                {porGenero.length===0?<p style={sinD}>Sin datos</p>:<div style={{display:'flex',gap:12,alignItems:'center'}}>
-                    <Donut segs={porGenero.map((g,i)=>({v:g.valor,c:PALETA[i]}))} r={34} g={10} sz={84} label={graduadosFiltrados.length} sublabel="total"/>
-                    <div style={{flex:1}}>
-                        {porGenero.map((g,i)=><div key={i} style={{display:'flex',alignItems:'center',gap:6,marginBottom:5}}>
-                            <div style={{width:7,height:7,borderRadius:'50%',background:PALETA[i],flexShrink:0}}/>
-                            <span style={{fontSize:'0.70rem',color:'#374151',flex:1,fontFamily:FONT}}>{g.label}</span>
-                            <span style={{fontSize:'0.70rem',fontWeight:700,color:'#111827',fontFamily:FONT}}>{g.valor}</span>
-                            <span style={{fontSize:'0.60rem',color:'#9ca3af',fontFamily:FONT}}>({pct(g.valor,graduadosFiltrados.length)}%)</span>
-                        </div>)}
-                    </div>
-                </div>}
-            </div>
-
-            {/* Año de graduación — barras verticales */}
-            <div className="teg-a" style={{background:'white',borderRadius:10,border:'1px solid #e5e7eb',boxShadow:'0 1px 3px rgba(0,0,0,.05)',padding:'12px 14px',animationDelay:'80ms'}}>
-                <div style={{display:'flex',alignItems:'center',gap:7,marginBottom:12}}>
-                    <div style={{width:22,height:22,borderRadius:5,background:`${MORADO}15`,display:'flex',alignItems:'center',justifyContent:'center'}}><FaCalendarAlt style={{color:MORADO,fontSize:'0.65rem'}}/></div>
-                    <span style={{fontSize:'0.78rem',fontWeight:700,color:'#0f172a',fontFamily:FONT}}>Por Año de Graduación</span>
-                    <span style={{fontSize:'0.65rem',color:'#9ca3af',fontFamily:FONT,marginLeft:'auto'}}>{graduadosFiltrados.length} graduados</span>
-                </div>
-                {porAnio.length===0?<p style={sinD}>Sin datos</p>:(()=>{
-                    const maxV=Math.max(...porAnio.map(d=>d.total),1);
-                    return <div style={{display:'flex',alignItems:'flex-end',gap:4,width:'100%',height:80}}>
-                        {porAnio.map((d,i)=>{
-                            const h=Math.max(6,Math.round((d.total/maxV)*68));
-                            const color=PALETA[i%PALETA.length];
-                            return <div key={i} style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center'}}>
-                                <span style={{fontSize:'0.58rem',fontWeight:700,color:'#374151',fontFamily:FONT,marginBottom:2}}>{d.total}</span>
-                                <div style={{width:'100%',height:h,backgroundColor:color,borderRadius:'3px 3px 0 0'}}/>
-                                <span style={{fontSize:'0.55rem',color:'#9ca3af',fontFamily:FONT,marginTop:3}}>{d.anio}</span>
-                            </div>;
-                        })}
-                    </div>;
-                })()}
-            </div>
+            )}
         </div>
-
-        {/* Tabla graduados */}
-        <TablaGraduadosPaginada graduadosFiltrados={graduadosFiltrados} hayF={hayF} sinD={sinD} fEnc={fEnc} encFiltradas={encFiltradas}/>
 
         {/* Preguntas recurrentes */}
         {comunes.length>0&&<div style={{marginBottom:14}}>
@@ -802,6 +686,7 @@ const TabEGraduado=()=>{
             {otras.map((g,i)=><TarjetaGrupo key={g.id} grupo={g} encuestas={encC} filtros={fEnc} num={comunes.length+i+1}/>)}
         </div>}
 
+        {/* Sin datos */}
         {comunes.length===0&&otras.length===0&&<div style={{padding:'32px',background:'white',borderRadius:10,border:'1px solid #e5e7eb',textAlign:'center',marginBottom:14}}>
             <FaClipboardList style={{color:'#cbd5e1',fontSize:'2rem',marginBottom:8}}/>
             <p style={{margin:'0 0 6px',fontSize:'0.78rem',fontWeight:600,color:'#94a3b8',fontFamily:FONT}}>{encC.length===0?'No hay encuestas cerradas aún':'Sin resultados con los filtros actuales'}</p>
@@ -814,12 +699,20 @@ const TabEGraduado=()=>{
                 <div style={{padding:'11px 16px',borderBottom:'1px solid #f1f5f9',background:`linear-gradient(135deg,${ROJO}09,transparent)`,display:'flex',alignItems:'center',gap:9,flexWrap:'wrap'}}>
                     <div style={{width:28,height:28,borderRadius:7,background:`${ROJO}18`,display:'flex',alignItems:'center',justifyContent:'center'}}><FaLightbulb style={{color:ROJO,fontSize:'0.82rem'}}/></div>
                     <div>
-                        <div style={{fontSize:'0.82rem',fontWeight:700,color:'#0f172a',fontFamily:FONT}}>Análisis de Situación — Graduados</div>
+                        <div style={{fontSize:'0.82rem',fontWeight:700,color:'#0f172a',fontFamily:FONT}}>Análisis de Situación — Encuestas Graduados</div>
                         <div style={{fontSize:'0.61rem',color:'#9ca3af',fontFamily:FONT}}>{insights.length} observaciones · generado automáticamente{hayF&&<span style={{color:ROJO,marginLeft:4}}>· Filtrado aplicado</span>}</div>
+                    </div>
+                    <div style={{marginLeft:'auto',display:'flex',gap:10}}>
+                        {[['crit','Crítico',ROJO],['warn','Atención',NARANJA],['ok','Fortaleza',VERDE],['info','Sugerencia',AZUL]].map(([tipo,lbl,c])=>(
+                            <div key={tipo} style={{display:'flex',alignItems:'center',gap:3}}>
+                                <div style={{width:6,height:6,borderRadius:'50%',background:c}}/>
+                                <span style={{fontSize:'0.60rem',color:'#6b7280',fontFamily:FONT}}>{lbl}</span>
+                            </div>
+                        ))}
                     </div>
                 </div>
                 <div style={{padding:'13px 16px'}}>
-                    {insights.length===0?<p style={sinD}>Sin datos suficientes</p>:<>
+                    {insights.length===0?<p style={sinD}>Sin datos suficientes para análisis</p>:<>
                         {['crit','warn','ok','info'].map(tipo=>{
                             const gr=insights.filter(r=>r.tipo===tipo);
                             if(!gr.length) return null;
@@ -837,21 +730,29 @@ const TabEGraduado=()=>{
             <div className="teg-a" style={{background:'white',borderRadius:10,border:'1px solid #e5e7eb',overflow:'hidden',animationDelay:'220ms'}}>
                 <div style={{padding:'11px 16px',borderBottom:'1px solid #f1f5f9',background:`linear-gradient(135deg,${AZUL}09,transparent)`,display:'flex',alignItems:'center',gap:9}}>
                     <div style={{width:28,height:28,borderRadius:7,background:`${AZUL}18`,display:'flex',alignItems:'center',justifyContent:'center'}}><FaBullseye style={{color:AZUL,fontSize:'0.82rem'}}/></div>
-                    <div><div style={{fontSize:'0.82rem',fontWeight:700,color:'#0f172a',fontFamily:FONT}}>Plan de Acción</div><div style={{fontSize:'0.61rem',color:'#9ca3af',fontFamily:FONT}}>Prioridades basadas en datos</div></div>
+                    <div>
+                        <div style={{fontSize:'0.82rem',fontWeight:700,color:'#0f172a',fontFamily:FONT}}>Plan de Acción</div>
+                        <div style={{fontSize:'0.61rem',color:'#9ca3af',fontFamily:FONT}}>Prioridades basadas en datos reales</div>
+                    </div>
                 </div>
                 <div style={{padding:'12px 14px'}}>
                     {plan.length===0
                         ?<div style={{textAlign:'center',padding:'20px 0'}}><FaCheckCircle style={{color:VERDE,fontSize:'1.6rem',marginBottom:8}}/><p style={{margin:0,fontSize:'0.74rem',color:VERDE,fontFamily:FONT,fontWeight:600}}>¡Sin acciones críticas!</p></div>
-                        :plan.map((a,i)=>{const imp={alto:ROJO,medio:NARANJA,bajo:CIAN}[a.impacto]||AZUL;return <div key={i} style={{display:'flex',gap:10,alignItems:'flex-start',padding:'8px 0',borderBottom:i<plan.length-1?'1px solid #f1f5f9':'none'}}>
-                            <div style={{width:22,height:22,borderRadius:6,background:`${imp}15`,border:`1px solid ${imp}30`,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,marginTop:1}}><span style={{fontSize:'0.65rem',fontWeight:800,color:imp,fontFamily:FONT}}>{a.prioridad}</span></div>
-                            <div style={{flex:1,minWidth:0}}>
-                                <div style={{fontSize:'0.72rem',fontWeight:600,color:'#0f172a',fontFamily:FONT,marginBottom:2}}>{a.accion}</div>
-                                <div style={{display:'flex',gap:5,alignItems:'center',flexWrap:'wrap'}}>
-                                    <span style={{fontSize:'0.60rem',fontWeight:700,color:imp,background:`${imp}12`,border:`1px solid ${imp}25`,borderRadius:99,padding:'1px 5px',fontFamily:FONT}}>Impacto {a.impacto}</span>
-                                    <span style={{fontSize:'0.60rem',color:'#9ca3af',fontFamily:FONT}}>{a.meta}</span>
+                        :plan.map((a,i)=>{
+                            const imp={alto:ROJO,medio:NARANJA,bajo:CIAN}[a.impacto]||AZUL;
+                            return <div key={i} style={{display:'flex',gap:10,alignItems:'flex-start',padding:'8px 0',borderBottom:i<plan.length-1?'1px solid #f1f5f9':'none'}}>
+                                <div style={{width:22,height:22,borderRadius:6,background:`${imp}15`,border:`1px solid ${imp}30`,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,marginTop:1}}>
+                                    <span style={{fontSize:'0.65rem',fontWeight:800,color:imp,fontFamily:FONT}}>{a.prioridad}</span>
                                 </div>
-                            </div>
-                        </div>;})}
+                                <div style={{flex:1,minWidth:0}}>
+                                    <div style={{fontSize:'0.72rem',fontWeight:600,color:'#0f172a',fontFamily:FONT,marginBottom:2}}>{a.accion}</div>
+                                    <div style={{display:'flex',gap:5,alignItems:'center',flexWrap:'wrap'}}>
+                                        <span style={{fontSize:'0.60rem',fontWeight:700,color:imp,background:`${imp}12`,border:`1px solid ${imp}25`,borderRadius:99,padding:'1px 5px',fontFamily:FONT}}>Impacto {a.impacto}</span>
+                                        <span style={{fontSize:'0.60rem',color:'#9ca3af',fontFamily:FONT}}>{a.meta}</span>
+                                    </div>
+                                </div>
+                            </div>;
+                        })}
                 </div>
             </div>
         </div>
