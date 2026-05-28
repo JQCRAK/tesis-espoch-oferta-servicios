@@ -1094,7 +1094,7 @@ const TabEEmpleadores=()=>{
     const [error,    setError]   =useState('');
     const [modo,     setModo]    =useState('empresas');
     const [fEmp,     setFEmp]    =useState({provincia:'',ciudad:'',tipoCapital:''});
-    const [fEnc,     setFEnc]    =useState({encuestaId:'',tipoCapital:''});
+    const [fEnc,     setFEnc]    =useState({mesAnio:'',encuestaId:'',tipoCapital:''});
     const [geoData,  setGeoData] =useState({ecuador:null,cantones:null,provincias:null});
     const [geoError, setGeoError]=useState(false);
 
@@ -1115,15 +1115,30 @@ const TabEEmpleadores=()=>{
     useEffect(()=>{cargar();},[cargar]);
 
     const cEmp=useCallback((k,v)=>setFEmp(p=>{const n={...p,[k]:v};if(k==='provincia')n.ciudad='';return n;}),[]);
-    const cEnc=useCallback((k,v)=>setFEnc(p=>({...p,[k]:v})),[]);
+    const cEnc=useCallback((k,v)=>setFEnc(p=>{
+        const n={...p,[k]:v};
+        // Al cambiar mes/año resetear encuesta específica
+        if(k==='mesAnio') n.encuestaId='';
+        return n;
+    }),[]);
     const lEmp=useCallback(()=>setFEmp({provincia:'',ciudad:'',tipoCapital:''}),[]);
-    const lEnc=useCallback(()=>setFEnc({encuestaId:'',tipoCapital:''}),[]);
+    const lEnc=useCallback(()=>setFEnc({mesAnio:'',encuestaId:'',tipoCapital:''}),[]);
 
     const df=useMemo(()=>{
         if(!datos) return null;
         const{encuestas,empleadoresRaw,respuestasRaw,preguntasAgrupadas,kpis}=datos;
         const encC=encuestas.filter(e=>e.estado==='cerrada');
-        const idsC=new Set(encC.map(e=>e._id));
+
+        // ── Filtro mes/año sobre fechaCierre ──────────────────
+        const encFiltradas=fEnc.mesAnio
+            ? encC.filter(e=>{
+                if(!e.fechaCierre) return false;
+                const d=new Date(e.fechaCierre);
+                const clave=`${d.getMonth()+1}-${d.getFullYear()}`;
+                return clave===fEnc.mesAnio;
+              })
+            : encC;
+        const idsC=new Set(encFiltradas.map(e=>e._id));
 
         let emps=empleadoresRaw;
         if(fEmp.provincia)   emps=emps.filter(e=>norm(e.provincia)===norm(fEmp.provincia));
@@ -1161,7 +1176,7 @@ const TabEEmpleadores=()=>{
         const kE={...kpis,respondieron:respond,tasa:empleadoresRaw.length>0?Math.round((respond/empleadoresRaw.length)*100):0,totalEmps:empleadoresRaw.length};
 
         return{
-            encC,empleadoresFiltrados:emps,empleadoresRaw,respuestasRaw,
+            encC,encFiltradas,empleadoresFiltrados:emps,empleadoresRaw,respuestasRaw,
             porProv,porCiud,porCap,porAct,mitad,ciuD,
             comunes,otras,kE,
             insights:calcularInsights(kE,comunes,otras,encC),
@@ -1172,11 +1187,33 @@ const TabEEmpleadores=()=>{
     const opsProv=useMemo(()=>datos?[...new Set(datos.empleadoresRaw.map(e=>e.provincia).filter(Boolean))].sort():[]   ,[datos]);
     const opsCap =useMemo(()=>datos?[...new Set(datos.empleadoresRaw.map(e=>e.tipoCapital).filter(Boolean))].sort():[] ,[datos]);
 
+    // Opciones mes/año desde fechaCierre de encuestas cerradas
+    const MESES=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+    const opsMesAnio=useMemo(()=>{
+        if(!datos) return [];
+        const enc=datos.encuestas.filter(e=>e.estado==='cerrada'&&e.fechaCierre);
+        const set=new Set();
+        enc.forEach(e=>{
+            const d=new Date(e.fechaCierre);
+            set.add(`${d.getMonth()+1}-${d.getFullYear()}`);
+        });
+        return [...set]
+            .sort((a,b)=>{
+                const [ma,ya]=a.split('-').map(Number);
+                const [mb,yb]=b.split('-').map(Number);
+                return yb!==ya?yb-ya:mb-ma;
+            })
+            .map(clave=>{
+                const [m,y]=clave.split('-').map(Number);
+                return {clave,label:`${MESES[m-1]} ${y}`};
+            });
+    },[datos]);
+
     if(cargando) return <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',minHeight:320}}><div style={{width:30,height:30,border:'3px solid #f1f5f9',borderTop:`3px solid ${ROJO}`,borderRadius:'50%',animation:'t5spin .8s linear infinite'}}/><p style={{margin:'14px 0 0',fontSize:'0.78rem',color:'#9ca3af',fontFamily:FONT}}>Cargando...</p></div>;
     if(error)    return <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',minHeight:320}}><FaExclamationTriangle style={{fontSize:'2rem',color:NARANJA,marginBottom:10}}/><p style={{margin:'0 0 14px',fontSize:'0.82rem',color:'#374151',fontFamily:FONT}}>{error}</p><button onClick={cargar} style={{display:'inline-flex',alignItems:'center',gap:6,padding:'8px 14px',background:'white',border:'1px solid #e5e7eb',borderRadius:7,cursor:'pointer',fontSize:'0.74rem',fontWeight:600,color:'#374151',fontFamily:FONT}}><FaSyncAlt style={{fontSize:'0.66rem'}}/>Reintentar</button></div>;
     if(!df) return null;
 
-    const{encC,empleadoresFiltrados,empleadoresRaw,respuestasRaw,porProv,porCiud,porCap,porAct,mitad,ciuD,comunes,otras,kE,insights,plan}=df;
+    const{encC,encFiltradas,empleadoresFiltrados,empleadoresRaw,respuestasRaw,porProv,porCiud,porCap,porAct,mitad,ciuD,comunes,otras,kE,insights,plan}=df;
     const hayFE=Object.values(fEmp).some(v=>v!=='');
     const hayFN=Object.values(fEnc).some(v=>v!=='');
     const sinD={margin:0,fontSize:'0.72rem',color:'#9ca3af',textAlign:'center',padding:'16px 0',fontFamily:FONT};
@@ -1309,34 +1346,76 @@ const TabEEmpleadores=()=>{
                 <KPI icon={FaQuestion}      valor={otras.length}       label="Otras preguntas"     sub="Específicas por encuesta" color={CIAN}  delay={160}/>
             </div>
 
-            {/* Filtros encuestas */}
+            {/* Filtros encuestas — cascada: mes/año → tipo empresa → encuesta específica */}
             <div className="t5a" style={{background:'white',borderRadius:10,border:'1px solid #e5e7eb',padding:'10px 14px',marginBottom:14}}>
                 <div style={{display:'flex',alignItems:'center',gap:8,flexWrap:'wrap'}}>
+                    {/* Ícono + label */}
                     <div style={{display:'flex',alignItems:'center',gap:5,flexShrink:0}}>
-                        <div style={{width:22,height:22,borderRadius:5,background:`${ROJO}15`,display:'flex',alignItems:'center',justifyContent:'center'}}><FaFilter style={{color:ROJO,fontSize:'0.60rem'}}/></div>
+                        <div style={{width:22,height:22,borderRadius:5,background:`${ROJO}15`,display:'flex',alignItems:'center',justifyContent:'center'}}>
+                            <FaFilter style={{color:ROJO,fontSize:'0.60rem'}}/>
+                        </div>
                         <span style={{fontSize:'0.72rem',fontWeight:700,color:'#374151',fontFamily:FONT}}>Filtrar resultados</span>
                         {hayFN&&<span style={{background:ROJO,color:'white',borderRadius:99,fontSize:'0.55rem',fontWeight:700,padding:'1px 5px',fontFamily:FONT}}>{Object.values(fEnc).filter(v=>v!=='').length}</span>}
                     </div>
                     <div style={{width:1,height:20,background:'#e5e7eb',flexShrink:0}}/>
-                    {encC.length>0?<select value={fEnc.encuestaId} onChange={e=>cEnc('encuestaId',e.target.value)} className={`t5sel${fEnc.encuestaId?' on':''}`} style={{minWidth:220,maxWidth:340}}>
-                        <option value="">Todas las encuestas cerradas</option>
-                        {encC.map(e=><option key={e._id} value={e._id}>{e.titulo}</option>)}
-                    </select>:<span style={{fontSize:'0.70rem',color:'#94a3b8',fontFamily:FONT}}>Sin encuestas cerradas disponibles</span>}
-                    <select value={fEnc.tipoCapital} onChange={e=>cEnc('tipoCapital',e.target.value)} className={`t5sel${fEnc.tipoCapital?' on':''}`} disabled={opsCap.length===0}>
-                        <option value="">Tipo de empresa</option>{opsCap.map(c=><option key={c} value={c}>{c}</option>)}
+
+                    {/* 1. Mes / Año — desde fechaCierre */}
+                    {opsMesAnio.length>0
+                        ?<select value={fEnc.mesAnio} onChange={e=>cEnc('mesAnio',e.target.value)} className={`t5sel${fEnc.mesAnio?' on':''}`}>
+                            <option value="">Todos los períodos</option>
+                            {opsMesAnio.map(o=><option key={o.clave} value={o.clave}>{o.label}</option>)}
+                        </select>
+                        :<span style={{fontSize:'0.68rem',color:'#94a3b8',fontFamily:FONT}}>Sin períodos disponibles</span>
+                    }
+
+                    {/* 2. Tipo de empresa */}
+                    <select value={fEnc.tipoCapital} onChange={e=>cEnc('tipoCapital',e.target.value)} className={`t5sel${fEnc.tipoCapital?' on':''}`} disabled={opsCap.length===0} style={{opacity:opsCap.length===0?0.45:1}}>
+                        <option value="">Tipo de empresa</option>
+                        {opsCap.map(c=><option key={c} value={c}>{c}</option>)}
                     </select>
-                    {hayFN&&<>
-                        {Object.entries(fEnc).filter(([,v])=>v).map(([k,v])=>{
-                            const lbl={encuestaId:'Encuesta',tipoCapital:'Tipo'}[k]||k;
-                            const display=k==='encuestaId'?(encC.find(e=>e._id===v)?.titulo?.slice(0,32)||v):v;
-                            return <span key={k} style={{background:`${ROJO}12`,color:ROJO,border:`1px solid ${ROJO}25`,borderRadius:99,fontSize:'0.63rem',fontWeight:600,padding:'2px 7px',fontFamily:FONT,display:'inline-flex',alignItems:'center',gap:3}}>
-                                <span style={{color:'#9ca3af',fontSize:'0.58rem'}}>{lbl}:</span>&nbsp;{display.length>30?display.slice(0,30)+'…':display}
-                                <button onClick={()=>cEnc(k,'')} style={{background:'none',border:'none',color:ROJO,cursor:'pointer',padding:0,fontSize:'0.70rem',lineHeight:1,opacity:0.7}}>×</button>
-                            </span>;
-                        })}
-                        <button onClick={lEnc} style={{background:'none',border:'none',cursor:'pointer',color:'#9ca3af',fontSize:'0.65rem',fontFamily:FONT,display:'flex',alignItems:'center',gap:2,padding:'2px 4px'}}><FaTimes style={{fontSize:'0.55rem'}}/>Limpiar</button>
-                    </>}
+
+                    {/* 3. Encuesta específica — filtrada por mes/año si está seleccionado */}
+                    {(fEnc.mesAnio?encFiltradas:encC).length>0
+                        ?<select value={fEnc.encuestaId} onChange={e=>cEnc('encuestaId',e.target.value)} className={`t5sel${fEnc.encuestaId?' on':''}`} style={{minWidth:200,maxWidth:320}}>
+                            <option value="">{fEnc.mesAnio?'Todas de este período':'Todas las encuestas cerradas'}</option>
+                            {(fEnc.mesAnio?encFiltradas:encC).map(e=><option key={e._id} value={e._id}>{e.titulo}</option>)}
+                        </select>
+                        :fEnc.mesAnio&&<span style={{fontSize:'0.68rem',color:'#94a3b8',fontFamily:FONT}}>Sin encuestas en este período</span>
+                    }
+
+                    {/* Chips de filtros activos */}
+                    {hayFN&&(
+                        <>
+                            {Object.entries(fEnc).filter(([,v])=>v).map(([k,v])=>{
+                                const lblMap={mesAnio:'Período',encuestaId:'Encuesta',tipoCapital:'Tipo'};
+                                const lbl=lblMap[k]||k;
+                                let display=v;
+                                if(k==='mesAnio') display=opsMesAnio.find(o=>o.clave===v)?.label||v;
+                                if(k==='encuestaId') display=(fEnc.mesAnio?encFiltradas:encC).find(e=>e._id===v)?.titulo?.slice(0,28)||v;
+                                return(
+                                    <span key={k} style={{background:`${ROJO}12`,color:ROJO,border:`1px solid ${ROJO}25`,borderRadius:99,fontSize:'0.63rem',fontWeight:600,padding:'2px 7px',fontFamily:FONT,display:'inline-flex',alignItems:'center',gap:3}}>
+                                        <span style={{color:'#9ca3af',fontSize:'0.58rem'}}>{lbl}:</span>&nbsp;{display.length>28?display.slice(0,28)+'…':display}
+                                        <button onClick={()=>cEnc(k,'')} style={{background:'none',border:'none',color:ROJO,cursor:'pointer',padding:0,fontSize:'0.70rem',lineHeight:1,opacity:0.7}}>×</button>
+                                    </span>
+                                );
+                            })}
+                            <button onClick={lEnc} style={{background:'none',border:'none',cursor:'pointer',color:'#9ca3af',fontSize:'0.65rem',fontFamily:FONT,display:'flex',alignItems:'center',gap:2,padding:'2px 4px'}}>
+                                <FaTimes style={{fontSize:'0.55rem'}}/>Limpiar
+                            </button>
+                        </>
+                    )}
                 </div>
+
+                {/* Indicador del período activo */}
+                {fEnc.mesAnio&&(
+                    <div style={{marginTop:8,paddingTop:8,borderTop:'1px solid #f1f5f9',display:'flex',alignItems:'center',gap:6}}>
+                        <FaCalendarAlt style={{color:AZUL,fontSize:'0.60rem'}}/>
+                        <span style={{fontSize:'0.62rem',color:'#475569',fontFamily:FONT}}>
+                            Período: <strong style={{color:AZUL}}>{opsMesAnio.find(o=>o.clave===fEnc.mesAnio)?.label}</strong>
+                            {' · '}{encFiltradas.length} encuesta{encFiltradas.length!==1?'s':''} en este período
+                        </span>
+                    </div>
+                )}
             </div>
 
             {comunes.length>0&&<div style={{marginBottom:14}}>
