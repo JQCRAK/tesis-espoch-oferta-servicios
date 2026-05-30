@@ -426,4 +426,37 @@ exports.notificar = async (req, res) => {
     }
 };
 
+// ═══════════════════════════════════════════════════════════
+// GET /api/publico/top-tecnologias
+// Devuelve las 5 tecnologías más frecuentes entre graduados públicos
+// ═══════════════════════════════════════════════════════════
+exports.topTecnologias = async (req, res) => {
+    try {
+        const graduados = await Graduado.find({
+            perfilPublico:   true,
+            tesisVerificada: true,
+        }).select('tecnologias').lean();
+
+        const frecuencia = {};
+        graduados.forEach(g => {
+            (g.tecnologias || []).forEach(t => {
+                const key = t.trim().toLowerCase();
+                if (!key) return;
+                if (!frecuencia[key]) frecuencia[key] = { nombre: t.trim(), count: 0 };
+                frecuencia[key].count++;
+            });
+        });
+
+        const top5 = Object.values(frecuencia)
+            .sort((a, b) => b.count - a.count)
+            .slice(0, 5)
+            .map(t => t.nombre);
+
+        res.json({ tecnologias: top5 });
+    } catch (error) {
+        console.error('Error topTecnologias:', error);
+        res.status(500).json({ msg: 'Error al obtener tecnologías.' });
+    }
+};
+
 exports.contacto = exports.notificar;

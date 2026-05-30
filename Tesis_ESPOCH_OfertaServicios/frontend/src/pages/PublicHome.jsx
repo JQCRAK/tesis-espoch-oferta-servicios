@@ -6,20 +6,30 @@ import {
     FaUserCircle, FaMapMarkerAlt, FaCode, FaBriefcase,
     FaSearch, FaEnvelope, FaGraduationCap, FaSpinner,
     FaTimes, FaCheckCircle, FaExclamationTriangle,
-    FaRocket, FaUsers, FaMicrochip, FaStar, FaEye,
+    FaEye,
 } from 'react-icons/fa';
 
-const API_URL  = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
-const BASE = import.meta.env.VITE_BASE_URL || 'http://localhost:4000';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
+const BASE    = import.meta.env.VITE_BASE_URL || 'http://localhost:4000';
+const FONT    = "'Segoe UI', Roboto, 'Helvetica Neue', sans-serif";
+
 const urlFoto = (ruta) => {
     if (!ruta) return null;
     if (ruta.startsWith('http://') || ruta.startsWith('https://')) return ruta;
     return `${BASE}/${ruta}`;
 };
-const FONT     = "'Segoe UI', Roboto, 'Helvetica Neue', sans-serif";
 
 // ══════════════════════════════════════════════
-// CONSTELACIÓN ANIMADA (función nueva)
+// FORMATO NÚMEROS: 1K, 1M
+// ══════════════════════════════════════════════
+const fmtNum = (n) => {
+    if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1).replace('.0', '')}M`;
+    if (n >= 1_000)     return `${(n / 1_000).toFixed(1).replace('.0', '')}K`;
+    return n;
+};
+
+// ══════════════════════════════════════════════
+// CONSTELACIÓN ANIMADA
 // ══════════════════════════════════════════════
 const Constellation = () => {
     const canvasRef = useRef(null);
@@ -77,7 +87,7 @@ const Constellation = () => {
 };
 
 // ══════════════════════════════════════════════
-// CONTADOR ANIMADO (función nueva)
+// CONTADOR ANIMADO — con formato K/M al llegar al final
 // ══════════════════════════════════════════════
 const Counter = ({ value, label }) => {
     const [count, setCount] = useState(0);
@@ -93,14 +103,14 @@ const Counter = ({ value, label }) => {
     }, [value]);
     return (
         <div style={s.heroStatItem}>
-            <span style={s.heroStatNum}>{count}</span>
+            <span style={s.heroStatNum}>{fmtNum(count)}</span>
             <span style={s.heroStatLabel}>{label}</span>
         </div>
     );
 };
 
 // ══════════════════════════════════════════════
-// MODAL CONTACTO (original)
+// MODAL CONTACTO
 // ══════════════════════════════════════════════
 const ModalContacto = ({ graduado, onCerrar }) => {
     const [form,     setForm]     = useState({ nombre: '', email: '', empresa: '', mensaje: '' });
@@ -199,7 +209,7 @@ const ModalContacto = ({ graduado, onCerrar }) => {
 };
 
 // ══════════════════════════════════════════════
-// TARJETA GRADUADO (diseño original + funciones nuevas)
+// TARJETA GRADUADO
 // ══════════════════════════════════════════════
 const TarjetaGraduado = ({ graduado, onContactar }) => {
     const navigate = useNavigate();
@@ -219,10 +229,8 @@ const TarjetaGraduado = ({ graduado, onContactar }) => {
             onMouseLeave={() => setHov(false)}
             style={{
                 ...ts.card,
-                transform: hov ? 'translateY(-4px)' : 'none',
-                boxShadow: hov
-                    ? '0 12px 32px rgba(0,0,0,0.13)'
-                    : '0 2px 8px rgba(0,0,0,0.06)',
+                transform:  hov ? 'translateY(-4px)' : 'none',
+                boxShadow:  hov ? '0 12px 32px rgba(0,0,0,0.13)' : '0 2px 8px rgba(0,0,0,0.06)',
                 transition: 'transform 0.22s ease, box-shadow 0.22s ease',
             }}
         >
@@ -280,12 +288,10 @@ const TarjetaGraduado = ({ graduado, onContactar }) => {
                 <p style={ts.tarifa}><strong>${graduado.tarifaHora}</strong>/hora</p>
             )}
 
-            {/* Botones: Ver perfil + Contactar */}
             <div style={ts.footerCard}>
                 <button style={ts.btnVerPerfil} onClick={irAPerfil}>
                     <FaEye style={{ marginRight: 5 }} />Ver perfil
                 </button>
-                
             </div>
         </div>
     );
@@ -295,19 +301,29 @@ const TarjetaGraduado = ({ graduado, onContactar }) => {
 // PUBLIC HOME
 // ══════════════════════════════════════════════
 const PublicHome = () => {
-    const [graduados,     setGraduados]     = useState([]);
-    const [cargando,      setCargando]      = useState(true);
-    const [busqueda,      setBusqueda]      = useState('');
-    const [filtroDisp,    setFiltroDisp]    = useState('todos');
-    const [modalGraduado, setModalGraduado] = useState(null);
+    const [graduados,      setGraduados]      = useState([]);
+    const [cargando,       setCargando]       = useState(true);
+    const [busqueda,       setBusqueda]       = useState('');
+    const [filtroDisp,     setFiltroDisp]     = useState('todos');
+    const [modalGraduado,  setModalGraduado]  = useState(null);
+    const [topTecs,        setTopTecs]        = useState(['React', 'Node.js', 'Python', 'Flutter', 'Machine Learning']);
     const inputRef = useRef(null);
 
     useEffect(() => {
         document.title = 'Perfiles Profesionales · Carrera de Software ESPOCH';
-        axios.get(`${API_URL}/publico/graduados`)
-            .then(({ data }) => setGraduados(data))
-            .catch(err => console.error(err))
-            .finally(() => setCargando(false));
+
+        // Cargar graduados y top tecnologías en paralelo
+        Promise.all([
+            axios.get(`${API_URL}/publico/graduados`),
+            axios.get(`${API_URL}/publico/top-tecnologias`),
+        ])
+        .then(([gradRes, tecRes]) => {
+            setGraduados(gradRes.data);
+            if (tecRes.data.tecnologias?.length > 0)
+                setTopTecs(tecRes.data.tecnologias);
+        })
+        .catch(err => console.error(err))
+        .finally(() => setCargando(false));
     }, []);
 
     const graduadosFiltrados = graduados.filter(g => {
@@ -325,8 +341,9 @@ const PublicHome = () => {
         return matchBusqueda && matchDisp;
     });
 
-    const totalTecs        = [...new Set(graduados.flatMap(g => g.tecnologias || []))].length;
-    const disponibles      = graduados.filter(g => g.disponibilidad === 'disponible').length;
+    // Tecnologías únicas agrupadas (sin duplicados entre graduados)
+    const totalTecs         = new Set(graduados.flatMap(g => (g.tecnologias || []).map(t => t.trim().toLowerCase()))).size;
+    const disponibles       = graduados.filter(g => g.disponibilidad === 'disponible').length;
     const conEspecialidades = graduados.filter(g => g.afinidades?.length > 0).length;
 
     const filtroOpciones = [
@@ -374,9 +391,10 @@ const PublicHome = () => {
                                 </button>
                             )}
                         </div>
+                        {/* Búsquedas populares — top 5 del backend */}
                         <div style={s.sugerencias}>
                             <span style={s.sugLabel}>Búsquedas populares:</span>
-                            {['React', 'Node.js', 'Python', 'Flutter', 'Machine Learning',].map(tag => (
+                            {topTecs.map(tag => (
                                 <button key={tag} style={s.sugTag} onClick={() => setBusqueda(tag)}>
                                     {tag}
                                 </button>
@@ -384,13 +402,13 @@ const PublicHome = () => {
                         </div>
                     </div>
 
-                    {/* Stats con contador animado */}
+                    {/* Stats con contador animado + formato K/M */}
                     <div style={s.heroStats}>
                         <Counter value={graduados.length} label="Graduados" />
                         <div style={s.heroStatDiv} />
-                        <Counter value={disponibles} label="Disponibles" />
+                        <Counter value={disponibles}      label="Disponibles" />
                         <div style={s.heroStatDiv} />
-                        <Counter value={totalTecs} label="Tecnologías" />
+                        <Counter value={totalTecs}        label="Tecnologías" />
                         <div style={s.heroStatDiv} />
                         <Counter value={conEspecialidades} label="Especializados" />
                     </div>
@@ -467,7 +485,7 @@ const PublicHome = () => {
 };
 
 // ══════════════════════════════════════════════
-// ESTILOS — HERO (original, con constelación encima)
+// ESTILOS
 // ══════════════════════════════════════════════
 const s = {
     hero:           { position: 'relative', padding: '56px 20px 64px', textAlign: 'center', overflow: 'hidden', backgroundColor: '#0f1428' },
@@ -504,9 +522,6 @@ const s = {
     btnLimpiarVacio:{ padding: '9px 22px', backgroundColor: 'var(--color-espoch-rojo)', color: 'white', border: 'none', borderRadius: 7, cursor: 'pointer', fontWeight: 600, fontFamily: FONT },
 };
 
-// ══════════════════════════════════════════════
-// ESTILOS — TARJETA (original + botón "Ver perfil")
-// ══════════════════════════════════════════════
 const ts = {
     card:        { backgroundColor: 'white', borderRadius: 12, padding: '18px', border: '1px solid #e9ecef', display: 'flex', flexDirection: 'column', gap: 10, animation: 'fadeIn 0.3s', fontFamily: FONT },
     header:      { display: 'flex', gap: 12, alignItems: 'flex-start' },
@@ -531,9 +546,6 @@ const ts = {
     btnContactar:{ flex: 2, padding: '8px 10px', backgroundColor: 'var(--color-espoch-rojo)', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: '0.8rem', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: FONT },
 };
 
-// ══════════════════════════════════════════════
-// ESTILOS — MODAL CONTACTO (original)
-// ══════════════════════════════════════════════
 const ms = {
     overlay:     { position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.55)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 16 },
     modal:       { backgroundColor: 'white', borderRadius: 12, width: '100%', maxWidth: 460, maxHeight: '90vh', display: 'flex', flexDirection: 'column', boxShadow: '0 8px 32px rgba(0,0,0,0.22)', overflow: 'hidden' },
