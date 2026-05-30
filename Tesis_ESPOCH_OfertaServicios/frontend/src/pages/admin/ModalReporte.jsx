@@ -653,8 +653,7 @@ const ModalReporte = ({ onClose }) => {
                 {/* CABECERA */}
                 <div style={s.head}>
                     <div>
-                        <h2 style={s.tit}>Informe Encuentro de Graduados</h2>
-                        <p style={s.sub}>Anexo 19 · Res. 018.CP.2025 · Carrera de Software ESPOCH</p>
+                        <h2 style={s.tit}>Informe Encuentro de Graduados · Anexo 19</h2>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                         <div style={s.pasos}>
@@ -752,10 +751,10 @@ const ModalReporte = ({ onClose }) => {
                                         <p style={{ margin: '0 0 6px', fontSize: '0.73rem', fontWeight: '700', color: '#2c3e50' }}>
                                             Resumen del informe a generar:
                                         </p>
-                                        <p style={s.resumenLin}>📅 <strong>Evento:</strong> {eventoSeleccionado.titulo}</p>
-                                        <p style={s.resumenLin}>🎓 <strong>Encuesta graduados:</strong> {opciones?.encGraduados.find(e => e._id === encGradId)?.titulo || '—'}</p>
-                                        <p style={s.resumenLin}>🏢 <strong>Encuesta empleadores:</strong> {opciones?.encEmpleadores.find(e => e._id === encEmpId)?.titulo || '—'}</p>
-                                        <p style={s.resumenLin}>📄 <strong>Año:</strong> {anio}</p>
+                                        <p style={s.resumenLin}><strong>Evento:</strong> {eventoSeleccionado.titulo}</p>
+                                        <p style={s.resumenLin}><strong>Encuesta graduados:</strong> {opciones?.encGraduados.find(e => e._id === encGradId)?.titulo || '—'}</p>
+                                        <p style={s.resumenLin}><strong>Encuesta empleadores:</strong> {opciones?.encEmpleadores.find(e => e._id === encEmpId)?.titulo || '—'}</p>
+                                        <p style={s.resumenLin}><strong>Año:</strong> {anio}</p>
                                     </div>
                                 )}
                             </>
