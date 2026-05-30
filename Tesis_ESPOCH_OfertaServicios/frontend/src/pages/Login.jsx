@@ -1032,10 +1032,6 @@ const Login = () => {
                                     <p style={{ margin: 0, fontWeight: 700, fontSize: '0.8rem', color: '#1e3a5f' }}>
                                         Verificaremos que eres tú comparando:
                                     </p>
-                                    <p style={{ margin: '3px 0 0', fontSize: '0.72rem', color: '#374151', lineHeight: 1.5 }}>
-                                        📷 <strong>Foto de tu cédula</strong> (cédula vs datos que ingresaste)<br />
-                                        🔗 <strong>Repositorio ESPOCH</strong> (tu apellido debe aparecer como autor)
-                                    </p>
                                 </div>
                             </div>
 
