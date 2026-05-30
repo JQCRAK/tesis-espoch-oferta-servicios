@@ -240,6 +240,12 @@ exports.verificarTesis = async (req, res) => {
 
     const { titulo: tituloReal, autores: autoresReal, fecha, resumen: resumenDspace } = datosDspace;
 
+    // Truncar resumen si supera el límite del modelo (maxlength: 2000)
+    // Los resúmenes del DSpace pueden ser muy largos (bilingüe español+inglés)
+    const resumenGuardar = resumenDspace
+        ? resumenDspace.substring(0, 1950).trim()
+        : '';
+
     // Verificar que el apellido del graduado esté entre los autores
     if (autoresReal.length > 0 && !apellidoEnAutores(graduado.apellidos, autoresReal)) {
         return res.status(400).json({
@@ -255,7 +261,7 @@ exports.verificarTesis = async (req, res) => {
         {
             graduado:           req.usuario.id,
             titulo:             tituloReal,
-            resumen:            resumenDspace || '',
+            resumen:            resumenGuardar,
             urlDspace:          urlDspace.trim(),
             tituloEncontrado:   tituloReal,
             autoresEncontrados: autoresReal,
@@ -285,6 +291,11 @@ exports.aceptarConsentimiento = async (req, res) => {
             return res.status(400).json({ msg: 'El consentimiento ya fue aceptado.' });
 
         const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || '';
+
+        // Truncar resumen si excede el límite del modelo (puede haber llegado largo del DSpace)
+        if (tesis.resumen && tesis.resumen.length > 1950)
+            tesis.resumen = tesis.resumen.substring(0, 1950).trim();
+
         tesis.verificada             = true;
         tesis.fechaVerificacion      = new Date();
         tesis.consentimientoAceptado = true;
