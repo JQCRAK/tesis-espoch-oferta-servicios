@@ -978,10 +978,10 @@ const EncuestasGraduado = () => {
     }, []);
 
     useEffect(() => { cargar(); }, [cargar]);
-
     const lista = encuestas.filter(enc => { const est = calcularEstado(enc); if (filtro === 'todas') return true; if (filtro === 'pendiente') return est === 'pendiente'; if (filtro === 'completada') return est === 'completada'; return true; });
+
     const pendientes = encuestas.filter(e => calcularEstado(e) === 'pendiente').length;
-    const completadas = encuestas.filter(e => calcularEstado(e) === 'completada').length;
+    const completadas = encuestas.filter(e => e.estadoRespuesta === 'completada').length;
 
     return (
         <div style={s.wrap}>
