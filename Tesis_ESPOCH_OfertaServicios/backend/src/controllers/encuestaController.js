@@ -445,9 +445,9 @@ const crearPregunta = async (req, res) => {
         if (!encuesta) return res.status(404).json({ msg: 'Encuesta no encontrada' });
 
         const totalPreguntas = await Pregunta.countDocuments({
-    encuesta: encuestaId,
-    tipo: { $ne: 'titulo' }
-});
+            encuesta: encuestaId,
+            tipo: { $ne: 'titulo' }
+        });
 
 
         const nuevaPregunta = new Pregunta({
