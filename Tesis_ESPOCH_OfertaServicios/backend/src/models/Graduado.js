@@ -38,7 +38,7 @@ const GraduadoSchema = new mongoose.Schema({
     cantonActual:    { type: String, default: '', trim: true },
 
     // ── CORREOS ──────────────────────────────────────────────────
-    emailInstitucional: { type: String, required: true, unique: true, lowercase: true, trim: true },
+    emailInstitucional: { type: String, required: false, default: null, unique: true, sparse: true, lowercase: true, trim: true },
     emailPersonal:      { type: String, required: true, unique: true, lowercase: true, trim: true },
 
     emailPersonalHash:  { type: String, default: '', trim: true },

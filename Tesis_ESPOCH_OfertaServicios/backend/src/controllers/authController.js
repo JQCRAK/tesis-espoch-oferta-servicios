@@ -305,20 +305,35 @@ exports.registrarGraduado = async (req, res) => {
             if (!graduado.codigoVerificacion?.verificado)
                 return res.status(400).json({ msg: 'Debes verificar tu código primero.' });
         } else {
-            // ── Flujo B: crear graduado nuevo directamente ────────────────
+            // ── Flujo B: crear graduado nuevo con datos reales directamente ──
             graduado = new Graduado({
-                emailInstitucional: '',
+                emailInstitucional: null,
                 emailPersonal:      persEmail,
-                nombres:            'Temporal',
-                apellidos:          'Temporal',
-                cedula:             'temp',
-                cedulaHash:         'temp_' + Date.now(),
-                telefono:           'temp',
-                telefonoHash:       'temp_' + Date.now(),
-                password:           'temp',
-                genero:             'Prefiero no decirlo',
-                fechaNacimiento:    new Date('2000-01-01'),
-                tieneDiscapacidad:  'No',
+                nombres:            capitalizarPalabras(nombres),
+                apellidos:          capitalizarPalabras(apellidos),
+                cedula:             encriptar(cedulaLimpia),
+                cedulaHash:         hashCedula,
+                telefono:           encriptar(telefonoLimpio),
+                telefonoHash:       hashTelefono,
+                password:           await bcrypt.hash(password, await bcrypt.genSalt(10)),
+                genero,
+                fechaNacimiento:    new Date(fechaNacimiento),
+                tieneDiscapacidad,
+                verificado:         true,
+                cuentaBloqueada:    false,
+                perfilPublico:      false,
+                terminosAceptados:  false,
+                intentosFallidos:   { contador: 0, bloqueadoHasta: null, ultimoIntento: null },
+            });
+            await graduado.save();
+            const token = generarToken(graduado._id, 'graduado', graduado.nombres);
+            return res.status(201).json({
+                _id:            graduado._id,
+                nombre:         graduado.nombres,
+                email:          graduado.emailPersonal,
+                rol:            'graduado',
+                tesisVerificada: false,
+                token,
             });
         }
  
