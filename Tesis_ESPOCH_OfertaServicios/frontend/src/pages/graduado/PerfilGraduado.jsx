@@ -473,6 +473,15 @@ guardarSesion('usuario', { ...sesion, tesisVerificada: true });
                 ok('Proyecto agregado correctamente ✅');
             }
             resetFp();
+            // ── Refrescar habilidades/especialidades/tecnologías ──
+            setTimeout(async () => {
+                try {
+                    const { data: perfilActualizado } = await axios.get(`${API_URL}/perfil/mi-perfil`, {
+                        headers: { Authorization: `Bearer ${token}` }
+                    });
+                    setPerfil(perfilActualizado);
+                } catch { /* silencioso */ }
+            }, 1800);
         } catch (err) { mostrarError(err.response?.data?.msg || 'Error al guardar el proyecto'); }
         finally { setGuardandoProy(false); }
     };
@@ -553,6 +562,15 @@ guardarSesion('usuario', { ...sesion, tesisVerificada: true });
                 ok('Certificado agregado correctamente ✅');
             }
             resetFc();
+            // ── Refrescar habilidades/especialidades/tecnologías ──
+            setTimeout(async () => {
+                try {
+                    const { data: perfilActualizado } = await axios.get(`${API_URL}/perfil/mi-perfil`, {
+                        headers: { Authorization: `Bearer ${token}` }
+                    });
+                    setPerfil(perfilActualizado);
+                } catch { /* silencioso */ }
+            }, 1800);
         } catch (err) { mostrarError(err.response?.data?.msg || 'Error al guardar el certificado'); }
         finally { setGuardandoCert(false); }
     };
@@ -590,6 +608,15 @@ guardarSesion('usuario', { ...sesion, tesisVerificada: true });
                 setCertificados(c => c.filter(x => x._id !== id));
                 ok('Certificado eliminado');
             }
+            // ── Refrescar habilidades/especialidades/tecnologías ──
+            setTimeout(async () => {
+                try {
+                    const { data: perfilActualizado } = await axios.get(`${API_URL}/perfil/mi-perfil`, {
+                        headers: { Authorization: `Bearer ${token}` }
+                    });
+                    setPerfil(perfilActualizado);
+                } catch { /* silencioso */ }
+            }, 1800);
         } catch { mostrarError('Error al eliminar. Intenta nuevamente.'); }
     };
 
