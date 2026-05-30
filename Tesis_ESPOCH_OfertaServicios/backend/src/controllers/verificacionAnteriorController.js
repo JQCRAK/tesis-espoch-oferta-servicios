@@ -37,6 +37,8 @@ const getTesseract = async () => {
 
 // ── Reutilizar scraping DSpace ────────────────────────────────────────────────
 const { extraerDatosDspace } = require('./tesisController');
+const Graduado              = require('../models/Graduado');
+const { hashParaBusqueda }  = require('../utils/cryptoHelper');
 
 // ─────────────────────────────────────────────────────────
 // HELPERS
@@ -315,6 +317,16 @@ exports.verificarCedulaDspace = async (req, res) => {
             });
         }
 
+        // ── Verificar que la cédula no esté ya registrada ─────────────────────
+        const hashCed = hashParaBusqueda(cedula.trim());
+        const yaExiste = await Graduado.findOne({ cedulaHash: hashCed });
+        if (yaExiste) {
+            return res.status(400).json({
+                msg: 'Ya existe una cuenta registrada con esa cédula. Si olvidaste tu contraseña usa la opción "¿Olvidaste tu contraseña?" en el inicio de sesión.',
+                campo: 'cedula'
+            });
+        }
+
         if (!urlDspace?.includes('dspace.espoch.edu.ec')) {
             return res.status(400).json({
                 msg: 'La URL debe pertenecer a dspace.espoch.edu.ec',
@@ -329,26 +341,25 @@ exports.verificarCedulaDspace = async (req, res) => {
             });
         }
 
-        // ── Registrar archivos temporales ─────────────────────────────────
-        const frontalPath = req.files['cedula_frontal'][0].path;
-        temporales.push(frontalPath);
-
-        let posteriorPath = null;
-        if (req.files?.['cedula_posterior']?.[0]) {
-            posteriorPath = req.files['cedula_posterior'][0].path;
-            temporales.push(posteriorPath);
+        if (!req.files?.['cedula_posterior']?.[0]) {
+            return res.status(400).json({
+                msg: 'La foto del reverso de la cédula es obligatoria.',
+                campo: 'cedula_posterior'
+            });
         }
+
+        // ── Registrar archivos temporales ─────────────────────────────────
+        const frontalPath  = req.files['cedula_frontal'][0].path;
+        const posteriorPath = req.files['cedula_posterior'][0].path;
+        temporales.push(frontalPath, posteriorPath);
 
         // ── OCR ───────────────────────────────────────────────────────────
         console.log('[Verif] Iniciando OCR frontal...');
         const textoFrontal = await extraerTextoImagen(frontalPath);
         console.log('[Verif] Texto frontal (300 chars):', textoFrontal.substring(0, 300));
 
-        let textoPosterior = '';
-        if (posteriorPath) {
-            console.log('[Verif] Iniciando OCR posterior...');
-            textoPosterior = await extraerTextoImagen(posteriorPath);
-        }
+        console.log('[Verif] Iniciando OCR posterior...');
+        const textoPosterior = await extraerTextoImagen(posteriorPath);
 
         // IMPORTANTE: concatenar frontal + posterior pero guardar el frontal
         // aparte porque la búsqueda de número prioriza el frontal
@@ -401,12 +412,8 @@ exports.verificarCedulaDspace = async (req, res) => {
 
         if (!coincideExacto && !coincideParcial) {
             return res.status(400).json({
-                msg: `El número de cédula ingresado (${cedulaForm}) no coincide con el ` +
-                     `leído en la imagen (${cedulaOCR}). ` +
-                     `Verifica que hayas ingresado tu cédula correctamente.`,
+                msg: 'Los datos de la cédula no coinciden. Verifica que hayas ingresado correctamente tu número de cédula y que la foto sea del frente de tu cédula.',
                 campo: 'cedula',
-                cedulaDetectada: cedulaOCR,
-                metodoDeteccion: docOCR.metodo,
             });
         }
 
@@ -416,8 +423,7 @@ exports.verificarCedulaDspace = async (req, res) => {
 
         if (!verifApellido.ok) {
             return res.status(400).json({
-                msg: `Los apellidos ingresados (${apellidos}) no se encontraron en la imagen de la cédula. ` +
-                     `Verifica que los apellidos del formulario coincidan con los de tu cédula.`,
+                msg: 'Los datos del formulario no coinciden con la imagen de la cédula. Verifica que hayas ingresado correctamente tus apellidos.',
                 campo: 'nombres',
                 detalle: verifApellido.detalle
             });
@@ -440,11 +446,8 @@ exports.verificarCedulaDspace = async (req, res) => {
         if (autoresEncontrados.length > 0) {
             if (!apellidoEnAutores(apellidos.trim(), autoresEncontrados)) {
                 return res.status(400).json({
-                    msg: `Tu apellido no aparece como autor en esa tesis. ` +
-                         `Autores encontrados: ${autoresEncontrados.join(', ')}. ` +
-                         `Verifica que la URL sea la de tu propia tesis.`,
-                    campo: 'dspace',
-                    autoresEncontrados
+                    msg: 'No se pudo verificar tu autoría en esa tesis. Verifica que la URL corresponda a tu propia tesis publicada en el repositorio ESPOCH.',
+                    campo: 'dspace'
                 });
             }
         }

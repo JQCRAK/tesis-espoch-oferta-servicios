@@ -398,6 +398,9 @@ const Login = () => {
         if (!cedFrontalFile) {
             setError('❌ Debes subir la foto del frente de tu cédula.'); return;
         }
+        if (!cedPosteriorFile) {
+            setError('❌ Debes subir la foto del reverso de tu cédula.'); return;
+        }
         if (!urlDspaceB || !urlDspaceB.includes('dspace.espoch.edu.ec')) {
             setError('❌ La URL debe ser del repositorio dspace.espoch.edu.ec'); return;
         }
@@ -415,7 +418,7 @@ const Login = () => {
         try {
             const fd = new FormData();
             fd.append('cedula_frontal', cedFrontalFile);
-            if (cedPosteriorFile) fd.append('cedula_posterior', cedPosteriorFile);
+            fd.append('cedula_posterior', cedPosteriorFile); // obligatorio
             fd.append('urlDspace', urlDspaceB.trim());
             fd.append('nombres', formData.nombres.trim());
             fd.append('apellidos', formData.apellidos.trim());
@@ -935,12 +938,7 @@ const Login = () => {
                                             No tengo acceso
                                         </button>
                                     </div>
-                                    {flujoRegistro === 'sinCorreo' && (
-                                        <div style={s.flujoAviso}>
-                                            <FaInfoCircle style={{ flexShrink: 0, color: '#1d4ed8' }} />
-                                            <span>Verificaremos tu identidad con tu <strong>cédula de identidad</strong> y tu <strong>tesis en el repositorio ESPOCH</strong>.</span>
-                                        </div>
-                                    )}
+                
                                 </div>
 
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 12 }}>
@@ -1021,20 +1019,10 @@ const Login = () => {
                         <>
                             <div style={s.encabezado}>
                                 <h2 style={s.titulo}>Verificación de identidad</h2>
-                                <p style={s.subtitulo}>Carrera de Software · ESPOCH</p>
                             </div>
                             <BarraProgreso paso={2} total={totalPasos} labelPaso={labelPaso()} />
 
-                            {/* Aviso explicativo */}
-                            <div style={s.avisoVerif}>
-                                <FaShieldAlt style={{ color: '#1d4ed8', flexShrink: 0, fontSize: '1rem' }} />
-                                <div>
-                                    <p style={{ margin: 0, fontWeight: 700, fontSize: '0.8rem', color: '#1e3a5f' }}>
-                                        Verificaremos que eres tú.
-                                    </p>
-                                    
-                                </div>
-                            </div>
+
 
                             {/* Fotos cédula — dos columnas compactas */}
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 10 }}>
@@ -1048,7 +1036,7 @@ const Login = () => {
                                 />
                                 <ImageUploader
                                     label="Cédula — reverso"
-                                    opcional
+                                    required
                                     preview={cedPosteriorPreview}
                                     onChange={handleImagenPosterior}
                                     onQuitar={quitarPosterior}
@@ -1057,7 +1045,7 @@ const Login = () => {
                             </div>
                             <p style={{ ...s.hint, marginBottom: 10, marginTop: -4 }}>
                                 <FaInfoCircle style={{ marginRight: 4, flexShrink: 0 }} />
-                                Sube fotos nítidas con buena iluminación. El reverso es opcional pero mejora la precisión.
+                                Sube fotos nítidas del frente y reverso de tu cédula con buena iluminación.
                             </p>
 
                             {/* URL DSpace */}
@@ -1109,25 +1097,7 @@ const Login = () => {
                                 </div>
                             )}
 
-                            {/* Resultado verificación */}
-                            {verificadoB && datosVerificadosB && (
-                                <div style={s.verificadoBanner}>
-                                    <FaCheckCircle style={{ color: '#15803d', fontSize: '1.2rem', flexShrink: 0 }} />
-                                    <div>
-                                        <p style={{ margin: 0, fontWeight: 700, fontSize: '0.82rem', color: '#14532d' }}>
-                                            ✅ Identidad verificada correctamente
-                                        </p>
-                                        <p style={{ margin: '2px 0 0', fontSize: '0.72rem', color: '#166534' }}>
-                                            Tesis: <em>"{datosVerificadosB.tituloEncontrado}"</em>
-                                        </p>
-                                        {datosVerificadosB.autoresEncontrados?.length > 0 && (
-                                            <p style={{ margin: '1px 0 0', fontSize: '0.7rem', color: '#166534' }}>
-                                                Autores: {datosVerificadosB.autoresEncontrados.join(', ')}
-                                            </p>
-                                        )}
-                                    </div>
-                                </div>
-                            )}
+
 
                             {/* Botones */}
                             <div style={{ display: 'flex', gap: 8, marginTop: 14 }}>
