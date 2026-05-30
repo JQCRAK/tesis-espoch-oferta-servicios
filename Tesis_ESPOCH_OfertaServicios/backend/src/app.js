@@ -110,7 +110,7 @@ cron.schedule('0 1 * * *', async () => {
     const ahora = new Date();
 
     // ── Configuración de tiempos ──────────────────────────────────
-    const DIAS_ADVERTENCIA          = 365;   // 1 año sin tesis → advertencia
+    const DIAS_ADVERTENCIA          = 548;   // 1 año sin tesis → advertencia
     const DIAS_ESPERA_TRAS_AVISO    = 30;    // 30 días después del aviso → eliminación
     // ─────────────────────────────────────────────────────────────
 
@@ -316,7 +316,7 @@ app.listen(PORT, () => {
     console.log(`⏰ Crons activos:`);
     console.log(`   • Eventos/Encuestas  — cada hora`);
     console.log(`   • Tendencias         — cada lunes 00:05`);
-    console.log(`   • Limpieza sin tesis — cada día 01:00 [365 días aviso / 30 días para eliminar]`);
+    console.log(`   • Limpieza sin tesis — cada día 01:00 [548 días aviso / 30 días para eliminar]`);
     console.log('Buscando uploads en:', path.join(__dirname, 'uploads'));
 });
 

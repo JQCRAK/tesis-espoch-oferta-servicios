@@ -46,12 +46,12 @@ const generarPDFGraduados = (datos, anioInicio, anioFin) => {
         const hX = 10, hY = 10, hW = W - 20;
 
         // ── Logos ──
-        try { doc.addImage('/img/logo_espoch.png',      'PNG', hX + 1,       hY + 2, 20, 24); } catch {}
+        try { doc.addImage('/img/logo_espoch.png', 'PNG', hX + 1, hY + 2, 20, 24); } catch { }
         try { doc.addImage('/img/logo_vinculacion.png', 'PNG', hX + hW - 30, hY + 1, 28, 25); } catch {
             doc.setFont('helvetica', 'bold'); doc.setFontSize(5.5); doc.setTextColor(0, 0, 0);
-            doc.text('Decanato',       hX + hW - 12, hY + 6,  { align: 'center' });
+            doc.text('Decanato', hX + hW - 12, hY + 6, { align: 'center' });
             doc.text('de Vinculación', hX + hW - 12, hY + 10, { align: 'center' });
-            doc.text('Espoch',         hX + hW - 12, hY + 14, { align: 'center' });
+            doc.text('Espoch', hX + hW - 12, hY + 14, { align: 'center' });
             doc.setLineWidth(0.5); doc.setDrawColor(0, 0, 0);
             doc.line(hX + hW - 20, hY + 16, hX + hW - 4, hY + 16);
         }
@@ -59,21 +59,21 @@ const generarPDFGraduados = (datos, anioInicio, anioFin) => {
         // ── Textos centrales ──
         const cx = hX + 24 + (hW - 46) / 2;
         doc.setTextColor(0, 0, 0);
-        doc.setFont('helvetica', 'bold');   doc.setFontSize(9);
-        doc.text('ESCUELA SUPERIOR POLITÉCNICA DE CHIMBORAZO', cx, hY + 9,  { align: 'center' });
+        doc.setFont('helvetica', 'bold'); doc.setFontSize(9);
+        doc.text('ESCUELA SUPERIOR POLITÉCNICA DE CHIMBORAZO', cx, hY + 9, { align: 'center' });
         doc.setFont('helvetica', 'normal'); doc.setFontSize(8);
-        doc.text('DECANATO DE VINCULACIÓN',                    cx, hY + 15, { align: 'center' });
-        doc.text('SEGUIMIENTO A GRADUADOS E INSERCIÓN LABORAL',cx, hY + 21, { align: 'center' });
-        doc.setFont('helvetica', 'bold');   doc.setFontSize(8.5);
-        doc.text('DATOS GRADUADOS',                            cx, hY + 29, { align: 'center' });
+        doc.text('DECANATO DE VINCULACIÓN', cx, hY + 15, { align: 'center' });
+        doc.text('SEGUIMIENTO A GRADUADOS E INSERCIÓN LABORAL', cx, hY + 21, { align: 'center' });
+        doc.setFont('helvetica', 'bold'); doc.setFontSize(8.5);
+        doc.text('DATOS GRADUADOS', cx, hY + 29, { align: 'center' });
 
         // ── Filas FACULTAD / CARRERA / PERÍODO — sin bordes ──
         const infoY = hY + 34;
-        const rowH  = 8;
+        const rowH = 8;
         const filas = [
-            { label: 'FACULTAD:',          valor: 'FACULTAD DE INFORMÁTICA Y ELECTRÓNICA' },
-            { label: 'CARRERA/PROGRAMA:',  valor: 'SOFTWARE'                              },
-            { label: 'PERÍODO ACADÉMICO:', valor: periodoTxt.toUpperCase()                },
+            { label: 'FACULTAD:', valor: 'FACULTAD DE INFORMÁTICA Y ELECTRÓNICA' },
+            { label: 'CARRERA/PROGRAMA:', valor: 'SOFTWARE' },
+            { label: 'PERÍODO ACADÉMICO:', valor: periodoTxt.toUpperCase() },
         ];
         doc.setFontSize(7.5); doc.setTextColor(0, 0, 0);
         filas.forEach((fila, i) => {
@@ -93,46 +93,45 @@ const generarPDFGraduados = (datos, anioInicio, anioFin) => {
     autoTable(doc, {
         startY: tableStartY,
         columns: [
-            { header: 'N°',        dataKey: 'nro'      },
+            { header: 'N°', dataKey: 'nro' },
             { header: 'APELLIDOS', dataKey: 'apellidos' },
-            { header: 'NOMBRES',   dataKey: 'nombres'   },
-            { header: 'CÉDULA',    dataKey: 'cedula'    },
-            { header: 'EMAIL',     dataKey: 'email'     },
-            { header: 'CELULAR',   dataKey: 'celular'   },
+            { header: 'NOMBRES', dataKey: 'nombres' },
+            { header: 'CÉDULA', dataKey: 'cedula' },
+            { header: 'EMAIL', dataKey: 'email' },
+            { header: 'CELULAR', dataKey: 'celular' },
         ],
         body: datos.graduados,
         theme: 'grid',
         styles: {
             fontSize: 7.5, cellPadding: 2, font: 'helvetica',
-            textColor: [0,0,0], lineColor: [0,0,0], lineWidth: 0.3,
-            fillColor: [255,255,255],
+            textColor: [0, 0, 0], lineColor: [0, 0, 0], lineWidth: 0.3,
+            fillColor: [255, 255, 255],
         },
         headStyles: {
-            fillColor: [255,255,255], textColor: [0,0,0],
+            fillColor: [255, 255, 255], textColor: [0, 0, 0],
             fontStyle: 'bold', fontSize: 7.5, halign: 'center',
-            lineColor: [0,0,0], lineWidth: 0.3,
+            lineColor: [0, 0, 0], lineWidth: 0.3,
         },
         columnStyles: {
-            nro:       { halign: 'center', cellWidth: 10 },
+            nro: { halign: 'center', cellWidth: 10 },
             apellidos: { cellWidth: 38 },
-            nombres:   { cellWidth: 38 },
-            cedula:    { halign: 'center', cellWidth: 24 },
-            email:     { cellWidth: 55 },
-            celular:   { halign: 'center', cellWidth: 22 },
+            nombres: { cellWidth: 38 },
+            cedula: { halign: 'center', cellWidth: 24 },
+            email: { cellWidth: 55 },
+            celular: { halign: 'center', cellWidth: 22 },
         },
-        alternateRowStyles: { fillColor: [255,255,255] },
+        alternateRowStyles: { fillColor: [255, 255, 255] },
         margin: { left: 10, right: 10 },
         didDrawPage: ({ pageNumber }) => {
-            doc.setFontSize(6.5); doc.setTextColor(100,100,100);
+            doc.setFontSize(6.5); doc.setTextColor(100, 100, 100);
             doc.text(
                 `Generado: ${new Date().toLocaleDateString('es-EC')} — Pág. ${pageNumber}`,
-                W/2, doc.internal.pageSize.getHeight()-5, { align: 'center' }
+                W / 2, doc.internal.pageSize.getHeight() - 5, { align: 'center' }
             );
-            if (pageNumber > 1) dibujarPagina();
         },
     });
 
-    doc.save(`Anexo25_Graduados_${periodoTxt.replace(/\s/g,'_')}.pdf`);
+    doc.save(`Anexo25_Graduados_${periodoTxt.replace(/\s/g, '_')}.pdf`);
 };
 // ════════════════════════════════════════════════════════════
 // PDF — Empleadores
@@ -146,14 +145,14 @@ const generarPDFEmpleadores = (datos, anioInicio, anioFin) => {
         const hX = 10, hY = 10, hW = W - 20;
 
         // ── Logo ESPOCH izquierda ──
-        try { doc.addImage('/img/logo_espoch.png', 'PNG', hX + 1, hY + 2, 20, 24); } catch {}
+        try { doc.addImage('/img/logo_espoch.png', 'PNG', hX + 1, hY + 2, 20, 24); } catch { }
 
         // ── Logo Vinculación derecha — más grande y sin distorsión ──
         try { doc.addImage('/img/logo_vinculacion.png', 'PNG', hX + hW - 30, hY + 1, 28, 25); } catch {
             doc.setFont('helvetica', 'bold'); doc.setFontSize(5.5); doc.setTextColor(0, 0, 0);
-            doc.text('Decanato',       hX + hW - 12, hY + 6,  { align: 'center' });
+            doc.text('Decanato', hX + hW - 12, hY + 6, { align: 'center' });
             doc.text('de Vinculación', hX + hW - 12, hY + 10, { align: 'center' });
-            doc.text('Espoch',         hX + hW - 12, hY + 14, { align: 'center' });
+            doc.text('Espoch', hX + hW - 12, hY + 14, { align: 'center' });
             doc.setLineWidth(0.5); doc.setDrawColor(0, 0, 0);
             doc.line(hX + hW - 20, hY + 16, hX + hW - 4, hY + 16);
         }
@@ -161,21 +160,21 @@ const generarPDFEmpleadores = (datos, anioInicio, anioFin) => {
         // ── Textos centrales ──
         const cx = hX + 24 + (hW - 52) / 2;
         doc.setTextColor(0, 0, 0);
-        doc.setFont('helvetica', 'bold');   doc.setFontSize(9);
-        doc.text('ESCUELA SUPERIOR POLITÉCNICA DE CHIMBORAZO', cx, hY + 9,  { align: 'center' });
+        doc.setFont('helvetica', 'bold'); doc.setFontSize(9);
+        doc.text('ESCUELA SUPERIOR POLITÉCNICA DE CHIMBORAZO', cx, hY + 9, { align: 'center' });
         doc.setFont('helvetica', 'normal'); doc.setFontSize(8);
-        doc.text('DECANATO DE VINCULACIÓN',                    cx, hY + 15, { align: 'center' });
-        doc.text('SEGUIMIENTO A GRADUADOS E INSERCIÓN LABORAL',cx, hY + 21, { align: 'center' });
-        doc.setFont('helvetica', 'bold');   doc.setFontSize(8.5);
-        doc.text('DATOS EMPLEADORES',                          cx, hY + 29, { align: 'center' });
+        doc.text('DECANATO DE VINCULACIÓN', cx, hY + 15, { align: 'center' });
+        doc.text('SEGUIMIENTO A GRADUADOS E INSERCIÓN LABORAL', cx, hY + 21, { align: 'center' });
+        doc.setFont('helvetica', 'bold'); doc.setFontSize(8.5);
+        doc.text('DATOS EMPLEADORES', cx, hY + 29, { align: 'center' });
 
         // ── Filas FACULTAD / CARRERA / PERÍODO — sin bordes ──
         const infoY = hY + 34;
-        const rowH  = 8;
+        const rowH = 8;
         const filas = [
-            { label: 'FACULTAD:',          valor: 'FACULTAD DE INFORMÁTICA Y ELECTRÓNICA' },
-            { label: 'CARRERA/PROGRAMA:',  valor: 'SOFTWARE'                              },
-            { label: 'PERÍODO ACADÉMICO:', valor: periodoTxt.toUpperCase()                },
+            { label: 'FACULTAD:', valor: 'FACULTAD DE INFORMÁTICA Y ELECTRÓNICA' },
+            { label: 'CARRERA/PROGRAMA:', valor: 'SOFTWARE' },
+            { label: 'PERÍODO ACADÉMICO:', valor: periodoTxt.toUpperCase() },
         ];
         doc.setFontSize(7.5); doc.setTextColor(0, 0, 0);
         filas.forEach((fila, i) => {
@@ -195,48 +194,47 @@ const generarPDFEmpleadores = (datos, anioInicio, anioFin) => {
     autoTable(doc, {
         startY: tableStartY,
         columns: [
-            { header: 'N°',                                  dataKey: 'nro'                },
-            { header: 'NOMBRE\nORGANIZACIÓN',                dataKey: 'nombreOrganizacion' },
-            { header: 'NOMBRE DEL GERENTE\nY/O PROPIETARIO', dataKey: 'nombreGerente'      },
-            { header: 'PROVINCIA',                           dataKey: 'provincia'          },
-            { header: 'CIUDAD',                              dataKey: 'ciudad'             },
-            { header: 'EMAIL',                               dataKey: 'email'              },
-            { header: 'CONTACTO',                            dataKey: 'contacto'           },
+            { header: 'N°', dataKey: 'nro' },
+            { header: 'NOMBRE\nORGANIZACIÓN', dataKey: 'nombreOrganizacion' },
+            { header: 'NOMBRE DEL GERENTE\nY/O PROPIETARIO', dataKey: 'nombreGerente' },
+            { header: 'PROVINCIA', dataKey: 'provincia' },
+            { header: 'CIUDAD', dataKey: 'ciudad' },
+            { header: 'EMAIL', dataKey: 'email' },
+            { header: 'CONTACTO', dataKey: 'contacto' },
         ],
         body: datos.empleadores,
         theme: 'grid',
         styles: {
             fontSize: 7, cellPadding: 2, font: 'helvetica',
-            textColor: [0,0,0], lineColor: [0,0,0], lineWidth: 0.3,
-            fillColor: [255,255,255],
+            textColor: [0, 0, 0], lineColor: [0, 0, 0], lineWidth: 0.3,
+            fillColor: [255, 255, 255],
         },
         headStyles: {
-            fillColor: [255,255,255], textColor: [0,0,0],
+            fillColor: [255, 255, 255], textColor: [0, 0, 0],
             fontStyle: 'bold', fontSize: 7, halign: 'center',
-            lineColor: [0,0,0], lineWidth: 0.3,
+            lineColor: [0, 0, 0], lineWidth: 0.3,
         },
         columnStyles: {
-            nro:                { halign: 'center', cellWidth: 10 },
+            nro: { halign: 'center', cellWidth: 10 },
             nombreOrganizacion: { cellWidth: 36 },
-            nombreGerente:      { cellWidth: 36 },
-            provincia:          { cellWidth: 20 },
-            ciudad:             { cellWidth: 18 },
-            email:              { cellWidth: 45 },
-            contacto:           { halign: 'center', cellWidth: 22 },
+            nombreGerente: { cellWidth: 36 },
+            provincia: { cellWidth: 20 },
+            ciudad: { cellWidth: 18 },
+            email: { cellWidth: 45 },
+            contacto: { halign: 'center', cellWidth: 22 },
         },
-        alternateRowStyles: { fillColor: [255,255,255] },
+        alternateRowStyles: { fillColor: [255, 255, 255] },
         margin: { left: 10, right: 10 },
         didDrawPage: ({ pageNumber }) => {
-            doc.setFontSize(6.5); doc.setTextColor(100,100,100);
+            doc.setFontSize(6.5); doc.setTextColor(100, 100, 100);
             doc.text(
                 `Generado: ${new Date().toLocaleDateString('es-EC')} — Pág. ${pageNumber}`,
-                W/2, doc.internal.pageSize.getHeight()-5, { align: 'center' }
+                W / 2, doc.internal.pageSize.getHeight() - 5, { align: 'center' }
             );
-            if (pageNumber > 1) dibujarPagina();
         },
     });
 
-    doc.save(`Anexo25_Empleadores_${periodoTxt.replace(/\s/g,'_')}.pdf`);
+    doc.save(`Anexo25_Empleadores_${periodoTxt.replace(/\s/g, '_')}.pdf`);
 };
 // ════════════════════════════════════════════════════════════
 // EXCEL — Graduados
