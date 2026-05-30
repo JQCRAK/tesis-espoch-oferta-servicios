@@ -171,6 +171,16 @@ const Login = () => {
         }
     }, [tiempoRestante]);
 
+    // Scroll automático al error — útil en Flujo B donde el banner queda arriba
+    useEffect(() => {
+        if (error) {
+            setTimeout(() => {
+                const banner = document.getElementById('login-error-banner');
+                if (banner) banner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 50);
+        }
+    }, [error]);
+
     // ── Imagen del lateral según estado ───────────────────────────────────
     const imagenActual = () => {
         if (modo === 'registro') return pasoRegistro === 1 ? '/img/campus2.png' : '/img/campus3.jpg';
@@ -611,7 +621,7 @@ const Login = () => {
 
                     {/* ── ALERTA ── */}
                     {error && (
-                        <div style={error.includes('✅') ? s.alertaExito : s.alertaError}>
+                        <div id="login-error-banner" style={error.includes('✅') ? s.alertaExito : s.alertaError}>
                             {error.includes('✅')
                                 ? <FaCheckCircle style={{ marginRight: 8, flexShrink: 0 }} />
                                 : <FaExclamationTriangle style={{ marginRight: 8, flexShrink: 0, marginTop: 1 }} />}
@@ -1017,6 +1027,9 @@ const Login = () => {
                            FLUJO B — PASO 2: cédula foto + DSpace + pass
                         ════════════════════════════════════════════════ */
                         <>
+                            <div style={s.encabezado}>
+                                <h2 style={s.titulo}>Verificación de identidad</h2>
+                            </div>
                             <BarraProgreso paso={2} total={totalPasos} labelPaso={labelPaso()} />
 
 
@@ -1079,20 +1092,6 @@ const Login = () => {
                                     <p style={checkItem(/[0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(formData.password))}>✓ Un número o símbolo especial</p>
                                 </div>
                             </Campo>
-
-                            {/* ── Error local visible sin scroll ── */}
-                            {error && !verificadoB && (
-                                <div style={{
-                                    display: 'flex', alignItems: 'flex-start', gap: 8,
-                                    backgroundColor: '#fef2f2', border: '1px solid #fecaca',
-                                    borderLeft: '3px solid #dc2626',
-                                    borderRadius: 8, padding: '10px 12px', marginBottom: 10,
-                                    fontSize: '0.79rem', color: '#dc2626', lineHeight: 1.5
-                                }}>
-                                    <FaExclamationTriangle style={{ flexShrink: 0, marginTop: 1 }} />
-                                    <span>{error}</span>
-                                </div>
-                            )}
 
 
 
