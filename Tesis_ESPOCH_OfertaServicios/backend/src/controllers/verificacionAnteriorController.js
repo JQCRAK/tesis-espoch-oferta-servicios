@@ -3,26 +3,25 @@
  * ─────────────────────────────────────────────────────────────────────────────
  * Verificación de graduados SIN acceso al correo @espoch.edu.ec
  *
- * Estrategia de verificación en capas:
+ * Capas de verificación:
  *   Capa 1 — ¿La imagen contiene texto de una cédula ecuatoriana?
- *            Busca marcadores fijos que SIEMPRE aparecen en cédulas EC,
- *            independientemente del año o diseño del documento.
- *   Capa 2 — ¿El número de documento en la foto coincide con el formulario?
- *            Soporta cédulas ecuatorianas (10 dígitos) y extranjeras (alfanuméricas).
- *   Capa 3 — ¿Los apellidos del formulario aparecen en el texto de la cédula?
- *   Capa 4 — ¿Los apellidos aparecen como autor en el repositorio DSpace ESPOCH?
+ *   Capa 2 — ¿El número de cédula en la foto coincide con el formulario?
+ *   Capa 3 — ¿Los apellidos del formulario aparecen en el texto OCR?
+ *   Capa 4 — ¿Los apellidos aparecen como autor en DSpace ESPOCH?
  *
- * NOTA IMPORTANTE sobre cédulas por año:
- *   El diseño y orden de campos ha cambiado múltiples veces (pre-2008, 2008-2018,
- *   2018+). Por eso NO dependemos del orden sino de la PRESENCIA de palabras clave.
+ * Diseños soportados:
+ *   - Cédula celeste/azul (2018+): número junto a "NUI." abajo izquierda
+ *   - Cédula verde (2008-2018):    número junto a "No." arriba derecha
+ *   - Cédula amarilla (anterior):  número en área similar
  *
- * NO guarda nada en base de datos.
+ * Validación de cédula: solo 10 dígitos + provincia válida (01-24 o 30).
+ * Sin algoritmo matemático de verificación.
  * ─────────────────────────────────────────────────────────────────────────────
  */
 
 const fs = require('fs');
 
-// ── Cargar Tesseract.js (compatible CJS y ESM) ────────────────────────────────
+// ── Cargar Tesseract.js ───────────────────────────────────────────────────────
 let _createWorker = null;
 const getTesseract = async () => {
     if (_createWorker) return _createWorker;
@@ -36,13 +35,12 @@ const getTesseract = async () => {
     return _createWorker;
 };
 
-// ── Reutilizar scraping DSpace ya implementado ────────────────────────────────
+// ── Reutilizar scraping DSpace ────────────────────────────────────────────────
 const { extraerDatosDspace } = require('./tesisController');
 
 // ─────────────────────────────────────────────────────────
 // HELPERS
 // ─────────────────────────────────────────────────────────
-
 const normalizar = (str = '') =>
     str.toLowerCase()
        .normalize('NFD')
@@ -66,6 +64,21 @@ const apellidoEnAutores = (apellidos = '', autores = []) => {
     return partes.some(ap => norm.some(au => au.includes(ap)));
 };
 
+// Distancia de Levenshtein para tolerancia OCR
+const levenshtein = (a, b) => {
+    if (a === b) return 0;
+    if (!a.length) return b.length;
+    if (!b.length) return a.length;
+    const dp = Array.from({ length: a.length + 1 }, (_, i) => [i]);
+    for (let j = 1; j <= b.length; j++) dp[0][j] = j;
+    for (let i = 1; i <= a.length; i++)
+        for (let j = 1; j <= b.length; j++)
+            dp[i][j] = a[i-1] === b[j-1]
+                ? dp[i-1][j-1]
+                : 1 + Math.min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]);
+    return dp[a.length][b.length];
+};
+
 // ─────────────────────────────────────────────────────────
 // OCR con Tesseract
 // ─────────────────────────────────────────────────────────
@@ -73,7 +86,6 @@ const extraerTextoImagen = async (rutaImagen) => {
     let worker;
     try {
         const fn = await getTesseract();
-        // 'spa+eng' para cubrir cédulas con texto en inglés/otros idiomas
         worker = await fn('spa+eng', 1, {
             logger: process.env.NODE_ENV === 'development'
                 ? m => { if (m.progress) process.stdout.write(`\r[OCR] ${Math.round(m.progress * 100)}%`); }
@@ -93,68 +105,148 @@ const extraerTextoImagen = async (rutaImagen) => {
 // ─────────────────────────────────────────────────────────
 // CAPA 1: ¿Es una cédula ecuatoriana?
 //
-// Diseño A (pre-2018):  REPÚBLICA DEL ECUADOR / CÉDULA DE IDENTIDAD
-// Diseño B (2018+):     igual encabezado, campos reordenados
-// Cédula extranjero:    mismo encabezado + campo NACIONALIDAD visible
+// Marcadores fijos que aparecen en TODOS los diseños:
+//   - "REPÚBLICA DEL ECUADOR" (siempre en el encabezado)
+//   - "DIRECCIÓN GENERAL DE REGISTRO CIVIL" (siempre presente)
+//   - Etiquetas de campo: APELLIDOS, NOMBRES, FECHA DE NACIMIENTO
 //
-// La ley establece que el encabezado siempre debe decir:
-// "República del Ecuador. Dirección General de Registro Civil,
-//  Identificación y Cedulación"
-// independientemente del diseño.
-//
-// Umbral: 3 de 8 marcadores = tolerancia a OCR malo / foto girada
+// Tolerancia: 3 de 8 marcadores mínimo (OCR puede fallar en algunos)
 // ─────────────────────────────────────────────────────────
 const validarEsCedula = (texto) => {
     const t = normalizar(texto);
 
     const marcadores = [
-        { nombre: 'REPÚBLICA DEL ECUADOR',    ok: /republica\s+del\s+ecuador/.test(t) },
-        { nombre: 'REGISTRO CIVIL',            ok: /registro\s+civil/.test(t) },
-        { nombre: 'CEDULA DE IDENTIDAD',       ok: /cedula\s+de\s+identidad/.test(t) },
-        { nombre: 'IDENTIFICACION/CEDULACION', ok: /identificaci[o0]n|cedulaci[o0]n/.test(t) },
-        { nombre: 'Etiqueta APELLIDOS',        ok: /\bapellidos\b/.test(t) },
-        { nombre: 'Etiqueta NOMBRES',          ok: /\bnombres\b/.test(t) },
-        { nombre: 'FECHA DE NACIMIENTO',       ok: /fecha\s+de\s+nacimiento/.test(t) },
-        { nombre: 'DIGERCIC / REGISTRO',       ok: /digercic|registro\s+civil|r\.c\.i/.test(t) },
+        // Encabezado — siempre presente, OCR puede distorsionar el inicio
+        { nombre: 'REPÚBLICA DEL ECUADOR',
+          ok: /r[e3]publica\s+del\s+ecuador|del\s+ecuador/.test(t) },
+        // Institución emisora
+        { nombre: 'REGISTRO CIVIL',
+          ok: /registro\s+civil|reg\s*civil/.test(t) },
+        // Tipo de documento
+        { nombre: 'CEDULA / CIUDADANIA',
+          ok: /c[e3][dl]?u?l?a|ciudadan[ií]a|ciudadana/.test(t) },
+        // Institución abreviada
+        { nombre: 'IDENTIFICACION/CEDULACION',
+          ok: /identificaci|cedulaci/.test(t) },
+        // Etiquetas de campos — presentes en todos los diseños
+        { nombre: 'Etiqueta APELLIDOS',
+          ok: /\bapellidos\b/.test(t) },
+        { nombre: 'Etiqueta NOMBRES',
+          ok: /\bnombres\b/.test(t) },
+        { nombre: 'FECHA DE NACIMIENTO',
+          ok: /fecha\s+de\s+nacimiento|fec.*nacim/.test(t) },
+        // Campo ubicación — presente en todos los diseños
+        { nombre: 'LUGAR DE NACIMIENTO',
+          ok: /lugar\s+de\s+nacimiento|lugar.*nacim/.test(t) },
     ];
 
     const encontrados = marcadores.filter(m => m.ok);
     return {
-        esCedula:  encontrados.length >= 3,
-        puntaje:   encontrados.length,
-        total:     marcadores.length,
+        esCedula:    encontrados.length >= 3,
+        puntaje:     encontrados.length,
+        total:       marcadores.length,
         encontrados: encontrados.map(m => m.nombre),
         faltantes:   marcadores.filter(m => !m.ok).map(m => m.nombre),
     };
 };
 
 // ─────────────────────────────────────────────────────────
-// CAPA 2: Extraer número de documento del texto OCR
+// CAPA 2: Extraer número de cédula del texto OCR
 //
-// Cédula ecuatoriana:  exactamente 10 dígitos (provincia 01-24|30, 3er dígito 0-5)
-// Cédula extranjera:   puede ser alfanumérica, pero en Ecuador el Registro Civil
-//                      asigna un número de 10 dígitos a residentes extranjeros
-//                      donde la provincia es 30. Otros pueden tener formatos distintos.
+// Diseños identificados en las fotos reales:
+//
+//   Cédula celeste/azul (2018+):
+//     "NUI.1719142905" — número junto a etiqueta NUI abajo izquierda
+//     Ejemplo log real: "NUL185" → OCR distorsionó "NUI.1850867241"
+//
+//   Cédula verde (2008-2018):
+//     "No. 178455996-4" — número arriba derecha con guiones
+//     "No DOCUMENTO / 016338212" — número junto a etiqueta
+//
+//   Validación: solo 10 dígitos + provincia 01-24 o 30.
+//   SIN algoritmo matemático.
 // ─────────────────────────────────────────────────────────
-const extraerNumeroDocumento = (texto) => {
-    // 1. Buscar número de 10 dígitos (cédula ecuatoriana o extranjero residente)
-    const matches10 = texto.match(/\b\d{10}\b/g) || [];
-    for (const c of matches10) {
-        const prov = parseInt(c.substring(0, 2), 10);
-        const tipo = parseInt(c.substring(2, 3), 10);
-        if (((prov >= 1 && prov <= 24) || prov === 30) && tipo <= 5) {
-            return { numero: c, tipo: 'cedula_ec' };
+const esCedulaValida = (num) => {
+    // Solo 10 dígitos exactos
+    if (!/^\d{10}$/.test(num)) return false;
+    // Provincia válida: 01-24 o 30
+    const prov = parseInt(num.substring(0, 2), 10);
+    return (prov >= 1 && prov <= 24) || prov === 30;
+};
+
+const extraerNumeroCedula = (texto) => {
+    // ── Estrategia 1: Patrón "NUI" (cédula celeste 2018+) ────────────────
+    // "NUI.1719142905" o "NUL1850867241" (OCR confunde I con L)
+    // El número va pegado o muy cerca de NUI
+    const patronNUI = [
+        /nu[il1]\.?\s*(\d{10})/i,           // NUI.XXXXXXXXXX
+        /nu[il1]\s+(\d{10})/i,               // NUI XXXXXXXXXX
+        /\bnu[il1][:\s\.]*(\d{9,10})\b/i,   // NUI: XXXXXXXXX (9 o 10)
+    ];
+    for (const p of patronNUI) {
+        const m = texto.match(p);
+        if (m?.[1]) {
+            const num = m[1].padStart(10, '0');
+            if (esCedulaValida(num)) {
+                console.log('[OCR] Cédula encontrada con patrón NUI:', num);
+                return { numero: num, tipo: 'cedula_ec', metodo: 'NUI' };
+            }
         }
     }
 
-    // 2. Buscar números alfanuméricos de 6-12 chars (cédulas extranjeras / pasaportes)
-    //    Solo si no se encontró cédula ecuatoriana
-    const matchAlfa = texto.match(/\b[A-Z0-9]{6,12}\b/g) || [];
-    for (const c of matchAlfa) {
-        // Descartar secuencias que parecen fechas o palabras comunes
-        if (/^\d{4}$|^[A-Z]+$/.test(c)) continue;
-        if (c.length >= 6 && /\d/.test(c)) {
-            return { numero: c, tipo: 'cedula_extranjera' };
+    // ── Estrategia 2: Patrón "No." (cédula verde anterior) ───────────────
+    // "No. 178455996-4" — puede tener guiones que el OCR lee como separadores
+    const patronNo = [
+        /no\.?\s*documento[^\d]{0,20}(\d{9,10})/i,
+        /no\.?\s*(\d{9,10})/i,
+        /n[uú]m\.?\s*(\d{9,10})/i,
+    ];
+    for (const p of patronNo) {
+        const m = texto.match(p);
+        if (m?.[1]) {
+            // Quitar guiones si los hay y limpiar
+            const numLimpio = m[1].replace(/[-\s]/g, '').padStart(10, '0');
+            if (esCedulaValida(numLimpio)) {
+                console.log('[OCR] Cédula encontrada con patrón No.:', numLimpio);
+                return { numero: numLimpio, tipo: 'cedula_ec', metodo: 'No.' };
+            }
+        }
+    }
+
+    // ── Estrategia 3: Buscar secuencia con guiones (cédula verde) ─────────
+    // "178455996-4" — número con guión al final
+    const patronGuion = /(\d{8,9})-(\d{1,2})/g;
+    let mg;
+    while ((mg = patronGuion.exec(texto)) !== null) {
+        const num = (mg[1] + mg[2]).padStart(10, '0');
+        if (esCedulaValida(num)) {
+            console.log('[OCR] Cédula encontrada con guión:', num);
+            return { numero: num, tipo: 'cedula_ec', metodo: 'guion' };
+        }
+    }
+
+    // ── Estrategia 4: Cualquier secuencia de 10 dígitos válida ────────────
+    // Buscar en TODO el texto pero filtrando falsos positivos del reverso
+    const todosNums = [...texto.matchAll(/\b(\d{10})\b/g)].map(m => m[1]);
+    for (const num of todosNums) {
+        if (!esCedulaValida(num)) continue;
+        // Filtrar seriales: si los 4 primeros dígitos parecen un año → es serial
+        const year = parseInt(num.substring(0, 4), 10);
+        if (year >= 1900 && year <= 2099) {
+            console.log('[OCR] Descartado por parecer serial/año:', num);
+            continue;
+        }
+        console.log('[OCR] Cédula encontrada en texto libre:', num);
+        return { numero: num, tipo: 'cedula_ec', metodo: 'libre' };
+    }
+
+    // ── Estrategia 5: 9 dígitos (OCR perdió 1 dígito) ────────────────────
+    const nums9 = [...texto.matchAll(/\b(\d{9})\b/g)].map(m => m[1]);
+    for (const num of nums9) {
+        const con0 = '0' + num;
+        if (esCedulaValida(con0)) {
+            console.log('[OCR] Cédula 9→10 dígitos completada:', con0);
+            return { numero: con0, tipo: 'cedula_ec', metodo: 'completado' };
         }
     }
 
@@ -164,48 +256,31 @@ const extraerNumeroDocumento = (texto) => {
 // ─────────────────────────────────────────────────────────
 // CAPA 3: ¿Aparece el apellido en el texto OCR?
 //
-// OCR no es perfecto — puede leer "QUISPE" como "QU|SPE" o "QU1SPE".
-// Por eso usamos Jaccard con umbral bajo + fallback de substring.
+// Tolerante a errores OCR usando Levenshtein (1 carácter diferente)
 // ─────────────────────────────────────────────────────────
 const verificarApellidoEnCedula = (apellidos, textoOCR) => {
     const textNorm     = normalizar(textoOCR);
-    const apellidoNorm = normalizar(apellidos);
-    const partes       = apellidoNorm.split(' ').filter(Boolean);
+    const palabrasOCR  = textNorm.split(' ').filter(Boolean);
+    const partes       = normalizar(apellidos).split(' ').filter(Boolean);
 
-    // Verificar cada apellido individualmente
-    const resultados = partes.map(ap => ({
-        apellido:   ap,
-        encontrado: textNorm.includes(ap) ||
-                    // Tolerancia OCR: permitir 1 carácter diferente en apellidos largos
-                    (ap.length >= 5 && textNorm.split(' ').some(w =>
-                        levenshtein(w, ap) <= 1
-                    ))
-    }));
+    const resultados = partes.map(ap => {
+        // Coincidencia exacta
+        if (textNorm.includes(ap)) return { apellido: ap, encontrado: true };
+        // Tolerancia OCR: 1 carácter diferente en apellidos de 5+ letras
+        if (ap.length >= 5) {
+            const cercano = palabrasOCR.some(w => levenshtein(w, ap) <= 1);
+            if (cercano) return { apellido: ap, encontrado: true };
+        }
+        return { apellido: ap, encontrado: false };
+    });
 
     const encontrados = resultados.filter(r => r.encontrado).length;
     return {
-        ok:          encontrados >= Math.ceil(partes.length / 2), // al menos la mitad
+        ok:          encontrados >= Math.ceil(partes.length / 2),
         encontrados,
         total:       partes.length,
         detalle:     resultados,
     };
-};
-
-// Distancia de Levenshtein simple (para tolerancia OCR)
-const levenshtein = (a, b) => {
-    if (a === b) return 0;
-    if (!a.length) return b.length;
-    if (!b.length) return a.length;
-    const dp = Array.from({ length: a.length + 1 }, (_, i) => [i]);
-    for (let j = 1; j <= b.length; j++) dp[0][j] = j;
-    for (let i = 1; i <= a.length; i++) {
-        for (let j = 1; j <= b.length; j++) {
-            dp[i][j] = a[i-1] === b[j-1]
-                ? dp[i-1][j-1]
-                : 1 + Math.min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]);
-        }
-    }
-    return dp[a.length][b.length];
 };
 
 // ─────────────────────────────────────────────────────────
@@ -232,6 +307,14 @@ exports.verificarCedulaDspace = async (req, res) => {
             });
         }
 
+        const provCedula = parseInt(cedula.trim().substring(0, 2), 10);
+        if (!((provCedula >= 1 && provCedula <= 24) || provCedula === 30)) {
+            return res.status(400).json({
+                msg: 'Los primeros dos dígitos de la cédula deben ser una provincia válida (01-24 o 30).',
+                campo: 'cedula'
+            });
+        }
+
         if (!urlDspace?.includes('dspace.espoch.edu.ec')) {
             return res.status(400).json({
                 msg: 'La URL debe pertenecer a dspace.espoch.edu.ec',
@@ -246,7 +329,7 @@ exports.verificarCedulaDspace = async (req, res) => {
             });
         }
 
-        // ── Registrar archivos para limpieza ──────────────────────────────
+        // ── Registrar archivos temporales ─────────────────────────────────
         const frontalPath = req.files['cedula_frontal'][0].path;
         temporales.push(frontalPath);
 
@@ -257,78 +340,91 @@ exports.verificarCedulaDspace = async (req, res) => {
         }
 
         // ── OCR ───────────────────────────────────────────────────────────
-        console.log('[Verif] OCR frontal...');
+        console.log('[Verif] Iniciando OCR frontal...');
         const textoFrontal = await extraerTextoImagen(frontalPath);
         console.log('[Verif] Texto frontal (300 chars):', textoFrontal.substring(0, 300));
 
         let textoPosterior = '';
         if (posteriorPath) {
-            console.log('[Verif] OCR posterior...');
+            console.log('[Verif] Iniciando OCR posterior...');
             textoPosterior = await extraerTextoImagen(posteriorPath);
         }
 
+        // IMPORTANTE: concatenar frontal + posterior pero guardar el frontal
+        // aparte porque la búsqueda de número prioriza el frontal
         const textoCompleto = `${textoFrontal}\n${textoPosterior}`;
 
         if (!textoCompleto.trim()) {
             return res.status(400).json({
-                msg: 'No se pudo extraer texto de la imagen. ' +
-                     'Sube una foto más nítida y con buena iluminación.',
+                msg: 'No se pudo extraer texto de la imagen. Sube una foto más nítida y con buena iluminación.',
                 campo: 'cedula_frontal'
             });
         }
 
         // ── CAPA 1: ¿Es una cédula ecuatoriana? ──────────────────────────
         const validDoc = validarEsCedula(textoCompleto);
-        console.log('[Verif] Capa 1 - validación documento:', validDoc);
+        console.log('[Verif] Capa 1:', validDoc);
 
         if (!validDoc.esCedula) {
             return res.status(400).json({
                 msg: `La imagen no parece ser una cédula de identidad ecuatoriana. ` +
-                     `Se encontraron ${validDoc.puntaje} de ${validDoc.total} marcadores requeridos (mínimo 3). ` +
-                     `Asegúrate de subir el frente de tu cédula con buena iluminación y enfoque.`,
+                     `Se detectaron ${validDoc.puntaje} de ${validDoc.total} marcadores (mínimo 3). ` +
+                     `Asegúrate de subir una foto clara del FRENTE de tu cédula.`,
                 campo: 'cedula_frontal',
                 marcadoresEncontrados: validDoc.encontrados,
                 marcadoresFaltantes:  validDoc.faltantes,
             });
         }
 
-        // ── CAPA 2: Número de documento ───────────────────────────────────
-        const docOCR = extraerNumeroDocumento(textoCompleto);
-        console.log('[Verif] Capa 2 - número documento OCR:', docOCR);
+        // ── CAPA 2: Número de cédula ──────────────────────────────────────
+        // Buscar usando el texto del frontal primero, luego completo
+        const docOCR = extraerNumeroCedula(textoFrontal) || extraerNumeroCedula(textoCompleto);
+        console.log('[Verif] Capa 2 - número OCR:', docOCR);
 
         if (!docOCR) {
             return res.status(400).json({
-                msg: 'No se pudo leer el número de documento en la imagen. ' +
-                     'Asegúrate de que la foto sea nítida, el número esté visible y sin reflejos.',
+                msg: 'No se pudo leer el número de cédula en la imagen. ' +
+                     'Asegúrate de que la foto sea nítida y el número esté visible (junto a NUI o No.).',
                 campo: 'cedula_frontal'
             });
         }
 
-        // Comparar con el número ingresado en el formulario
-        if (cedula.trim() !== docOCR.numero) {
+        // Comparar con cédula del formulario
+        // Tolerancia: el OCR puede leer 9 dígitos en lugar de 10 (pierde 1 dígito)
+        const cedulaForm = cedula.trim();
+        const cedulaOCR  = docOCR.numero;
+        const coincideExacto  = cedulaForm === cedulaOCR;
+        // Tolerancia OCR: los primeros 8 dígitos coinciden
+        const coincideParcial = cedulaOCR.length >= 9 &&
+                                (cedulaForm.startsWith(cedulaOCR.substring(0, 9)) ||
+                                 cedulaForm.endsWith(cedulaOCR.substring(1)));
+
+        if (!coincideExacto && !coincideParcial) {
             return res.status(400).json({
-                msg: `El número de cédula ingresado (${cedula.trim()}) no coincide con el ` +
-                     `encontrado en la imagen (${docOCR.numero}). ` +
-                     `Verifica que hayas ingresado correctamente tu número de cédula.`,
-                campo: 'cedula'
+                msg: `El número de cédula ingresado (${cedulaForm}) no coincide con el ` +
+                     `leído en la imagen (${cedulaOCR}). ` +
+                     `Verifica que hayas ingresado tu cédula correctamente.`,
+                campo: 'cedula',
+                cedulaDetectada: cedulaOCR,
+                metodoDeteccion: docOCR.metodo,
             });
         }
 
-        // ── CAPA 3: Apellidos en cédula ───────────────────────────────────
+        // ── CAPA 3: Apellidos en la cédula ────────────────────────────────
         const verifApellido = verificarApellidoEnCedula(apellidos.trim(), textoCompleto);
-        console.log('[Verif] Capa 3 - apellidos en cédula:', verifApellido);
+        console.log('[Verif] Capa 3 - apellidos:', verifApellido);
 
         if (!verifApellido.ok) {
             return res.status(400).json({
-                msg: `Los apellidos ingresados no se encontraron en la imagen de la cédula. ` +
-                     `Verifica que los datos del formulario coincidan exactamente con tu cédula.`,
+                msg: `Los apellidos ingresados (${apellidos}) no se encontraron en la imagen de la cédula. ` +
+                     `Verifica que los apellidos del formulario coincidan con los de tu cédula.`,
                 campo: 'nombres',
                 detalle: verifApellido.detalle
             });
         }
 
-        // ── CAPA 4: Verificar en DSpace ───────────────────────────────────
-        console.log('[Verif] Capa 4 - consultando DSpace...');
+        // ── CAPA 4: Verificar en DSpace ESPOCH ────────────────────────────
+        console.log('[Verif] Capa 4 - consultando DSpace:', urlDspace.substring(0, 60));
         let datosDspace;
         try {
             datosDspace = await extraerDatosDspace(urlDspace.trim());
@@ -344,30 +440,31 @@ exports.verificarCedulaDspace = async (req, res) => {
         if (autoresEncontrados.length > 0) {
             if (!apellidoEnAutores(apellidos.trim(), autoresEncontrados)) {
                 return res.status(400).json({
-                    msg: `Tu apellido no aparece como autor en esa tesis del repositorio. ` +
+                    msg: `Tu apellido no aparece como autor en esa tesis. ` +
                          `Autores encontrados: ${autoresEncontrados.join(', ')}. ` +
-                         `Verifica que la URL corresponda a tu tesis.`,
+                         `Verifica que la URL sea la de tu propia tesis.`,
                     campo: 'dspace',
                     autoresEncontrados
                 });
             }
         }
 
-        console.log('[Verif] ✅ Verificación completa exitosa');
+        console.log('[Verif] ✅ Verificación completa exitosa - método:', docOCR.metodo);
 
         res.json({
-            verificado: true,
+            verificado:        true,
             tituloEncontrado,
             autoresEncontrados,
-            tipoDocumento: docOCR.tipo,
-            capasVerificadas: 4,
-            msg: 'Identidad verificada correctamente en todas las capas.'
+            tipoDocumento:     docOCR.tipo,
+            metodoDeteccion:   docOCR.metodo,
+            capasVerificadas:  4,
+            msg:               'Identidad verificada correctamente.'
         });
 
     } catch (err) {
-        console.error('[Verif] Error inesperado:', err);
+        console.error('[Verif] Error inesperado:', err.message);
         res.status(500).json({
-            msg: 'Error interno al verificar. Intenta nuevamente en unos segundos.',
+            msg: 'Error interno al verificar. Intenta nuevamente.',
             campo: 'servidor'
         });
     } finally {

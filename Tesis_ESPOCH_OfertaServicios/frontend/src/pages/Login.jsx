@@ -1030,8 +1030,9 @@ const Login = () => {
                                 <FaShieldAlt style={{ color: '#1d4ed8', flexShrink: 0, fontSize: '1rem' }} />
                                 <div>
                                     <p style={{ margin: 0, fontWeight: 700, fontSize: '0.8rem', color: '#1e3a5f' }}>
-                                        Verificaremos que eres tú comparando:
+                                        Verificaremos que eres tú.
                                     </p>
+                                    
                                 </div>
                             </div>
 
@@ -1093,6 +1094,20 @@ const Login = () => {
                                     <p style={checkItem(/[0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(formData.password))}>✓ Un número o símbolo especial</p>
                                 </div>
                             </Campo>
+
+                            {/* ── Error local visible sin scroll ── */}
+                            {error && !verificadoB && (
+                                <div style={{
+                                    display: 'flex', alignItems: 'flex-start', gap: 8,
+                                    backgroundColor: '#fef2f2', border: '1px solid #fecaca',
+                                    borderLeft: '3px solid #dc2626',
+                                    borderRadius: 8, padding: '10px 12px', marginBottom: 10,
+                                    fontSize: '0.79rem', color: '#dc2626', lineHeight: 1.5
+                                }}>
+                                    <FaExclamationTriangle style={{ flexShrink: 0, marginTop: 1 }} />
+                                    <span>{error}</span>
+                                </div>
+                            )}
 
                             {/* Resultado verificación */}
                             {verificadoB && datosVerificadosB && (
