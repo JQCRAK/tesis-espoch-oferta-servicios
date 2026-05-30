@@ -10,7 +10,7 @@ import {
     FaMedal, FaChartBar, FaHandshake, FaExternalLinkAlt,
     FaLightbulb, FaStar, FaEye, FaBuilding, FaShieldAlt, FaTrophy,
     FaGraduationCap, FaSearch, FaUniversity, FaEnvelope, FaPhone,
-    FaMapMarkerAlt  
+    FaMapMarkerAlt
 } from 'react-icons/fa';
 import '../../index.css';
 import { leerSesion, guardarSesion } from '../../utils/storageSeguro';
@@ -197,7 +197,7 @@ const PerfilGraduado = () => {
     const [verificandoTesis, setVerificandoTesis] = useState(false);
     const [aceptandoCons, setAceptandoCons] = useState(false);
     const [datosTesisDspace, setDatosTesisDspace] = useState(null);
-    const [ft, setFt] = useState({ titulo: '', resumen: '', urlDspace: '' });
+    const [ft, setFt] = useState({ urlDspace: '' });
 
     // ── Proyectos ─────────────────────────────────────
     const [proyectos, setProyectos] = useState([]);
@@ -227,11 +227,11 @@ const PerfilGraduado = () => {
     // ── Carga inicial ─────────────────────────────────
     useEffect(() => {
         document.title = 'Mi Perfil | ESPOCH Software';
-        
-const sesion = leerSesion('usuario');
-if (!sesion) { navigate('/'); return; }
-const t = sesion.token;
-setToken(t);
+
+        const sesion = leerSesion('usuario');
+        if (!sesion) { navigate('/'); return; }
+        const t = sesion.token;
+        setToken(t);
         cargarTodo(t);
     }, [navigate]);
 
@@ -332,9 +332,9 @@ setToken(t);
                 cantonActual: mf.cantonActual,          // ← NUEVO
             }, { headers: { Authorization: `Bearer ${token}` } });
 
-            
-const sesion = leerSesion('usuario');
-guardarSesion('usuario', { ...sesion, ...data.graduado });
+
+            const sesion = leerSesion('usuario');
+            guardarSesion('usuario', { ...sesion, ...data.graduado });
             setPerfil(p => ({ ...p, ...data.graduado }));
             setModalAbierto(false);
             ok('Perfil actualizado correctamente ✅');
@@ -361,7 +361,7 @@ guardarSesion('usuario', { ...sesion, ...data.graduado });
         }
 
         // Si el perfil está completo, abre el modal de tesis normalmente
-        setFt({ titulo: '', resumen: '', urlDspace: '' });
+        setFt({ urlDspace: '' });
         setDatosTesisDspace(null);
         setPasoTesis(1);
         setModalTesis(true);
@@ -374,27 +374,14 @@ guardarSesion('usuario', { ...sesion, ...data.graduado });
     };
 
     const handleVerificarTesis = async () => {
-        if (!ft.titulo || ft.titulo.trim().length < 10) {
-            mostrarError('El título debe tener al menos 10 caracteres.'); return;
-        }
-        if (contarPalabras(ft.resumen) < 30) {
-            mostrarError('El resumen debe tener al menos 30 palabras.'); return;
-        }
-        if (contarPalabras(ft.resumen) > 260) {
-            mostrarError('El resumen no puede superar las 250 palabras.'); return;
-        }
         if (!ft.urlDspace || !ft.urlDspace.includes('dspace.espoch.edu.ec')) {
             mostrarError('La URL debe pertenecer a dspace.espoch.edu.ec'); return;
         }
-
         setVerificandoTesis(true);
         try {
             const { data } = await axios.post(`${API_URL}/tesis/verificar`, {
-                titulo: ft.titulo.trim(),
-                resumen: ft.resumen.trim(),
                 urlDspace: ft.urlDspace.trim(),
             }, { headers: { Authorization: `Bearer ${token}` } });
-
             setDatosTesisDspace(data);
             setPasoTesis(2);
         } catch (err) {
@@ -415,7 +402,7 @@ guardarSesion('usuario', { ...sesion, ...data.graduado });
             setMf(p => ({ ...p, perfilPublico: true }));
 
             const sesion = leerSesion('usuario');
-guardarSesion('usuario', { ...sesion, tesisVerificada: true });
+            guardarSesion('usuario', { ...sesion, tesisVerificada: true });
 
             cerrarModalTesis();
             ok('🎉 ¡Tu perfil ahora es público! Ya apareces en el buscador de graduados.');
@@ -1151,30 +1138,17 @@ guardarSesion('usuario', { ...sesion, tesisVerificada: true });
                         <div style={s.modalBody}>
                             {pasoTesis === 1 && (
                                 <>
-                                    <div style={st.infoBanner}>
-                                        <FaUniversity style={{ color: '#6a1b9a', flexShrink: 0, fontSize: '1rem' }} />
+                                    {/* Aviso carrera de Software */}
+                                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, backgroundColor: '#f3e8ff', border: '1px solid #ddd6fe', borderRadius: 8, padding: '10px 14px', marginBottom: 16 }}>
+                                        <FaGraduationCap style={{ color: '#6a1b9a', flexShrink: 0, fontSize: '1rem', marginTop: 1 }} />
                                         <div>
                                             <p style={{ margin: 0, fontWeight: 700, fontSize: '0.81rem', color: '#4a0080' }}>
-                                                Verificación automática con el Repositorio ESPOCH
+                                                Solo para graduados de la Carrera de Software
                                             </p>
                                             <p style={{ margin: '2px 0 0', fontSize: '0.72rem', color: 'var(--color-texto-secundario)', lineHeight: 1.5 }}>
-                                                El sistema consultará <strong>dspace.espoch.edu.ec</strong> para confirmar que tu tesis existe y que eres el autor registrado. El título debe coincidir exactamente.
+                                                El sistema verificará tu tesis en <strong>dspace.espoch.edu.ec</strong> y confirmará que perteneces a la Carrera de Ingeniería de Software.
                                             </p>
                                         </div>
-                                    </div>
-                                    <div style={s.campo}>
-                                        <label style={s.lbl}>Título de tu tesis de grado *</label>
-                                        <div style={s.inputWrap}>
-                                            <input
-                                                value={ft.titulo}
-                                                onChange={e => setFt(p => ({ ...p, titulo: e.target.value }))}
-                                                placeholder="Ej: Sistema de información para la toma de decisiones..."
-                                                style={s.inp}
-                                            />
-                                        </div>
-                                        <span style={{ fontSize: '0.69rem', color: 'var(--color-texto-secundario)', marginTop: 2 }}>
-                                            Escríbelo exactamente como aparece en el repositorio ESPOCH
-                                        </span>
                                     </div>
                                     <div style={s.campo}>
                                         <label style={s.lbl}>URL de tu tesis en el repositorio ESPOCH *</label>
@@ -1188,32 +1162,8 @@ guardarSesion('usuario', { ...sesion, tesisVerificada: true });
                                             />
                                         </div>
                                         <span style={{ fontSize: '0.69rem', color: 'var(--color-texto-secundario)', marginTop: 2 }}>
-                                            Ve a <a href="https://dspace.espoch.edu.ec" target="_blank" rel="noopener noreferrer" style={{ color: '#6a1b9a', fontWeight: 600 }}>dspace.espoch.edu.ec</a>, busca tu tesis y copia la URL completa de la página
+                                            Ve a <a href="https://dspace.espoch.edu.ec" target="_blank" rel="noopener noreferrer" style={{ color: '#6a1b9a', fontWeight: 600 }}>dspace.espoch.edu.ec</a>, busca tu tesis y copia la URL completa
                                         </span>
-                                    </div>
-                                    <div style={s.campo}>
-                                        <label style={s.lbl}>
-                                            Resumen de tu tesis *
-                                            <span style={{ fontWeight: 400, color: 'var(--color-texto-secundario)', marginLeft: 6 }}>
-                                                ({contarPalabras(ft.resumen)}/250 palabras)
-                                            </span>
-                                        </label>
-                                        <div style={{ ...s.inputWrap, alignItems: 'flex-start', paddingTop: 10 }}>
-                                            <textarea
-                                                value={ft.resumen}
-                                                onChange={e => setFt(p => ({ ...p, resumen: e.target.value }))}
-                                                placeholder="Escribe un resumen de tu tesis en tus propias palabras (mínimo 30 palabras, máximo 250)..."
-                                                style={{ ...s.inp, minHeight: 110, resize: 'vertical' }}
-                                            />
-                                        </div>
-                                        <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 3 }}>
-                                            <span style={{
-                                                fontSize: '0.7rem',
-                                                color: contarPalabras(ft.resumen) > 250 ? 'var(--estado-error)' : contarPalabras(ft.resumen) > 220 ? 'var(--estado-alerta)' : 'var(--color-texto-secundario)'
-                                            }}>
-                                                {contarPalabras(ft.resumen)}/250
-                                            </span>
-                                        </div>
                                     </div>
                                 </>
                             )}

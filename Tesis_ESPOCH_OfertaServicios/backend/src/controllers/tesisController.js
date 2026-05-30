@@ -1,6 +1,6 @@
-const Tesis = require('../models/Tesis');
+const Tesis    = require('../models/Tesis');
 const Graduado = require('../models/Graduado');
-const axios = require('axios');
+const axios    = require('axios');
 
 // ─────────────────────────────────────────────────────────
 // HELPERS
@@ -13,29 +13,12 @@ const normalizar = (str = '') =>
        .replace(/\s+/g, ' ')
        .trim();
 
-const similitudJaccard = (a, b) => {
-    const setA = new Set(normalizar(a).split(' ').filter(Boolean));
-    const setB = new Set(normalizar(b).split(' ').filter(Boolean));
-    if (setA.size === 0 || setB.size === 0) return 0;
-    const interseccion = new Set([...setA].filter(x => setB.has(x)));
-    const union = new Set([...setA, ...setB]);
-    return interseccion.size / union.size;
-};
-
 const apellidoEnAutores = (apellidos = '', autores = []) => {
     const partes = normalizar(apellidos).split(' ').filter(Boolean);
     const autoresNorm = autores.map(a => normalizar(a));
-    return partes.some(apellido =>
-        autoresNorm.some(autor => autor.includes(apellido))
-    );
+    return partes.some(ap => autoresNorm.some(au => au.includes(ap)));
 };
 
-const contarPalabras = (texto = '') =>
-    texto.trim() === '' ? 0 : texto.trim().split(/\s+/).length;
-
-// ─────────────────────────────────────────────────────────
-// NORMALIZAR FECHA
-// ─────────────────────────────────────────────────────────
 const normalizarFecha = (raw = '') => {
     if (!raw || raw.trim() === '') return null;
     const str = raw.trim();
@@ -49,21 +32,13 @@ const normalizarFecha = (raw = '') => {
     if (dmY) { const [, d, m, y] = dmY; return `${y}-${m}-${d}`; }
     const dt = new Date(str);
     if (!isNaN(dt.getTime())) {
-        const y = dt.getUTCFullYear();
-        const m = String(dt.getUTCMonth() + 1).padStart(2, '0');
-        const d = String(dt.getUTCDate()).padStart(2, '0');
-        return `${y}-${m}-${d}`;
+        return `${dt.getUTCFullYear()}-${String(dt.getUTCMonth()+1).padStart(2,'0')}-${String(dt.getUTCDate()).padStart(2,'0')}`;
     }
-    console.log('⚠️ No se pudo normalizar la fecha:', raw);
     return null;
 };
 
 // ─────────────────────────────────────────────────────────
 // VERIFICAR COLECCIÓN — solo Carrera de Software ESPOCH
-//
-// La tesis debe pertenecer a la colección de Ingeniería en
-// Sistemas Informáticos / Ingeniería de Software de ESPOCH.
-// Se consulta el owningCollection del ítem en DSpace 7.
 // ─────────────────────────────────────────────────────────
 const COLECCIONES_PERMITIDAS = [
     'ingenieria en sistemas informaticos',
@@ -75,104 +50,86 @@ const COLECCIONES_PERMITIDAS = [
 
 const verificarColeccionSoftware = async (uuid) => {
     try {
-        const url = `https://dspace.espoch.edu.ec/server/api/core/items/${uuid}/owningCollection`;
-        console.log('📚 [Colección] GET:', url);
-
-        const { data } = await axios.get(url, {
-            timeout: 12000,
-            headers: {
-                Accept: 'application/json',
-                'User-Agent': 'Mozilla/5.0 ESPOCH-Verificador/2.0'
-            }
-        });
-
-        const nombreColeccion = data?.name || '';
-        const nombreNorm = normalizar(nombreColeccion);
-        console.log('📚 [Colección] Nombre:', nombreColeccion);
-
-        const permitida = COLECCIONES_PERMITIDAS.some(c => nombreNorm.includes(c));
-        return { permitida, nombreColeccion };
-
+        const { data } = await axios.get(
+            `https://dspace.espoch.edu.ec/server/api/core/items/${uuid}/owningCollection`,
+            { timeout: 12000, headers: { Accept: 'application/json', 'User-Agent': 'Mozilla/5.0 ESPOCH-Verificador/2.0' } }
+        );
+        const nombre     = data?.name || '';
+        const nombreNorm = normalizar(nombre);
+        const permitida  = COLECCIONES_PERMITIDAS.some(c => nombreNorm.includes(normalizar(c)));
+        console.log('📚 [Colección]', nombre, '→', permitida ? '✅' : '❌');
+        return { permitida, nombre };
     } catch (err) {
-        console.log('⚠️ [Colección] Error al verificar:', err.message);
-        // Si falla la red, no bloqueamos — evitar que un error de red
-        // impida el registro. Se loguea para auditoría.
-        return { permitida: true, nombreColeccion: 'no_verificado' };
+        console.log('⚠️ [Colección] Error:', err.message);
+        return { permitida: true, nombre: 'no_verificado' };
     }
 };
 
 // ─────────────────────────────────────────────────────────
-// SCRAPING del dspace ESPOCH
+// SCRAPING DSpace ESPOCH
 // ─────────────────────────────────────────────────────────
 const extraerDatosDspace = async (url) => {
     let urlObj;
-    try { urlObj = new URL(url); } catch {
-        throw new Error('La URL ingresada no es válida.');
-    }
-    if (urlObj.hostname !== 'dspace.espoch.edu.ec') {
+    try { urlObj = new URL(url); } catch { throw new Error('La URL ingresada no es válida.'); }
+    if (urlObj.hostname !== 'dspace.espoch.edu.ec')
         throw new Error('La URL debe pertenecer a dspace.espoch.edu.ec');
-    }
 
     const matchItems  = url.match(/\/items\/([a-f0-9-]{36})/i);
     const matchHandle = url.match(/\/handle\/(\d+\/\d+)/i);
 
-    let titulo   = '';
-    let autores  = [];
-    let fechaRaw = '';
-    let uuidFinal = null; // guardar para consulta de colección
+    let titulo = '', autores = [], fechaRaw = '', resumen = '', uuidFinal = null;
 
-    // ════ ESTRATEGIA A — /server/api/core/items/{UUID} ═══════════════════
+    // ── Estrategia A — /items/{UUID} ──────────────────────────────────────
     if (matchItems) {
-        const uuid = matchItems[1];
-        uuidFinal = uuid;
-        console.log('🔍 UUID extraído:', uuid);
-
+        uuidFinal = matchItems[1];
         try {
-            const itemUrl = `https://dspace.espoch.edu.ec/server/api/core/items/${uuid}`;
-            console.log('📡 [A1] GET item:', itemUrl);
-            const { data } = await axios.get(itemUrl, {
-                timeout: 15000,
-                headers: { Accept: 'application/json', 'User-Agent': 'Mozilla/5.0 ESPOCH-Verificador/2.0' }
-            });
+            const { data } = await axios.get(
+                `https://dspace.espoch.edu.ec/server/api/core/items/${uuidFinal}`,
+                { timeout: 15000, headers: { Accept: 'application/json', 'User-Agent': 'Mozilla/5.0 ESPOCH-Verificador/2.0' } }
+            );
             const meta = data?.metadata || {};
-            if (meta['dc.title']?.[0]?.value) titulo = meta['dc.title'][0].value.trim();
-            if (meta['dc.contributor.author']) autores = meta['dc.contributor.author'].map(v => v.value);
-            const clavesFecha = ['dc.date.issued', 'dc.date.available', 'dc.date.accessioned'];
-            for (const clave of clavesFecha) {
-                if (meta[clave]?.[0]?.value) { fechaRaw = meta[clave][0].value; break; }
+            if (meta['dc.title']?.[0]?.value)       titulo  = meta['dc.title'][0].value.trim();
+            if (meta['dc.contributor.author'])        autores = meta['dc.contributor.author'].map(v => v.value);
+            // Resumen — puede estar en dc.description.abstract o dc.description
+            if (meta['dc.description.abstract']?.[0]?.value)
+                resumen = meta['dc.description.abstract'][0].value.trim();
+            else if (meta['dc.description']?.[0]?.value)
+                resumen = meta['dc.description'][0].value.trim();
+            for (const k of ['dc.date.issued','dc.date.available','dc.date.accessioned']) {
+                if (meta[k]?.[0]?.value) { fechaRaw = meta[k][0].value; break; }
             }
-            if (!fechaRaw) {
-                const claveDate = Object.keys(meta).find(k => k.toLowerCase().includes('date'));
-                if (claveDate) fechaRaw = meta[claveDate][0]?.value || '';
-            }
-            console.log('✅ [A1] título:', titulo, '| autores:', autores);
-        } catch (err) { console.log('⚠️ [A1] falló:', err.response?.status, err.message); }
+            console.log('✅ [A1]', titulo, '| resumen chars:', resumen.length);
+        } catch (err) { console.log('⚠️ [A1]', err.message); }
 
+        // A2: endpoint /metadata
         if (!titulo) {
             try {
-                const metaUrl = `https://dspace.espoch.edu.ec/server/api/core/items/${uuid}/metadata`;
-                const { data } = await axios.get(metaUrl, { timeout: 15000, headers: { Accept: 'application/json' } });
+                const { data } = await axios.get(
+                    `https://dspace.espoch.edu.ec/server/api/core/items/${uuidFinal}/metadata`,
+                    { timeout: 15000, headers: { Accept: 'application/json' } }
+                );
                 const entries = Array.isArray(data) ? data : (data?._embedded?.metadatavalues || []);
-                for (const entry of entries) {
-                    const key = entry.key || entry.schema + '.' + entry.element + (entry.qualifier ? '.' + entry.qualifier : '');
-                    if (key === 'dc.title' && !titulo) titulo = entry.value?.trim() || '';
-                    if (key === 'dc.contributor.author') autores.push(entry.value);
-                    if (key === 'dc.date.issued' && !fechaRaw) fechaRaw = entry.value || '';
-                    else if (key === 'dc.date.available' && !fechaRaw) fechaRaw = entry.value || '';
-                    else if (key?.toLowerCase().includes('date') && !fechaRaw) fechaRaw = entry.value || '';
+                for (const e of entries) {
+                    const k = e.key || `${e.schema}.${e.element}${e.qualifier?'.'+e.qualifier:''}`;
+                    if (k === 'dc.title' && !titulo)                           titulo  = e.value?.trim() || '';
+                    if (k === 'dc.contributor.author')                          autores.push(e.value);
+                    if (k === 'dc.date.issued' && !fechaRaw)                   fechaRaw = e.value || '';
+                    if ((k === 'dc.description.abstract' || k === 'dc.description') && !resumen)
+                        resumen = e.value?.trim() || '';
                 }
-                console.log('✅ [A2] título:', titulo);
-            } catch (err) { console.log('⚠️ [A2] falló:', err.response?.status, err.message); }
+                console.log('✅ [A2]', titulo);
+            } catch (err) { console.log('⚠️ [A2]', err.message); }
         }
     }
 
-    // ════ ESTRATEGIA B — handle ═══════════════════════════════════════════
+    // ── Estrategia B — handle ─────────────────────────────────────────────
     if (!titulo && matchHandle) {
-        const handle = matchHandle[1];
         try {
-            const handleUrl = `https://dspace.espoch.edu.ec/server/api/core/handles/${encodeURIComponent(handle)}`;
-            const { data: handleData } = await axios.get(handleUrl, { timeout: 15000, headers: { Accept: 'application/json' } });
-            const itemUuid = handleData?.id || handleData?.uuid;
+            const { data: hd } = await axios.get(
+                `https://dspace.espoch.edu.ec/server/api/core/handles/${encodeURIComponent(matchHandle[1])}`,
+                { timeout: 15000, headers: { Accept: 'application/json' } }
+            );
+            const itemUuid = hd?.id || hd?.uuid;
             if (itemUuid) {
                 uuidFinal = itemUuid;
                 const { data } = await axios.get(
@@ -180,21 +137,23 @@ const extraerDatosDspace = async (url) => {
                     { timeout: 15000, headers: { Accept: 'application/json' } }
                 );
                 const meta = data?.metadata || {};
-                if (meta['dc.title']?.[0]?.value) titulo = meta['dc.title'][0].value.trim();
-                if (meta['dc.contributor.author']) autores = meta['dc.contributor.author'].map(v => v.value);
-                const clavesFecha = ['dc.date.issued', 'dc.date.available', 'dc.date.accessioned'];
-                for (const clave of clavesFecha) {
-                    if (meta[clave]?.[0]?.value) { fechaRaw = meta[clave][0].value; break; }
+                if (meta['dc.title']?.[0]?.value)    titulo  = meta['dc.title'][0].value.trim();
+                if (meta['dc.contributor.author'])     autores = meta['dc.contributor.author'].map(v => v.value);
+                if (meta['dc.description.abstract']?.[0]?.value && !resumen)
+                    resumen = meta['dc.description.abstract'][0].value.trim();
+                for (const k of ['dc.date.issued','dc.date.available','dc.date.accessioned']) {
+                    if (meta[k]?.[0]?.value) { fechaRaw = meta[k][0].value; break; }
                 }
             }
-        } catch (err) { console.log('⚠️ [B] handle falló:', err.response?.status, err.message); }
+        } catch (err) { console.log('⚠️ [B]', err.message); }
     }
 
-    // ════ ESTRATEGIA C — OAI-PMH XML ══════════════════════════════════════
+    // ── Estrategia C — OAI-PMH ────────────────────────────────────────────
     if (!titulo) {
-        let identifier = null;
-        if (matchHandle) identifier = `oai:dspace.espoch.edu.ec:${matchHandle[1]}`;
-        else if (matchItems) {
+        let identifier = matchHandle
+            ? `oai:dspace.espoch.edu.ec:${matchHandle[1]}`
+            : null;
+        if (!identifier && matchItems) {
             try {
                 const { data } = await axios.get(
                     `https://dspace.espoch.edu.ec/server/api/core/items/${matchItems[1]}`,
@@ -204,47 +163,39 @@ const extraerDatosDspace = async (url) => {
                     identifier = `oai:dspace.espoch.edu.ec:${data.handle}`;
                     if (!uuidFinal) uuidFinal = matchItems[1];
                 }
-            } catch (err) { console.log('⚠️ [C] no se pudo obtener handle:', err.message); }
+            } catch {}
         }
         if (identifier) {
             try {
-                const oaiUrl = `https://dspace.espoch.edu.ec/oai/request?verb=GetRecord&metadataPrefix=oai_dc&identifier=${encodeURIComponent(identifier)}`;
-                const { data: xml } = await axios.get(oaiUrl, { timeout: 15000, headers: { Accept: 'application/xml, text/xml' } });
-                const tituloMatch  = xml.match(/<dc:title>([^<]+)<\/dc:title>/i);
-                const autoresMatch = [...xml.matchAll(/<dc:creator>([^<]+)<\/dc:creator>/gi)];
-                const fechaMatch   = xml.match(/<dc:date>([^<]+)<\/dc:date>/i);
-                if (tituloMatch?.[1])     titulo  = tituloMatch[1].trim();
-                if (autoresMatch.length)  autores = autoresMatch.map(m => m[1].trim());
-                if (fechaMatch?.[1] && !fechaRaw) fechaRaw = fechaMatch[1].trim();
-                console.log('✅ [C] OAI título:', titulo);
-            } catch (err) { console.log('⚠️ [C] OAI falló:', err.message); }
+                const { data: xml } = await axios.get(
+                    `https://dspace.espoch.edu.ec/oai/request?verb=GetRecord&metadataPrefix=oai_dc&identifier=${encodeURIComponent(identifier)}`,
+                    { timeout: 15000, headers: { Accept: 'application/xml, text/xml' } }
+                );
+                const tm  = xml.match(/<dc:title>([^<]+)<\/dc:title>/i);
+                const am  = [...xml.matchAll(/<dc:creator>([^<]+)<\/dc:creator>/gi)];
+                const fm  = xml.match(/<dc:date>([^<]+)<\/dc:date>/i);
+                const rm  = xml.match(/<dc:description>([^<]+)<\/dc:description>/i);
+                if (tm?.[1])              titulo  = tm[1].trim();
+                if (am.length)            autores = am.map(m => m[1].trim());
+                if (fm?.[1] && !fechaRaw) fechaRaw = fm[1].trim();
+                if (rm?.[1] && !resumen)  resumen  = rm[1].trim();
+                console.log('✅ [C]', titulo);
+            } catch (err) { console.log('⚠️ [C]', err.message); }
         }
     }
 
-    if (!titulo) {
-        throw new Error(
-            'No se pudo obtener la información de la tesis desde el repositorio ESPOCH. ' +
-            'El servidor puede estar temporalmente no disponible. Intenta nuevamente en unos minutos.'
-        );
-    }
+    if (!titulo)
+        throw new Error('No se pudo obtener la información de la tesis desde el repositorio ESPOCH. Intenta nuevamente.');
 
     // ── Verificar colección — solo Carrera de Software ────────────────────
     if (uuidFinal) {
-        const coleccion = await verificarColeccionSoftware(uuidFinal);
-        if (!coleccion.permitida) {
-            throw new Error(
-                'Esta tesis no pertenece a la Carrera de Ingeniería de Software de la ESPOCH. ' +
-                'Solo pueden registrarse graduados de esa carrera.'
-            );
-        }
-        console.log('✅ [Colección] Verificada:', coleccion.nombreColeccion);
+        const col = await verificarColeccionSoftware(uuidFinal);
+        if (!col.permitida)
+            throw new Error('Esta tesis no pertenece a la Carrera de Ingeniería de Software de la ESPOCH. Solo pueden registrarse graduados de esa carrera.');
+        console.log('✅ [Colección]', col.nombre);
     }
 
-    const fecha = normalizarFecha(fechaRaw);
-    console.log('📅 Fecha normalizada:', fecha);
-    console.log('📊 RESULTADO FINAL → título:', titulo, '| autores:', autores, '| fecha:', fecha);
-
-    return { titulo, autores, fecha };
+    return { titulo, autores, fecha: normalizarFecha(fechaRaw), resumen };
 };
 
 // ─────────────────────────────────────────────────────────
@@ -256,29 +207,26 @@ exports.obtenerMiTesis = async (req, res) => {
         if (!tesis) return res.status(404).json({ msg: 'Sin tesis registrada' });
         res.json(tesis);
     } catch (err) {
-        console.error('Error obtenerMiTesis:', err);
+        console.error(err);
         res.status(500).json({ msg: 'Error al obtener la tesis.' });
     }
 };
 
 // ─────────────────────────────────────────────────────────
 // POST /api/tesis/verificar
+// NUEVO: solo recibe urlDspace — título y autores se extraen automáticamente
 // ─────────────────────────────────────────────────────────
 exports.verificarTesis = async (req, res) => {
-    const { titulo, resumen, urlDspace } = req.body;
+    const { urlDspace } = req.body;
 
-    if (!titulo || titulo.trim().length < 10)
-        return res.status(400).json({ msg: 'El título es obligatorio y debe tener al menos 10 caracteres.' });
-    if (!resumen || contarPalabras(resumen) < 30)
-        return res.status(400).json({ msg: 'El resumen debe tener al menos 30 palabras.' });
-    if (contarPalabras(resumen) > 260)
-        return res.status(400).json({ msg: 'El resumen no puede superar las 250 palabras.' });
     if (!urlDspace || urlDspace.trim() === '')
         return res.status(400).json({ msg: 'La URL del repositorio es obligatoria.' });
+    if (!urlDspace.includes('dspace.espoch.edu.ec'))
+        return res.status(400).json({ msg: 'La URL debe pertenecer a dspace.espoch.edu.ec' });
 
     const tesisExistente = await Tesis.findOne({ graduado: req.usuario.id });
     if (tesisExistente?.verificada)
-        return res.status(400).json({ msg: 'Tu tesis ya fue verificada. Tu perfil está listo para publicarse.' });
+        return res.status(400).json({ msg: 'Tu tesis ya fue verificada.' });
 
     const graduado = await Graduado.findById(req.usuario.id);
     if (!graduado) return res.status(404).json({ msg: 'Graduado no encontrado.' });
@@ -290,26 +238,14 @@ exports.verificarTesis = async (req, res) => {
         return res.status(400).json({ msg: err.message });
     }
 
-    const { titulo: tituloReal, autores: autoresReal, fecha } = datosDspace;
+    const { titulo: tituloReal, autores: autoresReal, fecha, resumen: resumenDspace } = datosDspace;
 
-    const similitud = similitudJaccard(titulo, tituloReal);
-    console.log(`📐 Similitud Jaccard: ${Math.round(similitud * 100)}%`);
-
-    if (similitud < 0.75) {
-        return res.status(400).json({
-            msg: `El título no coincide con el registro del repositorio ESPOCH. ` +
-                `Título encontrado: "${tituloReal}". ` +
-                `Verifica que lo hayas escrito exactamente igual.`,
-            tituloEncontrado: tituloReal,
-            similitud: Math.round(similitud * 100)
-        });
-    }
-
+    // Verificar que el apellido del graduado esté entre los autores
     if (autoresReal.length > 0 && !apellidoEnAutores(graduado.apellidos, autoresReal)) {
         return res.status(400).json({
-            msg: `Tu nombre no aparece como autor en esta tesis del repositorio. ` +
-                `Autores encontrados: ${autoresReal.join(', ')}. ` +
-                `Verifica que estés usando tu cuenta correcta.`,
+            msg: `Tu nombre no aparece como autor en esta tesis. ` +
+                 `Autores encontrados: ${autoresReal.join(', ')}. ` +
+                 `Verifica que la URL corresponda a tu tesis.`,
             autoresEncontrados: autoresReal
         });
     }
@@ -317,24 +253,23 @@ exports.verificarTesis = async (req, res) => {
     await Tesis.findOneAndUpdate(
         { graduado: req.usuario.id },
         {
-            graduado: req.usuario.id,
-            titulo: titulo.trim(),
-            resumen: resumen.trim(),
-            urlDspace: urlDspace.trim(),
-            tituloEncontrado: tituloReal,
+            graduado:           req.usuario.id,
+            titulo:             tituloReal,
+            resumen:            resumenDspace || '',
+            urlDspace:          urlDspace.trim(),
+            tituloEncontrado:   tituloReal,
             autoresEncontrados: autoresReal,
-            fechaPublicacion: fecha,
-            verificada: false,
+            fechaPublicacion:   fecha,
+            verificada:         false,
         },
         { upsert: true, new: true }
     );
 
     res.json({
-        msg: 'Tesis verificada correctamente en el repositorio ESPOCH.',
-        tituloEncontrado: tituloReal,
+        msg:                'Tesis verificada correctamente.',
+        tituloEncontrado:   tituloReal,
         autoresEncontrados: autoresReal,
-        fechaPublicacion: fecha,
-        similitud: Math.round(similitud * 100)
+        fechaPublicacion:   fecha,
     });
 };
 
@@ -347,19 +282,18 @@ exports.aceptarConsentimiento = async (req, res) => {
         if (!tesis || !tesis.tituloEncontrado)
             return res.status(400).json({ msg: 'Primero debes verificar tu tesis.' });
         if (tesis.verificada)
-            return res.status(400).json({ msg: 'El consentimiento ya fue aceptado anteriormente.' });
+            return res.status(400).json({ msg: 'El consentimiento ya fue aceptado.' });
 
         const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || '';
-        tesis.verificada            = true;
-        tesis.fechaVerificacion     = new Date();
+        tesis.verificada             = true;
+        tesis.fechaVerificacion      = new Date();
         tesis.consentimientoAceptado = true;
-        tesis.fechaConsentimiento   = new Date();
-        tesis.ipConsentimiento      = ip;
+        tesis.fechaConsentimiento    = new Date();
+        tesis.ipConsentimiento       = ip;
         await tesis.save();
 
         const anioGraduacion = tesis.fechaPublicacion
-            ? new Date(tesis.fechaPublicacion).getUTCFullYear()
-            : null;
+            ? new Date(tesis.fechaPublicacion).getUTCFullYear() : null;
 
         const actualizacion = {
             tesisVerificada:    true,
@@ -375,18 +309,15 @@ exports.aceptarConsentimiento = async (req, res) => {
         await Graduado.findByIdAndUpdate(req.usuario.id, actualizacion, { new: true });
 
         res.json({
-            msg: 'Consentimiento aceptado. Tu perfil ahora es público.',
+            msg:             'Consentimiento aceptado. Tu perfil ahora es público.',
             perfilPublico:   true,
             tesisVerificada: true,
             anioGraduacion,
         });
     } catch (err) {
-        console.error('Error aceptarConsentimiento:', err);
+        console.error(err);
         res.status(500).json({ msg: 'Error al procesar el consentimiento.' });
     }
 };
 
-// ─────────────────────────────────────────────────────────
-// EXPORT — extraerDatosDspace se reutiliza en verificacionAnteriorController
-// ─────────────────────────────────────────────────────────
 exports.extraerDatosDspace = extraerDatosDspace;

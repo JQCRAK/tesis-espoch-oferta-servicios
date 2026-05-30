@@ -1017,9 +1017,6 @@ const Login = () => {
                            FLUJO B — PASO 2: cédula foto + DSpace + pass
                         ════════════════════════════════════════════════ */
                         <>
-                            <div style={s.encabezado}>
-                                <h2 style={s.titulo}>Verificación de identidad</h2>
-                            </div>
                             <BarraProgreso paso={2} total={totalPasos} labelPaso={labelPaso()} />
 
 
