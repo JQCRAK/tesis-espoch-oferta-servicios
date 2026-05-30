@@ -99,7 +99,7 @@ const listarEncuestasGraduado = async (req, res) => {
 
         // Solo encuestas activas para graduados
         const encuestas = await Encuesta.find({
-            estado: 'activa',
+            estado: { $in: ['activa', 'cerrada'] },
             tipo: 'graduados',
         })
             .select('titulo descripcion fechaInicio fechaCierre estado totalRespuestas consentimientoInformado')
@@ -151,7 +151,7 @@ const obtenerEncuesta = async (req, res) => {
 const actualizarEncuesta = async (req, res) => {
     try {
         const { id } = req.params;
-        const adminId    = req.usuario?.id    || req.usuario?._id;
+        const adminId = req.usuario?.id || req.usuario?._id;
         const adminEmail = req.usuario?.email || 'desconocido';
         const { titulo, descripcion, consentimientoInformado, estado, fechaInicio, fechaCierre } = req.body;
 
@@ -183,29 +183,29 @@ const actualizarEncuesta = async (req, res) => {
         // ── Auditar solo si cambió el estado a cerrada ──
         if (estado && estado !== estadoAnterior) {
             await AuditoriaLog.create({
-                usuarioId:         String(adminId),
-                usuarioEmail:      adminEmail,
-                rol:               'admin',
-                accion:            'CAMBIAR_ESTADO_ENCUESTA',
-                modulo:            'Encuestas',
+                usuarioId: String(adminId),
+                usuarioEmail: adminEmail,
+                rol: 'admin',
+                accion: 'CAMBIAR_ESTADO_ENCUESTA',
+                modulo: 'Encuestas',
                 coleccionAfectada: 'encuestas',
-                descripcion:       `Encuesta "${encuesta.titulo}" cambió de estado: ${estadoAnterior} → ${estado}.`,
-                ip:                req.ip || 'desconocida',
-            }).catch(() => {});
+                descripcion: `Encuesta "${encuesta.titulo}" cambió de estado: ${estadoAnterior} → ${estado}.`,
+                ip: req.ip || 'desconocida',
+            }).catch(() => { });
         }
 
         res.json({ msg: 'Encuesta actualizada', encuesta });
     } catch (error) {
         console.error('Error en actualizarEncuesta:', error);
         await AuditoriaError.create({
-            usuarioId:    String(req.usuario?.id || 'desconocido'),
+            usuarioId: String(req.usuario?.id || 'desconocido'),
             usuarioEmail: req.usuario?.email || 'desconocido',
-            rol:          'admin',
-            accion:       'ACTUALIZAR_ENCUESTA',
-            modulo:       'Encuestas',
+            rol: 'admin',
+            accion: 'ACTUALIZAR_ENCUESTA',
+            modulo: 'Encuestas',
             mensajeError: error.message,
-            ip:           req.ip || 'desconocida',
-        }).catch(() => {});
+            ip: req.ip || 'desconocida',
+        }).catch(() => { });
         res.status(500).json({ msg: 'Error al actualizar encuesta', error: error.message });
     }
 };
@@ -260,16 +260,16 @@ const duplicarEncuesta = async (req, res) => {
 const eliminarEncuesta = async (req, res) => {
     try {
         const { id } = req.params;
-        const adminId    = req.usuario?.id    || req.usuario?._id;
+        const adminId = req.usuario?.id || req.usuario?._id;
         const adminEmail = req.usuario?.email || 'desconocido';
 
         const encuesta = await Encuesta.findById(id);
         if (!encuesta) return res.status(404).json({ msg: 'Encuesta no encontrada' });
 
         const snapshot = {
-            titulo:          encuesta.titulo,
-            tipo:            encuesta.tipo,
-            estado:          encuesta.estado,
+            titulo: encuesta.titulo,
+            tipo: encuesta.tipo,
+            estado: encuesta.estado,
             totalRespuestas: encuesta.totalRespuestas,
         };
 
@@ -285,28 +285,28 @@ const eliminarEncuesta = async (req, res) => {
         await Notificacion.deleteMany({ encuesta: id });
 
         await AuditoriaLog.create({
-            usuarioId:         String(adminId),
-            usuarioEmail:      adminEmail,
-            rol:               'admin',
-            accion:            'ELIMINAR_ENCUESTA',
-            modulo:            'Encuestas',
+            usuarioId: String(adminId),
+            usuarioEmail: adminEmail,
+            rol: 'admin',
+            accion: 'ELIMINAR_ENCUESTA',
+            modulo: 'Encuestas',
             coleccionAfectada: 'encuestas',
-            descripcion:       `Encuesta eliminada: "${snapshot.titulo}" (tipo: ${snapshot.tipo}, estado: ${snapshot.estado}). Se eliminaron ${totalGraduados} respuestas de graduados y ${totalEmpleadores} respuestas de empleadores.`,
-            ip:                req.ip || 'desconocida',
-        }).catch(() => {});
+            descripcion: `Encuesta eliminada: "${snapshot.titulo}" (tipo: ${snapshot.tipo}, estado: ${snapshot.estado}). Se eliminaron ${totalGraduados} respuestas de graduados y ${totalEmpleadores} respuestas de empleadores.`,
+            ip: req.ip || 'desconocida',
+        }).catch(() => { });
 
         res.json({ msg: 'Encuesta eliminada correctamente' });
     } catch (error) {
         console.error('Error en eliminarEncuesta:', error);
         await AuditoriaError.create({
-            usuarioId:    String(req.usuario?.id || 'desconocido'),
+            usuarioId: String(req.usuario?.id || 'desconocido'),
             usuarioEmail: req.usuario?.email || 'desconocido',
-            rol:          'admin',
-            accion:       'ELIMINAR_ENCUESTA',
-            modulo:       'Encuestas',
+            rol: 'admin',
+            accion: 'ELIMINAR_ENCUESTA',
+            modulo: 'Encuestas',
             mensajeError: error.message,
-            ip:           req.ip || 'desconocida',
-        }).catch(() => {});
+            ip: req.ip || 'desconocida',
+        }).catch(() => { });
         res.status(500).json({ msg: 'Error al eliminar encuesta', error: error.message });
     }
 };
@@ -320,7 +320,7 @@ const eliminarEncuesta = async (req, res) => {
 const notificarGraduados = async (req, res) => {
     try {
         const { id } = req.params;
-        const adminId    = req.usuario?.id    || req.usuario?._id;
+        const adminId = req.usuario?.id || req.usuario?._id;
         const adminEmail = req.usuario?.email || 'desconocido';
 
         const encuesta = await Encuesta.findById(id);
@@ -386,15 +386,15 @@ const notificarGraduados = async (req, res) => {
 
         // ── Auditoría ──────────────────────────────────────────
         await AuditoriaLog.create({
-            usuarioId:         String(adminId),
-            usuarioEmail:      adminEmail,
-            rol:               'admin',
-            accion:            'NOTIFICAR_GRADUADOS',
-            modulo:            'Encuestas',
+            usuarioId: String(adminId),
+            usuarioEmail: adminEmail,
+            rol: 'admin',
+            accion: 'NOTIFICAR_GRADUADOS',
+            modulo: 'Encuestas',
             coleccionAfectada: 'graduados',
-            descripcion:       `Notificación enviada para encuesta "${encuesta.titulo}". Total: ${resumen.total}, emails enviados: ${resumen.emailsEnviados}, fallidos: ${resumen.emailsFallidos}.`,
-            ip:                req.ip || 'desconocida',
-        }).catch(() => {});
+            descripcion: `Notificación enviada para encuesta "${encuesta.titulo}". Total: ${resumen.total}, emails enviados: ${resumen.emailsEnviados}, fallidos: ${resumen.emailsFallidos}.`,
+            ip: req.ip || 'desconocida',
+        }).catch(() => { });
 
         res.json({
             msg: `Notificación enviada a ${resumen.total} graduados`,
@@ -403,14 +403,14 @@ const notificarGraduados = async (req, res) => {
     } catch (error) {
         console.error('Error en notificarGraduados:', error);
         await AuditoriaError.create({
-            usuarioId:    String(req.usuario?.id || 'desconocido'),
+            usuarioId: String(req.usuario?.id || 'desconocido'),
             usuarioEmail: req.usuario?.email || 'desconocido',
-            rol:          'admin',
-            accion:       'NOTIFICAR_GRADUADOS',
-            modulo:       'Encuestas',
+            rol: 'admin',
+            accion: 'NOTIFICAR_GRADUADOS',
+            modulo: 'Encuestas',
             mensajeError: error.message,
-            ip:           req.ip || 'desconocida',
-        }).catch(() => {});
+            ip: req.ip || 'desconocida',
+        }).catch(() => { });
         res.status(500).json({ msg: 'Error al notificar graduados', error: error.message });
     }
 };
@@ -729,7 +729,7 @@ const { enviarNotificacionEmpleador } = require('../services/emailEmpleadorServi
 const notificarEmpleadores = async (req, res) => {
     try {
         const { id } = req.params;
-        const adminId    = req.usuario?.id    || req.usuario?._id;
+        const adminId = req.usuario?.id || req.usuario?._id;
         const adminEmail = req.usuario?.email || 'desconocido';
 
         const encuesta = await Encuesta.findById(id);
@@ -745,8 +745,8 @@ const notificarEmpleadores = async (req, res) => {
 
         const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
         const resumen = {
-            total:         empleadores.length,
-            omitidos:      0,
+            total: empleadores.length,
+            omitidos: 0,
             emailsEnviados: 0,
             emailsFallidos: 0,
         };
@@ -775,10 +775,10 @@ const notificarEmpleadores = async (req, res) => {
                 console.log(`[notificarEmpleadores] Reusando token para ${emp.nombreEmpresa}`);
             } else {
                 // ── CASO 3: encuesta distinta o token expirado → nuevo ──
-                token                = crypto.randomBytes(32).toString('hex');
-                emp.tokenEncuesta    = token;
-                emp.tokenExpira      = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
-                emp.tokenUsado       = false;
+                token = crypto.randomBytes(32).toString('hex');
+                emp.tokenEncuesta = token;
+                emp.tokenExpira = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+                emp.tokenUsado = false;
                 emp.encuestaAsociada = encuesta._id;
                 await emp.save();
                 console.log(`[notificarEmpleadores] Nuevo token para ${emp.nombreEmpresa}`);
@@ -788,9 +788,9 @@ const notificarEmpleadores = async (req, res) => {
 
             const resultado = await enviarNotificacionEmpleador({
                 emailOrganizacion: emp.emailOrganizacion,
-                nombreEmpresa:     emp.nombreEmpresa,
-                tituloEncuesta:    encuesta.titulo,
-                fechaCierre:       encuesta.fechaCierre,
+                nombreEmpresa: emp.nombreEmpresa,
+                tituloEncuesta: encuesta.titulo,
+                fechaCierre: encuesta.fechaCierre,
                 linkEncuesta,
             });
 
@@ -806,15 +806,15 @@ const notificarEmpleadores = async (req, res) => {
 
         // ── Auditoría ──────────────────────────────────────────
         await AuditoriaLog.create({
-            usuarioId:         String(adminId),
-            usuarioEmail:      adminEmail,
-            rol:               'admin',
-            accion:            'NOTIFICAR_EMPLEADORES',
-            modulo:            'Encuestas',
+            usuarioId: String(adminId),
+            usuarioEmail: adminEmail,
+            rol: 'admin',
+            accion: 'NOTIFICAR_EMPLEADORES',
+            modulo: 'Encuestas',
             coleccionAfectada: 'empleadors',
-            descripcion:       `Notificación enviada para encuesta "${encuesta.titulo}". Total: ${resumen.total}, enviados: ${resumen.emailsEnviados}, omitidos (ya respondieron): ${resumen.omitidos}, fallidos: ${resumen.emailsFallidos}.`,
-            ip:                req.ip || 'desconocida',
-        }).catch(() => {});
+            descripcion: `Notificación enviada para encuesta "${encuesta.titulo}". Total: ${resumen.total}, enviados: ${resumen.emailsEnviados}, omitidos (ya respondieron): ${resumen.omitidos}, fallidos: ${resumen.emailsFallidos}.`,
+            ip: req.ip || 'desconocida',
+        }).catch(() => { });
 
         res.json({
             msg: `Notificación enviada. ${resumen.emailsEnviados} emails enviados, ${resumen.omitidos} omitidos por ya haber respondido.`,
@@ -823,14 +823,14 @@ const notificarEmpleadores = async (req, res) => {
     } catch (error) {
         console.error('Error en notificarEmpleadores:', error);
         await AuditoriaError.create({
-            usuarioId:    String(req.usuario?.id || 'desconocido'),
+            usuarioId: String(req.usuario?.id || 'desconocido'),
             usuarioEmail: req.usuario?.email || 'desconocido',
-            rol:          'admin',
-            accion:       'NOTIFICAR_EMPLEADORES',
-            modulo:       'Encuestas',
+            rol: 'admin',
+            accion: 'NOTIFICAR_EMPLEADORES',
+            modulo: 'Encuestas',
             mensajeError: error.message,
-            ip:           req.ip || 'desconocida',
-        }).catch(() => {});
+            ip: req.ip || 'desconocida',
+        }).catch(() => { });
         res.status(500).json({ msg: 'Error al notificar empleadores', error: error.message });
     }
 };
