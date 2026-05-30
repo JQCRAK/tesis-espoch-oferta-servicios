@@ -88,16 +88,14 @@ const listarEncuestasGraduado = async (req, res) => {
         const graduadoId = req.usuario?.id || req.usuario?._id;
         if (!graduadoId) return res.status(401).json({ msg: 'No autenticado' });
 
-        // ── Verificar que el graduado tenga tesis verificada ──
         const graduado = await Graduado.findById(graduadoId).select('tesisVerificada');
         if (!graduado) return res.status(404).json({ msg: 'Graduado no encontrado' });
 
         if (!graduado.tesisVerificada) {
-            // No tiene tesis verificada — devolver lista vacía con flag
             return res.json({ encuestas: [], tesisVerificada: false });
         }
 
-        // Solo encuestas activas para graduados
+        // Traer todas las encuestas de graduados (activas y cerradas)
         const encuestas = await Encuesta.find({
             estado: { $in: ['activa', 'cerrada'] },
             tipo: 'graduados',
@@ -105,7 +103,6 @@ const listarEncuestasGraduado = async (req, res) => {
             .select('titulo descripcion fechaInicio fechaCierre estado totalRespuestas consentimientoInformado')
             .sort({ createdAt: -1 });
 
-        const RespuestaEncuesta = require('../models/RespuestaEncuesta');
         const resultados = await Promise.all(
             encuestas.map(async (enc) => {
                 const respuesta = await RespuestaEncuesta.findOne({
@@ -114,6 +111,12 @@ const listarEncuestasGraduado = async (req, res) => {
                     estado: 'completada',
                 });
                 const totalPreguntas = await Pregunta.countDocuments({ encuesta: enc._id });
+
+                // ── FILTRO CLAVE ──────────────────────────────────────
+                // Encuesta cerrada que el graduado NO respondió → no mostrar
+                if (enc.estado === 'cerrada' && !respuesta) return null;
+                // ─────────────────────────────────────────────────────
+
                 return {
                     ...enc.toObject(),
                     yaRespondio: !!respuesta,
@@ -123,7 +126,10 @@ const listarEncuestasGraduado = async (req, res) => {
             })
         );
 
-        res.json({ encuestas: resultados, tesisVerificada: true });
+        // Quitar los nulls (encuestas cerradas no respondidas)
+        const filtradas = resultados.filter(Boolean);
+
+        res.json({ encuestas: filtradas, tesisVerificada: true });
     } catch (error) {
         console.error('Error en listarEncuestasGraduado:', error);
         res.status(500).json({ msg: 'Error al cargar encuestas', error: error.message });

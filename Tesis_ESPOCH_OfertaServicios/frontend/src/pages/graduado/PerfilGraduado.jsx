@@ -285,7 +285,7 @@ const PerfilGraduado = () => {
             URL.revokeObjectURL(blobUrl);
             setPreviewFoto(urlFoto(data.fotoPerfil));
             setPerfil(p => ({ ...p, fotoPerfil: data.fotoPerfil, perfilCompletado: data.perfilCompletado }));
-            ok('Foto actualizada correctamente ✅');
+            ok('Foto actualizada correctamente');
         } catch {
             URL.revokeObjectURL(blobUrl);
             setPreviewFoto(perfil?.fotoPerfil ? urlFoto(perfil.fotoPerfil) : null);
@@ -343,7 +343,7 @@ const PerfilGraduado = () => {
             guardarSesion('usuario', { ...sesion, ...data.graduado });
             setPerfil(p => ({ ...p, ...data.graduado }));
             setModalAbierto(false);
-            ok('Perfil actualizado correctamente ✅');
+            ok('Perfil actualizado correctamente');
         } catch (err) { mostrarError(err.response?.data?.msg || 'Error al guardar'); }
         finally { setGuardandoModal(false); }
     };
@@ -353,11 +353,11 @@ const PerfilGraduado = () => {
     // ─────────────────────────────────────────────────
     const abrirModalTesis = async () => {
         const camposFaltantes = [];
-        if (!perfil?.fotoPerfil) camposFaltantes.push('📷 foto de perfil');
-        if (!perfil?.bio || perfil.bio.trim().length <= 20) camposFaltantes.push('📝 descripción profesional');
-        if (!perfil?.disponibilidad) camposFaltantes.push('💼 disponibilidad');
-        if (!perfil?.provinciaActual || perfil.provinciaActual.trim() === '') camposFaltantes.push('📍 provincia actual');
-        if (!perfil?.cantonActual || perfil.cantonActual.trim() === '') camposFaltantes.push('📍 cantón actual');
+        if (!perfil?.fotoPerfil) camposFaltantes.push('foto de perfil');
+        if (!perfil?.bio || perfil.bio.trim().length <= 20) camposFaltantes.push('descripción profesional');
+        if (!perfil?.disponibilidad) camposFaltantes.push('disponibilidad');
+        if (!perfil?.provinciaActual || perfil.provinciaActual.trim() === '') camposFaltantes.push('provincia actual');
+        if (!perfil?.cantonActual || perfil.cantonActual.trim() === '') camposFaltantes.push('cantón actual');
 
         if (camposFaltantes.length > 0) {
             mostrarError(`Completa tu perfil antes de publicarlo. Falta: ${camposFaltantes.join(', ')}.`);
@@ -457,13 +457,13 @@ const PerfilGraduado = () => {
                     headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
                 });
                 setProyectos(p => p.map(x => x._id === editandoProy ? data.proyecto : x));
-                ok('Proyecto actualizado ✅');
+                ok('Proyecto actualizado');
             } else {
                 const { data } = await axios.post(`${API_URL}/proyectos`, fd, {
                     headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
                 });
                 setProyectos(p => [data.proyecto, ...p]);
-                ok('Proyecto agregado correctamente ✅');
+                ok('Proyecto agregado correctamente');
             }
             resetFp();
             // ── Refrescar habilidades/especialidades/tecnologías ──
@@ -546,13 +546,13 @@ const PerfilGraduado = () => {
                     headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
                 });
                 setCertificados(c => c.map(x => x._id === editandoCert ? data.certificado : x));
-                ok('Certificado actualizado ✅');
+                ok('Certificado actualizado');
             } else {
                 const { data } = await axios.post(`${API_URL}/certificados`, fd, {
                     headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
                 });
                 setCertificados(c => [data.certificado, ...c]);
-                ok('Certificado agregado correctamente ✅');
+                ok('Certificado agregado correctamente');
             }
             resetFc();
             // ── Refrescar habilidades/especialidades/tecnologías ──
@@ -628,11 +628,11 @@ const PerfilGraduado = () => {
                 {/* ── BANNER PERFIL INCOMPLETO ── */}
                 {perfil?.tesisVerificada && progreso < 100 && (() => {
                     const faltante = [];
-                    if (!perfil?.fotoPerfil) faltante.push('📷 foto de perfil');
-                    if (!perfil?.bio || perfil.bio.trim().length <= 20) faltante.push('📝 descripción');
-                    if (!perfil?.disponibilidad) faltante.push('💼 disponibilidad');
-                    if (!perfil?.provinciaActual || perfil.provinciaActual.trim() === '') faltante.push('📍 provincia');
-                    if (!perfil?.cantonActual || perfil.cantonActual.trim() === '') faltante.push('📍 cantón');
+                    if (!perfil?.fotoPerfil) faltante.push('foto de perfil');
+                    if (!perfil?.bio || perfil.bio.trim().length <= 20) faltante.push('descripción');
+                    if (!perfil?.disponibilidad) faltante.push('disponibilidad');
+                    if (!perfil?.provinciaActual || perfil.provinciaActual.trim() === '') faltante.push('provincia');
+                    if (!perfil?.cantonActual || perfil.cantonActual.trim() === '') faltante.push('cantón');
                     return (
                         <div style={s.banner}>
                             <FaExclamationTriangle style={{ color: '#f57f17', fontSize: '1rem', flexShrink: 0, marginTop: 1 }} />
@@ -837,12 +837,12 @@ const PerfilGraduado = () => {
                                             {contarPalabras(fp.descripcion)}/{LIMITE_PALABRAS_DESC} palabras
                                         </span>
                                         <div style={s.guiaBox}>
-                                            <p style={s.guiaTitulo}>💡 Incluye en tu descripción:</p>
+                                            <p style={s.guiaTitulo}>Incluye en tu descripción:</p>
                                             <div style={s.guiaGrid}>
-                                                <span style={s.guiaItem}>👥 ¿Solo o en equipo?</span>
-                                                <span style={s.guiaItem}>🛠️ ¿Qué tecnologías usaste?</span>
-                                                <span style={s.guiaItem}>❓ ¿Qué problema resolviste?</span>
-                                                <span style={s.guiaItem}>✅ ¿Cuál fue el resultado?</span>
+                                                <span style={s.guiaItem}>¿Solo o en equipo?</span>
+                                                <span style={s.guiaItem}>¿Qué tecnologías usaste?</span>
+                                                <span style={s.guiaItem}>¿Qué problema resolviste?</span>
+                                                <span style={s.guiaItem}>¿Cuál fue el resultado?</span>
                                             </div>
                                         </div>
                                     </div>
@@ -1114,7 +1114,7 @@ const PerfilGraduado = () => {
                         <div style={{ ...s.modalHeader, borderBottom: '2px solid #6a1b9a' }}>
                             <div>
                                 <h2 style={s.modalTitulo}>
-                                    {pasoTesis === 1 ? '🎓 Verificar graduación' : '📋 Autorización de publicación'}
+                                    {pasoTesis === 1 ? 'Verificar graduación' : 'Autorización de publicación'}
                                 </h2>
                                 <p style={s.modalSub}>
                                     {pasoTesis === 1
@@ -1176,22 +1176,7 @@ const PerfilGraduado = () => {
 
                             {pasoTesis === 2 && datosTesisDspace && (
                                 <>
-                                    <div style={st.verificadoBanner}>
-                                        <FaCheckCircle style={{ color: 'var(--estado-exito)', fontSize: '1.4rem', flexShrink: 0 }} />
-                                        <div>
-                                            <p style={{ margin: 0, fontWeight: 700, fontSize: '0.85rem', color: '#1b5e20' }}>
-                                                ✅ Tesis verificada en el Repositorio ESPOCH
-                                            </p>
-                                            <p style={{ margin: '3px 0 0', fontSize: '0.75rem', color: '#2e7d32' }}>
-                                                Título encontrado: <em>"{datosTesisDspace.tituloEncontrado}"</em>
-                                            </p>
-                                            {datosTesisDspace.autoresEncontrados?.length > 0 && (
-                                                <p style={{ margin: '2px 0 0', fontSize: '0.72rem', color: '#2e7d32' }}>
-                                                    Autores: {datosTesisDspace.autoresEncontrados.join(', ')}
-                                                </p>
-                                            )}
-                                        </div>
-                                    </div>
+                                    
                                     <div style={st.terminosBox}>
                                         <div style={st.terminosBadge}>Res. 423.CP.2024 · LOPDP Ecuador</div>
                                         <h4 style={st.terminosTitulo}>Autorización de Tratamiento de Datos Personales</h4>
@@ -1208,7 +1193,7 @@ const PerfilGraduado = () => {
                                             <li>Disponibilidad laboral y descripción profesional</li>
                                         </ul>
                                         <div style={st.terminosAlerta}>
-                                            🔒 <strong>Tus datos de contacto (correo, teléfono, cédula) NUNCA serán publicados.</strong> Los interesados contactarán al administrador institucional como intermediario.
+                                            <strong>Tus datos de contacto (correo, teléfono, cédula) NUNCA serán publicados.</strong> Los interesados contactarán al administrador institucional como intermediario.
                                         </div>
                                         <p style={st.terminosP}>
                                             Conforme a los <strong>Arts. 11-12 de la Res. 423.CP.2024</strong>, puedes <strong>activar o desactivar</strong> tu perfil público en cualquier momento desde la sección "Editar perfil".
@@ -1377,7 +1362,7 @@ const PerfilGraduado = () => {
                             {/* ── Sección: ubicación actual ── */}
                             <div style={s.modalSec}>
                                 <h3 style={s.modalSecH}>
-                                    <FaMapMarkerAlt style={{ color: 'var(--color-espoch-rojo)', marginRight: 6, fontSize: '0.85rem' }} />
+                                    
                                     Ubicación actual
                                 </h3>
                                 <p style={{ margin: '0 0 10px', fontSize: '0.73rem', color: 'var(--color-texto-secundario)', lineHeight: 1.5 }}>
@@ -1470,7 +1455,7 @@ const PerfilGraduado = () => {
 
                             {!perfil?.tesisVerificada && (
                                 <div style={{ ...s.modalSec, borderBottom: 'none', marginBottom: 0 }}>
-                                    <h3 style={s.modalSecH}>🌐 Visibilidad del perfil</h3>
+                                    <h3 style={s.modalSecH}>Visibilidad del perfil</h3>
                                     <div style={st.visPrivadoAviso}>
                                         <FaLock style={{ color: '#6a1b9a', flexShrink: 0 }} />
                                         <div>
