@@ -111,6 +111,7 @@ const listarEncuestasGraduado = async (req, res) => {
                 const respuesta = await RespuestaEncuesta.findOne({
                     encuesta: enc._id,
                     graduado: graduadoId,
+                    estado: 'completada',
                 });
                 const totalPreguntas = await Pregunta.countDocuments({ encuesta: enc._id });
                 return {

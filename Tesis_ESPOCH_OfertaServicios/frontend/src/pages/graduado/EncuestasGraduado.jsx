@@ -25,7 +25,7 @@ const TEXTO_S = '#6B6B6B';
 
 const fmtFecha = (d) => d ? new Date(d).toLocaleDateString('es-EC', { day: 'numeric', month: 'long', year: 'numeric' }) : '—';
 const fmtFechaNac = (d) => { if (!d) return '—'; return new Date(d).toLocaleDateString('es-EC', { day: 'numeric', month: 'long', year: 'numeric' }); };
-const calcularEstado = (enc) => { if (enc.estado !== 'activa') return 'cerrada'; if (enc.yaRespondio) return 'completada'; return 'pendiente'; };
+const calcularEstado = (enc) => { if (enc.estado !== 'activa') return 'cerrada'; if (enc.estadoRespuesta === 'completada') return 'completada'; return 'pendiente'; };
 
 const ESTADO_CFG = {
     pendiente: { bg: '#fff8e1', color: '#f57f17', label: 'Pendiente', Ico: FaClock },
