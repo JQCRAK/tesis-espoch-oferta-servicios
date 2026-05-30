@@ -55,7 +55,7 @@ const ModalBienvenida = ({ onCerrar }) => {
                         <FaExclamationTriangle style={{ color: '#d97706', fontSize: '1.1rem', flexShrink: 0, marginTop: 2 }} />
                         <div>
                             <p style={{ margin: '0 0 3px', fontWeight: 700, fontSize: '0.84rem', color: '#92400e' }}>
-                                Importante — Plazo para verificar tu tesis
+                                Importante - Plazo para verificar tu tesis
                             </p>
                             <p style={{ margin: 0, fontSize: '0.78rem', color: '#78350f', lineHeight: 1.6 }}>
                                 Tienes <strong>18 meses</strong> desde hoy para verificar tu tesis en el repositorio ESPOCH.
