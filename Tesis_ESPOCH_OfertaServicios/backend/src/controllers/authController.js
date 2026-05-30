@@ -296,6 +296,10 @@ exports.registrarGraduado = async (req, res) => {
             // (el flujo de código ya lo creó previamente)
         }
  
+        const capitalizarPalabras = (texto) =>
+            texto.trim().toLowerCase().split(/\s+/)
+                .map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' ');
+                
         // ── Flujo A: buscar graduado temporal ya creado por el código ─────
         let graduado;
         if (!esSinCorreo) {
