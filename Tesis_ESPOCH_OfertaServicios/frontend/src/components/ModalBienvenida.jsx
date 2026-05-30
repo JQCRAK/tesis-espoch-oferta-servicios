@@ -38,7 +38,7 @@ const ModalBienvenida = ({ onCerrar }) => {
                 {/* ── Encabezado ── */}
                 <div style={s.header}>
                     <img
-                        src="/img/ESPOCH_LOGO.png"
+                        src="../img/ESPOCH_LOGO.png"
                         alt="ESPOCH"
                         style={s.logo}
                         onError={e => e.target.style.display = 'none'}
@@ -133,7 +133,7 @@ const ModalBienvenida = ({ onCerrar }) => {
                             ? 'Cargando...'
                             : segundos > 0
                                 ? `Entendido (${segundos}s)`
-                                : '✅ Entendido, ir a mi perfil'
+                                : 'Entendido, ir a mi perfil'
                         }
                     </button>
                 </div>
