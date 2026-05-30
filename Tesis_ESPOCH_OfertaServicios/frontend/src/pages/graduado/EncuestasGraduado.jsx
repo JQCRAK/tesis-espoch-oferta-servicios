@@ -27,7 +27,7 @@ const fmtFecha = (d) => d ? new Date(d).toLocaleDateString('es-EC', { day: 'nume
 const fmtFechaNac = (d) => { if (!d) return '—'; return new Date(d).toLocaleDateString('es-EC', { day: 'numeric', month: 'long', year: 'numeric' }); };
 const calcularEstado = (enc) => {
     if (enc.estadoRespuesta === 'completada') return 'completada';
-    if (enc.estado !== 'activa') return 'cerrada'; // este caso ya no llega, pero por seguridad
+    if (enc.estado !== 'activa') return 'cerrada';
     return 'pendiente';
 };
 

@@ -110,7 +110,11 @@ const listarEncuestasGraduado = async (req, res) => {
                     graduado: graduadoId,
                     estado: 'completada',
                 });
-                const totalPreguntas = await Pregunta.countDocuments({ encuesta: enc._id });
+                const totalPreguntas = await Pregunta.countDocuments({
+                    encuesta: enc._id,
+                    tipo: { $ne: 'titulo' }  // excluir títulos de sección
+                });
+
 
                 // ── FILTRO CLAVE ──────────────────────────────────────
                 // Encuesta cerrada que el graduado NO respondió → no mostrar
@@ -440,7 +444,11 @@ const crearPregunta = async (req, res) => {
         const encuesta = await Encuesta.findById(encuestaId);
         if (!encuesta) return res.status(404).json({ msg: 'Encuesta no encontrada' });
 
-        const totalPreguntas = await Pregunta.countDocuments({ encuesta: encuestaId });
+        const totalPreguntas = await Pregunta.countDocuments({
+    encuesta: encuestaId,
+    tipo: { $ne: 'titulo' }
+});
+
 
         const nuevaPregunta = new Pregunta({
             encuesta: encuestaId,
