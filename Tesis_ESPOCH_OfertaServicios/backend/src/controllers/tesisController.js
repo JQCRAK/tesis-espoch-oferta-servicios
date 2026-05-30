@@ -461,3 +461,4 @@ exports.aceptarConsentimiento = async (req, res) => {
         res.status(500).json({ msg: 'Error al procesar el consentimiento.' });
     }
 };
+exports.extraerDatosDspace = extraerDatosDspace;

@@ -69,7 +69,7 @@ exports.validarDuplicadosGraduado = async (req, res) => {
         const cedulaLimpia = cedula.trim();
         const telefonoLimpio = telefono.trim();
 
-        if (!validarCorreoEspoch(instEmail))
+        if (!req.body.flujoSinCorreo && !validarCorreoEspoch(instEmail))
             return res.status(400).json({ msg: 'El correo institucional debe ser @espoch.edu.ec' });
 
         if (!validarCedulaEcuatoriana(cedulaLimpia))
@@ -242,94 +242,123 @@ exports.registrarGraduado = async (req, res) => {
         emailInstitucional, emailPersonal, password,
         cedula, telefono, nombres, apellidos,
         genero, fechaNacimiento, tieneDiscapacidad,
+        flujoSinCorreo,
         ...restoDatos
     } = req.body;
-
+ 
     console.log('\n[AuthController] POST /registro-graduado-final');
-    console.log(`  📧 Email: ${emailInstitucional}`);
-
+    console.log(`  📧 Email inst: ${emailInstitucional} | flujoSinCorreo: ${flujoSinCorreo}`);
+ 
     try {
-        if (!emailInstitucional || !emailPersonal || !password || !cedula || !telefono ||
+        // ── Validar campos obligatorios comunes ───────────────────────────
+        if (!emailPersonal || !password || !cedula || !telefono ||
             !nombres || !apellidos || !genero || !fechaNacimiento || !tieneDiscapacidad) {
             return res.status(400).json({ msg: 'Faltan campos obligatorios.' });
         }
-
-        const instEmail = emailInstitucional.trim().toLowerCase();
-        const persEmail = emailPersonal.trim().toLowerCase();
-        const cedulaLimpia = cedula.trim();
+ 
+        const esSinCorreo = flujoSinCorreo === true || flujoSinCorreo === 'true';
+        const instEmail   = esSinCorreo ? '' : (emailInstitucional || '').trim().toLowerCase();
+        const persEmail   = emailPersonal.trim().toLowerCase();
+        const cedulaLimpia   = cedula.trim();
         const telefonoLimpio = telefono.trim();
-
-        if (!validarCorreoEspoch(instEmail))
-            return res.status(400).json({ msg: 'El correo institucional debe ser @espoch.edu.ec' });
-
+ 
+        // ── Validar correo institucional solo en Flujo A ──────────────────
+        if (!esSinCorreo) {
+            if (!instEmail || !validarCorreoEspoch(instEmail))
+                return res.status(400).json({ msg: 'El correo institucional debe ser @espoch.edu.ec' });
+            if (instEmail === persEmail)
+                return res.status(400).json({ msg: 'El correo personal y el institucional no pueden ser iguales.' });
+        }
+ 
         if (!validarCedulaEcuatoriana(cedulaLimpia))
-            return res.status(400).json({ msg: 'La cédula no es válida. Verifica los 10 dígitos, la provincia (01-24 o 30) y el tipo de documento (0-5).' });
-
+            return res.status(400).json({ msg: 'La cédula no es válida.' });
+ 
         if (!validarPasswordFuerte(password))
             return res.status(400).json({ msg: 'La contraseña no cumple los requisitos de seguridad.' });
-
-        if (instEmail === persEmail)
-            return res.status(400).json({ msg: 'El correo personal y el institucional no pueden ser iguales.' });
-
-        let graduado = await Graduado.findOne({ emailInstitucional: instEmail });
-
-        if (!graduado)
-            return res.status(404).json({ msg: 'Registro no encontrado. Comienza nuevamente.' });
-
-        if (!graduado.codigoVerificacion || !graduado.codigoVerificacion.verificado)
-            return res.status(400).json({ msg: 'Debes verificar tu código primero.' });
-
-        const hashCedula = hashParaBusqueda(cedulaLimpia);
+ 
+        const hashCedula   = hashParaBusqueda(cedulaLimpia);
         const hashTelefono = hashParaBusqueda(telefonoLimpio);
-
-        const capitalizarPalabras = (texto) => {
-            return texto
-                .trim()
-                .toLowerCase()
-                .split(/\s+/)
-                .map(palabra => palabra.charAt(0).toUpperCase() + palabra.slice(1))
-                .join(' ');
-        };
-
-        if (await Graduado.findOne({ cedulaHash: hashCedula, _id: { $ne: graduado._id } }))
-            return res.status(400).json({ msg: 'La cédula ya está registrada.' });
-
-        if (await Graduado.findOne({ telefonoHash: hashTelefono, _id: { $ne: graduado._id } }))
+ 
+        // ── VALIDAR DUPLICADOS antes de guardar ───────────────────────────
+        // Cédula — el más importante para evitar duplicar un graduado
+        if (await Graduado.findOne({ cedulaHash: hashCedula }))
+            return res.status(400).json({ msg: 'Ya existe una cuenta registrada con esa cédula.' });
+ 
+        if (await Graduado.findOne({ telefonoHash: hashTelefono }))
             return res.status(400).json({ msg: 'El teléfono ya está registrado.' });
-
-        if (await Graduado.findOne({ emailPersonal: persEmail, _id: { $ne: graduado._id } }))
+ 
+        if (await Graduado.findOne({ emailPersonal: persEmail }))
             return res.status(400).json({ msg: 'El correo personal ya está registrado.' });
-
-        const salt = await bcrypt.genSalt(10);
+ 
+        if (!esSinCorreo && instEmail &&
+            await Graduado.findOne({ emailInstitucional: instEmail })) {
+            // En flujo A, buscar si ya existe el registro temporal para actualizarlo
+            // (el flujo de código ya lo creó previamente)
+        }
+ 
+        // ── Flujo A: buscar graduado temporal ya creado por el código ─────
+        let graduado;
+        if (!esSinCorreo) {
+            graduado = await Graduado.findOne({ emailInstitucional: instEmail });
+            if (!graduado)
+                return res.status(404).json({ msg: 'Registro no encontrado. Comienza nuevamente.' });
+            if (!graduado.codigoVerificacion?.verificado)
+                return res.status(400).json({ msg: 'Debes verificar tu código primero.' });
+        } else {
+            // ── Flujo B: crear graduado nuevo directamente ────────────────
+            graduado = new Graduado({
+                emailInstitucional: '',
+                emailPersonal:      persEmail,
+                nombres:            'Temporal',
+                apellidos:          'Temporal',
+                cedula:             'temp',
+                cedulaHash:         'temp_' + Date.now(),
+                telefono:           'temp',
+                telefonoHash:       'temp_' + Date.now(),
+                password:           'temp',
+                genero:             'Prefiero no decirlo',
+                fechaNacimiento:    new Date('2000-01-01'),
+                tieneDiscapacidad:  'No',
+            });
+        }
+ 
+        const capitalizarPalabras = (texto) =>
+            texto.trim().toLowerCase().split(/\s+/)
+                .map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' ');
+ 
+        const salt           = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
-        const cedulaEncriptada = encriptar(cedulaLimpia);
+        const cedulaEncriptada   = encriptar(cedulaLimpia);
         const telefonoEncriptado = encriptar(telefonoLimpio);
-
-        graduado.nombres = capitalizarPalabras(nombres);
-        graduado.apellidos = capitalizarPalabras(apellidos);
-        graduado.cedula = cedulaEncriptada;
-        graduado.cedulaHash = hashCedula;
-        graduado.telefono = telefonoEncriptado;
-        graduado.telefonoHash = hashTelefono;
-        graduado.emailPersonal = persEmail;
-        graduado.password = hashedPassword;
-        graduado.genero = genero;
-        graduado.fechaNacimiento = new Date(fechaNacimiento);
+ 
+        graduado.nombres          = capitalizarPalabras(nombres);
+        graduado.apellidos        = capitalizarPalabras(apellidos);
+        graduado.cedula           = cedulaEncriptada;
+        graduado.cedulaHash       = hashCedula;
+        graduado.telefono         = telefonoEncriptado;
+        graduado.telefonoHash     = hashTelefono;
+        graduado.emailPersonal    = persEmail;
+        graduado.emailInstitucional = esSinCorreo ? '' : instEmail;
+        graduado.password         = hashedPassword;
+        graduado.genero           = genero;
+        graduado.fechaNacimiento  = new Date(fechaNacimiento);
         graduado.tieneDiscapacidad = tieneDiscapacidad;
-        graduado.verificado = true;
-        graduado.cuentaBloqueada = false;
-        graduado.perfilPublico = false;
+        graduado.verificado       = true;
+        graduado.cuentaBloqueada  = false;
+        graduado.perfilPublico    = false;
         graduado.terminosAceptados = false;
         graduado.intentosFallidos = { contador: 0, bloqueadoHasta: null, ultimoIntento: null };
-        Object.assign(graduado, restoDatos);
-
+ 
+        // Guardar título de tesis verificado si vino del Flujo B
+        if (restoDatos.tituloTesisVerificado) {
+            graduado.tituloTesisVerificado = restoDatos.tituloTesisVerificado;
+        }
+ 
         await graduado.save();
-
-        
         console.log('[AuthController] ✅ Graduado registrado completamente\n');
-
+ 
         const token = generarToken(graduado._id, 'graduado', graduado.nombres);
-
+ 
         res.status(201).json({
             _id: graduado._id,
             nombre: graduado.nombres,
@@ -338,16 +367,16 @@ exports.registrarGraduado = async (req, res) => {
             tesisVerificada: false,
             token,
         });
-
+ 
     } catch (error) {
         console.error('[AuthController] Error en registro-final:', error);
         if (error.code === 11000) {
             const campo = Object.keys(error.keyPattern)[0];
             const msgs = {
                 emailInstitucional: 'El correo institucional ya está registrado.',
-                emailPersonal: 'El correo personal ya está registrado.',
-                cedulaHash: 'La cédula ya está registrada.',
-                telefonoHash: 'El teléfono ya está registrado.'
+                emailPersonal:      'El correo personal ya está registrado.',
+                cedulaHash:         'Ya existe una cuenta con esa cédula.',
+                telefonoHash:       'El teléfono ya está registrado.',
             };
             return res.status(400).json({ msg: msgs[campo] || 'Dato duplicado detectado.' });
         }
