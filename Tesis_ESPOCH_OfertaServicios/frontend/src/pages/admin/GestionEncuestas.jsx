@@ -189,117 +189,194 @@ const ModalVistaPrevia = ({ visible, encuesta, onCerrar }) => {
         });
     };
 
-    const renderPregunta = (preg, idx) => {
-        const base = { marginBottom: 14, padding: '12px 14px', background: 'white', border: '1px solid #e9ecef', borderRadius: 8 };
+    const renderPregunta = (preg, num) => {
+        const base = {
+            marginBottom: 14, padding: '16px 18px',
+            background: 'white', border: '1px solid #e9ecef',
+            borderRadius: 8,
+        };
 
+        // ── Título de sección ──
         if (preg.tipo === 'titulo') {
             return (
-                <div key={preg._id || idx} style={{ marginBottom: 10, padding: '14px 16px', background: '#f0f0f0', borderRadius: 8, borderLeft: '4px solid var(--color-espoch-rojo)' }}>
-                    <p style={{ margin: 0, fontSize: '0.95rem', fontWeight: '800', color: '#1a1a2e', textDecoration: 'underline', textUnderlineOffset: 4, letterSpacing: '0.02em' }}>{preg.texto}</p>
+                <div key={preg._id} style={{
+                    margin: '22px 0 10px', padding: '12px 16px',
+                    borderLeft: '4px solid var(--color-espoch-rojo)',
+                    background: '#FAFAFA', borderRadius: '0 6px 6px 0',
+                }}>
+                    <p style={{ margin: 0, fontSize: '0.88rem', fontWeight: '700', color: '#1a1a2e', letterSpacing: '0.2px' }}>
+                        {preg.texto}
+                    </p>
                 </div>
             );
         }
 
+        // ── Matriz ──
         const esMatriz = preg.esMatriz && preg.items && preg.items.length > 0;
         if (esMatriz) {
             const columnas = preg.tipo === 'escala' ? [1, 2, 3, 4, 5] : (preg.opciones || []);
             return (
-                <div key={preg._id || idx} style={base}>
+                <div key={preg._id} style={base}>
                     <p style={{ margin: '0 0 4px', fontSize: '0.85rem', fontWeight: '700', color: '#2c3e50' }}>
-                        <span style={{ color: 'var(--color-espoch-rojo)', marginRight: 6 }}>{idx + 1}.</span>
+                        <span style={{ color: 'var(--color-espoch-rojo)', marginRight: 6 }}>{num}.</span>
                         {preg.texto}
                         {preg.obligatoria && <span style={{ color: '#c62828', marginLeft: 4 }}>*</span>}
                     </p>
-                    {preg.descripcionMatriz && <p style={{ margin: '0 0 10px', fontSize: '0.75rem', color: '#666', lineHeight: 1.4 }}>{preg.descripcionMatriz}</p>}
+                    {preg.descripcionMatriz && (
+                        <p style={{ margin: '0 0 10px', fontSize: '0.75rem', color: '#666', lineHeight: 1.4 }}>
+                            {preg.descripcionMatriz}
+                        </p>
+                    )}
                     {preg.tipo === 'escala' && (
                         <div style={{ display: 'flex', gap: 12, marginBottom: 8 }}>
                             {preg.etiquetaMin && <span style={{ fontSize: '0.7rem', color: '#adb5bd' }}>1 = {preg.etiquetaMin}</span>}
                             {preg.etiquetaMax && <span style={{ fontSize: '0.7rem', color: '#adb5bd' }}>5 = {preg.etiquetaMax}</span>}
                         </div>
                     )}
-                    <TablaMatriz items={preg.items} columnas={columnas} respuestas={respuestas} onRespuesta={(itemId, val) => manejarRespuesta(itemId, val, preg.tipo)} pregId={preg._id || idx} esOpcionMultiple={preg.tipo === 'opcion_multiple'} />
+                    <TablaMatriz
+                        items={preg.items}
+                        columnas={columnas}
+                        respuestas={respuestas}
+                        onRespuesta={(itemId, val) => manejarRespuesta(itemId, val, preg.tipo)}
+                        pregId={preg._id}
+                        esOpcionMultiple={preg.tipo === 'opcion_multiple'}
+                    />
                 </div>
             );
         }
 
+        // ── Pregunta estándar ──
         return (
-            <div key={preg._id || idx} style={base}>
-                <p style={{ margin: '0 0 8px', fontSize: '0.85rem', fontWeight: '600', color: '#2c3e50' }}>
-                    <span style={{ color: 'var(--color-espoch-rojo)', marginRight: 6 }}>{idx + 1}.</span>
+            <div key={preg._id} style={base}>
+                <p style={{ margin: '0 0 10px', fontSize: '0.85rem', fontWeight: '600', color: '#2c3e50', lineHeight: 1.45 }}>
+                    <span style={{ color: 'var(--color-espoch-rojo)', fontWeight: '700', marginRight: 6 }}>{num}.</span>
                     {preg.texto}
                     {preg.obligatoria && <span style={{ color: '#c62828', marginLeft: 4 }}>*</span>}
                 </p>
-                {preg.tipo === 'texto_libre' && <textarea value={respuestas[preg._id] || ''} onChange={(e) => manejarRespuesta(preg._id, e.target.value, preg.tipo)} placeholder="Escribe tu respuesta..." style={{ width: '100%', padding: '8px', border: '1px solid #dee2e6', borderRadius: 5, fontSize: '0.8rem', minHeight: 60, outline: 'none', resize: 'vertical' }} />}
+
+                {preg.tipo === 'texto_libre' && (
+                    <textarea
+                        value={respuestas[preg._id] || ''}
+                        onChange={(e) => manejarRespuesta(preg._id, e.target.value, preg.tipo)}
+                        placeholder="Escribe tu respuesta aquí..."
+                        style={{ width: '100%', padding: '9px 12px', border: '1px solid #dee2e6', borderRadius: 5, fontSize: '0.82rem', minHeight: 68, outline: 'none', resize: 'vertical', boxSizing: 'border-box' }}
+                    />
+                )}
+
                 {preg.tipo === 'numero' && (
                     <input
                         type="number"
                         value={respuestas[preg._id] || ''}
+                        min="0"
                         onChange={(e) => {
                             const val = e.target.value;
-                            if (val === '' || (/^\d+$/.test(val) && parseInt(val) >= 0)) {
+                            if (val === '' || (/^\d+$/.test(val) && parseInt(val) >= 0))
                                 manejarRespuesta(preg._id, val, preg.tipo);
-                            }
                         }}
                         placeholder="Ingresa un número..."
-                        min="0"
-                        style={{
-                            width: '100%', padding: '8px', border: '1px solid #dee2e6',
-                            borderRadius: 5, fontSize: '0.8rem', outline: 'none'
-                        }}
+                        style={{ width: 180, padding: '8px 10px', border: '1px solid #dee2e6', borderRadius: 5, fontSize: '0.82rem', outline: 'none' }}
                     />
                 )}
+
                 {preg.tipo === 'opcion_multiple' && (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                         {(preg.opciones || []).map((op, i) => (
-                            <label key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', padding: '6px 8px', borderRadius: 5, background: respuestas[preg._id] === op ? '#ffebee' : '#f8f9fa', border: `1px solid ${respuestas[preg._id] === op ? 'var(--color-espoch-rojo)' : '#e9ecef'}`, fontSize: '0.8rem' }}>
-                                <input type="radio" name={preg._id} value={op} checked={respuestas[preg._id] === op} onChange={() => manejarRespuesta(preg._id, op, preg.tipo)} style={{ accentColor: 'var(--color-espoch-rojo)' }} />
+                            <label key={i} style={{
+                                display: 'flex', alignItems: 'center', gap: 9, cursor: 'pointer',
+                                padding: '9px 12px', borderRadius: 5, fontSize: '0.83rem',
+                                background: respuestas[preg._id] === op ? '#ffebee' : '#fafafa',
+                                border: `1.5px solid ${respuestas[preg._id] === op ? 'var(--color-espoch-rojo)' : '#e9ecef'}`,
+                                color: respuestas[preg._id] === op ? 'var(--color-espoch-rojo)' : '#2c3e50',
+                                fontWeight: respuestas[preg._id] === op ? '600' : '400',
+                                transition: 'all 0.12s',
+                            }}>
+                                <input type="radio" name={preg._id} value={op}
+                                    checked={respuestas[preg._id] === op}
+                                    onChange={() => manejarRespuesta(preg._id, op, preg.tipo)}
+                                    style={{ accentColor: 'var(--color-espoch-rojo)', flexShrink: 0 }} />
                                 {op}
                             </label>
                         ))}
                     </div>
                 )}
+
                 {preg.tipo === 'checkboxes' && (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                         {(preg.opciones || []).map((op, i) => {
                             const sel = (respuestas[preg._id] || []).includes(op);
                             return (
-                                <label key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', padding: '6px 8px', borderRadius: 5, background: sel ? '#ffebee' : '#f8f9fa', border: `1px solid ${sel ? 'var(--color-espoch-rojo)' : '#e9ecef'}`, fontSize: '0.8rem' }}>
-                                    <input type="checkbox" checked={sel} onChange={() => manejarCheckbox(preg._id, op)} style={{ accentColor: 'var(--color-espoch-rojo)' }} />
+                                <label key={i} style={{
+                                    display: 'flex', alignItems: 'center', gap: 9, cursor: 'pointer',
+                                    padding: '9px 12px', borderRadius: 5, fontSize: '0.83rem',
+                                    background: sel ? '#ffebee' : '#fafafa',
+                                    border: `1.5px solid ${sel ? 'var(--color-espoch-rojo)' : '#e9ecef'}`,
+                                    color: sel ? 'var(--color-espoch-rojo)' : '#2c3e50',
+                                    fontWeight: sel ? '600' : '400',
+                                    transition: 'all 0.12s',
+                                }}>
+                                    <input type="checkbox" checked={sel}
+                                        onChange={() => manejarCheckbox(preg._id, op)}
+                                        style={{ accentColor: 'var(--color-espoch-rojo)', flexShrink: 0 }} />
                                     {op}
                                 </label>
                             );
                         })}
                     </div>
                 )}
+
                 {preg.tipo === 'escala' && (
                     <div>
-                        <div style={{ display: 'flex', gap: 6, justifyContent: 'center', margin: '6px 0' }}>
+                        <div style={{ display: 'flex', gap: 8, justifyContent: 'center', margin: '8px 0 6px' }}>
                             {[1, 2, 3, 4, 5].map((n) => (
-                                <button key={n} onClick={() => manejarRespuesta(preg._id, n, preg.tipo)} style={{ width: 36, height: 36, borderRadius: '50%', border: `2px solid ${respuestas[preg._id] === n ? 'var(--color-espoch-rojo)' : '#dee2e6'}`, background: respuestas[preg._id] === n ? 'var(--color-espoch-rojo)' : 'white', color: respuestas[preg._id] === n ? 'white' : '#666', cursor: 'pointer', fontWeight: '700', fontSize: '0.85rem' }}>{n}</button>
+                                <button key={n}
+                                    onClick={() => manejarRespuesta(preg._id, n, preg.tipo)}
+                                    style={{
+                                        width: 40, height: 40, borderRadius: '50%',
+                                        border: `2px solid ${respuestas[preg._id] === n ? 'var(--color-espoch-rojo)' : '#dee2e6'}`,
+                                        background: respuestas[preg._id] === n ? 'var(--color-espoch-rojo)' : 'white',
+                                        color: respuestas[preg._id] === n ? 'white' : '#666',
+                                        cursor: 'pointer', fontWeight: '700', fontSize: '0.88rem',
+                                        transition: 'all 0.15s',
+                                    }}>{n}</button>
                             ))}
                         </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.65rem', color: '#adb5bd' }}>
-                            <span>{preg.etiquetaMin || 'Muy malo'}</span><span>{preg.etiquetaMax || 'Excelente'}</span>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.68rem', color: '#adb5bd' }}>
+                            <span>{preg.etiquetaMin || 'Muy malo'}</span>
+                            <span>{preg.etiquetaMax || 'Excelente'}</span>
                         </div>
                     </div>
                 )}
+
                 {preg.tipo === 'si_no' && (
                     <div>
                         <div style={{ display: 'flex', gap: 8 }}>
                             {['Sí', 'No'].map((op) => (
-                                <button key={op} onClick={() => manejarRespuesta(preg._id, op, preg.tipo)} style={{ flex: 1, padding: '8px', borderRadius: 6, border: `2px solid ${respuestas[preg._id] === op ? (op === 'Sí' ? '#2e7d32' : '#c62828') : '#dee2e6'}`, background: respuestas[preg._id] === op ? (op === 'Sí' ? '#e8f5e9' : '#ffebee') : 'white', color: respuestas[preg._id] === op ? (op === 'Sí' ? '#2e7d32' : '#c62828') : '#666', cursor: 'pointer', fontWeight: '700', fontSize: '0.85rem' }}>{op}</button>
+                                <button key={op}
+                                    onClick={() => manejarRespuesta(preg._id, op, preg.tipo)}
+                                    style={{
+                                        flex: 1, padding: '10px', borderRadius: 5,
+                                        border: `2px solid ${respuestas[preg._id] === op ? (op === 'Sí' ? '#2e7d32' : '#c62828') : '#dee2e6'}`,
+                                        background: respuestas[preg._id] === op ? (op === 'Sí' ? '#e8f5e9' : '#ffebee') : 'white',
+                                        color: respuestas[preg._id] === op ? (op === 'Sí' ? '#2e7d32' : '#c62828') : '#666',
+                                        cursor: 'pointer', fontWeight: '700', fontSize: '0.87rem',
+                                        transition: 'all 0.15s',
+                                    }}>{op}</button>
                             ))}
                         </div>
                         {condicionalesVisibles[preg._id] === 'Sí' && preg.tieneCondicional && preg.preguntasCondicionalSi?.length > 0 && (
-                            <div style={{ marginTop: 10, paddingLeft: 10, borderLeft: '3px solid #2e7d32' }}>
-                                <p style={{ margin: '0 0 6px', fontSize: '0.7rem', fontWeight: '700', color: '#2e7d32' }}>Preguntas adicionales:</p>
-                                {preg.preguntasCondicionalSi.map((subTexto, j) => renderSubPregunta(preg._id, 'si', j, subTexto, preg.tiposCondicionalSi?.[j], preg.opcionesCondicionalSi?.[j]))}
+                            <div style={{ marginTop: 12, paddingLeft: 12, borderLeft: '3px solid #2e7d32' }}>
+                                <p style={{ margin: '0 0 8px', fontSize: '0.7rem', fontWeight: '700', color: '#2e7d32' }}>PREGUNTAS ADICIONALES</p>
+                                {preg.preguntasCondicionalSi.map((t, j) =>
+                                    renderSubPregunta(preg._id, 'si', j, t, preg.tiposCondicionalSi?.[j], preg.opcionesCondicionalSi?.[j])
+                                )}
                             </div>
                         )}
                         {condicionalesVisibles[preg._id] === 'No' && preg.tieneCondicional && preg.preguntasCondicionalNo?.length > 0 && (
-                            <div style={{ marginTop: 10, paddingLeft: 10, borderLeft: '3px solid #c62828' }}>
-                                <p style={{ margin: '0 0 6px', fontSize: '0.7rem', fontWeight: '700', color: '#c62828' }}>Preguntas adicionales:</p>
-                                {preg.preguntasCondicionalNo.map((subTexto, j) => renderSubPregunta(preg._id, 'no', j, subTexto, preg.tiposCondicionalNo?.[j], preg.opcionesCondicionalNo?.[j]))}
+                            <div style={{ marginTop: 12, paddingLeft: 12, borderLeft: '3px solid #c62828' }}>
+                                <p style={{ margin: '0 0 8px', fontSize: '0.7rem', fontWeight: '700', color: '#c62828' }}>PREGUNTAS ADICIONALES</p>
+                                {preg.preguntasCondicionalNo.map((t, j) =>
+                                    renderSubPregunta(preg._id, 'no', j, t, preg.tiposCondicionalNo?.[j], preg.opcionesCondicionalNo?.[j])
+                                )}
                             </div>
                         )}
                     </div>
@@ -378,7 +455,13 @@ const ModalVistaPrevia = ({ visible, encuesta, onCerrar }) => {
                                     ? <div style={{ background: 'white', borderRadius: 8, padding: 20, textAlign: 'center', border: '1px solid #e9ecef' }}><p style={{ color: '#adb5bd', fontSize: '0.85rem' }}>⚠️ Esta encuesta aún no tiene preguntas</p></div>
                                     : (
                                         <>
-                                            {preguntas.map((preg, idx) => renderPregunta(preg, idx))}
+                                            {(() => {
+                                                let counter = 0;
+                                                return preguntas.map((preg) => {
+                                                    const num = preg.tipo !== 'titulo' ? ++counter : null;
+                                                    return renderPregunta(preg, num);
+                                                });
+                                            })()}
                                             <button style={{ width: '100%', marginTop: 6, padding: '12px', background: 'var(--color-espoch-rojo)', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: '700', fontSize: '0.9rem' }} onClick={() => setPaso('enviado')}>Enviar respuestas</button>
                                         </>
                                     )}
@@ -645,7 +728,7 @@ const FormularioPregunta = ({ visible, encuestaId, preguntaEditar, onGuardar, on
                     )}
                     {form.esMatriz && (
                         <div style={{ marginBottom: 12, padding: '14px', background: '#f8f9ff', border: '1px solid #c5cae9', borderRadius: 8 }}>
-                            
+
                             {form.tipo === 'escala' && (
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 10 }}>
                                     <div>
