@@ -22,7 +22,7 @@ const TesisSchema = new mongoose.Schema({
         type: String,
         required: true,
         trim: true,
-        maxlength: 2000  // ~250 palabras con margen
+        maxlength: 600  // ~250 palabras con margen
     },
     urlDspace: {
         type: String,
