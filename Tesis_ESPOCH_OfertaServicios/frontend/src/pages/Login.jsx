@@ -72,22 +72,28 @@ const BarraProgreso = ({ paso, total, labelPaso }) => (
     </div>
 );
 
-// ─── Uploader de imagen para cédula ──────────────────────────────────────────
-const ImageUploader = ({ label, preview, onChange, onQuitar, accept = 'image/jpeg,image/png,image/webp', inputRef }) => (
-    <div>
-        <label style={s.campoLabel}>{label} <span style={{ color: 'var(--color-espoch-rojo)' }}>*</span></label>
+// ─── Uploader compacto de cédula ─────────────────────────────────────────────
+const ImageUploader = ({ label, required: req, preview, onChange, onQuitar, accept = 'image/jpeg,image/png,image/webp', inputRef, opcional }) => (
+    <div style={{ marginBottom: 10 }}>
+        <label style={{ ...s.campoLabel, marginBottom: 4 }}>
+            {label}
+            {req && <span style={{ color: 'var(--color-espoch-rojo)', marginLeft: 3 }}>*</span>}
+            {opcional && <span style={{ fontSize: '0.67rem', color: '#9ca3af', marginLeft: 6, fontWeight: 400 }}>(opcional)</span>}
+        </label>
         {preview ? (
             <div style={s.imgPreviewWrap}>
-                <img src={preview} alt={label} style={s.imgPreview} />
+                <img src={preview} alt={label} style={s.imgPreviewCompacta} />
                 <button type="button" onClick={onQuitar} style={s.btnQuitarImg}>
-                    <FaTimes style={{ fontSize: '0.65rem', marginRight: 3 }} />Quitar
+                    <FaTimes style={{ fontSize: '0.6rem', marginRight: 2 }} />Quitar
                 </button>
             </div>
         ) : (
-            <div style={s.uploadZone} onClick={() => inputRef.current?.click()}>
-                <FaImage style={{ fontSize: '1.6rem', color: '#adb5bd', marginBottom: 6 }} />
-                <p style={s.uploadTxt}>Haz clic para subir imagen</p>
-                <p style={s.uploadHint}>JPG, PNG o WEBP · Máx 5MB</p>
+            <div style={s.uploadZoneCompacta} onClick={() => inputRef.current?.click()}>
+                <FaImage style={{ fontSize: '1.1rem', color: '#adb5bd', marginRight: 8, flexShrink: 0 }} />
+                <div>
+                    <p style={{ margin: 0, fontSize: '0.75rem', color: '#6b7280', fontWeight: 500 }}>Haz clic para subir imagen</p>
+                    <p style={{ margin: 0, fontSize: '0.65rem', color: '#9ca3af' }}>JPG, PNG o WEBP · Máx 5MB</p>
+                </div>
             </div>
         )}
         <input ref={inputRef} type="file" accept={accept} onChange={onChange} style={{ display: 'none' }} />
@@ -387,20 +393,25 @@ const Login = () => {
      */
     const handleVerificarB = async () => {
         setError('');
+
+        // ── Validaciones frontend antes de llamar al backend ──────────────
         if (!cedFrontalFile) {
-            setError('Sube la foto del frente de tu cédula.'); return;
+            setError('❌ Debes subir la foto del frente de tu cédula.'); return;
         }
         if (!urlDspaceB || !urlDspaceB.includes('dspace.espoch.edu.ec')) {
-            setError('Ingresa la URL correcta del repositorio ESPOCH.'); return;
+            setError('❌ La URL debe ser del repositorio dspace.espoch.edu.ec'); return;
         }
         if (!formData.emailPersonal || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.emailPersonal)) {
-            setError('Ingresa un correo personal válido.'); return;
+            setError('❌ Ingresa un correo personal válido (ej: tucorreo@gmail.com)'); return;
         }
-        if (!formData.password) {
-            setError('Ingresa tu contraseña.'); return;
+        if (!formData.password || formData.password.length < 8) {
+            setError('❌ La contraseña debe tener al menos 8 caracteres.'); return;
         }
 
         setVerificandoB(true);
+        setVerificadoB(false);
+        setDatosVerificadosB(null);
+
         try {
             const fd = new FormData();
             fd.append('cedula_frontal', cedFrontalFile);
@@ -412,13 +423,26 @@ const Login = () => {
             fd.append('fechaNacimiento', formData.fechaNacimiento || '');
 
             const { data } = await axios.post(`${API_URL}/verificar-cedula-dspace`, fd, {
-                headers: { 'Content-Type': 'multipart/form-data' }
+                headers: { 'Content-Type': 'multipart/form-data' },
+                timeout: 120000, // 2 minutos — Tesseract puede tardar
             });
 
             setVerificadoB(true);
             setDatosVerificadosB(data);
+            setError(''); // limpiar cualquier error previo
         } catch (err) {
-            setError(err.response?.data?.msg || 'Error al verificar. Intenta nuevamente.');
+            // Mostrar el mensaje del backend si existe, sino mensaje genérico por tipo de error
+            const msg = err.response?.data?.msg;
+            if (msg) {
+                setError(msg);
+            } else if (err.code === 'ECONNABORTED') {
+                setError('La verificación tardó demasiado. Sube una foto más nítida e intenta nuevamente.');
+            } else if (!err.response) {
+                setError('No se pudo conectar con el servidor. Verifica tu conexión a internet.');
+            } else {
+                setError('Error al verificar. Intenta nuevamente en unos segundos.');
+            }
+            setVerificadoB(false);
         } finally {
             setVerificandoB(false);
         }
@@ -1015,40 +1039,29 @@ const Login = () => {
                                 </div>
                             </div>
 
-                            {/* Foto cédula frontal */}
-                            <div style={{ marginBottom: 12 }}>
+                            {/* Fotos cédula — dos columnas compactas */}
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 10 }}>
                                 <ImageUploader
-                                    label="Foto de la cédula — parte frontal"
+                                    label="Cédula — frente"
+                                    required
                                     preview={cedFrontalPreview}
                                     onChange={handleImagenFrontal}
                                     onQuitar={quitarFrontal}
                                     inputRef={frontalRef}
                                 />
+                                <ImageUploader
+                                    label="Cédula — reverso"
+                                    opcional
+                                    preview={cedPosteriorPreview}
+                                    onChange={handleImagenPosterior}
+                                    onQuitar={quitarPosterior}
+                                    inputRef={posteriorRef}
+                                />
                             </div>
-
-                            {/* Foto cédula posterior (opcional) */}
-                            <div style={{ marginBottom: 12 }}>
-                                <label style={{ ...s.campoLabel, display: 'flex', alignItems: 'center', gap: 6 }}>
-                                    Foto de la cédula — parte posterior
-                                    <span style={{ fontSize: '0.68rem', color: 'var(--color-texto-secundario)', fontWeight: 400 }}>(opcional, mejora la verificación)</span>
-                                </label>
-                                {cedPosteriorPreview ? (
-                                    <div style={s.imgPreviewWrap}>
-                                        <img src={cedPosteriorPreview} alt="posterior" style={s.imgPreview} />
-                                        <button type="button" onClick={quitarPosterior} style={s.btnQuitarImg}>
-                                            <FaTimes style={{ fontSize: '0.65rem', marginRight: 3 }} />Quitar
-                                        </button>
-                                    </div>
-                                ) : (
-                                    <div style={s.uploadZone} onClick={() => posteriorRef.current?.click()}>
-                                        <FaImage style={{ fontSize: '1.4rem', color: '#adb5bd', marginBottom: 4 }} />
-                                        <p style={s.uploadTxt}>Subir parte posterior</p>
-                                        <p style={s.uploadHint}>JPG, PNG o WEBP · Máx 5MB</p>
-                                    </div>
-                                )}
-                                <input ref={posteriorRef} type="file" accept="image/jpeg,image/png,image/webp"
-                                    onChange={handleImagenPosterior} style={{ display: 'none' }} />
-                            </div>
+                            <p style={{ ...s.hint, marginBottom: 10, marginTop: -4 }}>
+                                <FaInfoCircle style={{ marginRight: 4, flexShrink: 0 }} />
+                                Sube fotos nítidas con buena iluminación. El reverso es opcional pero mejora la precisión.
+                            </p>
 
                             {/* URL DSpace */}
                             <Campo label="URL de tu tesis en el repositorio ESPOCH" required>
@@ -1203,13 +1216,15 @@ const s = {
     flujoBtnActivo: { backgroundColor: '#dcfce7', borderColor: '#16a34a', color: '#15803d' },
     flujoBtnActivoB: { backgroundColor: '#dbeafe', borderColor: '#2563eb', color: '#1d4ed8' },
     flujoAviso: { display: 'flex', alignItems: 'flex-start', gap: 8, backgroundColor: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 7, padding: '8px 10px', marginTop: 10, fontSize: '0.73rem', color: '#1e40af', lineHeight: 1.5 },
-    // Imágenes cédula
+    // Imágenes cédula — zona compacta
     uploadZone: { border: '2px dashed #d1d5db', borderRadius: 8, padding: '16px 12px', textAlign: 'center', cursor: 'pointer', backgroundColor: '#fafafa' },
+    uploadZoneCompacta: { border: '1.5px dashed #d1d5db', borderRadius: 7, padding: '9px 12px', cursor: 'pointer', backgroundColor: '#fafafa', display: 'flex', alignItems: 'center', gap: 8 },
     uploadTxt: { margin: 0, fontSize: '0.78rem', color: '#6b7280', fontWeight: 500 },
     uploadHint: { margin: '2px 0 0', fontSize: '0.68rem', color: '#9ca3af' },
-    imgPreviewWrap: { position: 'relative', borderRadius: 8, overflow: 'hidden', border: '1px solid #e5e7eb' },
+    imgPreviewWrap: { position: 'relative', borderRadius: 7, overflow: 'hidden', border: '1px solid #e5e7eb' },
     imgPreview: { width: '100%', maxHeight: 130, objectFit: 'cover', display: 'block' },
-    btnQuitarImg: { position: 'absolute', top: 6, right: 6, display: 'inline-flex', alignItems: 'center', padding: '3px 8px', backgroundColor: 'rgba(0,0,0,0.6)', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer', fontSize: '0.7rem', fontWeight: 600 },
+    imgPreviewCompacta: { width: '100%', maxHeight: 80, objectFit: 'cover', display: 'block' },
+    btnQuitarImg: { position: 'absolute', top: 5, right: 5, display: 'inline-flex', alignItems: 'center', padding: '2px 7px', backgroundColor: 'rgba(0,0,0,0.6)', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer', fontSize: '0.67rem', fontWeight: 600 },
     // Banner verificado
     verificadoBanner: { display: 'flex', alignItems: 'flex-start', gap: 10, backgroundColor: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 8, padding: '10px 14px', marginTop: 8 },
 };
