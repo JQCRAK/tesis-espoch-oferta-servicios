@@ -166,7 +166,6 @@ const s = {
     },
     logo: {
         height: 48, objectFit: 'contain',
-        filter: 'brightness(0) invert(1)', // fuerza blanco sobre fondo rojo
         marginBottom: 4,
     },
     titulo: { margin: 0, fontSize: '1.12rem', fontWeight: 800, color: 'white' },

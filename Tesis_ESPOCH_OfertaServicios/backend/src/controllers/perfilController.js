@@ -356,7 +356,7 @@ const recalcularAfinidades = async (graduadoId) => {
     }
 };
 
-exports.marcarBienvenida = async (req, res) => {
+const marcarBienvenida = async (req, res) => {
     try {
         await Graduado.findByIdAndUpdate(
             req.usuario.id,
@@ -375,7 +375,8 @@ module.exports = {
     subirFotoPerfil,
     obtenerDatosEncuesta,
     actualizarDatosEncuesta,
-    verificarCompletitudPerfil,  // ← NUEVO
+    verificarCompletitudPerfil,  
     recalcularAfinidades,
-    PROVINCIAS_EC,               // ← exportado para usar en el frontend si se necesita
+    marcarBienvenida,  
+    PROVINCIAS_EC,               
 };
