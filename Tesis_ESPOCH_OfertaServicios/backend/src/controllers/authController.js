@@ -299,7 +299,7 @@ exports.registrarGraduado = async (req, res) => {
         const capitalizarPalabras = (texto) =>
             texto.trim().toLowerCase().split(/\s+/)
                 .map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' ');
-                
+
         // ── Flujo A: buscar graduado temporal ya creado por el código ─────
         let graduado;
         if (!esSinCorreo) {
@@ -340,10 +340,7 @@ exports.registrarGraduado = async (req, res) => {
                 token,
             });
         }
- 
-        const capitalizarPalabras = (texto) =>
-            texto.trim().toLowerCase().split(/\s+/)
-                .map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' ');
+
  
         const salt           = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
