@@ -356,6 +356,19 @@ const recalcularAfinidades = async (graduadoId) => {
     }
 };
 
+exports.marcarBienvenida = async (req, res) => {
+    try {
+        await Graduado.findByIdAndUpdate(
+            req.usuario.id,
+            { bienvenidaMostrada: true },
+            { runValidators: false }
+        );
+        res.json({ ok: true });
+    } catch (err) {
+        res.status(500).json({ msg: 'Error' });
+    }
+};
+
 module.exports = {
     obtenerPerfil,
     actualizarPerfil,

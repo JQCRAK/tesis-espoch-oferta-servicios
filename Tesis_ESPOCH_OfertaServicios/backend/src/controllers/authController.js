@@ -425,6 +425,7 @@ exports.loginUsuario = async (req, res) => {
                 email: admin.email,
                 rol: 'admin',
                 token,
+                bienvenidaMostrada: graduado.bienvenidaMostrada || false,
             });
         }
 

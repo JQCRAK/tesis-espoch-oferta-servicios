@@ -67,6 +67,7 @@ const GraduadoSchema = new mongoose.Schema({
     },
 
     cuentaBloqueada: { type: Boolean, default: false },
+    bienvenidaMostrada: { type: Boolean, default: false },
 
     // ── PERFIL PROFESIONAL ───────────────────────────────────────
     bio:             { type: String, default: '', maxlength: 500 },

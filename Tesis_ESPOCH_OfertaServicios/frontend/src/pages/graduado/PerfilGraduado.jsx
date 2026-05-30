@@ -15,6 +15,7 @@ import {
 import '../../index.css';
 import { leerSesion, guardarSesion } from '../../utils/storageSeguro';
 import { eliminarSesion } from '../../utils/storageSeguro';
+import ModalBienvenida from '../../components/ModalBienvenida';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
 
@@ -218,6 +219,8 @@ const PerfilGraduado = () => {
     const [fc, setFc] = useState({
         titulo: '', institucion: '', fechaFinalizacion: '', url: '', descripcion: '', archivo: null
     });
+    const [mostrarBienvenida, setMostrarBienvenida] = useState(false);
+
 
     // ── Modal confirmar eliminación ───────────────────
     const [modalConfirm, setModalConfirm] = useState({
@@ -233,6 +236,9 @@ const PerfilGraduado = () => {
         const t = sesion.token;
         setToken(t);
         cargarTodo(t);
+        if (!sesion.bienvenidaMostrada) {
+            setMostrarBienvenida(true);
+        }
     }, [navigate]);
 
     const cargarTodo = async (t) => {
@@ -1514,6 +1520,9 @@ const PerfilGraduado = () => {
                         </div>
                     </div>
                 </div>
+            )}
+            {mostrarBienvenida && (
+                <ModalBienvenida onCerrar={() => setMostrarBienvenida(false)} />
             )}
 
             {/* ══ TOASTS ══ */}
