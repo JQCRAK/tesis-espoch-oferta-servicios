@@ -845,10 +845,15 @@ const calcularInsights=(kpis,comunes,otras,encCerradas,empleadoresRaw,respuestas
         const d=distSiNo(g.respuestasRaw);
         if(!d) return;
         const texto=g.textoCanonical.slice(0,55)+(g.textoCanonical.length>55?'…':'');
+        const pctNo=100-d.pctSi;
         if(d.pctSi<=25)
-            ins.push({tipo:'crit',titulo:`Solo ${d.pctSi}% respondió "Sí" a: "${texto}"`,detalle:`${d.si} de ${d.total} empleadores respondieron afirmativamente. Este indicador binario señala una brecha significativa.`});
+            ins.push({tipo:'crit',titulo:`Solo ${d.pctSi}% respondió "Sí" a: "${texto}"`,detalle:`${d.si} de ${d.total} empleadores respondieron afirmativamente. Brecha crítica.`});
         else if(d.pctSi>=80)
-            ins.push({tipo:'ok',titulo:`${d.pctSi}% respondió "Sí" a: "${texto}"`,detalle:`${d.si} de ${d.total} empleadores con respuesta positiva. Consenso elevado en este aspecto.`});
+            ins.push({tipo:'ok',titulo:`${d.pctSi}% respondió "Sí" a: "${texto}"`,detalle:`${d.si} de ${d.total} empleadores con respuesta positiva. Consenso elevado.`});
+        else if(pctNo>=50)
+            ins.push({tipo:'warn',titulo:`${pctNo}% respondió "No" a: "${texto}"`,detalle:`${d.no} de ${d.total} empleadores con respuesta negativa. Más de la mitad no cumple esta condición — revisar estrategias.`});
+        else if(d.pctSi>=50&&d.pctSi<80)
+            ins.push({tipo:'info',titulo:`${d.pctSi}% respondió "Sí" a: "${texto}"`,detalle:`${d.si} de ${d.total} con respuesta afirmativa. Tendencia positiva pero con margen de mejora.`});
     });
 
     // ── 5. OPCIÓN MÁS FRECUENTE EN OPCIONES MÚLTIPLES ────────
