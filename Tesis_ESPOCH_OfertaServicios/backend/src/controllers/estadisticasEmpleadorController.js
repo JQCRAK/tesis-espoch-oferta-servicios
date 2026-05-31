@@ -75,7 +75,7 @@ exports.getEstadisticasEmpleadores = async (req, res) => {
 
         // ── 5. Agrupar preguntas similares ────────────────────
         const grupos = [];
-
+ 
         for (const preg of preguntas) {
             let encontrado = false;
             for (const g of grupos) {
@@ -111,15 +111,95 @@ exports.getEstadisticasEmpleadores = async (req, res) => {
                     encuestasAparece: [preg.encuesta.toString()],
                     preguntaIds: [preg._id.toString()],
                     obligatoria: preg.obligatoria,
+                    esCondicional: false,
+                    ladoPadre: null,
+                    textoPadre: null,
                 });
             }
         }
-
-        // ── 6. Lookup: preguntaId → respuestas enriquecidas ───
-        const lookupResp = {};
+ 
+        // ── 6. Grupos de SUB-PREGUNTAS CONDICIONALES ─────────
+        const gruposCondicionales = [];
+ 
+        for (const preg of preguntas) {
+            if (preg.tipo !== 'si_no' || !preg.tieneCondicional) continue;
+ 
+            const textoPadre = preg.texto;
+            const pregIdStr  = preg._id.toString();
+            const encIdStr   = preg.encuesta.toString();
+ 
+            // Lado SÍ
+            (preg.preguntasCondicionalSi || []).forEach((textoSub, idx) => {
+                const tipo = preg.tiposCondicionalSi?.[idx]  || 'texto_libre';
+                const opts = preg.opcionesCondicionalSi?.[idx] || [];
+                let found = false;
+                for (const g of gruposCondicionales) {
+                    if (g.ladoPadre === 'si' && g.preguntaIdPadre === pregIdStr && similitud(g.textoCanonical, textoSub) >= 0.72) {
+                        if (!g.encuestasAparece.includes(encIdStr)) g.encuestasAparece.push(encIdStr);
+                        opts.forEach(op => { if (!g.opciones.includes(op)) g.opciones.push(op); });
+                        found = true; break;
+                    }
+                }
+                if (!found) {
+                    gruposCondicionales.push({
+                        id: `cond_${pregIdStr}_si_${idx}`,
+                        textoCanonical: textoSub,
+                        tipo,
+                        opciones: [...opts],
+                        esMatriz: false, items: [],
+                        etiquetaMin: '', etiquetaMax: '',
+                        encuestasAparece: [encIdStr],
+                        preguntaIds: [pregIdStr],
+                        preguntaIdPadre: pregIdStr,
+                        indiceCondicional: idx,
+                        obligatoria: false,
+                        esCondicional: true,
+                        ladoPadre: 'si',
+                        textoPadre,
+                    });
+                }
+            });
+ 
+            // Lado NO
+            (preg.preguntasCondicionalNo || []).forEach((textoSub, idx) => {
+                const tipo = preg.tiposCondicionalNo?.[idx]  || 'texto_libre';
+                const opts = preg.opcionesCondicionalNo?.[idx] || [];
+                let found = false;
+                for (const g of gruposCondicionales) {
+                    if (g.ladoPadre === 'no' && g.preguntaIdPadre === pregIdStr && similitud(g.textoCanonical, textoSub) >= 0.72) {
+                        if (!g.encuestasAparece.includes(encIdStr)) g.encuestasAparece.push(encIdStr);
+                        opts.forEach(op => { if (!g.opciones.includes(op)) g.opciones.push(op); });
+                        found = true; break;
+                    }
+                }
+                if (!found) {
+                    gruposCondicionales.push({
+                        id: `cond_${pregIdStr}_no_${idx}`,
+                        textoCanonical: textoSub,
+                        tipo,
+                        opciones: [...opts],
+                        esMatriz: false, items: [],
+                        etiquetaMin: '', etiquetaMax: '',
+                        encuestasAparece: [encIdStr],
+                        preguntaIds: [pregIdStr],
+                        preguntaIdPadre: pregIdStr,
+                        indiceCondicional: idx,
+                        obligatoria: false,
+                        esCondicional: true,
+                        ladoPadre: 'no',
+                        textoPadre,
+                    });
+                }
+            });
+        }
+ 
+        // ── 7. Lookup separado: principal y condicional ───────
+        const lookupPrincipal    = {};
+        const lookupCondicional  = {};
+ 
         for (const r of respuestas) {
             if (r.estado !== 'completada') continue;
-            const emp = r.empleador || {};
+            const emp  = r.empleador || {};
             const meta = {
                 empleadorId:   emp._id?.toString()        || '',
                 nombreEmpresa: emp.nombreEmpresa           || '',
@@ -132,34 +212,49 @@ exports.getEstadisticasEmpleadores = async (req, res) => {
             for (const item of r.respuestas || []) {
                 if (!item.pregunta) continue;
                 const pid = item.pregunta.toString();
-                if (!lookupResp[pid]) lookupResp[pid] = [];
-                lookupResp[pid].push({
-                    ...meta,
-                    valor:            item.respuesta,
-                    esCondicional:    item.esCondicional   || false,
-                    ladoCondicional:  item.ladoCondicional || null,
-                    textoSubPregunta: item.textoSubPregunta || '',
-                });
+                if (!item.esCondicional) {
+                    if (!lookupPrincipal[pid]) lookupPrincipal[pid] = [];
+                    lookupPrincipal[pid].push({ ...meta, valor: item.respuesta });
+                } else {
+                    const clave = `${pid}_${item.ladoCondicional}_${item.indiceCondicional}`;
+                    if (!lookupCondicional[clave]) lookupCondicional[clave] = [];
+                    lookupCondicional[clave].push({
+                        ...meta,
+                        valor:            item.respuesta,
+                        textoSubPregunta: item.textoSubPregunta || '',
+                    });
+                }
             }
         }
-
-        // ── 7. Grupos con respuestas ──────────────────────────
+ 
+        // ── 8. Grupos principales con respuestas ──────────────
         const respCompletadas = respuestas.filter(r => r.estado === 'completada');
-
+        const encCerradas     = encuestas.filter(e => e.estado === 'cerrada');
+ 
         const gruposConDatos = grupos.map(g => {
-            const todas        = g.preguntaIds.flatMap(pid => lookupResp[pid] || []);
-            const principal    = todas.filter(r => !r.esCondicional);
-            const condicionales = todas.filter(r => r.esCondicional);
+            const todas = g.preguntaIds.flatMap(pid => lookupPrincipal[pid] || []);
             return {
                 ...g,
-                totalRespuestas: principal.length,
-                respuestasRaw:   principal,
-                condicionalesRaw: condicionales,
-                esComun: g.encuestasAparece.length >= Math.max(2, Math.ceil(encuestas.filter(e => e.estado === 'cerrada').length * 0.5)),
+                totalRespuestas: todas.length,
+                respuestasRaw:   todas,
+                esComun: g.encuestasAparece.length >= Math.max(2, Math.ceil(encCerradas.length * 0.5)),
             };
         }).sort((a, b) => b.totalRespuestas - a.totalRespuestas);
-
-        // ── 8. KPIs ───────────────────────────────────────────
+ 
+        // ── 9. Grupos condicionales con respuestas ────────────
+        const gruposCondConDatos = gruposCondicionales.map(g => {
+            const clave = `${g.preguntaIdPadre}_${g.ladoPadre}_${g.indiceCondicional}`;
+            const resps  = lookupCondicional[clave] || [];
+            return {
+                ...g,
+                totalRespuestas: resps.length,
+                respuestasRaw:   resps,
+                esComun: g.encuestasAparece.length >= 2,
+            };
+        }).filter(g => g.totalRespuestas > 0)
+          .sort((a, b) => b.totalRespuestas - a.totalRespuestas);
+ 
+        // ── 10. KPIs ──────────────────────────────────────────
         const totalEmpleadores = empleadores.length;
         const totalEncuestas   = encuestas.length;
         const totalRespuestas  = respCompletadas.length;
@@ -167,8 +262,8 @@ exports.getEstadisticasEmpleadores = async (req, res) => {
         const tasaRespuesta    = totalEmpleadores > 0
             ? Math.round((empRespondieron.size / totalEmpleadores) * 100)
             : 0;
-
-        // ── 9. Empleadores enriquecidos con historial encuestas
+ 
+        // ── 11. Empleadores enriquecidos ──────────────────────
         const empRespMap = {};
         for (const r of respCompletadas) {
             const eid = r.empleador?._id?.toString();
@@ -176,7 +271,7 @@ exports.getEstadisticasEmpleadores = async (req, res) => {
             if (!empRespMap[eid]) empRespMap[eid] = [];
             empRespMap[eid].push(r.encuesta?._id?.toString());
         }
-
+ 
         const empleadoresRaw = empleadores.map(e => ({
             _id:               e._id.toString(),
             nombreEmpresa:     e.nombreEmpresa,
@@ -190,8 +285,8 @@ exports.getEstadisticasEmpleadores = async (req, res) => {
             encuestasRespondidas: empRespMap[e._id.toString()] || [],
             respondio:         (empRespMap[e._id.toString()] || []).length > 0,
         }));
-
-        // ── 10. Respuestas raw (tabla quién respondió) ────────
+ 
+        // ── 12. Respuestas raw ────────────────────────────────
         const respuestasRaw = respCompletadas.map(r => ({
             _id:             r._id.toString(),
             encuestaId:      r.encuesta?._id?.toString()  || '',
@@ -205,7 +300,7 @@ exports.getEstadisticasEmpleadores = async (req, res) => {
             datosEncuestado: r.datosEncuestado            || {},
             fechaRespuesta:  r.fechaRespuesta,
         }));
-
+ 
         res.json({
             encuestas: encuestas.map(e => ({
                 _id:             e._id.toString(),
@@ -217,7 +312,8 @@ exports.getEstadisticasEmpleadores = async (req, res) => {
             })),
             empleadoresRaw,
             respuestasRaw,
-            preguntasAgrupadas: gruposConDatos,
+            preguntasAgrupadas:              gruposConDatos,
+            preguntasCondicionalesAgrupadas: gruposCondConDatos,  // ← NUEVO
             kpis: {
                 totalEmpleadores,
                 totalEncuestas,

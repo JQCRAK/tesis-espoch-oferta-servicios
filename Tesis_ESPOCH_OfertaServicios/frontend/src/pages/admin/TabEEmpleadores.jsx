@@ -1272,6 +1272,65 @@ const PanelEncuestadores=({empleadoresFiltrados,respuestasRaw,fEmp})=>{
         </div>
     );
 };
+const LADO_CFG_EMP = {
+    si: { color: VERDE,  bg: '#f0fdf4', bd: '#bbf7d0', label: 'Si respondieron "SÍ"' },
+    no: { color: ROJO,   bg: '#fef2f2', bd: '#fecaca', label: 'Si respondieron "NO"' },
+};
+ 
+const TarjetaCondicionalEmp = ({ grupo, encuestas, filtros, num }) => {
+    const [open, setOpen] = useState(true);
+    const lado = LADO_CFG_EMP[grupo.ladoPadre] || LADO_CFG_EMP.si;
+ 
+    const cnt = useMemo(() => {
+        let r = grupo.respuestasRaw || [];
+        if (filtros.encuestaId)  r = r.filter(x => x.encuestaId  === filtros.encuestaId);
+        if (filtros.tipoCapital) r = r.filter(x => x.tipoCapital === filtros.tipoCapital);
+        return r.length;
+    }, [grupo.respuestasRaw, filtros]);
+ 
+    return (
+        <div className="t5a" style={{
+            background: 'white', borderRadius: 10,
+            border: `1px solid ${lado.bd}`,
+            borderLeft: `4px solid ${lado.color}`,
+            overflow: 'hidden', marginBottom: 8,
+        }}>
+            <div className="t5gh" onClick={() => setOpen(a => !a)} style={{
+                padding: '9px 14px', display: 'flex', alignItems: 'flex-start', gap: 10,
+                background: open ? `${lado.color}06` : 'white',
+                borderBottom: open ? `1px solid ${lado.bd}` : 'none',
+            }}>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4, flexWrap: 'wrap' }}>
+                        <span style={{
+                            fontSize: '0.56rem', fontWeight: 700, color: lado.color,
+                            background: lado.bg, border: `1px solid ${lado.bd}`,
+                            borderRadius: 99, padding: '1px 7px', fontFamily: FONT,
+                        }}>{lado.label}</span>
+                        <TipoBadge tipo={grupo.tipo} esMatriz={false} />
+                    </div>
+                    <div style={{ fontSize: '0.60rem', color: '#94a3b8', fontFamily: FONT, marginBottom: 3 }}>
+                        ↳ <em>{grupo.textoPadre?.slice(0, 80)}{grupo.textoPadre?.length > 80 ? '…' : ''}</em>
+                    </div>
+                    <span style={{ fontSize: '0.79rem', fontWeight: 600, color: '#0f172a', fontFamily: FONT, lineHeight: 1.4 }}>
+                        {num}. {grupo.textoCanonical}
+                    </span>
+                    <div style={{ marginTop: 3, fontSize: '0.60rem', color: '#94a3b8', fontFamily: FONT }}>
+                        {cnt} respuesta{cnt !== 1 ? 's' : ''}
+                    </div>
+                </div>
+                <div style={{ fontSize: '0.68rem', color: '#94a3b8', flexShrink: 0, padding: '2px 5px', fontFamily: FONT }}>
+                    {open ? '▲' : '▼'}
+                </div>
+            </div>
+            {open && (
+                <div style={{ padding: '12px 14px' }}>
+                    <GraficaPregunta grupo={grupo} filtros={filtros} />
+                </div>
+            )}
+        </div>
+    );
+};
 
 // ═══════════════════════════════════════════════════════════
 // COMPONENTE PRINCIPAL
@@ -1314,10 +1373,9 @@ const TabEEmpleadores=()=>{
 
     const df=useMemo(()=>{
         if(!datos) return null;
-        const{encuestas,empleadoresRaw,respuestasRaw,preguntasAgrupadas,kpis}=datos;
+        const{encuestas,empleadoresRaw,respuestasRaw,preguntasAgrupadas,preguntasCondicionalesAgrupadas,kpis}=datos;
         const encC=encuestas.filter(e=>e.estado==='cerrada');
-
-        // ── Filtro mes/año sobre fechaCierre ──────────────────
+ 
         const encFiltradas=fEnc.mesAnio
             ? encC.filter(e=>{
                 if(!e.fechaCierre) return false;
@@ -1327,12 +1385,12 @@ const TabEEmpleadores=()=>{
               })
             : encC;
         const idsC=new Set(encFiltradas.map(e=>e._id));
-
+ 
         let emps=empleadoresRaw;
         if(fEmp.provincia)   emps=emps.filter(e=>norm(e.provincia)===norm(fEmp.provincia));
         if(fEmp.ciudad)      emps=emps.filter(e=>normCanton(e.ciudad||'')===normCanton(fEmp.ciudad));
         if(fEmp.tipoCapital) emps=emps.filter(e=>e.tipoCapital===fEmp.tipoCapital);
-
+ 
         const cP={},cC={},cCap={},cAct={};
         emps.forEach(e=>{
             if(e.provincia)    cP[e.provincia]    =(cP[e.provincia]   ||0)+1;
@@ -1346,8 +1404,9 @@ const TabEEmpleadores=()=>{
         const porAct =Object.entries(cAct).map(([t,v])=>({tipo:t,total:v}));
         const mitad  =Math.ceil(porProv.length/2);
         const ciuD   =fEmp.provincia?[...new Set(empleadoresRaw.filter(e=>norm(e.provincia)===norm(fEmp.provincia)).map(e=>e.ciudad).filter(Boolean))].sort():[];
-
-        const pregsF=preguntasAgrupadas.map(g=>({
+ 
+        // Preguntas principales
+        const pregsF=(preguntasAgrupadas||[]).map(g=>({
             ...g,
             respuestasRaw:(g.respuestasRaw||[]).filter(r=>{
                 if(!idsC.has(r.encuestaId)) return false;
@@ -1357,18 +1416,30 @@ const TabEEmpleadores=()=>{
             }),
             encuestasAparece:(g.encuestasAparece||[]).filter(id=>idsC.has(id)),
         })).filter(g=>g.respuestasRaw.length>0);
-
+ 
+        // Preguntas condicionales — NUEVO
+        const condicionales=(preguntasCondicionalesAgrupadas||[]).map(g=>({
+            ...g,
+            respuestasRaw:(g.respuestasRaw||[]).filter(r=>{
+                if(!idsC.has(r.encuestaId)) return false;
+                if(fEnc.encuestaId&&r.encuestaId!==fEnc.encuestaId) return false;
+                if(fEnc.tipoCapital&&r.tipoCapital!==fEnc.tipoCapital) return false;
+                return true;
+            }),
+            encuestasAparece:(g.encuestasAparece||[]).filter(id=>idsC.has(id)),
+        })).filter(g=>g.respuestasRaw.length>0);
+ 
         const comunes=pregsF.filter(g=>g.esComun);
         const otras  =pregsF.filter(g=>!g.esComun);
         const respond=empleadoresRaw.filter(e=>fEnc.encuestaId?e.encuestasRespondidas.includes(fEnc.encuestaId):e.respondio).length;
         const kE={...kpis,respondieron:respond,tasa:empleadoresRaw.length>0?Math.round((respond/empleadoresRaw.length)*100):0,totalEmps:empleadoresRaw.length};
-
+ 
         const todasPregsF=[...comunes,...otras];
-
+ 
         return{
             encC,encFiltradas,empleadoresFiltrados:emps,empleadoresRaw,respuestasRaw,
             porProv,porCiud,porCap,porAct,mitad,ciuD,
-            comunes,otras,kE,
+            comunes,otras,condicionales,kE,
             insights:calcularInsights(kE,comunes,otras,encC,empleadoresRaw,respuestasRaw),
             plan:calcularPlan(kE,encC,empleadoresRaw,todasPregsF),
         };
@@ -1403,7 +1474,7 @@ const TabEEmpleadores=()=>{
     if(error)    return <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',minHeight:320}}><FaExclamationTriangle style={{fontSize:'2rem',color:NARANJA,marginBottom:10}}/><p style={{margin:'0 0 14px',fontSize:'0.82rem',color:'#374151',fontFamily:FONT}}>{error}</p><button onClick={cargar} style={{display:'inline-flex',alignItems:'center',gap:6,padding:'8px 14px',background:'white',border:'1px solid #e5e7eb',borderRadius:7,cursor:'pointer',fontSize:'0.74rem',fontWeight:600,color:'#374151',fontFamily:FONT}}><FaSyncAlt style={{fontSize:'0.66rem'}}/>Reintentar</button></div>;
     if(!df) return null;
 
-    const{encC,encFiltradas,empleadoresFiltrados,empleadoresRaw,respuestasRaw,porProv,porCiud,porCap,porAct,mitad,ciuD,comunes,otras,kE,insights,plan}=df;
+    const{encC,encFiltradas,empleadoresFiltrados,empleadoresRaw,respuestasRaw,porProv,porCiud,porCap,porAct,mitad,ciuD,comunes,otras,condicionales,kE,insights,plan}=df;
     const hayFE=Object.values(fEmp).some(v=>v!=='');
     const hayFN=Object.values(fEnc).some(v=>v!=='');
     const sinD={margin:0,fontSize:'0.72rem',color:'#9ca3af',textAlign:'center',padding:'16px 0',fontFamily:FONT};
@@ -1629,7 +1700,32 @@ const TabEEmpleadores=()=>{
                 {otras.map((g,i)=><TarjetaGrupo key={g.id} grupo={g} encuestas={encC} filtros={fEnc} num={comunes.length+i+1}/>)}
             </div>}
 
-            {comunes.length===0&&otras.length===0&&<div style={{padding:'32px',background:'white',borderRadius:10,border:'1px solid #e5e7eb',textAlign:'center',marginBottom:14}}>
+            {/* Preguntas condicionales — NUEVO */}
+            {condicionales.length>0&&<div style={{marginBottom:14}}>
+                <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:10}}>
+                    <div style={{width:28,height:28,borderRadius:7,background:`${NARANJA}18`,display:'flex',alignItems:'center',justifyContent:'center'}}>
+                        <FaQuestion style={{color:NARANJA,fontSize:'0.78rem'}}/>
+                    </div>
+                    <div>
+                        <div style={{fontSize:'0.84rem',fontWeight:700,color:'#0f172a',fontFamily:FONT}}>Preguntas Condicionales</div>
+                        <div style={{fontSize:'0.61rem',color:'#9ca3af',fontFamily:FONT}}>
+                            Solo se muestran según la respuesta Sí/No · {condicionales.length} subpregunta{condicionales.length!==1?'s':''}
+                        </div>
+                    </div>
+                </div>
+                {condicionales.map((g,i)=>(
+                    <TarjetaCondicionalEmp
+                        key={g.id}
+                        grupo={g}
+                        encuestas={encC}
+                        filtros={fEnc}
+                        num={comunes.length+otras.length+i+1}
+                    />
+                ))}
+            </div>}
+ 
+            {/* Sin datos — ACTUALIZADO (incluye condicionales) */}
+            {comunes.length===0&&otras.length===0&&condicionales.length===0&&<div style={{padding:'32px',background:'white',borderRadius:10,border:'1px solid #e5e7eb',textAlign:'center',marginBottom:14}}>
                 <FaClipboardList style={{color:'#cbd5e1',fontSize:'2rem',marginBottom:8}}/>
                 <p style={{margin:'0 0 6px',fontSize:'0.78rem',fontWeight:600,color:'#94a3b8',fontFamily:FONT}}>{encC.length===0?'No hay encuestas cerradas aún':'Sin resultados con los filtros actuales'}</p>
                 <p style={{margin:0,fontSize:'0.68rem',color:'#cbd5e1',fontFamily:FONT}}>{encC.length===0?'Los gráficos aparecerán al cerrar una encuesta.':'Prueba limpiando los filtros.'}</p>
