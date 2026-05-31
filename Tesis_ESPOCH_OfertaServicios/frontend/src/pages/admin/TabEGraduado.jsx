@@ -533,11 +533,19 @@ const calcularInsightsGraduados=(kpis,comunes,otras,encCerradas,graduadosRaw)=>{
 
     todasPregs.filter(g=>g.tipo==='si_no'&&g.respuestasRaw?.length>=2).forEach(g=>{
         const si=g.respuestasRaw.filter(r=>r.valor==='Sí').length;
+        const no=g.respuestasRaw.filter(r=>r.valor==='No').length;
         const total=g.respuestasRaw.length;
         const pctSi=Math.round(si/total*100);
+        const pctNo=Math.round(no/total*100);
         const texto=g.textoCanonical.slice(0,55)+(g.textoCanonical.length>55?'…':'');
-        if(pctSi<=25)  ins.push({tipo:'crit',titulo:`Solo ${pctSi}% respondió "Sí": "${texto}"`,detalle:`${si} de ${total} afirmativas.`});
-        else if(pctSi>=80) ins.push({tipo:'ok',titulo:`${pctSi}% respondió "Sí": "${texto}"`,detalle:`Consenso elevado: ${si} de ${total}.`});
+        if(pctSi<=25)
+            ins.push({tipo:'crit',titulo:`Solo ${pctSi}% respondió "Sí": "${texto}"`,detalle:`${si} de ${total} respuestas afirmativas. Brecha crítica.`});
+        else if(pctSi>=80)
+            ins.push({tipo:'ok',titulo:`${pctSi}% respondió "Sí": "${texto}"`,detalle:`Consenso elevado: ${si} de ${total}.`});
+        else if(pctNo>=50)
+            ins.push({tipo:'warn',titulo:`${pctNo}% respondió "No": "${texto}"`,detalle:`${no} de ${total} graduados con respuesta negativa. Más de la mitad no cumple esta condición — revisar estrategias de apoyo.`});
+        else if(pctSi>=50&&pctSi<80)
+            ins.push({tipo:'info',titulo:`${pctSi}% respondió "Sí": "${texto}"`,detalle:`${si} de ${total} con respuesta afirmativa. Tendencia positiva pero con margen de mejora.`});
     });
 
     if(encCerradas.length>=2){
