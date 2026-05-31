@@ -5,7 +5,7 @@ import {
     FaGraduationCap, FaSyncAlt, FaExclamationTriangle, FaFilter, FaTimes,
     FaClipboardList, FaCheckCircle, FaTimesCircle,
     FaLayerGroup, FaQuestion, FaStar, FaLightbulb, FaBullseye,
-    FaTag, FaCommentDots, FaCalendarAlt, FaInfoCircle,
+    FaTag, FaCommentDots, FaCalendarAlt, FaInfoCircle, FaCodeBranch,
 } from 'react-icons/fa';
 
 const API  = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
@@ -24,8 +24,6 @@ const normTxt = s => s?.normalize('NFD').replace(/\p{Diacritic}/gu,'').toLowerCa
 const pct = (v,t) => t===0?0:Math.round((v/t)*100);
 const MESES_ARR=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 
-// ── Detectar si una escala está invertida (1=mejor, 5=peor) ──────────────────
-// Se considera invertida si etiquetaMin contiene palabras como "excelente", "muy bueno", etc.
 const PALABRAS_INVERTIDAS=['excelente','muy bueno','muy buena','optimo','optima','sobresaliente'];
 const esEscalaInvertida = (etiquetaMin='',etiquetaMax='') => {
     const mn = normTxt(etiquetaMin);
@@ -35,9 +33,6 @@ const esEscalaInvertida = (etiquetaMin='',etiquetaMax='') => {
         mx.includes('insuficiente') || mx.includes('muy malo') || mx.includes('pesimo')
     );
 };
-
-// ── Promedio ajustado: si invertida, convierte para que 5=mejor ─────────────
-// Esto permite que los umbrales de análisis (>= 4.0 = bueno) funcionen igual
 const promAjustado = (prom, invertida) => invertida ? (6 - prom) : prom;
 
 if(typeof document!=='undefined'&&!document.getElementById('teg-kf')){
@@ -156,48 +151,32 @@ const Insight=({tipo,titulo,detalle,delay=0})=>{
 // ═══════════════════════════════════════════════════════════
 // GRÁFICAS
 // ═══════════════════════════════════════════════════════════
-
-// ── Escala 1-5 con soporte de escala INVERTIDA ────────────
 const GEscala=({resps,min='',max=''})=>{
     const vals=resps.map(r=>Number(r.valor)).filter(v=>v>=1&&v<=5);
     if(!vals.length) return <p style={{margin:0,fontSize:'0.70rem',color:'#9ca3af',fontFamily:FONT}}>Sin respuestas</p>;
-
     const invertida = esEscalaInvertida(min, max);
     const c={1:0,2:0,3:0,4:0,5:0};
     vals.forEach(v=>c[v]++);
     const mx=Math.max(...Object.values(c),1);
     const promReal=(vals.reduce((s,v)=>s+v,0)/vals.length);
     const promMostrar=promReal.toFixed(2);
-
-    // Colores: si invertida, 1=verde(mejor), 5=rojo(peor); si normal, 1=rojo, 5=verde
     const col = invertida
         ? {1:'#16a34a',2:'#22c55e',3:'#eab308',4:'#f97316',5:'#ef4444'}
         : {1:'#ef4444',2:'#f97316',3:'#eab308',4:'#22c55e',5:'#16a34a'};
-
-    // Color del promedio según ajuste
     const promAdj = promAjustado(promReal, invertida);
     const colorProm = promAdj>=4.0?VERDE:promAdj>=3.0?NARANJA:ROJO;
-
-    // Etiqueta interpretativa
     const interpretacion = invertida
         ? (promReal<=1.5?'Excelente':promReal<=2.5?'Muy Bueno':promReal<=3.5?'Bueno':promReal<=4.5?'Regular':'Insuficiente')
         : (promReal>=4.5?'Muy alto':promReal>=3.5?'Alto':promReal>=2.5?'Moderado':promReal>=1.5?'Bajo':'Muy bajo');
-
     return <div>
-        {/* Aviso de escala invertida */}
         {invertida&&<div style={{display:'flex',alignItems:'center',gap:6,padding:'5px 9px',background:`${AZUL}08`,border:`1px solid ${AZUL}20`,borderRadius:6,marginBottom:10}}>
             <FaInfoCircle style={{color:AZUL,fontSize:'0.68rem',flexShrink:0}}/>
-            <span style={{fontSize:'0.62rem',color:AZUL,fontFamily:FONT,fontWeight:500}}>
-                Escala invertida — <strong>1 = Excelente</strong>, 5 = Insuficiente. Un valor bajo indica mejor resultado.
-            </span>
+            <span style={{fontSize:'0.62rem',color:AZUL,fontFamily:FONT,fontWeight:500}}>Escala invertida — <strong>1 = Excelente</strong>, 5 = Insuficiente.</span>
         </div>}
-
         <div style={{display:'flex',gap:6,alignItems:'flex-end',marginBottom:10}}>
             {[1,2,3,4,5].map(n=>{
                 const h=Math.max(4,Math.round((c[n]/mx)*64));
-                const etq = invertida
-                    ? ['Exc','Muy B','Bueno','Reg','Insuf'][n-1]
-                    : String(n);
+                const etq = invertida ? ['Exc','Muy B','Bueno','Reg','Insuf'][n-1] : String(n);
                 return <div key={n} style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',gap:3}}>
                     <span style={{fontSize:'0.60rem',fontWeight:700,color:'#374151',fontFamily:FONT}}>{c[n]}</span>
                     <div style={{width:'100%',height:h,backgroundColor:col[n],borderRadius:'3px 3px 0 0'}}/>
@@ -205,19 +184,14 @@ const GEscala=({resps,min='',max=''})=>{
                 </div>;
             })}
         </div>
-
         <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:6}}>
             <span style={{fontSize:'0.60rem',color:'#94a3b8',fontFamily:FONT}}>{min||'1=Muy bajo'}</span>
             <div style={{display:'flex',gap:6,alignItems:'center'}}>
                 <div style={{background:`${colorProm}10`,border:`1px solid ${colorProm}25`,borderRadius:6,padding:'3px 9px',display:'inline-flex',alignItems:'center',gap:5}}>
                     <FaStar style={{color:DORADO,fontSize:'0.58rem'}}/>
-                    <span style={{fontSize:'0.68rem',fontWeight:700,color:colorProm,fontFamily:FONT}}>
-                        Promedio: {promMostrar}
-                    </span>
+                    <span style={{fontSize:'0.68rem',fontWeight:700,color:colorProm,fontFamily:FONT}}>Promedio: {promMostrar}</span>
                 </div>
-                <span style={{fontSize:'0.62rem',fontWeight:600,color:colorProm,background:`${colorProm}10`,borderRadius:99,padding:'2px 7px',fontFamily:FONT,border:`1px solid ${colorProm}25`}}>
-                    {interpretacion}
-                </span>
+                <span style={{fontSize:'0.62rem',fontWeight:600,color:colorProm,background:`${colorProm}10`,borderRadius:99,padding:'2px 7px',fontFamily:FONT,border:`1px solid ${colorProm}25`}}>{interpretacion}</span>
             </div>
             <span style={{fontSize:'0.60rem',color:'#94a3b8',fontFamily:FONT}}>{max||'5=Excelente'}</span>
         </div>
@@ -277,14 +251,13 @@ const GMatriz=({resps,items,tipo,min='',max=''})=>{
     const pi={};items.forEach((_,idx)=>{pi[idx]={votos:{}};});
     resps.forEach(r=>{const arr=Array.isArray(r.valor)?r.valor:[];arr.forEach(({indice,valor})=>{if(pi[indice]!==undefined){const k=String(valor);pi[indice].votos[k]=(pi[indice].votos[k]||0)+1;}});});
     const cols=tipo==='escala'?[1,2,3,4,5]:[];
-    // Colores de fondo según si la escala es invertida o no
     const cH = invertida
         ? {1:'#bbf7d0',2:'#dcfce7',3:'#fef9c3',4:'#fef3c7',5:'#fee2e2'}
         : {1:'#fee2e2',2:'#fef3c7',3:'#fef9c3',4:'#dcfce7',5:'#bbf7d0'};
     return <div style={{overflowX:'auto'}}>
         {invertida&&<div style={{display:'flex',alignItems:'center',gap:6,padding:'5px 9px',background:`${AZUL}08`,border:`1px solid ${AZUL}20`,borderRadius:6,marginBottom:8}}>
             <FaInfoCircle style={{color:AZUL,fontSize:'0.68rem',flexShrink:0}}/>
-            <span style={{fontSize:'0.62rem',color:AZUL,fontFamily:FONT,fontWeight:500}}>Escala invertida — <strong>1 = {min||'Excelente'}</strong>, 5 = {max||'Insuficiente'}</span>
+            <span style={{fontSize:'0.62rem',color:AZUL,fontFamily:FONT,fontWeight:500}}>Escala invertida — <strong>1 = {min||'Excelente'}</strong></span>
         </div>}
         {tipo==='escala'&&<div style={{display:'flex',justifyContent:'space-between',marginBottom:4}}>
             <span style={{fontSize:'0.58rem',color:'#94a3b8',fontFamily:FONT}}>{min||'1=Bajo'}</span>
@@ -306,9 +279,7 @@ const GMatriz=({resps,items,tipo,min='',max=''})=>{
                     return <tr key={idx} style={{background:idx%2===0?'#fafafa':'white'}}>
                         <td style={{padding:'6px 8px',color:'#374151',lineHeight:1.4,fontWeight:500}}>{item}</td>
                         {cols.map(c=>{const v=vo[c]||0;return <td key={c} style={{textAlign:'center',padding:'6px 4px',background:v>0?cH[c]:'transparent',fontWeight:v>0?700:400,color:v>0?'#374151':'#d1d5db'}}>{v>0?v:'·'}</td>;})}
-                        <td style={{textAlign:'center',padding:'6px 6px',fontWeight:700,color:colorProm}}>
-                            {promR!==null?promR.toFixed(1):'—'}
-                        </td>
+                        <td style={{textAlign:'center',padding:'6px 6px',fontWeight:700,color:colorProm}}>{promR!==null?promR.toFixed(1):'—'}</td>
                     </tr>;
                 })}
             </tbody>
@@ -405,8 +376,6 @@ const TarjetaGrupo=({grupo,encuestas,filtros,num})=>{
         if(filtros.genero)         r=r.filter(x=>normTxt(x.genero||'')===normTxt(filtros.genero));
         return r.length;
     },[grupo.respuestasRaw,filtros]);
-
-    // Detectar si esta pregunta tiene escala invertida para mostrar badge
     const invertida = grupo.tipo==='escala' && esEscalaInvertida(grupo.etiquetaMin||'', grupo.etiquetaMax||'');
 
     return <div className="teg-a" style={{background:'white',borderRadius:10,border:'1px solid #e5e7eb',overflow:'hidden',marginBottom:10}}>
@@ -435,21 +404,81 @@ const TarjetaGrupo=({grupo,encuestas,filtros,num})=>{
 };
 
 // ═══════════════════════════════════════════════════════════
-// ANÁLISIS DINÁMICO — INSIGHTS CON ESCALA INVERTIDA
+// TARJETA CONDICIONAL — NUEVA
 // ═══════════════════════════════════════════════════════════
+const LADO_CFG = {
+    si: { color: VERDE,  bg: '#f0fdf4', bd: '#bbf7d0', label: 'Si respondieron "SÍ"'  },
+    no: { color: ROJO,   bg: '#fef2f2', bd: '#fecaca', label: 'Si respondieron "NO"'  },
+};
 
-// Calcula promedio real y ajustado (para umbrales correctos)
+const TarjetaCondicional = ({ grupo, encuestas, filtros, num }) => {
+    const [open, setOpen] = useState(true);
+    const lado = LADO_CFG[grupo.ladoPadre] || LADO_CFG.si;
+
+    const cnt = useMemo(() => {
+        let r = grupo.respuestasRaw || [];
+        if (filtros.encuestaId)     r = r.filter(x => x.encuestaId === filtros.encuestaId);
+        if (filtros.anioGraduacion) r = r.filter(x => String(x.anioGraduacion) === filtros.anioGraduacion);
+        if (filtros.genero)         r = r.filter(x => normTxt(x.genero || '') === normTxt(filtros.genero));
+        return r.length;
+    }, [grupo.respuestasRaw, filtros]);
+
+    return (
+        <div className="teg-a" style={{
+            background: 'white', borderRadius: 10,
+            border: `1px solid ${lado.bd}`,
+            borderLeft: `4px solid ${lado.color}`,
+            overflow: 'hidden', marginBottom: 8,
+        }}>
+            <div className="teg-gh" onClick={() => setOpen(a => !a)} style={{
+                padding: '9px 14px', display: 'flex', alignItems: 'flex-start', gap: 10,
+                background: open ? `${lado.color}06` : 'white',
+                borderBottom: open ? `1px solid ${lado.bd}` : 'none',
+            }}>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                    {/* Badges: lado + tipo */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4, flexWrap: 'wrap' }}>
+                        <span style={{
+                            fontSize: '0.56rem', fontWeight: 700, color: lado.color,
+                            background: lado.bg, border: `1px solid ${lado.bd}`,
+                            borderRadius: 99, padding: '1px 7px', fontFamily: FONT,
+                        }}>{lado.label}</span>
+                        <TipoBadge tipo={grupo.tipo} esMatriz={false} />
+                    </div>
+                    {/* Pregunta padre — contexto */}
+                    <div style={{ fontSize: '0.60rem', color: '#94a3b8', fontFamily: FONT, marginBottom: 3 }}>
+                        ↳ <em>{grupo.textoPadre?.slice(0, 80)}{grupo.textoPadre?.length > 80 ? '…' : ''}</em>
+                    </div>
+                    {/* Texto de la subpregunta */}
+                    <span style={{ fontSize: '0.79rem', fontWeight: 600, color: '#0f172a', fontFamily: FONT, lineHeight: 1.4 }}>
+                        {num}. {grupo.textoCanonical}
+                    </span>
+                    <div style={{ marginTop: 3, fontSize: '0.60rem', color: '#94a3b8', fontFamily: FONT }}>
+                        {cnt} respuesta{cnt !== 1 ? 's' : ''}
+                    </div>
+                </div>
+                <div style={{ fontSize: '0.68rem', color: '#94a3b8', flexShrink: 0, padding: '2px 5px', fontFamily: FONT }}>
+                    {open ? '▲' : '▼'}
+                </div>
+            </div>
+            {open && (
+                <div style={{ padding: '12px 14px' }}>
+                    <GraficaPregunta grupo={grupo} filtros={filtros} />
+                </div>
+            )}
+        </div>
+    );
+};
+
+// ═══════════════════════════════════════════════════════════
+// ANÁLISIS DINÁMICO
+// ═══════════════════════════════════════════════════════════
 const promedioEscalaConInfo = (resps, etiquetaMin='', etiquetaMax='') => {
     const vals = resps.map(r=>Number(r.valor)).filter(v=>v>=1&&v<=5);
     if(!vals.length) return null;
     const promReal = vals.reduce((a,b)=>a+b,0) / vals.length;
     const invertida = esEscalaInvertida(etiquetaMin, etiquetaMax);
-    return {
-        promReal,
-        promAdj: promAjustado(promReal, invertida),
-        invertida,
-        n: vals.length,
-    };
+    return { promReal, promAdj: promAjustado(promReal, invertida), invertida, n: vals.length };
 };
 
 const calcularInsightsGraduados=(kpis,comunes,otras,encCerradas,graduadosRaw)=>{
@@ -458,98 +487,59 @@ const calcularInsightsGraduados=(kpis,comunes,otras,encCerradas,graduadosRaw)=>{
     const{tasa,totalGraduados,graduadosRespondieron}=kpis;
     const sinResponder=totalGraduados-graduadosRespondieron;
 
-    // 1. Participación
-    if(tasa>=80)        ins.push({tipo:'ok',  titulo:`Alta participación: ${tasa}% (${graduadosRespondieron}/${totalGraduados})`,detalle:`Solo ${sinResponder} graduado${sinResponder!==1?'s':''} no respondió. Muestra representativa.`});
-    else if(tasa>=60)   ins.push({tipo:'warn',titulo:`Participación moderada: ${tasa}% (${graduadosRespondieron}/${totalGraduados})`,detalle:`${sinResponder} graduados no respondieron. Considerar campaña de recordatorio.`});
-    else if(tasa>=30)   ins.push({tipo:'crit',titulo:`Participación baja: ${tasa}% — muestra insuficiente`,detalle:`Solo ${graduadosRespondieron} de ${totalGraduados} respondieron.`});
+    if(tasa>=80)        ins.push({tipo:'ok',  titulo:`Alta participación: ${tasa}% (${graduadosRespondieron}/${totalGraduados})`,detalle:`Solo ${sinResponder} graduado${sinResponder!==1?'s':''} no respondió.`});
+    else if(tasa>=60)   ins.push({tipo:'warn',titulo:`Participación moderada: ${tasa}% (${graduadosRespondieron}/${totalGraduados})`,detalle:`${sinResponder} graduados no respondieron.`});
+    else if(tasa>=30)   ins.push({tipo:'crit',titulo:`Participación baja: ${tasa}%`,detalle:`Solo ${graduadosRespondieron} de ${totalGraduados} respondieron.`});
     else if(tasa>0)     ins.push({tipo:'crit',titulo:`Participación crítica: ${tasa}%`,detalle:'Urgente revisar estrategia de convocatoria.'});
 
-    // 2. Tasa por género (solo si hay en BD)
     const porGenero={};
-    graduadosRaw.forEach(g=>{
-        const gen=g.genero||'Sin especificar';
-        if(!porGenero[gen]) porGenero[gen]={total:0,respondieron:0};
-        porGenero[gen].total++;
-        if(g.respondio) porGenero[gen].respondieron++;
-    });
+    graduadosRaw.forEach(g=>{const gen=g.genero||'Sin especificar';if(!porGenero[gen])porGenero[gen]={total:0,respondieron:0};porGenero[gen].total++;if(g.respondio)porGenero[gen].respondieron++;});
     const genEntries=Object.entries(porGenero).filter(([,v])=>v.total>=3);
     if(genEntries.length>=2){
         genEntries.sort((a,b)=>(b[1].respondieron/b[1].total)-(a[1].respondieron/a[1].total));
         const mejor=genEntries[0],peor=genEntries[genEntries.length-1];
         const pMejor=Math.round(mejor[1].respondieron/mejor[1].total*100);
         const pPeor=Math.round(peor[1].respondieron/peor[1].total*100);
-        if(pMejor-pPeor>=20) ins.push({tipo:'info',titulo:`Brecha de participación por género`,detalle:`${mejor[0]}: ${pMejor}% · ${peor[0]}: ${pPeor}%. Diferencia de ${pMejor-pPeor} puntos.`});
+        if(pMejor-pPeor>=20) ins.push({tipo:'info',titulo:'Brecha de participación por género',detalle:`${mejor[0]}: ${pMejor}% · ${peor[0]}: ${pPeor}%.`});
     }
 
-    // 3. Tasa por año de graduación (solo si hay datos reales)
     const porAnio={};
-    graduadosRaw.forEach(g=>{
-        const a=String(g.anioGraduacion||'');
-        if(!a) return;
-        if(!porAnio[a]) porAnio[a]={total:0,respondieron:0};
-        porAnio[a].total++;
-        if(g.respondio) porAnio[a].respondieron++;
-    });
+    graduadosRaw.forEach(g=>{const a=String(g.anioGraduacion||'');if(!a)return;if(!porAnio[a])porAnio[a]={total:0,respondieron:0};porAnio[a].total++;if(g.respondio)porAnio[a].respondieron++;});
     const anioEntries=Object.entries(porAnio).filter(([,v])=>v.total>=2).sort((a,b)=>Number(b[0])-Number(a[0]));
     if(anioEntries.length>=1){
         const masReciente=anioEntries[0];
         const pR=Math.round(masReciente[1].respondieron/masReciente[1].total*100);
-        if(pR<50)   ins.push({tipo:'warn',titulo:`Baja participación de graduados ${masReciente[0]}: ${pR}%`,detalle:'Los graduados recientes tienen menor tasa. Considerar comunicación directa.'});
-        else if(pR>=80) ins.push({tipo:'ok',titulo:`Alta participación de graduados ${masReciente[0]}: ${pR}%`,detalle:'Alto compromiso de los graduados más recientes.'});
+        if(pR<50)   ins.push({tipo:'warn',titulo:`Baja participación de graduados ${masReciente[0]}: ${pR}%`,detalle:'Considerar comunicación directa.'});
+        else if(pR>=80) ins.push({tipo:'ok',titulo:`Alta participación de graduados ${masReciente[0]}: ${pR}%`,detalle:'Alto compromiso de los más recientes.'});
     }
 
-    // 4. Preguntas de escala — USANDO PROMEDIO AJUSTADO para umbrales correctos
     const pregsEscala=todasPregs.filter(g=>g.tipo==='escala'&&g.respuestasRaw?.length>=3);
     if(pregsEscala.length>0){
         const conInfo=pregsEscala
-            .map(g=>{
-                const info=promedioEscalaConInfo(g.respuestasRaw, g.etiquetaMin||'', g.etiquetaMax||'');
-                if(!info) return null;
-                return{texto:g.textoCanonical,invertida:info.invertida,...info};
-            })
-            .filter(Boolean)
-            .sort((a,b)=>a.promAdj-b.promAdj); // ordenar por promedio AJUSTADO
-
+            .map(g=>{const info=promedioEscalaConInfo(g.respuestasRaw,g.etiquetaMin||'',g.etiquetaMax||'');if(!info)return null;return{texto:g.textoCanonical,invertida:info.invertida,...info};})
+            .filter(Boolean).sort((a,b)=>a.promAdj-b.promAdj);
         if(conInfo.length>0){
             const peor=conInfo[0],mejor=conInfo[conInfo.length-1];
-
-            // Nota: el texto del promedio muestra el valor real, pero la categoría usa el ajustado
-            const textoPromPeor=peor.invertida
-                ? `${peor.promReal.toFixed(2)}/5 (${peor.invertida?'escala invertida: '+['Exc.','Muy B.','Bueno','Regular','Insuf.'][Math.round(peor.promReal)-1]:''})`
-                : `${peor.promReal.toFixed(2)}/5`;
-            const textoPromMejor=mejor.invertida
-                ? `${mejor.promReal.toFixed(2)}/5 (${['Exc.','Muy B.','Bueno','Regular','Insuf.'][Math.round(mejor.promReal)-1]})`
-                : `${mejor.promReal.toFixed(2)}/5`;
-
-            if(peor.promAdj<3.0)
-                ins.push({tipo:'crit',titulo:`Área crítica: "${peor.texto.slice(0,55)}${peor.texto.length>55?'…':''}"`,detalle:`Promedio ${textoPromPeor} en ${peor.n} respuestas. Requiere atención prioritaria.`});
-            else if(peor.promAdj<3.5)
-                ins.push({tipo:'warn',titulo:`Área de mejora: "${peor.texto.slice(0,55)}${peor.texto.length>55?'…':''}"`,detalle:`Promedio ${textoPromPeor}. Por debajo del nivel óptimo.`});
-
-            if(mejor.promAdj>=4.0&&conInfo.length>1)
-                ins.push({tipo:'ok',titulo:`Fortaleza: "${mejor.texto.slice(0,55)}${mejor.texto.length>55?'…':''}"`,detalle:`Promedio ${textoPromMejor} en ${mejor.n} respuestas. Aspecto mejor valorado.`});
-
-            if(conInfo.length>=3&&(mejor.promAdj-peor.promAdj)>=1.5)
-                ins.push({tipo:'info',titulo:`Alta dispersión entre indicadores (rango ${(mejor.promAdj-peor.promAdj).toFixed(1)} pts)`,detalle:'Percepciones muy diferenciadas según el tema evaluado.'});
-
-            // Aviso explícito si hay escalas invertidas en los resultados
+            const textoPromPeor=`${peor.promReal.toFixed(2)}/5`;
+            const textoPromMejor=`${mejor.promReal.toFixed(2)}/5`;
+            if(peor.promAdj<3.0) ins.push({tipo:'crit',titulo:`Área crítica: "${peor.texto.slice(0,55)}…"`,detalle:`Promedio ${textoPromPeor} en ${peor.n} respuestas.`});
+            else if(peor.promAdj<3.5) ins.push({tipo:'warn',titulo:`Área de mejora: "${peor.texto.slice(0,55)}…"`,detalle:`Promedio ${textoPromPeor}.`});
+            if(mejor.promAdj>=4.0&&conInfo.length>1) ins.push({tipo:'ok',titulo:`Fortaleza: "${mejor.texto.slice(0,55)}…"`,detalle:`Promedio ${textoPromMejor} en ${mejor.n} respuestas.`});
+            if(conInfo.length>=3&&(mejor.promAdj-peor.promAdj)>=1.5) ins.push({tipo:'info',titulo:`Alta dispersión entre indicadores (rango ${(mejor.promAdj-peor.promAdj).toFixed(1)} pts)`,detalle:'Percepciones diferenciadas.'});
             const invertidas=conInfo.filter(c=>c.invertida);
-            if(invertidas.length>0)
-                ins.push({tipo:'info',titulo:`${invertidas.length} pregunta${invertidas.length!==1?'s':''} con escala invertida (1=Excelente)`,detalle:`Los análisis usan el valor equivalente ajustado. "${invertidas[0].texto.slice(0,45)}…" y otras tienen escala donde valores bajos son mejores resultados.`});
+            if(invertidas.length>0) ins.push({tipo:'info',titulo:`${invertidas.length} pregunta${invertidas.length!==1?'s':''} con escala invertida`,detalle:'Los análisis usan valor ajustado.'});
         }
     }
 
-    // 5. Si/No
     todasPregs.filter(g=>g.tipo==='si_no'&&g.respuestasRaw?.length>=2).forEach(g=>{
         const si=g.respuestasRaw.filter(r=>r.valor==='Sí').length;
         const total=g.respuestasRaw.length;
         const pctSi=Math.round(si/total*100);
         const texto=g.textoCanonical.slice(0,55)+(g.textoCanonical.length>55?'…':'');
-        if(pctSi<=25)  ins.push({tipo:'crit',titulo:`Solo ${pctSi}% respondió "Sí": "${texto}"`,detalle:`${si} de ${total} respuestas afirmativas.`});
+        if(pctSi<=25)  ins.push({tipo:'crit',titulo:`Solo ${pctSi}% respondió "Sí": "${texto}"`,detalle:`${si} de ${total} afirmativas.`});
         else if(pctSi>=80) ins.push({tipo:'ok',titulo:`${pctSi}% respondió "Sí": "${texto}"`,detalle:`Consenso elevado: ${si} de ${total}.`});
     });
 
-    // 6. Tendencia longitudinal (2+ encuestas) — USA PROMEDIO AJUSTADO
     if(encCerradas.length>=2){
         const encOrdenadas=[...encCerradas].sort((a,b)=>new Date(a.fechaCierre)-new Date(b.fechaCierre));
         const idAntigua=encOrdenadas[0]._id,idReciente=encOrdenadas[encOrdenadas.length-1]._id;
@@ -557,62 +547,37 @@ const calcularInsightsGraduados=(kpis,comunes,otras,encCerradas,graduadosRaw)=>{
         todasPregs.filter(g=>g.esComun&&g.tipo==='escala').forEach(g=>{
             const infoA=promedioEscalaConInfo(g.respuestasRaw.filter(r=>r.encuestaId===idAntigua),g.etiquetaMin||'',g.etiquetaMax||'');
             const infoR=promedioEscalaConInfo(g.respuestasRaw.filter(r=>r.encuestaId===idReciente),g.etiquetaMin||'',g.etiquetaMax||'');
-            if(infoA&&infoR){
-                if(infoR.promAdj>infoA.promAdj+0.2) mejora++;
-                else if(infoR.promAdj<infoA.promAdj-0.2) empeora++;
-            }
+            if(infoA&&infoR){if(infoR.promAdj>infoA.promAdj+0.2)mejora++;else if(infoR.promAdj<infoA.promAdj-0.2)empeora++;}
         });
-        if(mejora>empeora)      ins.push({tipo:'ok',  titulo:`Tendencia positiva: ${mejora} indicador${mejora!==1?'es':''} mejoró entre encuestas`,detalle:`"${encOrdenadas[0].titulo}" → "${encOrdenadas[encOrdenadas.length-1].titulo}".`});
-        else if(empeora>mejora) ins.push({tipo:'warn', titulo:`Tendencia negativa: ${empeora} indicador${empeora!==1?'es':''} empeoró`,detalle:'Analizar factores del contexto entre períodos.'});
-        else if(mejora>0)       ins.push({tipo:'info', titulo:'Tendencia estable entre encuestas',detalle:'Los indicadores no muestran variación significativa.'});
+        if(mejora>empeora)      ins.push({tipo:'ok',  titulo:`Tendencia positiva: ${mejora} indicador${mejora!==1?'es':''} mejoró`,detalle:`"${encOrdenadas[0].titulo}" → "${encOrdenadas[encOrdenadas.length-1].titulo}".`});
+        else if(empeora>mejora) ins.push({tipo:'warn', titulo:`Tendencia negativa: ${empeora} indicador${empeora!==1?'es':''} empeoró`,detalle:'Analizar factores del contexto.'});
         ins.push({tipo:'ok',titulo:`${encCerradas.length} encuestas cerradas — análisis longitudinal activo`,detalle:'Mantener preguntas comunes para seguimiento.'});
     } else if(encCerradas.length===1){
-        ins.push({tipo:'info',titulo:'1 encuesta cerrada — base de datos inicial',detalle:'Con la segunda encuesta se activará el análisis longitudinal.'});
+        ins.push({tipo:'info',titulo:'1 encuesta cerrada — base de datos inicial',detalle:'Con la segunda se activará el análisis longitudinal.'});
     }
 
-    // 7. Cobertura NLP
     const pregsTexto=todasPregs.filter(g=>g.tipo==='texto_libre');
     if(pregsTexto.length>0){
         const prom=Math.round(pregsTexto.reduce((s,g)=>s+(g.respuestasRaw?.length||0),0)/pregsTexto.length);
-        if(prom>=5)    ins.push({tipo:'ok',  titulo:`Buena cobertura cualitativa: ~${prom} respuestas por pregunta abierta`,detalle:'Volumen suficiente para análisis NLP confiable.'});
-        else if(prom>0)ins.push({tipo:'info',titulo:`Cobertura cualitativa limitada: ~${prom} respuesta${prom!==1?'s':''} por pregunta`,detalle:'Con más respuestas el NLP mejora en precisión.'});
+        if(prom>=5)    ins.push({tipo:'ok',  titulo:`Buena cobertura cualitativa: ~${prom} respuestas/pregunta`,detalle:'Volumen suficiente para NLP confiable.'});
+        else if(prom>0)ins.push({tipo:'info',titulo:`Cobertura cualitativa limitada: ~${prom} respuesta${prom!==1?'s':''}/pregunta`,detalle:'Con más respuestas el NLP mejora.'});
     }
-
     return ins;
 };
 
 const calcularPlanGraduados=(kpis,encCerradas,graduadosRaw,todasPregs)=>{
     const plan=[];let prioridad=1;
     const{tasa,totalGraduados,graduadosRespondieron}=kpis;
-
-    if(tasa<40)          plan.push({prioridad:prioridad++,accion:'Campaña urgente de convocatoria a graduados',impacto:'alto',meta:`${totalGraduados-graduadosRespondieron} sin responder — objetivo: superar 60%`});
-    if(tasa>=40&&tasa<70)plan.push({prioridad:prioridad++,accion:'Recordatorio por email institucional a graduados pendientes',impacto:'medio',meta:`${totalGraduados-graduadosRespondieron} por contactar para superar 70%`});
-    if(encCerradas.length===0)plan.push({prioridad:prioridad++,accion:'Cerrar la encuesta activa para habilitar el análisis',impacto:'alto',meta:'Los gráficos solo operan sobre encuestas cerradas'});
-
-    // Áreas débiles usando promedio AJUSTADO
-    const debiles=(todasPregs||[])
-        .filter(g=>g.tipo==='escala'&&g.respuestasRaw?.length>=2)
-        .map(g=>{
-            const info=promedioEscalaConInfo(g.respuestasRaw,g.etiquetaMin||'',g.etiquetaMax||'');
-            if(!info) return null;
-            return{texto:g.textoCanonical,promAdj:info.promAdj,promReal:info.promReal,invertida:info.invertida};
-        })
-        .filter(x=>x&&x.promAdj<3.5)
-        .sort((a,b)=>a.promAdj-b.promAdj);
-
-    if(debiles.length>0){
-        const d=debiles[0];
-        const notaInv=d.invertida?' (escala invertida — valor bajo = mejor resultado)':'';
-        plan.push({prioridad:prioridad++,accion:`Plan de mejora para ${debiles.length} área${debiles.length!==1?'s':''} con valoración baja`,impacto:'alto',meta:`"${d.texto.slice(0,45)}${d.texto.length>45?'…':''}" — prom. ajustado ${d.promAdj.toFixed(2)}/5${notaInv}`});
-    }
-
-    if(encCerradas.length===1)plan.push({prioridad:prioridad++,accion:'Mantener preguntas en la próxima encuesta',impacto:'medio',meta:'Habilitar análisis longitudinal de satisfacción'});
-
+    if(tasa<40)          plan.push({prioridad:prioridad++,accion:'Campaña urgente de convocatoria',impacto:'alto',meta:`${totalGraduados-graduadosRespondieron} sin responder`});
+    if(tasa>=40&&tasa<70)plan.push({prioridad:prioridad++,accion:'Recordatorio por email a graduados pendientes',impacto:'medio',meta:`${totalGraduados-graduadosRespondieron} por contactar`});
+    if(encCerradas.length===0)plan.push({prioridad:prioridad++,accion:'Cerrar la encuesta activa',impacto:'alto',meta:'Los gráficos solo operan sobre encuestas cerradas'});
+    const debiles=(todasPregs||[]).filter(g=>g.tipo==='escala'&&g.respuestasRaw?.length>=2).map(g=>{const info=promedioEscalaConInfo(g.respuestasRaw,g.etiquetaMin||'',g.etiquetaMax||'');if(!info)return null;return{texto:g.textoCanonical,promAdj:info.promAdj};}).filter(x=>x&&x.promAdj<3.5).sort((a,b)=>a.promAdj-b.promAdj);
+    if(debiles.length>0){const d=debiles[0];plan.push({prioridad:prioridad++,accion:`Plan de mejora para ${debiles.length} área${debiles.length!==1?'s':''} con valoración baja`,impacto:'alto',meta:`"${d.texto.slice(0,45)}…" — prom. ajustado ${d.promAdj.toFixed(2)}/5`});}
+    if(encCerradas.length===1)plan.push({prioridad:prioridad++,accion:'Mantener preguntas en la próxima encuesta',impacto:'medio',meta:'Habilitar análisis longitudinal'});
     const porAnio={};
     (graduadosRaw||[]).forEach(g=>{const a=String(g.anioGraduacion||'');if(!a)return;if(!porAnio[a])porAnio[a]={total:0,respondieron:0};porAnio[a].total++;if(g.respondio)porAnio[a].respondieron++;});
     const anioDebil=Object.entries(porAnio).filter(([,v])=>v.total>=2&&Math.round(v.respondieron/v.total*100)<40);
-    if(anioDebil.length>0){const[anio,datos]=anioDebil[0];plan.push({prioridad:prioridad++,accion:`Reforzar comunicación con promoción ${anio}`,impacto:'medio',meta:`Solo ${Math.round(datos.respondieron/datos.total*100)}% respondió (${datos.respondieron}/${datos.total})`});}
-
+    if(anioDebil.length>0){const[anio,datos]=anioDebil[0];plan.push({prioridad:prioridad++,accion:`Reforzar comunicación con promoción ${anio}`,impacto:'medio',meta:`Solo ${Math.round(datos.respondieron/datos.total*100)}% respondió`});}
     return plan;
 };
 
@@ -652,7 +617,6 @@ const TabEGraduado=()=>{
             .map(clave=>{const[m,y]=clave.split('-').map(Number);return{clave,label:`${MESES_ARR[m-1]} ${y}`};});
     },[datos]);
 
-    // Solo valores reales de la BD — sin inventar opciones
     const opsAnioGrad=useMemo(()=>{
         if(!datos?.graduadosRaw) return [];
         return[...new Set(datos.graduadosRaw.map(g=>g.anioGraduacion).filter(Boolean))].sort((a,b)=>b-a).map(String);
@@ -661,18 +625,14 @@ const TabEGraduado=()=>{
     const opsGenero=useMemo(()=>{
         if(!datos?.graduadosRaw) return [];
         const mapa={};
-        datos.graduadosRaw.forEach(g=>{
-            const gen=(g.genero||'').trim();
-            if(!gen) return;
-            const clave=normTxt(gen);
-            if(!mapa[clave]) mapa[clave]=gen;
-        });
+        datos.graduadosRaw.forEach(g=>{const gen=(g.genero||'').trim();if(!gen)return;const clave=normTxt(gen);if(!mapa[clave])mapa[clave]=gen;});
         return Object.values(mapa).sort();
     },[datos]);
 
+    // ── useMemo df — incluye preguntas condicionales ──────────────
     const df=useMemo(()=>{
         if(!datos) return null;
-        const{encuestas,graduadosRaw,preguntasAgrupadas,kpis}=datos;
+        const{encuestas,graduadosRaw,preguntasAgrupadas,preguntasCondicionalesAgrupadas,kpis}=datos;
         const encC=encuestas.filter(e=>e.estado==='cerrada');
 
         const encFiltradas=fEnc.mesAnio
@@ -680,7 +640,21 @@ const TabEGraduado=()=>{
             :encC;
         const idsC=new Set(encFiltradas.map(e=>e._id));
 
-        const pregsF=preguntasAgrupadas.map(g=>({
+        // Preguntas principales
+        const pregsF=(preguntasAgrupadas||[]).map(g=>({
+            ...g,
+            respuestasRaw:(g.respuestasRaw||[]).filter(r=>{
+                if(!idsC.has(r.encuestaId))        return false;
+                if(fEnc.encuestaId&&r.encuestaId!==fEnc.encuestaId) return false;
+                if(fEnc.anioGraduacion&&String(r.anioGraduacion)!==fEnc.anioGraduacion) return false;
+                if(fEnc.genero&&normTxt(r.genero||'')!==normTxt(fEnc.genero)) return false;
+                return true;
+            }),
+            encuestasAparece:(g.encuestasAparece||[]).filter(id=>idsC.has(id)),
+        })).filter(g=>g.respuestasRaw.length>0);
+
+        // Preguntas condicionales — NUEVO
+        const condicionales=(preguntasCondicionalesAgrupadas||[]).map(g=>({
             ...g,
             respuestasRaw:(g.respuestasRaw||[]).filter(r=>{
                 if(!idsC.has(r.encuestaId))        return false;
@@ -703,7 +677,7 @@ const TabEGraduado=()=>{
         const kE={...kpis,graduadosRespondieron:respondieron,tasa:totalGrad>0?Math.round((respondieron/totalGrad)*100):0,totalGraduados:totalGrad};
 
         return{
-            encC,encFiltradas,comunes,otras,kE,graduadosRaw,
+            encC,encFiltradas,comunes,otras,condicionales,kE,graduadosRaw,
             insights:calcularInsightsGraduados(kE,comunes,otras,encC,graduadosRaw),
             plan:calcularPlanGraduados(kE,encC,graduadosRaw,[...comunes,...otras]),
         };
@@ -713,7 +687,7 @@ const TabEGraduado=()=>{
     if(error)    return <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',minHeight:320}}><FaExclamationTriangle style={{fontSize:'2rem',color:NARANJA,marginBottom:10}}/><p style={{margin:'0 0 14px',fontSize:'0.82rem',color:'#374151',fontFamily:FONT}}>{error}</p><button onClick={cargar} style={{display:'inline-flex',alignItems:'center',gap:6,padding:'8px 14px',background:'white',border:'1px solid #e5e7eb',borderRadius:7,cursor:'pointer',fontSize:'0.74rem',fontWeight:600,color:'#374151',fontFamily:FONT}}><FaSyncAlt style={{fontSize:'0.66rem'}}/>Reintentar</button></div>;
     if(!df) return null;
 
-    const{encC,encFiltradas,comunes,otras,kE,graduadosRaw,insights,plan}=df;
+    const{encC,encFiltradas,comunes,otras,condicionales,kE,graduadosRaw,insights,plan}=df;
     const hayF=Object.values(fEnc).some(v=>v!=='');
     const sinD={margin:0,fontSize:'0.72rem',color:'#9ca3af',textAlign:'center',padding:'16px 0',fontFamily:FONT};
 
@@ -740,7 +714,6 @@ const TabEGraduado=()=>{
                 </div>
                 <div style={{width:1,height:20,background:'#e5e7eb',flexShrink:0}}/>
 
-                {/* 1. Período mes/año */}
                 {opsMesAnio.length>0
                     ?<select value={fEnc.mesAnio} onChange={e=>cEnc('mesAnio',e.target.value)} className={`teg-sel${fEnc.mesAnio?' on':''}`}>
                         <option value="">Todos los períodos</option>
@@ -748,32 +721,24 @@ const TabEGraduado=()=>{
                     </select>
                     :<span style={{fontSize:'0.68rem',color:'#94a3b8',fontFamily:FONT}}>Sin períodos cerrados</span>
                 }
-
-                {/* 2. Año de graduación — solo los de la BD */}
                 {opsAnioGrad.length>0&&(
                     <select value={fEnc.anioGraduacion} onChange={e=>cEnc('anioGraduacion',e.target.value)} className={`teg-sel${fEnc.anioGraduacion?' on':''}`}>
                         <option value="">Promoción</option>
                         {opsAnioGrad.map(a=><option key={a} value={a}>{a}</option>)}
                     </select>
                 )}
-
-                {/* 3. Género — solo los de la BD, sin inventar */}
                 {opsGenero.length>0&&(
                     <select value={fEnc.genero} onChange={e=>cEnc('genero',e.target.value)} className={`teg-sel${fEnc.genero?' on':''}`}>
                         <option value="">Género</option>
                         {opsGenero.map(g=><option key={g} value={g}>{g}</option>)}
                     </select>
                 )}
-
-                {/* 4. Encuesta específica — filtrada por período */}
                 {(fEnc.mesAnio?encFiltradas:encC).length>0&&(
                     <select value={fEnc.encuestaId} onChange={e=>cEnc('encuestaId',e.target.value)} className={`teg-sel${fEnc.encuestaId?' on':''}`} style={{minWidth:200,maxWidth:320}}>
                         <option value="">{fEnc.mesAnio?'Todas de este período':'Todas las encuestas cerradas'}</option>
                         {(fEnc.mesAnio?encFiltradas:encC).map(e=><option key={e._id} value={e._id}>{e.titulo}</option>)}
                     </select>
                 )}
-
-                {/* Chips activos */}
                 {hayF&&<>
                     {Object.entries(fEnc).filter(([,v])=>v).map(([k,v])=>{
                         const lblMap={mesAnio:'Período',encuestaId:'Encuesta',anioGraduacion:'Promoción',genero:'Género'};
@@ -803,7 +768,7 @@ const TabEGraduado=()=>{
                 <div style={{width:28,height:28,borderRadius:7,background:`${VERDE}18`,display:'flex',alignItems:'center',justifyContent:'center'}}><FaLayerGroup style={{color:VERDE,fontSize:'0.78rem'}}/></div>
                 <div>
                     <div style={{fontSize:'0.84rem',fontWeight:700,color:'#0f172a',fontFamily:FONT}}>Preguntas Recurrentes</div>
-                    <div style={{fontSize:'0.61rem',color:'#9ca3af',fontFamily:FONT}}>Aparecen en múltiples encuestas · {comunes.length} grupo{comunes.length!==1?'s':''} · Comparación longitudinal</div>
+                    <div style={{fontSize:'0.61rem',color:'#9ca3af',fontFamily:FONT}}>Aparecen en múltiples encuestas · {comunes.length} grupo{comunes.length!==1?'s':''}</div>
                 </div>
             </div>
             {comunes.map((g,i)=><TarjetaGrupo key={g.id} grupo={g} encuestas={encC} filtros={fEnc} num={i+1}/>)}
@@ -821,12 +786,38 @@ const TabEGraduado=()=>{
             {otras.map((g,i)=><TarjetaGrupo key={g.id} grupo={g} encuestas={encC} filtros={fEnc} num={comunes.length+i+1}/>)}
         </div>}
 
-        {/* Sin datos */}
-        {comunes.length===0&&otras.length===0&&<div style={{padding:'32px',background:'white',borderRadius:10,border:'1px solid #e5e7eb',textAlign:'center',marginBottom:14}}>
-            <FaClipboardList style={{color:'#cbd5e1',fontSize:'2rem',marginBottom:8}}/>
-            <p style={{margin:'0 0 6px',fontSize:'0.78rem',fontWeight:600,color:'#94a3b8',fontFamily:FONT}}>{encC.length===0?'No hay encuestas cerradas aún':'Sin resultados con los filtros actuales'}</p>
-            <p style={{margin:0,fontSize:'0.68rem',color:'#cbd5e1',fontFamily:FONT}}>{encC.length===0?'Los gráficos aparecerán al cerrar una encuesta.':'Prueba limpiando los filtros.'}</p>
+        {/* ── PREGUNTAS CONDICIONALES — NUEVO ── */}
+        {condicionales.length>0&&<div style={{marginBottom:14}}>
+            <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:10}}>
+                <div style={{width:28,height:28,borderRadius:7,background:`${NARANJA}18`,display:'flex',alignItems:'center',justifyContent:'center'}}>
+                    <FaCodeBranch style={{color:NARANJA,fontSize:'0.78rem'}}/>
+                </div>
+                <div>
+                    <div style={{fontSize:'0.84rem',fontWeight:700,color:'#0f172a',fontFamily:FONT}}>Preguntas Condicionales</div>
+                    <div style={{fontSize:'0.61rem',color:'#9ca3af',fontFamily:FONT}}>
+                        Solo se muestran según la respuesta Sí/No dada · {condicionales.length} subpregunta{condicionales.length!==1?'s':''}
+                    </div>
+                </div>
+            </div>
+            {condicionales.map((g,i)=>(
+                <TarjetaCondicional
+                    key={g.id}
+                    grupo={g}
+                    encuestas={encC}
+                    filtros={fEnc}
+                    num={comunes.length+otras.length+i+1}
+                />
+            ))}
         </div>}
+
+        {/* Sin datos */}
+        {comunes.length===0&&otras.length===0&&condicionales.length===0&&(
+            <div style={{padding:'32px',background:'white',borderRadius:10,border:'1px solid #e5e7eb',textAlign:'center',marginBottom:14}}>
+                <FaClipboardList style={{color:'#cbd5e1',fontSize:'2rem',marginBottom:8}}/>
+                <p style={{margin:'0 0 6px',fontSize:'0.78rem',fontWeight:600,color:'#94a3b8',fontFamily:FONT}}>{encC.length===0?'No hay encuestas cerradas aún':'Sin resultados con los filtros actuales'}</p>
+                <p style={{margin:0,fontSize:'0.68rem',color:'#cbd5e1',fontFamily:FONT}}>{encC.length===0?'Los gráficos aparecerán al cerrar una encuesta.':'Prueba limpiando los filtros.'}</p>
+            </div>
+        )}
 
         {/* Insights + Plan */}
         <div style={{display:'grid',gridTemplateColumns:'1fr 320px',gap:14}}>
@@ -834,8 +825,8 @@ const TabEGraduado=()=>{
                 <div style={{padding:'11px 16px',borderBottom:'1px solid #f1f5f9',background:`linear-gradient(135deg,${ROJO}09,transparent)`,display:'flex',alignItems:'center',gap:9,flexWrap:'wrap'}}>
                     <div style={{width:28,height:28,borderRadius:7,background:`${ROJO}18`,display:'flex',alignItems:'center',justifyContent:'center'}}><FaLightbulb style={{color:ROJO,fontSize:'0.82rem'}}/></div>
                     <div>
-                        <div style={{fontSize:'0.82rem',fontWeight:700,color:'#0f172a',fontFamily:FONT}}>Análisis de Situación — Encuestas Graduados</div>
-                        <div style={{fontSize:'0.61rem',color:'#9ca3af',fontFamily:FONT}}>{insights.length} observaciones · generado automáticamente{hayF&&<span style={{color:ROJO,marginLeft:4}}>· Filtrado aplicado</span>}</div>
+                        <div style={{fontSize:'0.82rem',fontWeight:700,color:'#0f172a',fontFamily:FONT}}>Análisis de Situación</div>
+                        <div style={{fontSize:'0.61rem',color:'#9ca3af',fontFamily:FONT}}>{insights.length} observaciones{hayF&&<span style={{color:ROJO,marginLeft:4}}>· Filtrado aplicado</span>}</div>
                     </div>
                     <div style={{marginLeft:'auto',display:'flex',gap:10}}>
                         {[['crit','Crítico',ROJO],['warn','Atención',NARANJA],['ok','Fortaleza',VERDE],['info','Sugerencia',AZUL]].map(([tipo,lbl,c])=>(

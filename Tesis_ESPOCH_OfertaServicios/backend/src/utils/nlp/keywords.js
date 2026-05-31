@@ -1,30 +1,5 @@
-/**
- * keywords.js
- * ─────────────────────────────────────────────────────────────────────────────
- * Diccionario de clasificación NLP para perfiles de Ingeniería de Software
- * ESPOCH. Sirve como base léxica para tres propósitos:
- *   1. Detectar tecnologías específicas presentes en texto libre
- *   2. Mapear términos técnicos a categorías/especialidades
- *   3. Identificar habilidades blandas mediante frases contextuales
- *
- * Fundamentación teórica:
- *   - Washizaki, H. (Ed.). Guide to the Software Engineering Body of Knowledge
- *     (SWEBOK Guide), Version 4.0. IEEE Computer Society, 2024.
- *     Capítulos referenciados: Ch.3 (Design), Ch.4 (Construction),
- *     Ch.5 (Testing), Ch.6 (Operations), Ch.13 (Security), Ch.14
- *     (Professional Practice), Ch.16 (Computing Foundations).
- *
- * Marco teórico tesis: Secciones 2.3.1, 2.3.2 y 2.3.3
- * ─────────────────────────────────────────────────────────────────────────────
- */
 
-/**
- * TECNOLOGÍAS DETECTABLES
- * Alineadas con el vocabulario de SWEBOK v4, Ch.4 (Software Construction)
- * y Ch.16 (Computing Foundations).
- *
- * Formato: { label: 'Nombre visible', patterns: ['regex1', 'regex2', ...] }
- */
+
 const TECNOLOGIAS = [
     // ── Lenguajes de programación (SWEBOK v4, Ch.4 Software Construction) ──
     { label: 'JavaScript',  patterns: ['javascript', 'js\\b'] },

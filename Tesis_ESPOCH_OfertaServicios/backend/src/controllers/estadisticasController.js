@@ -318,12 +318,12 @@ const obtenerEstadisticasEncuesta = async (req, res) => {
         // ── 1. Encuestas tipo graduados ───────────────────────────────
         const encuestas = await Encuesta.find({ tipo: 'graduados' })
             .sort({ fechaInicio: -1 }).lean();
-
+ 
         // ── 2. Graduados con tesis verificada (base total) ────────────
         const graduadosBase = await Graduado.find({ tesisVerificada: true })
             .select('nombres apellidos emailInstitucional anioGraduacion genero provinciaActual')
             .lean();
-
+ 
         if (!encuestas.length) {
             return res.json({
                 encuestas: [],
@@ -349,23 +349,22 @@ const obtenerEstadisticasEncuesta = async (req, res) => {
                 },
             });
         }
-
+ 
         const encuestaIds = encuestas.map(e => e._id);
-
-        // ── 3. Respuestas con datos del graduado y la encuesta ────────
+ 
+        // ── 3. Respuestas con datos del graduado ──────────────────────
         const respuestas = await RespuestaEncuesta.find({ encuesta: { $in: encuestaIds } })
             .populate('graduado', 'nombres apellidos emailInstitucional anioGraduacion genero provinciaActual')
             .populate('encuesta', 'titulo fechaInicio fechaCierre estado')
             .lean();
-
+ 
         // ── 4. Preguntas (sin títulos de sección) ─────────────────────
         const preguntas = await Pregunta.find({
             encuesta: { $in: encuestaIds },
             tipo:     { $ne: 'titulo' },
         }).sort({ encuesta: 1, orden: 1 }).lean();
-
-        // ── 5. Agrupar preguntas similares ────────────────────────────
-        // Normaliza tildes: "Satisfacción" y "Satisfaccion" se fusionan
+ 
+        // ── 5. Agrupar preguntas principales (sin cambios) ────────────
         const grupos = [];
         for (const preg of preguntas) {
             let encontrado = false;
@@ -402,13 +401,115 @@ const obtenerEstadisticasEncuesta = async (req, res) => {
                     encuestasAparece:[preg.encuesta.toString()],
                     preguntaIds:     [preg._id.toString()],
                     obligatoria:     preg.obligatoria,
+                    // Campos de condicional — vacíos para preguntas normales
+                    esCondicional:   false,
+                    ladoPadre:       null,
+                    textoPadre:      null,
                 });
             }
         }
-
-        // ── 6. Lookup: preguntaId → lista de respuestas enriquecidas ──
+ 
+        // ── 6. Construir grupos de SUB-PREGUNTAS CONDICIONALES ────────
+        // Por cada pregunta si_no con tieneCondicional, sus subpreguntas
+        // forman grupos propios de análisis identificados por
+        // (preguntaId_padre, lado, indice)
+        const gruposCondicionales = [];
+ 
+        for (const preg of preguntas) {
+            if (preg.tipo !== 'si_no' || !preg.tieneCondicional) continue;
+ 
+            const textoPadre = preg.texto;
+            const pregIdStr  = preg._id.toString();
+            const encIdStr   = preg.encuesta.toString();
+ 
+            // Subpreguntas lado SÍ
+            (preg.preguntasCondicionalSi || []).forEach((textoSub, idx) => {
+                const tipo  = preg.tiposCondicionalSi?.[idx]  || 'texto_libre';
+                const opts  = preg.opcionesCondicionalSi?.[idx] || [];
+                // Buscar grupo existente similar (mismo padre + lado + texto parecido)
+                let found = false;
+                for (const g of gruposCondicionales) {
+                    if (
+                        g.ladoPadre === 'si' &&
+                        g.preguntaIdPadre === pregIdStr &&
+                        similitudEnc(g.textoCanonical, textoSub) >= 0.72
+                    ) {
+                        if (!g.encuestasAparece.includes(encIdStr))
+                            g.encuestasAparece.push(encIdStr);
+                        opts.forEach(op => { if (!g.opciones.includes(op)) g.opciones.push(op); });
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    gruposCondicionales.push({
+                        id:              `cond_${pregIdStr}_si_${idx}`,
+                        textoCanonical:  textoSub,
+                        tipo,
+                        opciones:        [...opts],
+                        esMatriz:        false,
+                        items:           [],
+                        etiquetaMin:     '',
+                        etiquetaMax:     '',
+                        encuestasAparece:[encIdStr],
+                        preguntaIds:     [pregIdStr],   // id de la pregunta PADRE
+                        preguntaIdPadre: pregIdStr,
+                        indiceCondicional: idx,
+                        obligatoria:     false,
+                        // Metadatos de condicional
+                        esCondicional:   true,
+                        ladoPadre:       'si',
+                        textoPadre,
+                    });
+                }
+            });
+ 
+            // Subpreguntas lado NO
+            (preg.preguntasCondicionalNo || []).forEach((textoSub, idx) => {
+                const tipo  = preg.tiposCondicionalNo?.[idx]  || 'texto_libre';
+                const opts  = preg.opcionesCondicionalNo?.[idx] || [];
+                let found = false;
+                for (const g of gruposCondicionales) {
+                    if (
+                        g.ladoPadre === 'no' &&
+                        g.preguntaIdPadre === pregIdStr &&
+                        similitudEnc(g.textoCanonical, textoSub) >= 0.72
+                    ) {
+                        if (!g.encuestasAparece.includes(encIdStr))
+                            g.encuestasAparece.push(encIdStr);
+                        opts.forEach(op => { if (!g.opciones.includes(op)) g.opciones.push(op); });
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    gruposCondicionales.push({
+                        id:              `cond_${pregIdStr}_no_${idx}`,
+                        textoCanonical:  textoSub,
+                        tipo,
+                        opciones:        [...opts],
+                        esMatriz:        false,
+                        items:           [],
+                        etiquetaMin:     '',
+                        etiquetaMax:     '',
+                        encuestasAparece:[encIdStr],
+                        preguntaIds:     [pregIdStr],
+                        preguntaIdPadre: pregIdStr,
+                        indiceCondicional: idx,
+                        obligatoria:     false,
+                        esCondicional:   true,
+                        ladoPadre:       'no',
+                        textoPadre,
+                    });
+                }
+            });
+        }
+ 
+        // ── 7. Lookup: preguntaId → respuestas enriquecidas ───────────
         const respCompletadas = respuestas.filter(r => r.estado === 'completada');
-        const lookupResp = {};
+        const lookupPrincipal  = {}; // pid → [resp principal]
+        const lookupCondicional = {}; // `${pid}_${lado}_${indice}` → [resp condicional]
+ 
         for (const r of respCompletadas) {
             const grad = r.graduado || {};
             const meta = {
@@ -420,36 +521,58 @@ const obtenerEstadisticasEncuesta = async (req, res) => {
                 provinciaActual: grad.provinciaActual  || '',
                 encuestaId:      r.encuesta?._id?.toString() || '',
             };
+ 
             for (const item of r.respuestas || []) {
                 if (!item.pregunta) continue;
                 const pid = item.pregunta.toString();
-                if (!lookupResp[pid]) lookupResp[pid] = [];
-                lookupResp[pid].push({
-                    ...meta,
-                    valor:            item.respuesta,
-                    esCondicional:    item.esCondicional    || false,
-                    ladoCondicional:  item.ladoCondicional  || null,
-                    textoSubPregunta: item.textoSubPregunta || '',
-                });
+ 
+                if (!item.esCondicional) {
+                    // Respuesta principal
+                    if (!lookupPrincipal[pid]) lookupPrincipal[pid] = [];
+                    lookupPrincipal[pid].push({ ...meta, valor: item.respuesta });
+                } else {
+                    // Respuesta condicional — clave compuesta
+                    const clave = `${pid}_${item.ladoCondicional}_${item.indiceCondicional}`;
+                    if (!lookupCondicional[clave]) lookupCondicional[clave] = [];
+                    lookupCondicional[clave].push({
+                        ...meta,
+                        valor:            item.respuesta,
+                        textoSubPregunta: item.textoSubPregunta || '',
+                    });
+                }
             }
         }
-
-        // ── 7. Construir grupos con sus respuestas ────────────────────
+ 
+        // ── 8. Unir respuestas a grupos principales ───────────────────
         const encCerradas = encuestas.filter(e => e.estado === 'cerrada');
+ 
         const gruposConDatos = grupos.map(g => {
-            const todas     = g.preguntaIds.flatMap(pid => lookupResp[pid] || []);
-            const principal = todas.filter(r => !r.esCondicional);
+            const todas     = g.preguntaIds.flatMap(pid => lookupPrincipal[pid] || []);
             return {
                 ...g,
-                totalRespuestas: principal.length,
-                respuestasRaw:   principal,
-                // esComun: aparece en 2+ encuestas (o en ≥50% de las cerradas si hay varias)
+                totalRespuestas: todas.length,
+                respuestasRaw:   todas,
                 esComun: g.encuestasAparece.length >= Math.max(2,
                     Math.ceil(encCerradas.length * 0.5)),
             };
         }).sort((a, b) => b.totalRespuestas - a.totalRespuestas);
-
-        // ── 8. KPIs ───────────────────────────────────────────────────
+ 
+        // ── 9. Unir respuestas a grupos condicionales ─────────────────
+        const gruposCondConDatos = gruposCondicionales.map(g => {
+            const clave = `${g.preguntaIdPadre}_${g.ladoPadre}_${g.indiceCondicional}`;
+            const resps  = lookupCondicional[clave] || [];
+            return {
+                ...g,
+                totalRespuestas: resps.length,
+                respuestasRaw:   resps,
+                // Los condicionales nunca son "comunes" en el mismo sentido,
+                // pero marcamos si aparecen en varias encuestas
+                esComun: g.encuestasAparece.length >= 2,
+            };
+        }).filter(g => g.totalRespuestas > 0) // solo mostrar los que tienen datos
+          .sort((a, b) => b.totalRespuestas - a.totalRespuestas);
+ 
+        // ── 10. KPIs ──────────────────────────────────────────────────
         const totalGraduados   = graduadosBase.length;
         const totalEncuestas   = encuestas.length;
         const totalRespuestas  = respCompletadas.length;
@@ -458,8 +581,8 @@ const obtenerEstadisticasEncuesta = async (req, res) => {
         );
         const tasaRespuesta = totalGraduados > 0
             ? Math.round((gradRespondieron.size / totalGraduados) * 100) : 0;
-
-        // ── 9. Historial de encuestas por graduado ────────────────────
+ 
+        // ── 11. Historial de encuestas por graduado ───────────────────
         const gradRespMap = {};
         for (const r of respCompletadas) {
             const gid = r.graduado?._id?.toString();
@@ -467,7 +590,7 @@ const obtenerEstadisticasEncuesta = async (req, res) => {
             if (!gradRespMap[gid]) gradRespMap[gid] = [];
             gradRespMap[gid].push(r.encuesta?._id?.toString());
         }
-
+ 
         const graduadosRaw = graduadosBase.map(g => ({
             _id:                  g._id.toString(),
             nombres:              g.nombres,
@@ -479,8 +602,8 @@ const obtenerEstadisticasEncuesta = async (req, res) => {
             encuestasRespondidas: gradRespMap[g._id.toString()] || [],
             respondio:            (gradRespMap[g._id.toString()] || []).length > 0,
         }));
-
-        // ── 10. Respuestas raw para tabla del frontend ─────────────────
+ 
+        // ── 12. Respuestas raw para tabla del frontend ────────────────
         const respuestasRaw = respCompletadas.map(r => ({
             _id:             r._id.toString(),
             encuestaId:      r.encuesta?._id?.toString()  || '',
@@ -493,7 +616,7 @@ const obtenerEstadisticasEncuesta = async (req, res) => {
             provinciaActual: r.graduado?.provinciaActual  || '',
             fechaRespuesta:  r.fechaRespuesta,
         }));
-
+ 
         res.json({
             encuestas: encuestas.map(e => ({
                 _id:             e._id.toString(),
@@ -505,7 +628,10 @@ const obtenerEstadisticasEncuesta = async (req, res) => {
             })),
             graduadosRaw,
             respuestasRaw,
-            preguntasAgrupadas: gruposConDatos,
+            // gruposConDatos = preguntas normales
+            // gruposCondConDatos = subpreguntas condicionales (nuevo)
+            preguntasAgrupadas:            gruposConDatos,
+            preguntasCondicionalesAgrupadas: gruposCondConDatos,
             kpis: {
                 totalGraduados,
                 totalEncuestas,
@@ -514,7 +640,7 @@ const obtenerEstadisticasEncuesta = async (req, res) => {
                 graduadosRespondieron: gradRespondieron.size,
             },
         });
-
+ 
     } catch (err) {
         console.error('Error en obtenerEstadisticasEncuesta:', err);
         res.status(500).json({ msg: 'Error al obtener estadísticas de encuestas.', error: err.message });
