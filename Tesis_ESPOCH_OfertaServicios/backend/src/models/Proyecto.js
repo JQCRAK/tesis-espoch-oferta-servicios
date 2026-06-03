@@ -35,13 +35,13 @@ const ProyectoSchema = new mongoose.Schema({
         type: Date,
         default: null
     },
-    // Categoría detectada automáticamente por el modelo NLP
     categoria: {
         type: String,
         enum: [
             'Desarrollo Web', 'Desarrollo Móvil', 'Bases de Datos',
             'Inteligencia Artificial', 'Desarrollo de Escritorio',
-            'Ciberseguridad', 'DevOps', 'Consultoría', 'Sin categoría'
+            'Ciberseguridad', 'DevOps', 'Arquitectura de Software',
+            'Consultoría y Gestión', 'Sin categoría'
         ],
         default: 'Sin categoría'
     },

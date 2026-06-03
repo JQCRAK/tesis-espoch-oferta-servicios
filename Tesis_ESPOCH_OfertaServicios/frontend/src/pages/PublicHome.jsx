@@ -19,13 +19,23 @@ const urlFoto = (ruta) => {
     return `${BASE}/${ruta}`;
 };
 
-// ══════════════════════════════════════════════
-// FORMATO NÚMEROS: 1K, 1M
-// ══════════════════════════════════════════════
 const fmtNum = (n) => {
     if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1).replace('.0', '')}M`;
     if (n >= 1_000)     return `${(n / 1_000).toFixed(1).replace('.0', '')}K`;
     return n;
+};
+
+// ── Hook responsive ──────────────────────────────────────────────────────────
+const useWindowWidth = () => {
+    const [width, setWidth] = useState(
+        typeof window !== 'undefined' ? window.innerWidth : 1200
+    );
+    useEffect(() => {
+        const handler = () => setWidth(window.innerWidth);
+        window.addEventListener('resize', handler);
+        return () => window.removeEventListener('resize', handler);
+    }, []);
+    return width;
 };
 
 // ══════════════════════════════════════════════
@@ -87,7 +97,7 @@ const Constellation = () => {
 };
 
 // ══════════════════════════════════════════════
-// CONTADOR ANIMADO — con formato K/M al llegar al final
+// CONTADOR ANIMADO
 // ══════════════════════════════════════════════
 const Counter = ({ value, label }) => {
     const [count, setCount] = useState(0);
@@ -221,8 +231,6 @@ const TarjetaGraduado = ({ graduado, onContactar }) => {
         no_disponible: { bg: '#ffebee', color: '#b71c1c', border: '#ffcdd2', label: 'No disponible', dot: '#c62828' },
     }[graduado.disponibilidad] || { bg: '#f5f5f5', color: '#616161', border: '#e0e0e0', label: '—', dot: '#9e9e9e' };
 
-    const irAPerfil = () => navigate(`/perfil/${graduado._id}`);
-
     return (
         <div
             onMouseEnter={() => setHov(true)}
@@ -289,7 +297,7 @@ const TarjetaGraduado = ({ graduado, onContactar }) => {
             )}
 
             <div style={ts.footerCard}>
-                <button style={ts.btnVerPerfil} onClick={irAPerfil}>
+                <button style={ts.btnVerPerfil} onClick={() => navigate(`/perfil/${graduado._id}`)}>
                     <FaEye style={{ marginRight: 5 }} />Ver perfil
                 </button>
             </div>
@@ -301,18 +309,20 @@ const TarjetaGraduado = ({ graduado, onContactar }) => {
 // PUBLIC HOME
 // ══════════════════════════════════════════════
 const PublicHome = () => {
-    const [graduados,      setGraduados]      = useState([]);
-    const [cargando,       setCargando]       = useState(true);
-    const [busqueda,       setBusqueda]       = useState('');
-    const [filtroDisp,     setFiltroDisp]     = useState('todos');
-    const [modalGraduado,  setModalGraduado]  = useState(null);
-    const [topTecs,        setTopTecs]        = useState(['React', 'Node.js', 'Python', 'Flutter', 'Machine Learning']);
+    const width    = useWindowWidth();
+    const isMobile = width < 768;
+    const isTablet = width >= 768 && width < 1024;
+
+    const [graduados,     setGraduados]     = useState([]);
+    const [cargando,      setCargando]      = useState(true);
+    const [busqueda,      setBusqueda]      = useState('');
+    const [filtroDisp,    setFiltroDisp]    = useState('todos');
+    const [modalGraduado, setModalGraduado] = useState(null);
+    const [topTecs,       setTopTecs]       = useState(['React', 'Node.js', 'Python', 'Flutter', 'Machine Learning']);
     const inputRef = useRef(null);
 
     useEffect(() => {
         document.title = 'Perfiles Profesionales · Carrera de Software ESPOCH';
-
-        // Cargar graduados y top tecnologías en paralelo
         Promise.all([
             axios.get(`${API_URL}/publico/graduados`),
             axios.get(`${API_URL}/publico/top-tecnologias`),
@@ -333,15 +343,12 @@ const PublicHome = () => {
             g.tecnologias?.some(x => x.toLowerCase().includes(t)) ||
             g.afinidades?.some(a => (a.categoria || a).toLowerCase().includes(t)) ||
             g.ciudad?.toLowerCase().includes(t);
-
         const matchDisp = filtroDisp === 'todos' ||
             (filtroDisp === 'disponible'    && g.disponibilidad === 'disponible') ||
             (filtroDisp === 'no_disponible' && g.disponibilidad === 'no_disponible');
-
         return matchBusqueda && matchDisp;
     });
 
-    // Tecnologías únicas agrupadas (sin duplicados entre graduados)
     const totalTecs         = new Set(graduados.flatMap(g => (g.tecnologias || []).map(t => t.trim().toLowerCase()))).size;
     const disponibles       = graduados.filter(g => g.disponibilidad === 'disponible').length;
     const conEspecialidades = graduados.filter(g => g.afinidades?.length > 0).length;
@@ -352,37 +359,70 @@ const PublicHome = () => {
         { val: 'no_disponible', label: 'Ocupados',    dot: '#f57f17' },
     ];
 
+    // Stats: en móvil se muestran en 2x2, en desktop en fila
+    const statsData = [
+        { value: graduados.length,  label: 'Graduados'     },
+        { value: disponibles,       label: 'Disponibles'   },
+        { value: totalTecs,         label: 'Tecnologías'   },
+        { value: conEspecialidades, label: 'Especializados' },
+    ];
+
     return (
         <>
             {/* ════════ HERO ════════ */}
-            <header style={s.hero}>
+            <header style={{
+                ...s.hero,
+                padding: isMobile ? '36px 16px 44px' : '56px 20px 64px',
+            }}>
                 <div style={s.heroBgImagen} />
                 <div style={s.heroBgOverlay} />
                 <Constellation />
-                <div style={s.heroContent}>
-                    <div style={s.heroBadge}>
+                <div style={{
+                    ...s.heroContent,
+                    maxWidth: isMobile ? '100%' : 740,
+                }}>
+                    <div style={{
+                        ...s.heroBadge,
+                        fontSize: isMobile ? '0.68rem' : '0.77rem',
+                        padding: isMobile ? '4px 14px' : '5px 18px',
+                    }}>
                         Facultad de Informática y Electrónica · ESPOCH
                     </div>
-                    <h1 style={s.heroTitulo}>
+
+                    <h1 style={{
+                        ...s.heroTitulo,
+                        fontSize: isMobile ? '1.8rem' : isTablet ? '2.2rem' : '2.8rem',
+                        marginBottom: isMobile ? 10 : 14,
+                    }}>
                         Encuentra Talento en<br />
                         <span style={s.heroAcento}>Software Politécnico</span>
                     </h1>
-                    <p style={s.heroSub}>
-                        Conecta con graduados especializados en desarrollo de software,
-                        inteligencia artificial, bases de datos, mobile y más.
-                    </p>
+
+                    {!isMobile && (
+                        <p style={s.heroSub}>
+                            Conecta con graduados especializados en desarrollo de software,
+                            inteligencia artificial, bases de datos, mobile y más.
+                        </p>
+                    )}
 
                     {/* Buscador */}
-                    <div style={s.buscadorCard}>
+                    <div style={{
+                        ...s.buscadorCard,
+                        padding: isMobile ? '6px 6px 10px' : '8px 8px 12px',
+                        marginBottom: isMobile ? 20 : 32,
+                    }}>
                         <div style={s.buscadorFila}>
                             <FaSearch style={s.buscadorIco} />
                             <input
                                 ref={inputRef}
                                 type="text"
-                                placeholder="Busca por tecnología, nombre, especialidad o ciudad..."
+                                placeholder={isMobile ? 'Buscar tecnología, nombre...' : 'Busca por tecnología, nombre, especialidad o ciudad...'}
                                 value={busqueda}
                                 onChange={e => setBusqueda(e.target.value)}
-                                style={s.buscadorInput}
+                                style={{
+                                    ...s.buscadorInput,
+                                    fontSize: isMobile ? '0.9rem' : '1rem',
+                                }}
                                 autoComplete="off"
                             />
                             {busqueda && (
@@ -391,39 +431,103 @@ const PublicHome = () => {
                                 </button>
                             )}
                         </div>
-                        {/* Búsquedas populares — top 5 del backend */}
-                        <div style={s.sugerencias}>
-                            <span style={s.sugLabel}>Búsquedas populares:</span>
+
+                        {/* Sugerencias: scroll horizontal en móvil */}
+                        <div style={{
+                            ...s.sugerencias,
+                            flexWrap: isMobile ? 'nowrap' : 'wrap',
+                            overflowX: isMobile ? 'auto' : 'visible',
+                            paddingBottom: isMobile ? 4 : 0,
+                            WebkitOverflowScrolling: 'touch',
+                            scrollbarWidth: 'none',
+                        }}>
+                            <span style={{
+                                ...s.sugLabel,
+                                flexShrink: 0,
+                                fontSize: isMobile ? '0.68rem' : '0.73rem',
+                            }}>
+                                Populares:
+                            </span>
                             {topTecs.map(tag => (
-                                <button key={tag} style={s.sugTag} onClick={() => setBusqueda(tag)}>
+                                <button
+                                    key={tag}
+                                    style={{
+                                        ...s.sugTag,
+                                        flexShrink: 0,
+                                        fontSize: isMobile ? '0.68rem' : '0.73rem',
+                                        padding: isMobile ? '2px 9px' : '3px 12px',
+                                    }}
+                                    onClick={() => setBusqueda(tag)}
+                                >
                                     {tag}
                                 </button>
                             ))}
                         </div>
                     </div>
 
-                    {/* Stats con contador animado + formato K/M */}
-                    <div style={s.heroStats}>
-                        <Counter value={graduados.length} label="Graduados" />
-                        <div style={s.heroStatDiv} />
-                        <Counter value={disponibles}      label="Disponibles" />
-                        <div style={s.heroStatDiv} />
-                        <Counter value={totalTecs}        label="Tecnologías" />
-                        <div style={s.heroStatDiv} />
-                        <Counter value={conEspecialidades} label="Especializados" />
-                    </div>
+                    {/* Stats */}
+                    {isMobile ? (
+                        <div style={{
+                            display: 'grid',
+                            gridTemplateColumns: '1fr 1fr',
+                            gap: '12px 0',
+                            width: '100%',
+                        }}>
+                            {statsData.map((st, i) => (
+                                <React.Fragment key={st.label}>
+                                    <Counter value={st.value} label={st.label} />
+                                    {i % 2 === 0 && (
+                                        <div style={{
+                                            position: 'absolute',
+                                            display: 'none',
+                                        }} />
+                                    )}
+                                </React.Fragment>
+                            ))}
+                        </div>
+                    ) : (
+                        <div style={s.heroStats}>
+                            {statsData.map((st, i) => (
+                                <React.Fragment key={st.label}>
+                                    <Counter value={st.value} label={st.label} />
+                                    {i < statsData.length - 1 && <div style={s.heroStatDiv} />}
+                                </React.Fragment>
+                            ))}
+                        </div>
+                    )}
                 </div>
             </header>
 
             {/* ════════ GRID PERFILES ════════ */}
-            <div style={s.contenido}>
-                <div style={s.filtrosBar}>
-                    <div style={s.filtrosIzq}>
-                        <span style={s.filtrosLabel}>Filtrar por:</span>
+            <div style={{
+                ...s.contenido,
+                padding: isMobile ? '20px 12px 40px' : '28px 20px 52px',
+            }}>
+                {/* Barra de filtros */}
+                <div style={{
+                    ...s.filtrosBar,
+                    flexDirection: isMobile ? 'column' : 'row',
+                    alignItems: isMobile ? 'flex-start' : 'center',
+                    gap: isMobile ? 10 : 10,
+                    marginBottom: isMobile ? 16 : 20,
+                }}>
+                    <div style={{
+                        ...s.filtrosIzq,
+                        flexWrap: 'wrap',
+                        gap: isMobile ? 6 : 8,
+                    }}>
+                        <span style={s.filtrosLabel}>Filtrar:</span>
                         {filtroOpciones.map(({ val, label, dot }) => (
-                            <button key={val}
-                                style={{ ...s.chip, ...(filtroDisp === val ? s.chipActivo : {}) }}
-                                onClick={() => setFiltroDisp(val)}>
+                            <button
+                                key={val}
+                                style={{
+                                    ...s.chip,
+                                    ...(filtroDisp === val ? s.chipActivo : {}),
+                                    fontSize: isMobile ? '0.74rem' : '0.8rem',
+                                    padding: isMobile ? '4px 10px' : '5px 14px',
+                                }}
+                                onClick={() => setFiltroDisp(val)}
+                            >
                                 {dot && (
                                     <span style={{
                                         display: 'inline-block', width: 8, height: 8, borderRadius: '50%',
@@ -435,7 +539,10 @@ const PublicHome = () => {
                             </button>
                         ))}
                     </div>
-                    <span style={s.filtrosDer}>
+                    <span style={{
+                        ...s.filtrosDer,
+                        fontSize: isMobile ? '0.74rem' : '0.82rem',
+                    }}>
                         {busqueda
                             ? <>{graduadosFiltrados.length} resultado{graduadosFiltrados.length !== 1 ? 's' : ''} para "<strong>{busqueda}</strong>"</>
                             : <>{graduados.length} perfil{graduados.length !== 1 ? 'es' : ''} registrado{graduados.length !== 1 ? 's' : ''}</>
@@ -464,7 +571,14 @@ const PublicHome = () => {
                         )}
                     </div>
                 ) : (
-                    <div style={s.grid}>
+                    <div style={{
+                        ...s.grid,
+                        gridTemplateColumns: isMobile
+                            ? '1fr'
+                            : isTablet
+                                ? 'repeat(2, 1fr)'
+                                : 'repeat(auto-fill, minmax(280px, 1fr))',
+                    }}>
                         {graduadosFiltrados.map(g => (
                             <TarjetaGraduado key={g._id} graduado={g} onContactar={setModalGraduado} />
                         ))}
@@ -488,35 +602,35 @@ const PublicHome = () => {
 // ESTILOS
 // ══════════════════════════════════════════════
 const s = {
-    hero:           { position: 'relative', padding: '56px 20px 64px', textAlign: 'center', overflow: 'hidden', backgroundColor: '#0f1428' },
+    hero:           { position: 'relative', textAlign: 'center', overflow: 'hidden', backgroundColor: '#0f1428' },
     heroBgImagen:   { position: 'absolute', inset: 0, backgroundImage: 'url("/img/EDIFICIO_FIE_LOGO.jpg")', backgroundSize: 'cover', backgroundPosition: 'center 35%', backgroundRepeat: 'no-repeat', filter: 'saturate(0.7) brightness(0.5) contrast(1.05)', zIndex: 0 },
     heroBgOverlay:  { position: 'absolute', inset: 0, background: 'linear-gradient(160deg, rgba(190,30,45,0.68) 0%, rgba(120,10,18,0.62) 40%, rgba(12,18,40,0.80) 100%)', zIndex: 1 },
-    heroContent:    { maxWidth: 740, margin: '0 auto', position: 'relative', zIndex: 2 },
-    heroBadge:      { display: 'inline-block', backgroundColor: 'rgba(255,255,255,0.11)', border: '1px solid rgba(255,255,255,0.28)', color: 'rgba(255,255,255,0.92)', fontSize: '0.77rem', fontWeight: 600, padding: '5px 18px', borderRadius: 20, marginBottom: 20, letterSpacing: '0.6px', fontFamily: FONT },
-    heroTitulo:     { color: '#FFFFFF', fontSize: '2.8rem', fontWeight: 900, margin: '0 0 14px', lineHeight: 1.15, fontFamily: FONT, textShadow: '0 2px 16px rgba(0,0,0,0.5)' },
+    heroContent:    { margin: '0 auto', position: 'relative', zIndex: 2 },
+    heroBadge:      { display: 'inline-block', backgroundColor: 'rgba(255,255,255,0.11)', border: '1px solid rgba(255,255,255,0.28)', color: 'rgba(255,255,255,0.92)', fontWeight: 600, borderRadius: 20, marginBottom: 20, letterSpacing: '0.6px', fontFamily: FONT },
+    heroTitulo:     { color: '#FFFFFF', fontWeight: 900, margin: '0 0 14px', lineHeight: 1.15, fontFamily: FONT, textShadow: '0 2px 16px rgba(0,0,0,0.5)' },
     heroAcento:     { color: 'rgba(255,255,255,0.78)' },
     heroSub:        { color: 'rgba(255,255,255,0.85)', fontSize: '1rem', lineHeight: 1.7, margin: '0 auto 32px', maxWidth: 560, fontFamily: FONT, textShadow: '0 1px 6px rgba(0,0,0,0.4)' },
-    buscadorCard:   { backgroundColor: 'white', borderRadius: 14, padding: '8px 8px 12px', boxShadow: '0 8px 40px rgba(0,0,0,0.38)', marginBottom: 32 },
+    buscadorCard:   { backgroundColor: 'white', borderRadius: 14, boxShadow: '0 8px 40px rgba(0,0,0,0.38)' },
     buscadorFila:   { display: 'flex', alignItems: 'center', gap: 6, padding: '4px 8px' },
     buscadorIco:    { color: 'var(--color-espoch-rojo)', fontSize: '1.15rem', flexShrink: 0, marginLeft: 4 },
-    buscadorInput:  { flex: 1, border: 'none', outline: 'none', fontSize: '1rem', color: 'var(--color-texto-principal)', padding: '10px 8px', fontFamily: FONT, backgroundColor: 'transparent' },
+    buscadorInput:  { flex: 1, border: 'none', outline: 'none', color: 'var(--color-texto-principal)', padding: '10px 8px', fontFamily: FONT, backgroundColor: 'transparent' },
     buscadorLimpiar:{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-texto-secundario)', display: 'flex', alignItems: 'center', padding: 6 },
-    sugerencias:    { display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', padding: '4px 16px 2px' },
-    sugLabel:       { fontSize: '0.73rem', color: 'var(--color-texto-secundario)', fontWeight: 600, fontFamily: FONT },
-    sugTag:         { padding: '3px 12px', backgroundColor: 'var(--color-tech-azul-claro)', color: 'var(--color-tech-azul)', border: '1px solid #b8d4f5', borderRadius: 20, fontSize: '0.73rem', cursor: 'pointer', fontWeight: 500, fontFamily: FONT },
+    sugerencias:    { display: 'flex', alignItems: 'center', gap: 8, padding: '4px 16px 2px' },
+    sugLabel:       { color: 'var(--color-texto-secundario)', fontWeight: 600, fontFamily: FONT },
+    sugTag:         { backgroundColor: 'var(--color-tech-azul-claro)', color: 'var(--color-tech-azul)', border: '1px solid #b8d4f5', borderRadius: 20, cursor: 'pointer', fontWeight: 500, fontFamily: FONT },
     heroStats:      { display: 'flex', justifyContent: 'center', alignItems: 'center' },
     heroStatItem:   { display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '0 22px' },
     heroStatNum:    { color: 'white', fontSize: '1.9rem', fontWeight: 900, lineHeight: 1, display: 'block', fontFamily: FONT, textShadow: '0 2px 8px rgba(0,0,0,0.4)' },
     heroStatLabel:  { color: 'rgba(255,255,255,0.62)', fontSize: '0.73rem', marginTop: 5, display: 'block', fontFamily: FONT },
     heroStatDiv:    { width: 1, height: 36, backgroundColor: 'rgba(255,255,255,0.22)' },
-    contenido:      { maxWidth: 1200, margin: '0 auto', padding: '28px 20px 52px' },
-    filtrosBar:     { display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20, flexWrap: 'wrap', gap: 10 },
-    filtrosIzq:     { display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' },
-    filtrosLabel:   { fontSize: '0.8rem', color: 'var(--color-texto-secundario)', fontWeight: 600, fontFamily: FONT },
-    chip:           { display: 'inline-flex', alignItems: 'center', padding: '5px 14px', borderRadius: 20, border: '1px solid #dee2e6', backgroundColor: 'white', color: 'var(--color-texto-secundario)', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 500, fontFamily: FONT },
+    contenido:      { maxWidth: 1200, margin: '0 auto' },
+    filtrosBar:     { display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' },
+    filtrosIzq:     { display: 'flex', alignItems: 'center' },
+    filtrosLabel:   { fontSize: '0.8rem', color: 'var(--color-texto-secundario)', fontWeight: 600, fontFamily: FONT, marginRight: 4 },
+    chip:           { display: 'inline-flex', alignItems: 'center', borderRadius: 20, border: '1px solid #dee2e6', backgroundColor: 'white', color: 'var(--color-texto-secundario)', cursor: 'pointer', fontWeight: 500, fontFamily: FONT },
     chipActivo:     { backgroundColor: 'var(--color-espoch-rojo)', color: 'white', borderColor: 'var(--color-espoch-rojo)', fontWeight: 700 },
-    filtrosDer:     { fontSize: '0.82rem', color: 'var(--color-texto-secundario)', fontFamily: FONT },
-    grid:           { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 20, animation: 'fadeIn 0.3s' },
+    filtrosDer:     { color: 'var(--color-texto-secundario)', fontFamily: FONT },
+    grid:           { display: 'grid', gap: 20, animation: 'fadeIn 0.3s' },
     cargando:       { textAlign: 'center', padding: '70px 20px', display: 'flex', flexDirection: 'column', alignItems: 'center' },
     vacio:          { textAlign: 'center', padding: '60px 20px' },
     btnLimpiarVacio:{ padding: '9px 22px', backgroundColor: 'var(--color-espoch-rojo)', color: 'white', border: 'none', borderRadius: 7, cursor: 'pointer', fontWeight: 600, fontFamily: FONT },

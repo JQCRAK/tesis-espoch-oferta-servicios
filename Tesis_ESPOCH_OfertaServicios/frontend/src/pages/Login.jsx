@@ -16,8 +16,21 @@ import { guardarSesion } from '../utils/storageSeguro';
 
 const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:4000/api') + '/auth';
 
-const ofuscar   = (obj) => btoa(unescape(encodeURIComponent(JSON.stringify(obj))));
+const ofuscar    = (obj) => btoa(unescape(encodeURIComponent(JSON.stringify(obj))));
 const desofuscar = (str) => JSON.parse(decodeURIComponent(escape(atob(str))));
+
+// ─── Hook responsive ─────────────────────────────────────────────────────────
+const useWindowWidth = () => {
+    const [width, setWidth] = useState(
+        typeof window !== 'undefined' ? window.innerWidth : 1200
+    );
+    useEffect(() => {
+        const handler = () => setWidth(window.innerWidth);
+        window.addEventListener('resize', handler);
+        return () => window.removeEventListener('resize', handler);
+    }, []);
+    return width;
+};
 
 // ─── Input contraseña con ojito ───────────────────────────────────────────────
 const PasswordInput = ({ value, onChange, placeholder = 'Contraseña', name = 'password', required = true, minLength = 8 }) => {
@@ -102,44 +115,42 @@ const ImageUploader = ({ label, required: req, preview, onChange, onQuitar, acce
 
 // ═════════════════════════════════════════════════════════════════════════════
 const Login = () => {
-    const navigate = useNavigate();
+    const navigate   = useNavigate();
+    const width      = useWindowWidth();
+    const isMobile   = width < 768;
+    const isTablet   = width >= 768 && width < 1024;
 
     const [modo, setModo] = useState('login');
     const [error, setError] = useState('');
     const [cargando, setCargando] = useState(false);
 
-    // ── Flujo A/B ──────────────────────────────────────────────────────────
-    // 'ninguno' | 'conCorreo' | 'sinCorreo'
     const [flujoRegistro, setFlujoRegistro] = useState('ninguno');
     const [pasoRegistro, setPasoRegistro]   = useState(1);
 
-    // ── Flujo A (código verificación) ─────────────────────────────────────
-    const [esperandoCodigo, setEsperandoCodigo]       = useState(false);
-    const [verificandoCodigo, setVerificandoCodigo]   = useState(false);
+    const [esperandoCodigo, setEsperandoCodigo]         = useState(false);
+    const [verificandoCodigo, setVerificandoCodigo]     = useState(false);
     const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false);
 
-    // ── Flujo B (cédula + DSpace) ─────────────────────────────────────────
-    const [cedFrontalFile, setCedFrontalFile]     = useState(null);
-    const [cedFrontalPreview, setCedFrontalPreview] = useState(null);
-    const [cedPosteriorFile, setCedPosteriorFile]   = useState(null);
+    const [cedFrontalFile, setCedFrontalFile]         = useState(null);
+    const [cedFrontalPreview, setCedFrontalPreview]   = useState(null);
+    const [cedPosteriorFile, setCedPosteriorFile]     = useState(null);
     const [cedPosteriorPreview, setCedPosteriorPreview] = useState(null);
-    const [urlDspaceB, setUrlDspaceB]             = useState('');
-    const [verificandoB, setVerificandoB]         = useState(false);
-    const [verificadoB, setVerificadoB]           = useState(false); // verde ✅
-    const [datosVerificadosB, setDatosVerificadosB] = useState(null);
+    const [urlDspaceB, setUrlDspaceB]                 = useState('');
+    const [verificandoB, setVerificandoB]             = useState(false);
+    const [verificadoB, setVerificadoB]               = useState(false);
+    const [datosVerificadosB, setDatosVerificadosB]   = useState(null);
 
     const frontalRef   = useRef(null);
     const posteriorRef = useRef(null);
 
-    // ── Recuperación ──────────────────────────────────────────────────────
-    const [mostrarRecuperacion, setMostrarRecuperacion]             = useState(false);
+    const [mostrarRecuperacion, setMostrarRecuperacion]               = useState(false);
     const [emailRecuperacionIngresado, setEmailRecuperacionIngresado] = useState('');
-    const [esperandoCodigoRec, setEsperandoCodigoRec]               = useState(false);
-    const [verificandoCodigoRec, setVerificandoCodigoRec]           = useState(false);
+    const [esperandoCodigoRec, setEsperandoCodigoRec]                 = useState(false);
+    const [verificandoCodigoRec, setVerificandoCodigoRec]             = useState(false);
 
-    const [tiempoRestante, setTiempoRestante]                 = useState(0);
-    const [codigoIngresado, setCodigoIngresado]               = useState('');
-    const [codigoRecuperacionIngresado, setCodigoRecIngresado] = useState('');
+    const [tiempoRestante, setTiempoRestante]                   = useState(0);
+    const [codigoIngresado, setCodigoIngresado]                 = useState('');
+    const [codigoRecuperacionIngresado, setCodigoRecIngresado]  = useState('');
 
     const [formData, setFormData] = useState({
         password: '', nombres: '', apellidos: '', cedula: '',
@@ -148,7 +159,6 @@ const Login = () => {
         nuevaPassword: '', confirmarPassword: ''
     });
 
-    // ── Restaurar datos temporales si volvió el navegador ─────────────────
     useEffect(() => {
         const datosTemporales = localStorage.getItem('tempRegistroGraduado');
         if (datosTemporales) {
@@ -171,7 +181,6 @@ const Login = () => {
         }
     }, [tiempoRestante]);
 
-    // Scroll automático al error — útil en Flujo B donde el banner queda arriba
     useEffect(() => {
         if (error) {
             setTimeout(() => {
@@ -181,7 +190,6 @@ const Login = () => {
         }
     }, [error]);
 
-    // ── Imagen del lateral según estado ───────────────────────────────────
     const imagenActual = () => {
         if (modo === 'registro') return pasoRegistro === 1 ? '/img/campus2.png' : '/img/campus3.jpg';
         return '/img/campus1.png';
@@ -227,9 +235,7 @@ const Login = () => {
     fechaMaxima.setFullYear(fechaMaxima.getFullYear() - 20);
     const fechaMaximaStr = fechaMaxima.toISOString().split('T')[0];
 
-    // ═══════════════════════════════════════════════════════════════
-    // LOGIN
-    // ═══════════════════════════════════════════════════════════════
+    // ═══ LOGIN ════════════════════════════════════════════════════════════════
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
@@ -253,25 +259,20 @@ const Login = () => {
         }
     };
 
-    // ═══════════════════════════════════════════════════════════════
-    // REGISTRO — PASO 1 (común a ambos flujos)
-    // ═══════════════════════════════════════════════════════════════
+    // ═══ REGISTRO PASO 1 ══════════════════════════════════════════════════════
     const handlePaso1 = (e) => {
         e.preventDefault();
         setError('');
         if (!validarCedula(formData.cedula)) {
             setError('La cédula ingresada no es válida.'); return;
         }
-        // Si aún no eligió flujo, no avanzar
         if (flujoRegistro === 'ninguno') {
             setError('Indica si tienes acceso a tu correo @espoch.edu.ec.'); return;
         }
         setPasoRegistro(2);
     };
 
-    // ═══════════════════════════════════════════════════════════════
-    // FLUJO A — PASO 2: correo + contraseña
-    // ═══════════════════════════════════════════════════════════════
+    // ═══ FLUJO A ══════════════════════════════════════════════════════════════
     const handlePaso2A = (e) => {
         e.preventDefault();
         setError('');
@@ -366,23 +367,19 @@ const Login = () => {
         } catch { setError('No se pudo reenviar el código.'); setCargando(false); }
     };
 
-    // ═══════════════════════════════════════════════════════════════
-    // FLUJO B — PASO 2: cédula + DSpace + contraseña
-    // ═══════════════════════════════════════════════════════════════
+    // ═══ FLUJO B ══════════════════════════════════════════════════════════════
     const handleImagenFrontal = (e) => {
         const f = e.target.files[0]; if (!f) return;
         setCedFrontalFile(f);
         setCedFrontalPreview(URL.createObjectURL(f));
-        setVerificadoB(false);
-        setDatosVerificadosB(null);
+        setVerificadoB(false); setDatosVerificadosB(null);
     };
 
     const handleImagenPosterior = (e) => {
         const f = e.target.files[0]; if (!f) return;
         setCedPosteriorFile(f);
         setCedPosteriorPreview(URL.createObjectURL(f));
-        setVerificadoB(false);
-        setDatosVerificadosB(null);
+        setVerificadoB(false); setDatosVerificadosB(null);
     };
 
     const quitarFrontal = () => {
@@ -396,21 +393,10 @@ const Login = () => {
         if (posteriorRef.current) posteriorRef.current.value = '';
     };
 
-    /**
-     * Llama al endpoint /verificar-cedula-dspace.
-     * Si pasa → pone verificadoB = true (botón se pone verde).
-     * El registro final se hace con "Finalizar".
-     */
     const handleVerificarB = async () => {
         setError('');
-
-        // ── Validaciones frontend antes de llamar al backend ──────────────
-        if (!cedFrontalFile) {
-            setError('❌ Debes subir la foto del frente de tu cédula.'); return;
-        }
-        if (!cedPosteriorFile) {
-            setError('❌ Debes subir la foto del reverso de tu cédula.'); return;
-        }
+        if (!cedFrontalFile)   { setError('❌ Debes subir la foto del frente de tu cédula.'); return; }
+        if (!cedPosteriorFile) { setError('❌ Debes subir la foto del reverso de tu cédula.'); return; }
         if (!urlDspaceB || !urlDspaceB.includes('dspace.espoch.edu.ec')) {
             setError('❌ La URL debe ser del repositorio dspace.espoch.edu.ec'); return;
         }
@@ -420,74 +406,50 @@ const Login = () => {
         if (!formData.password || formData.password.length < 8) {
             setError('❌ La contraseña debe tener al menos 8 caracteres.'); return;
         }
-
-        setVerificandoB(true);
-        setVerificadoB(false);
-        setDatosVerificadosB(null);
-
+        setVerificandoB(true); setVerificadoB(false); setDatosVerificadosB(null);
         try {
             const fd = new FormData();
             fd.append('cedula_frontal', cedFrontalFile);
-            fd.append('cedula_posterior', cedPosteriorFile); // obligatorio
+            fd.append('cedula_posterior', cedPosteriorFile);
             fd.append('urlDspace', urlDspaceB.trim());
             fd.append('nombres', formData.nombres.trim());
             fd.append('apellidos', formData.apellidos.trim());
             fd.append('cedula', formData.cedula.trim());
             fd.append('fechaNacimiento', formData.fechaNacimiento || '');
-
             const { data } = await axios.post(`${API_URL}/verificar-cedula-dspace`, fd, {
                 headers: { 'Content-Type': 'multipart/form-data' },
-                timeout: 120000, // 2 minutos — Tesseract puede tardar
+                timeout: 120000,
             });
-
-            setVerificadoB(true);
-            setDatosVerificadosB(data);
-            setError(''); // limpiar cualquier error previo
+            setVerificadoB(true); setDatosVerificadosB(data); setError('');
         } catch (err) {
-            // Mostrar el mensaje del backend si existe, sino mensaje genérico por tipo de error
             const msg = err.response?.data?.msg;
-            if (msg) {
-                setError(msg);
-            } else if (err.code === 'ECONNABORTED') {
-                setError('La verificación tardó demasiado. Sube una foto más nítida e intenta nuevamente.');
-            } else if (!err.response) {
-                setError('No se pudo conectar con el servidor. Verifica tu conexión a internet.');
-            } else {
-                setError('Error al verificar. Intenta nuevamente en unos segundos.');
-            }
+            if (msg) setError(msg);
+            else if (err.code === 'ECONNABORTED') setError('La verificación tardó demasiado. Sube una foto más nítida e intenta nuevamente.');
+            else if (!err.response) setError('No se pudo conectar con el servidor. Verifica tu conexión a internet.');
+            else setError('Error al verificar. Intenta nuevamente en unos segundos.');
             setVerificadoB(false);
-        } finally {
-            setVerificandoB(false);
-        }
+        } finally { setVerificandoB(false); }
     };
 
-    /**
-     * Registro final para Flujo B.
-     * emailInstitucional queda vacío — el backend debe aceptarlo.
-     */
     const handleFinalizarB = async () => {
-        if (!verificadoB) {
-            setError('Primero verifica tu identidad con el botón "Verificar".'); return;
-        }
+        if (!verificadoB) { setError('Primero verifica tu identidad con el botón "Verificar".'); return; }
         setCargando(true); setError('');
         try {
-            // Validar duplicados sin correo institucional
             await axios.post(`${API_URL}/validar-duplicados-graduado`, {
-                emailInstitucional: '',   // sin correo institucional
+                emailInstitucional: '',
                 emailPersonal: formData.emailPersonal,
                 cedula: formData.cedula,
                 telefono: formData.telefono,
-                flujoSinCorreo: true      // flag para que el backend omita validación de @espoch
+                flujoSinCorreo: true
             });
         } catch (err) {
             setError(err.response?.data?.msg || 'Error al validar datos.');
             setCargando(false); return;
         }
-
         try {
             const { data } = await axios.post(`${API_URL}/registro-graduado-final`, {
                 ...formData,
-                emailInstitucional: '',   // sin correo institucional
+                emailInstitucional: '',
                 verificado: true,
                 perfilPublico: false,
                 flujoSinCorreo: true,
@@ -502,9 +464,7 @@ const Login = () => {
         }
     };
 
-    // ═══════════════════════════════════════════════════════════════
-    // RECUPERACIÓN DE CONTRASEÑA
-    // ═══════════════════════════════════════════════════════════════
+    // ═══ RECUPERACIÓN ═════════════════════════════════════════════════════════
     const solicitarCodigoRecuperacion = async (e) => {
         e.preventDefault();
         setCargando(true); setError('');
@@ -583,7 +543,6 @@ const Login = () => {
 
     const lateral = textoLateral();
 
-    // ─── LABELS de pasos según flujo ─────────────────────────────────────────
     const labelPaso = () => {
         if (pasoRegistro === 1) return 'Datos personales';
         if (flujoRegistro === 'conCorreo') return 'Correo y contraseña';
@@ -592,32 +551,122 @@ const Login = () => {
 
     const totalPasos = 2;
 
-    // ══════════════════════════════════════════════════════════════════════════
-    return (
-        <div style={s.contenedorPadre}>
+    // ── Estilos responsive dinámicos ─────────────────────────────────────────
+    // En móvil: layout de 1 columna, sin lado imagen (se muestra banner compacto arriba)
+    // En tablet/desktop: layout 2 columnas original
 
-            {/* ══ LADO IZQUIERDO ══ */}
-            <div style={{ ...s.ladoImagen, backgroundImage: `url("${imagenActual()}")` }}>
-                <div style={s.capaOscura}>
-                    <button style={s.btnVolverPublico} onClick={() => navigate('/')}>
-                        <FaArrowLeft style={{ marginRight: 7 }} /> Ver graduados
-                    </button>
-                    <div style={s.contenidoImagen}>
-                        <div style={s.logoLateral}>
-                            <img src="/img/ESPOCH_LOGO.png" alt="ESPOCH"
-                                style={{ height: 36, objectFit: 'contain' }}
-                                onError={e => e.target.style.display = 'none'} />
-                            <span style={s.logoLateralText}>Portal de Graduados ESPOCH</span>
-                        </div>
-                        <h1 style={s.heroTitulo}>{lateral.titulo}</h1>
-                        <p style={s.heroSub}>{lateral.sub}</p>
-                    </div>
+    const contenedorPadreStyle = isMobile
+        ? {
+            display: 'flex',
+            flexDirection: 'column',
+            minHeight: '100vh',
+            width: '100%',
+            fontFamily: "'Segoe UI', Roboto, 'Helvetica Neue', sans-serif",
+            backgroundColor: '#ffffff',
+          }
+        : {
+            ...s.contenedorPadre,
+            // en tablet reducimos el lado imagen
+            gridTemplateColumns: isTablet ? '38% 1fr' : undefined,
+          };
+
+    const ladoFormularioStyle = isMobile
+        ? {
+            flex: 1,
+            backgroundColor: '#ffffff',
+            display: 'flex',
+            alignItems: 'flex-start',
+            justifyContent: 'center',
+            padding: '20px 16px 40px',
+            overflowY: 'auto',
+          }
+        : {
+            ...s.ladoFormulario,
+            padding: isTablet ? '24px 20px' : s.ladoFormulario.padding,
+          };
+
+    const contenedorFormStyle = isMobile
+        ? { width: '100%', maxWidth: '100%' }
+        : { ...s.contenedorForm, maxWidth: isTablet ? '380px' : '420px' };
+
+    // filaDoble: en móvil se convierte en columna
+    const filaDobleStyle = isMobile
+        ? { display: 'flex', flexDirection: 'column', gap: 0 }
+        : s.filaDoble;
+
+    // Botones de flujo: en móvil apilados
+    const flujoOpcionesStyle = isMobile
+        ? { display: 'flex', flexDirection: 'column', gap: 8 }
+        : s.flujoOpciones;
+
+    // Grid cédulas: en móvil 1 col, en desktop 2 col
+    const gridCedulasStyle = isMobile
+        ? { display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 10 }
+        : { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 10 };
+
+    // ─── Banner móvil superior (reemplaza el lado imagen) ─────────────────────
+    const BannerMovil = () => (
+        <div style={{
+            background: `linear-gradient(135deg, rgba(190,30,45,0.92) 0%, rgba(120,10,18,0.95) 100%), url("${imagenActual()}")`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            padding: '20px 20px 18px',
+            position: 'relative',
+        }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+                <button style={s.btnVolverPublicoMovil} onClick={() => navigate('/')}>
+                    <FaArrowLeft style={{ marginRight: 5 }} /> Ver graduados
+                </button>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+                    <img src="/img/ESPOCH_LOGO.png" alt="ESPOCH"
+                        style={{ height: 26, objectFit: 'contain' }}
+                        onError={e => e.target.style.display = 'none'} />
+                    <span style={{ color: 'white', fontSize: '0.78rem', fontWeight: 700 }}>Portal Graduados</span>
                 </div>
             </div>
+            <h2 style={{
+                margin: 0, fontSize: '1.1rem', fontWeight: 800,
+                color: 'white', lineHeight: 1.3,
+                textShadow: '0 1px 6px rgba(0,0,0,0.4)',
+            }}>
+                {lateral.titulo}
+            </h2>
+        </div>
+    );
 
-            {/* ══ LADO DERECHO ══ */}
-            <div style={s.ladoFormulario}>
-                <div style={s.contenedorForm}>
+    // ══════════════════════════════════════════════════════════════════════════
+    return (
+        <div style={contenedorPadreStyle}>
+
+            {/* ══ BANNER MÓVIL (solo en mobile) ══ */}
+            {isMobile && <BannerMovil />}
+
+            {/* ══ LADO IZQUIERDO — solo en tablet/desktop ══ */}
+            {!isMobile && (
+                <div style={{ ...s.ladoImagen, backgroundImage: `url("${imagenActual()}")` }}>
+                    <div style={s.capaOscura}>
+                        <button style={s.btnVolverPublico} onClick={() => navigate('/')}>
+                            <FaArrowLeft style={{ marginRight: 7 }} /> Ver graduados
+                        </button>
+                        <div style={s.contenidoImagen}>
+                            <div style={s.logoLateral}>
+                                <img src="/img/ESPOCH_LOGO.png" alt="ESPOCH"
+                                    style={{ height: 36, objectFit: 'contain' }}
+                                    onError={e => e.target.style.display = 'none'} />
+                                <span style={s.logoLateralText}>Portal de Graduados ESPOCH</span>
+                            </div>
+                            <h1 style={{ ...s.heroTitulo, fontSize: isTablet ? '1.6rem' : '2rem' }}>
+                                {lateral.titulo}
+                            </h1>
+                            <p style={s.heroSub}>{lateral.sub}</p>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* ══ LADO DERECHO — formulario ══ */}
+            <div style={ladoFormularioStyle}>
+                <div style={contenedorFormStyle}>
 
                     {/* ── ALERTA ── */}
                     {error && (
@@ -629,9 +678,7 @@ const Login = () => {
                         </div>
                     )}
 
-                    {/* ════════════════════════════════════════════════════
-                        RECUPERACIÓN DE CONTRASEÑA
-                    ════════════════════════════════════════════════════ */}
+                    {/* ════ RECUPERACIÓN ════════════════════════════════════════════ */}
                     {mostrarRecuperacion ? (
                         <div>
                             <div style={s.encabezado}>
@@ -703,9 +750,7 @@ const Login = () => {
                             )}
                         </div>
 
-                    /* ════════════════════════════════════════════════════
-                       ESPERANDO CÓDIGO (Flujo A)
-                    ════════════════════════════════════════════════════ */
+                    /* ════ ESPERANDO CÓDIGO (Flujo A) ══════════════════════════════ */
                     ) : esperandoCodigo && !verificandoCodigo ? (
                         <div style={{ textAlign: 'center' }}>
                             <div style={s.encabezado}>
@@ -760,7 +805,11 @@ const Login = () => {
                                 <p style={{ color: 'var(--color-texto-secundario)', fontSize: '0.84rem', margin: 0 }}>Revisa que tus datos sean correctos antes de continuar.</p>
                             </div>
                             <div style={s.resumen}>
-                                <div style={s.resumenGrid}>
+                                {/* En móvil: 1 columna, en desktop: 2 columnas */}
+                                <div style={isMobile
+                                    ? { display: 'flex', flexDirection: 'column', gap: 4 }
+                                    : s.resumenGrid
+                                }>
                                     <div>
                                         <p><strong>Nombres:</strong> {formData.nombres}</p>
                                         <p><strong>Apellidos:</strong> {formData.apellidos}</p>
@@ -777,19 +826,20 @@ const Login = () => {
                                 </div>
                             </div>
                             <p style={s.hint}>Se enviará un código de verificación a tu email institucional.</p>
-                            <div style={{ display: 'flex', gap: 8 }}>
+                            <div style={{ display: 'flex', gap: 8, flexDirection: isMobile ? 'column' : 'row' }}>
                                 <button onClick={confirmarYEnviarCodigo}
                                     style={{ ...s.btnPrincipal, flex: 1, marginBottom: 0 }} disabled={cargando}>
                                     {cargando ? <><FaSpinner style={s.spin} /> Enviando...</> : '✅ Confirmar y continuar'}
                                 </button>
-                                <button onClick={() => setMostrarConfirmacion(false)} style={s.btnCancelar}>Editar</button>
+                                <button onClick={() => setMostrarConfirmacion(false)}
+                                    style={{ ...s.btnCancelar, width: isMobile ? '100%' : 'auto' }}>
+                                    Editar
+                                </button>
                             </div>
                         </div>
 
                     ) : modo === 'login' ? (
-                        /* ════════════════════════════════════════════════
-                           LOGIN
-                        ════════════════════════════════════════════════ */
+                        /* ════ LOGIN ════════════════════════════════════════════════ */
                         <>
                             <div style={s.encabezado}>
                                 <img src="/img/ESPOCH_LOGO.png" alt="ESPOCH" style={s.logo}
@@ -832,9 +882,7 @@ const Login = () => {
                         </>
 
                     ) : pasoRegistro === 1 ? (
-                        /* ════════════════════════════════════════════════
-                           REGISTRO — PASO 1 (común a ambos flujos)
-                        ════════════════════════════════════════════════ */
+                        /* ════ REGISTRO PASO 1 ══════════════════════════════════════ */
                         <>
                             <div style={s.encabezado}>
                                 <h2 style={s.titulo}>Crear Cuenta</h2>
@@ -847,7 +895,7 @@ const Login = () => {
                             </div>
 
                             <form onSubmit={handlePaso1}>
-                                <div style={s.filaDoble}>
+                                <div style={filaDobleStyle}>
                                     <Campo label="Nombres" required>
                                         <div style={s.inputGroup}>
                                             <input type="text" name="nombres" placeholder="Tus nombres"
@@ -861,7 +909,7 @@ const Login = () => {
                                         </div>
                                     </Campo>
                                 </div>
-                                <div style={s.filaDoble}>
+                                <div style={filaDobleStyle}>
                                     <Campo label="Cédula" required>
                                         <div style={s.inputGroupIcon}>
                                             <FaIdCard style={s.ico} />
@@ -879,7 +927,7 @@ const Login = () => {
                                         </div>
                                     </Campo>
                                 </div>
-                                <div style={s.filaDoble}>
+                                <div style={filaDobleStyle}>
                                     <Campo label="Género" required>
                                         <div style={s.inputGroupIcon}>
                                             <FaVenusMars style={s.ico} />
@@ -918,13 +966,13 @@ const Login = () => {
                                     </div>
                                 </Campo>
 
-                                {/* ── Pregunta: ¿Tienes correo @espoch.edu.ec? ── */}
+                                {/* ── Flujo selector ── */}
                                 <div style={s.flujoSelector}>
                                     <p style={s.flujoSelectorLabel}>
                                         <FaUniversity style={{ marginRight: 6, color: 'var(--color-espoch-rojo)' }} />
                                         ¿Tienes acceso a tu correo <strong>@espoch.edu.ec</strong>?
                                     </p>
-                                    <div style={s.flujoOpciones}>
+                                    <div style={flujoOpcionesStyle}>
                                         <button
                                             type="button"
                                             style={{
@@ -948,13 +996,24 @@ const Login = () => {
                                             No tengo acceso
                                         </button>
                                     </div>
-                
                                 </div>
 
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 12 }}>
+                                <div style={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    marginTop: 12,
+                                    flexDirection: isMobile ? 'column' : 'row',
+                                    gap: isMobile ? 8 : 0,
+                                }}>
                                     <button type="button" onClick={volverAlInicio} style={s.btnTexto}>← Volver al inicio</button>
                                     <button type="submit"
-                                        style={{ ...s.btnPrincipal, width: 'auto', padding: '10px 24px', marginBottom: 0 }}
+                                        style={{
+                                            ...s.btnPrincipal,
+                                            width: isMobile ? '100%' : 'auto',
+                                            padding: '10px 24px',
+                                            marginBottom: 0,
+                                        }}
                                         disabled={cargando || flujoRegistro === 'ninguno'}>
                                         Siguiente <FaArrowRight style={{ marginLeft: 6 }} />
                                     </button>
@@ -970,9 +1029,7 @@ const Login = () => {
                         </>
 
                     ) : flujoRegistro === 'conCorreo' ? (
-                        /* ════════════════════════════════════════════════
-                           FLUJO A — PASO 2: correo institucional + pass
-                        ════════════════════════════════════════════════ */
+                        /* ════ FLUJO A — PASO 2 ══════════════════════════════════════ */
                         <>
                             <div style={s.encabezado}>
                                 <h2 style={s.titulo}>Detalles de la cuenta</h2>
@@ -1011,10 +1068,22 @@ const Login = () => {
                                         <p style={checkItem(/[0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(formData.password))}>✓ Un número o símbolo especial</p>
                                     </div>
                                 </Campo>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 16 }}>
+                                <div style={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    marginTop: 16,
+                                    flexDirection: isMobile ? 'column' : 'row',
+                                    gap: isMobile ? 8 : 0,
+                                }}>
                                     <button type="button" onClick={() => { setPasoRegistro(1); setError(''); }} style={s.btnTexto}>← Volver al paso anterior</button>
                                     <button type="submit"
-                                        style={{ ...s.btnPrincipal, width: 'auto', padding: '10px 24px', marginBottom: 0 }}
+                                        style={{
+                                            ...s.btnPrincipal,
+                                            width: isMobile ? '100%' : 'auto',
+                                            padding: '10px 24px',
+                                            marginBottom: 0,
+                                        }}
                                         disabled={cargando}>
                                         {cargando ? <><FaSpinner style={s.spin} /></> : <>REGISTRARME <FaArrowRight style={{ marginLeft: 6 }} /></>}
                                     </button>
@@ -1023,19 +1092,15 @@ const Login = () => {
                         </>
 
                     ) : (
-                        /* ════════════════════════════════════════════════
-                           FLUJO B — PASO 2: cédula foto + DSpace + pass
-                        ════════════════════════════════════════════════ */
+                        /* ════ FLUJO B — PASO 2 ══════════════════════════════════════ */
                         <>
                             <div style={s.encabezado}>
                                 <h2 style={s.titulo}>Verificación de identidad</h2>
                             </div>
                             <BarraProgreso paso={2} total={totalPasos} labelPaso={labelPaso()} />
 
-
-
-                            {/* Fotos cédula — dos columnas compactas */}
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 10 }}>
+                            {/* Fotos cédula */}
+                            <div style={gridCedulasStyle}>
                                 <ImageUploader
                                     label="Cédula — frente"
                                     required
@@ -1058,7 +1123,6 @@ const Login = () => {
                                 Sube fotos nítidas del frente y reverso de tu cédula con buena iluminación.
                             </p>
 
-                            {/* URL DSpace */}
                             <Campo label="URL de tu tesis en el repositorio ESPOCH" required>
                                 <div style={s.inputGroupIcon}>
                                     <FaSearch style={s.ico} />
@@ -1072,7 +1136,6 @@ const Login = () => {
                                 </span>
                             </Campo>
 
-                            {/* Correo personal */}
                             <Campo label="Correo personal" required>
                                 <div style={s.inputGroupIcon}>
                                     <FaEnvelope style={s.ico} />
@@ -1081,7 +1144,6 @@ const Login = () => {
                                 </div>
                             </Campo>
 
-                            {/* Contraseña */}
                             <Campo label="Contraseña" required>
                                 <PasswordInput value={formData.password} onChange={handleChange}
                                     placeholder="Contraseña segura" name="password" />
@@ -1093,15 +1155,19 @@ const Login = () => {
                                 </div>
                             </Campo>
 
-
-
                             {/* Botones */}
-                            <div style={{ display: 'flex', gap: 8, marginTop: 14 }}>
-                                <button type="button" onClick={() => { setPasoRegistro(1); setError(''); }} style={s.btnCancelar}>
+                            <div style={{
+                                display: 'flex',
+                                gap: 8,
+                                marginTop: 14,
+                                flexDirection: isMobile ? 'column' : 'row',
+                            }}>
+                                <button type="button"
+                                    onClick={() => { setPasoRegistro(1); setError(''); }}
+                                    style={{ ...s.btnCancelar, width: isMobile ? '100%' : 'auto' }}>
                                     ← Atrás
                                 </button>
 
-                                {/* Botón VERIFICAR — se pone verde cuando pasa */}
                                 {!verificadoB ? (
                                     <button type="button" onClick={handleVerificarB}
                                         style={{ ...s.btnPrincipal, flex: 1, marginBottom: 0, backgroundColor: '#1d4ed8' }}
@@ -1135,75 +1201,244 @@ const checkItem = (cumple) => ({
 });
 
 // ══════════════════════════════════════════════════════════════════════════════
-// ESTILOS
+// ESTILOS BASE (sin cambios en la lógica original)
 // ══════════════════════════════════════════════════════════════════════════════
 const s = {
-    contenedorPadre: { display: 'flex', height: '100vh', width: '100vw', overflow: 'hidden', fontFamily: "'Segoe UI', Roboto, 'Helvetica Neue', sans-serif" },
-    ladoImagen: { flex: '0 0 42%', backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background-image 0.4s ease' },
-    capaOscura: { position: 'absolute', inset: 0, backgroundColor: 'rgba(160, 20, 35, 0.88)', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'flex-end', color: 'white', padding: '40px 44px' },
-    btnVolverPublico: { display: 'flex', alignItems: 'center', position: 'absolute', top: 20, left: 20, padding: '7px 14px', backgroundColor: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.35)', borderRadius: 8, color: 'white', cursor: 'pointer', fontSize: '0.78rem', fontWeight: 600, backdropFilter: 'blur(4px)' },
+    // Layout principal (tablet/desktop — en mobile se sobreescribe inline)
+    contenedorPadre: {
+        display: 'flex',
+        height: '100vh',
+        width: '100vw',
+        overflow: 'hidden',
+        fontFamily: "'Segoe UI', Roboto, 'Helvetica Neue', sans-serif",
+    },
+
+    // Lado imagen (tablet/desktop)
+    ladoImagen: {
+        flex: '0 0 42%',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        position: 'relative',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        transition: 'background-image 0.4s ease',
+    },
+    capaOscura: {
+        position: 'absolute', inset: 0,
+        backgroundColor: 'rgba(160, 20, 35, 0.88)',
+        display: 'flex', flexDirection: 'column',
+        alignItems: 'flex-start', justifyContent: 'flex-end',
+        color: 'white', padding: '40px 44px',
+    },
+    btnVolverPublico: {
+        display: 'flex', alignItems: 'center',
+        position: 'absolute', top: 20, left: 20,
+        padding: '7px 14px',
+        backgroundColor: 'rgba(255,255,255,0.15)',
+        border: '1px solid rgba(255,255,255,0.35)',
+        borderRadius: 8, color: 'white', cursor: 'pointer',
+        fontSize: '0.78rem', fontWeight: 600, backdropFilter: 'blur(4px)',
+    },
+    // Botón volver en banner móvil
+    btnVolverPublicoMovil: {
+        display: 'flex', alignItems: 'center',
+        padding: '6px 12px',
+        backgroundColor: 'rgba(255,255,255,0.15)',
+        border: '1px solid rgba(255,255,255,0.35)',
+        borderRadius: 8, color: 'white', cursor: 'pointer',
+        fontSize: '0.74rem', fontWeight: 600,
+    },
     contenidoImagen: { maxWidth: 360 },
     logoLateral: { display: 'flex', alignItems: 'center', gap: 10, marginBottom: 32 },
     logoLateralText: { fontSize: '0.9rem', fontWeight: 700, color: 'white', letterSpacing: '-0.01em' },
     heroTitulo: { fontSize: '2rem', fontWeight: 800, margin: '0 0 14px', lineHeight: 1.2, letterSpacing: '-0.02em' },
     heroSub: { fontSize: '0.9rem', lineHeight: 1.65, margin: 0, color: 'rgba(255,255,255,0.82)' },
-    ladoFormulario: { flex: 1, backgroundColor: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '32px 24px', overflowY: 'auto' },
+
+    // Lado formulario (tablet/desktop)
+    ladoFormulario: {
+        flex: 1,
+        backgroundColor: '#ffffff',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '32px 24px',
+        overflowY: 'auto',
+    },
     contenedorForm: { width: '100%', maxWidth: '420px' },
+
     encabezado: { marginBottom: 20 },
     logo: { width: 80, height: 'auto', display: 'block', margin: '0 auto 16px', objectFit: 'contain' },
     titulo: { color: '#1a1a1a', margin: '0 0 4px', fontSize: '1.6rem', fontWeight: 800, letterSpacing: '-0.02em' },
     subtitulo: { color: '#6b7280', margin: 0, fontSize: '0.82rem' },
     subTituloSeccion: { color: '#1a1a1a', margin: '0 0 16px', fontSize: '1.1rem', fontWeight: 700 },
-    alertaError: { display: 'flex', alignItems: 'flex-start', backgroundColor: '#fef2f2', color: '#dc2626', padding: '10px 12px', borderRadius: 8, fontSize: '0.81rem', border: '1px solid #fecaca', marginBottom: 16, lineHeight: 1.5, gap: 8 },
-    alertaExito: { display: 'flex', alignItems: 'flex-start', backgroundColor: '#f0fdf4', color: '#16a34a', padding: '10px 12px', borderRadius: 8, fontSize: '0.81rem', border: '1px solid #bbf7d0', marginBottom: 16, lineHeight: 1.5, gap: 8 },
-    avisoInfo: { display: 'flex', alignItems: 'center', backgroundColor: '#fefce8', border: '1px solid #fde68a', borderRadius: 7, padding: '8px 12px', fontSize: '0.78rem', color: '#92400e', marginBottom: 16 },
-    avisoVerif: { display: 'flex', alignItems: 'flex-start', gap: 10, backgroundColor: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 8, padding: '10px 14px', marginBottom: 14 },
-    avisoBloqueado: { display: 'flex', alignItems: 'flex-start', backgroundColor: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: 7, padding: '10px 12px', fontSize: '0.74rem', color: '#6b7280', marginTop: 16, lineHeight: 1.6, gap: 8 },
+
+    alertaError: {
+        display: 'flex', alignItems: 'flex-start',
+        backgroundColor: '#fef2f2', color: '#dc2626',
+        padding: '10px 12px', borderRadius: 8, fontSize: '0.81rem',
+        border: '1px solid #fecaca', marginBottom: 16, lineHeight: 1.5, gap: 8,
+    },
+    alertaExito: {
+        display: 'flex', alignItems: 'flex-start',
+        backgroundColor: '#f0fdf4', color: '#16a34a',
+        padding: '10px 12px', borderRadius: 8, fontSize: '0.81rem',
+        border: '1px solid #bbf7d0', marginBottom: 16, lineHeight: 1.5, gap: 8,
+    },
+    avisoInfo: {
+        display: 'flex', alignItems: 'center',
+        backgroundColor: '#fefce8', border: '1px solid #fde68a',
+        borderRadius: 7, padding: '8px 12px', fontSize: '0.78rem',
+        color: '#92400e', marginBottom: 16,
+    },
+    avisoBloqueado: {
+        display: 'flex', alignItems: 'flex-start',
+        backgroundColor: '#f9fafb', border: '1px solid #e5e7eb',
+        borderRadius: 7, padding: '10px 12px', fontSize: '0.74rem',
+        color: '#6b7280', marginTop: 16, lineHeight: 1.6, gap: 8,
+    },
+
     campoWrapper: { marginBottom: 14 },
-    campoLabel: { display: 'block', fontSize: '0.78rem', fontWeight: 600, color: '#374151', marginBottom: 5, letterSpacing: '0.01em' },
+    campoLabel: {
+        display: 'block', fontSize: '0.78rem', fontWeight: 600,
+        color: '#374151', marginBottom: 5, letterSpacing: '0.01em',
+    },
     campoExtra: { marginLeft: 8, fontSize: '0.7rem', color: '#16a34a', fontWeight: 600 },
+
+    // filaDoble: en desktop 2 col, en mobile se sobreescribe a column
     filaDoble: { display: 'flex', gap: 10 },
-    inputGroup: { flex: 1, backgroundColor: 'white', borderRadius: 8, padding: '10px 12px', border: '1.5px solid #e5e7eb' },
-    inputGroupIcon: { display: 'flex', alignItems: 'center', backgroundColor: 'white', borderRadius: 8, padding: '10px 12px', border: '1.5px solid #e5e7eb', gap: 8, width: '100%', boxSizing: 'border-box', flex: 1 },
-    inputGroupVerde: { display: 'flex', alignItems: 'center', backgroundColor: '#f0fdf4', borderRadius: 8, padding: '10px 12px', border: '2px solid #16a34a', gap: 8, width: '100%', boxSizing: 'border-box' },
-    ico: { color: '#9ca3af', fontSize: '0.88rem', flexShrink: 0 },
+
+    inputGroup: {
+        flex: 1, backgroundColor: 'white', borderRadius: 8,
+        padding: '10px 12px', border: '1.5px solid #e5e7eb',
+    },
+    inputGroupIcon: {
+        display: 'flex', alignItems: 'center', backgroundColor: 'white',
+        borderRadius: 8, padding: '10px 12px', border: '1.5px solid #e5e7eb',
+        gap: 8, width: '100%', boxSizing: 'border-box', flex: 1,
+    },
+    inputGroupVerde: {
+        display: 'flex', alignItems: 'center', backgroundColor: '#f0fdf4',
+        borderRadius: 8, padding: '10px 12px', border: '2px solid #16a34a',
+        gap: 8, width: '100%', boxSizing: 'border-box',
+    },
+    ico:      { color: '#9ca3af', fontSize: '0.88rem', flexShrink: 0 },
     icoVerde: { color: '#16a34a', fontSize: '0.88rem', flexShrink: 0 },
-    inp: { border: 'none', backgroundColor: 'transparent', width: '100%', outline: 'none', fontSize: '0.87rem', color: '#111827', fontFamily: "'Segoe UI', Roboto, 'Helvetica Neue', sans-serif" },
-    ojito: { background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af', padding: '0 2px', flexShrink: 0, display: 'flex', alignItems: 'center', fontSize: '0.95rem', lineHeight: 1, transition: 'color 0.2s', userSelect: 'none', WebkitUserSelect: 'none' },
-    inputCodigo: { backgroundColor: '#eff6ff', border: '2px solid #1d4ed8', borderRadius: 10, padding: '12px 16px' },
-    inpCodigo: { fontSize: '1.8rem', textAlign: 'center', letterSpacing: '8px', fontWeight: 900, border: 'none', backgroundColor: 'transparent', borderRadius: 6, padding: '4px', width: '100%', fontFamily: 'monospace', color: '#1d4ed8', outline: 'none', boxSizing: 'border-box' },
-    checklistPass: { backgroundColor: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: 7, padding: '10px 12px', marginTop: 8 },
+    inp: {
+        border: 'none', backgroundColor: 'transparent',
+        width: '100%', outline: 'none', fontSize: '0.87rem',
+        color: '#111827', fontFamily: "'Segoe UI', Roboto, 'Helvetica Neue', sans-serif",
+    },
+    ojito: {
+        background: 'none', border: 'none', cursor: 'pointer',
+        color: '#9ca3af', padding: '0 2px', flexShrink: 0,
+        display: 'flex', alignItems: 'center', fontSize: '0.95rem',
+        lineHeight: 1, transition: 'color 0.2s', userSelect: 'none',
+        WebkitUserSelect: 'none',
+    },
+    inputCodigo: {
+        backgroundColor: '#eff6ff', border: '2px solid #1d4ed8',
+        borderRadius: 10, padding: '12px 16px',
+    },
+    inpCodigo: {
+        fontSize: '1.8rem', textAlign: 'center', letterSpacing: '8px',
+        fontWeight: 900, border: 'none', backgroundColor: 'transparent',
+        borderRadius: 6, padding: '4px', width: '100%', fontFamily: 'monospace',
+        color: '#1d4ed8', outline: 'none', boxSizing: 'border-box',
+    },
+    checklistPass: {
+        backgroundColor: '#f9fafb', border: '1px solid #e5e7eb',
+        borderRadius: 7, padding: '10px 12px', marginTop: 8,
+    },
     checklistTitulo: { margin: '0 0 5px', fontSize: '0.73rem', fontWeight: 700, color: '#374151' },
-    hint: { fontSize: '0.72rem', color: '#6b7280', paddingLeft: 2, marginTop: 4, lineHeight: 1.5, display: 'flex', alignItems: 'center', gap: 4 },
-    btnPrincipal: { width: '100%', padding: '12px', backgroundColor: '#be1e2d', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 700, fontSize: '0.9rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, marginBottom: 4, letterSpacing: '0.4px', transition: 'background-color 0.2s' },
-    btnSecundario: { width: '100%', padding: '10px', backgroundColor: '#2563eb', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 600, fontSize: '0.83rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 },
-    btnCancelar: { padding: '10px 18px', backgroundColor: '#f3f4f6', border: '1px solid #e5e7eb', borderRadius: 8, cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem', color: '#374151', whiteSpace: 'nowrap' },
-    btnTexto: { background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280', fontSize: '0.83rem', padding: '8px 0', display: 'block', width: '100%', textAlign: 'center' },
-    linkSwitch: { background: 'none', border: 'none', color: '#be1e2d', fontWeight: 700, cursor: 'pointer', fontSize: '0.84rem', padding: 0 },
-    linkOlvide: { background: 'none', border: 'none', color: '#be1e2d', fontWeight: 600, cursor: 'pointer', fontSize: '0.8rem', padding: 0 },
-    resumen: { textAlign: 'left', backgroundColor: '#f9fafb', padding: '14px', borderRadius: 8, marginBottom: 12, fontSize: '0.76rem', lineHeight: 1.8, color: '#111827', border: '1px solid #e5e7eb' },
+    hint: {
+        fontSize: '0.72rem', color: '#6b7280', paddingLeft: 2,
+        marginTop: 4, lineHeight: 1.5, display: 'flex', alignItems: 'center', gap: 4,
+    },
+
+    btnPrincipal: {
+        width: '100%', padding: '12px',
+        backgroundColor: '#be1e2d', color: 'white',
+        border: 'none', borderRadius: 8, cursor: 'pointer',
+        fontWeight: 700, fontSize: '0.9rem',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        gap: 6, marginBottom: 4, letterSpacing: '0.4px',
+        transition: 'background-color 0.2s',
+    },
+    btnSecundario: {
+        width: '100%', padding: '10px', backgroundColor: '#2563eb',
+        color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer',
+        fontWeight: 600, fontSize: '0.83rem',
+        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+    },
+    btnCancelar: {
+        padding: '10px 18px', backgroundColor: '#f3f4f6',
+        border: '1px solid #e5e7eb', borderRadius: 8, cursor: 'pointer',
+        fontWeight: 600, fontSize: '0.85rem', color: '#374151', whiteSpace: 'nowrap',
+    },
+    btnTexto: {
+        background: 'none', border: 'none', cursor: 'pointer',
+        color: '#6b7280', fontSize: '0.83rem', padding: '8px 0',
+        display: 'block', width: '100%', textAlign: 'center',
+    },
+    linkSwitch: {
+        background: 'none', border: 'none', color: '#be1e2d',
+        fontWeight: 700, cursor: 'pointer', fontSize: '0.84rem', padding: 0,
+    },
+    linkOlvide: {
+        background: 'none', border: 'none', color: '#be1e2d',
+        fontWeight: 600, cursor: 'pointer', fontSize: '0.8rem', padding: 0,
+    },
+    resumen: {
+        textAlign: 'left', backgroundColor: '#f9fafb', padding: '14px',
+        borderRadius: 8, marginBottom: 12, fontSize: '0.76rem',
+        lineHeight: 1.8, color: '#111827', border: '1px solid #e5e7eb',
+    },
     resumenGrid: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 },
-    iconoExito: { width: 60, height: 60, borderRadius: '50%', backgroundColor: '#f0fdf4', border: '2px solid #bbf7d0', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' },
+    iconoExito: {
+        width: 60, height: 60, borderRadius: '50%',
+        backgroundColor: '#f0fdf4', border: '2px solid #bbf7d0',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        margin: '0 auto 16px',
+    },
     spin: { animation: 'spin 1s linear infinite', flexShrink: 0 },
-    // Selector de flujo
-    flujoSelector: { backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 10, padding: '12px 14px', marginBottom: 12 },
-    flujoSelectorLabel: { margin: '0 0 10px', fontSize: '0.82rem', fontWeight: 600, color: '#1e293b', display: 'flex', alignItems: 'center' },
+
+    // Selector flujo
+    flujoSelector: {
+        backgroundColor: '#f8fafc', border: '1px solid #e2e8f0',
+        borderRadius: 10, padding: '12px 14px', marginBottom: 12,
+    },
+    flujoSelectorLabel: {
+        margin: '0 0 10px', fontSize: '0.82rem', fontWeight: 600,
+        color: '#1e293b', display: 'flex', alignItems: 'center',
+    },
+    // flujoOpciones: en mobile se sobreescribe a column
     flujoOpciones: { display: 'flex', gap: 8 },
-    flujoBtn: { flex: 1, padding: '9px 12px', borderRadius: 8, border: '1.5px solid #e2e8f0', backgroundColor: 'white', cursor: 'pointer', fontSize: '0.78rem', fontWeight: 600, color: '#475569', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' },
-    flujoBtnActivo: { backgroundColor: '#dcfce7', borderColor: '#16a34a', color: '#15803d' },
+    flujoBtn: {
+        flex: 1, padding: '9px 12px', borderRadius: 8,
+        border: '1.5px solid #e2e8f0', backgroundColor: 'white',
+        cursor: 'pointer', fontSize: '0.78rem', fontWeight: 600,
+        color: '#475569', display: 'flex', alignItems: 'center',
+        justifyContent: 'center', transition: 'all 0.2s',
+    },
+    flujoBtnActivo:  { backgroundColor: '#dcfce7', borderColor: '#16a34a', color: '#15803d' },
     flujoBtnActivoB: { backgroundColor: '#dbeafe', borderColor: '#2563eb', color: '#1d4ed8' },
-    flujoAviso: { display: 'flex', alignItems: 'flex-start', gap: 8, backgroundColor: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 7, padding: '8px 10px', marginTop: 10, fontSize: '0.73rem', color: '#1e40af', lineHeight: 1.5 },
-    // Imágenes cédula — zona compacta
-    uploadZone: { border: '2px dashed #d1d5db', borderRadius: 8, padding: '16px 12px', textAlign: 'center', cursor: 'pointer', backgroundColor: '#fafafa' },
-    uploadZoneCompacta: { border: '1.5px dashed #d1d5db', borderRadius: 7, padding: '9px 12px', cursor: 'pointer', backgroundColor: '#fafafa', display: 'flex', alignItems: 'center', gap: 8 },
-    uploadTxt: { margin: 0, fontSize: '0.78rem', color: '#6b7280', fontWeight: 500 },
-    uploadHint: { margin: '2px 0 0', fontSize: '0.68rem', color: '#9ca3af' },
+
+    // Imágenes cédula
+    uploadZoneCompacta: {
+        border: '1.5px dashed #d1d5db', borderRadius: 7, padding: '9px 12px',
+        cursor: 'pointer', backgroundColor: '#fafafa',
+        display: 'flex', alignItems: 'center', gap: 8,
+    },
     imgPreviewWrap: { position: 'relative', borderRadius: 7, overflow: 'hidden', border: '1px solid #e5e7eb' },
-    imgPreview: { width: '100%', maxHeight: 130, objectFit: 'cover', display: 'block' },
     imgPreviewCompacta: { width: '100%', maxHeight: 80, objectFit: 'cover', display: 'block' },
-    btnQuitarImg: { position: 'absolute', top: 5, right: 5, display: 'inline-flex', alignItems: 'center', padding: '2px 7px', backgroundColor: 'rgba(0,0,0,0.6)', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer', fontSize: '0.67rem', fontWeight: 600 },
-    // Banner verificado
-    verificadoBanner: { display: 'flex', alignItems: 'flex-start', gap: 10, backgroundColor: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 8, padding: '10px 14px', marginTop: 8 },
+    btnQuitarImg: {
+        position: 'absolute', top: 5, right: 5,
+        display: 'inline-flex', alignItems: 'center',
+        padding: '2px 7px', backgroundColor: 'rgba(0,0,0,0.6)',
+        color: 'white', border: 'none', borderRadius: 4,
+        cursor: 'pointer', fontSize: '0.67rem', fontWeight: 600,
+    },
 };
 
 export default Login;
