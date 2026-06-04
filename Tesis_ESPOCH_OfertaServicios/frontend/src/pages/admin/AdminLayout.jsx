@@ -114,10 +114,6 @@ const AdminLayout = () => {
     const location = useLocation();
     const notifRef = useRef(null);
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // TODOS LOS useState PRIMERO — antes de cualquier return condicional
-    // Regla de React: los hooks NUNCA pueden ir después de un return condicional
-    // ─────────────────────────────────────────────────────────────────────────
     const [expandido, setExpandido] = useState(true);
     const [notifAbierto, setNotifAbierto] = useState(false);
     const [notificaciones, setNotificaciones] = useState([]);
@@ -126,9 +122,6 @@ const AdminLayout = () => {
     const [notifDetalle, setNotifDetalle] = useState(null);
     const [showSessionWarning, setShowSessionWarning] = useState(false);
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // TODOS LOS useCallback DESPUÉS de los useState, antes del return condicional
-    // ─────────────────────────────────────────────────────────────────────────
     const handleSessionLogout = useCallback(() => {
         setShowSessionWarning(false);
         eliminarSesion('usuario');
@@ -136,8 +129,8 @@ const AdminLayout = () => {
     }, [navigate]);
 
     const { extendSession } = useInactivityTimeout({
-        timeoutMs: 15 * 60 * 1000,     // ⬅ PRUEBA: 2 min → cambiar a 15 * 60 * 1000 en producción
-        warningMs: 30 * 1000,       // ⬅ advertencia 30 s antes del cierre
+        timeoutMs: 30 * 1000,     
+        warningMs: 10 * 1000,      
         onWarning: () => setShowSessionWarning(true),
         onLogout: handleSessionLogout,
     });
@@ -489,7 +482,7 @@ const AdminLayout = () => {
             {/* ══ MODAL INACTIVIDAD — ISO/IEC 27002:2022 Control 8.1 / NIST AC-12 ══ */}
             <SessionWarningModal
                 visible={showSessionWarning}
-                secondsLeft={30}          // ← debe coincidir con warningMs / 1000
+                secondsLeft={10}          // ← debe coincidir con warningMs / 1000
                 onExtend={() => { extendSession(); setShowSessionWarning(false); }}
                 onLogout={handleSessionLogout}
             />

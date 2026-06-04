@@ -1,11 +1,5 @@
-// frontend/src/utils/storageSeguro.js
-// Control de seguridad #1: Cifrado de localStorage con AES (CryptoJS)
-
 import CryptoJS from 'crypto-js';
 
-// La clave nunca viaja al servidor; vive solo en el cliente.
-// En producción podés derivarla del user-agent + un salt fijo,
-// pero para el caso práctico una constante es suficiente.
 const CLAVE = 'ESPOCH_PORTAL_GRADUADOS_2025_AES_KEY';
 
 /**

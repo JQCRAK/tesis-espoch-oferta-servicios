@@ -147,8 +147,8 @@ const LayoutGraduado = () => {
     }, [navigate]);
 
     const { extendSession } = useInactivityTimeout({
-        timeoutMs: 15 * 60 * 1000,  // ⬅ PRUEBA: 2 min → cambiar a 15 * 60 * 1000 en producción
-        warningMs: 30 * 1000,       // ⬅ advertencia 30 s antes del cierre
+        timeoutMs: 30 * 1000,  
+        warningMs: 10 * 1000,      
         onWarning: () => setShowSessionWarning(true),
         onLogout:  handleSessionLogout,
     });
@@ -448,7 +448,7 @@ const LayoutGraduado = () => {
             {/* ══ MODAL INACTIVIDAD — ISO/IEC 27002:2022 Control 8.1 / NIST AC-12 ══ */}
             <SessionWarningModal
                 visible={showSessionWarning}
-                secondsLeft={30}
+                secondsLeft={10}
                 onExtend={() => { extendSession(); setShowSessionWarning(false); }}
                 onLogout={handleSessionLogout}
             />
