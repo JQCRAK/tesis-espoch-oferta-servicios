@@ -22,22 +22,22 @@ export default defineConfig({
     minify: 'terser',
     terserOptions: {
       compress: {
-        drop_console: true,      // elimina console.log en producción
-        drop_debugger: true,     // elimina debugger statements
-        passes: 3                // múltiples pasadas de compresión
+        drop_console: true,      
+        drop_debugger: true,     
+        passes: 3                
       },
       mangle: {
-        toplevel: true           // ofusca nombres en el scope global
+        toplevel: true          
       },
       format: {
-        comments: false          // elimina todos los comentarios
+        comments: false          
       }
     },
     rollupOptions: {
       output: {
-        manualChunks: undefined  // un solo bundle, más difícil de analizar
+        manualChunks: undefined  
       }
     },
-    sourcemap: false             // sin sourcemaps en producción
+    sourcemap: false             
   }
 })

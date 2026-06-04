@@ -129,8 +129,8 @@ const AdminLayout = () => {
     }, [navigate]);
 
     const { extendSession } = useInactivityTimeout({
-        timeoutMs: 30 * 1000,     
-        warningMs: 10 * 1000,      
+        timeoutMs: 10 * 1000,     
+        warningMs: 5 * 1000,      
         onWarning: () => setShowSessionWarning(true),
         onLogout: handleSessionLogout,
     });
@@ -148,18 +148,12 @@ const AdminLayout = () => {
         }
     }, []);
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // TODOS LOS useEffect DESPUÉS de los useCallback, antes del return condicional
-    // ─────────────────────────────────────────────────────────────────────────
     useEffect(() => {
         cargarNotificaciones();
         const intervalo = setInterval(cargarNotificaciones, POLL_INTERVAL);
         return () => clearInterval(intervalo);
     }, [cargarNotificaciones]);
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // RECIÉN AQUÍ el return condicional — después de TODOS los hooks
-    // ─────────────────────────────────────────────────────────────────────────
     const usuario = leerSesion('usuario') || {};
     if (!usuario || usuario.rol !== 'admin') {
         navigate('/login');
