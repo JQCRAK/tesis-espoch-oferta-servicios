@@ -39,7 +39,6 @@ const nivelAfinidad = (pct) => {
 
 const urlFoto = (ruta) => {
     if (!ruta) return null;
-    // Si ya es una URL completa de Cloudinary, usarla directamente
     if (ruta.startsWith('http://') || ruta.startsWith('https://')) {
         return `${ruta}?t=${Date.now()}`;
     }
@@ -48,6 +47,17 @@ const urlFoto = (ruta) => {
 };
 
 const contarPalabras = (texto) => texto.trim() === '' ? 0 : texto.trim().split(/\s+/).length;
+
+// ─── Hook responsive ───────────────────────────────────
+const useWindowSize = () => {
+    const [size, setSize] = useState({ width: window.innerWidth });
+    useEffect(() => {
+        const handler = () => setSize({ width: window.innerWidth });
+        window.addEventListener('resize', handler);
+        return () => window.removeEventListener('resize', handler);
+    }, []);
+    return size;
+};
 
 // ─── Panel de consejos ─────────────────────────────────
 const PanelConsejos = ({ onPublicar, tesisVerificada }) => {
@@ -152,8 +162,6 @@ const PanelConsejos = ({ onPublicar, tesisVerificada }) => {
                     </button>
                 </div>
             )}
-
-
         </div>
     );
 };
@@ -164,6 +172,11 @@ const PerfilGraduado = () => {
     const fotoRef = useRef(null);
     const proyFotoRef = useRef(null);
     const certFileRef = useRef(null);
+
+    // ── Hook responsive ───────────────────────────────
+    const { width } = useWindowSize();
+    const isMobile = width < 768;
+    const isTablet = width >= 768 && width < 1024;
 
     const [perfil, setPerfil] = useState(null);
     const [cargando, setCargando] = useState(true);
@@ -188,8 +201,8 @@ const PerfilGraduado = () => {
         bio: '', github: '', linkedin: '',
         disponibilidad: 'disponible', perfilPublico: false,
         telefono: '', emailPersonal: '', tieneDiscapacidad: '',
-        provinciaActual: '',   // ← NUEVO
-        cantonActual: '',      // ← NUEVO
+        provinciaActual: '',
+        cantonActual: '',
     });
 
     // ── Modal PUBLICAR PERFIL (tesis) ─────────────────
@@ -220,7 +233,6 @@ const PerfilGraduado = () => {
         titulo: '', institucion: '', fechaFinalizacion: '', url: '', descripcion: '', archivo: null
     });
     const [mostrarBienvenida, setMostrarBienvenida] = useState(false);
-
 
     // ── Modal confirmar eliminación ───────────────────
     const [modalConfirm, setModalConfirm] = useState({
@@ -303,22 +315,18 @@ const PerfilGraduado = () => {
     };
 
     const guardarModal = async () => {
-        // Validar teléfono
         if (mf.telefono && !/^[0-9]{10}$/.test(mf.telefono.trim())) {
             mostrarError('El teléfono debe tener exactamente 10 dígitos.'); return;
         }
-        // Validar email personal
         if (mf.emailPersonal && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mf.emailPersonal.trim())) {
             mostrarError('El correo personal no tiene un formato válido.'); return;
         }
         if (mf.emailPersonal && mf.emailPersonal.trim().toLowerCase().endsWith('@espoch.edu.ec')) {
             mostrarError('El correo personal no puede ser un correo institucional ESPOCH.'); return;
         }
-        // Validar provincia — obligatoria
         if (!mf.provinciaActual || mf.provinciaActual.trim() === '') {
             mostrarError('La provincia es obligatoria. Selecciona tu provincia actual.'); return;
         }
-        // Validar cantón — obligatorio
         if (!mf.cantonActual || mf.cantonActual.trim() === '') {
             mostrarError('El cantón es obligatorio. Escribe tu cantón actual.'); return;
         }
@@ -334,10 +342,9 @@ const PerfilGraduado = () => {
                 telefono: mf.telefono,
                 emailPersonal: mf.emailPersonal,
                 tieneDiscapacidad: mf.tieneDiscapacidad,
-                provinciaActual: mf.provinciaActual,   // ← NUEVO
-                cantonActual: mf.cantonActual,          // ← NUEVO
+                provinciaActual: mf.provinciaActual,
+                cantonActual: mf.cantonActual,
             }, { headers: { Authorization: `Bearer ${token}` } });
-
 
             const sesion = leerSesion('usuario');
             guardarSesion('usuario', { ...sesion, ...data.graduado });
@@ -361,12 +368,10 @@ const PerfilGraduado = () => {
 
         if (camposFaltantes.length > 0) {
             mostrarError(`Completa tu perfil antes de publicarlo. Falta: ${camposFaltantes.join(', ')}.`);
-            // Abre el modal de edición para que el graduado complete los datos
             setTimeout(() => setModalAbierto(true), 800);
             return;
         }
 
-        // Si el perfil está completo, abre el modal de tesis normalmente
         setFt({ urlDspace: '' });
         setDatosTesisDspace(null);
         setPasoTesis(1);
@@ -466,7 +471,6 @@ const PerfilGraduado = () => {
                 ok('Proyecto agregado correctamente');
             }
             resetFp();
-            // ── Refrescar habilidades/especialidades/tecnologías ──
             setTimeout(async () => {
                 try {
                     const { data: perfilActualizado } = await axios.get(`${API_URL}/perfil/mi-perfil`, {
@@ -555,7 +559,6 @@ const PerfilGraduado = () => {
                 ok('Certificado agregado correctamente');
             }
             resetFc();
-            // ── Refrescar habilidades/especialidades/tecnologías ──
             setTimeout(async () => {
                 try {
                     const { data: perfilActualizado } = await axios.get(`${API_URL}/perfil/mi-perfil`, {
@@ -601,7 +604,6 @@ const PerfilGraduado = () => {
                 setCertificados(c => c.filter(x => x._id !== id));
                 ok('Certificado eliminado');
             }
-            // ── Refrescar habilidades/especialidades/tecnologías ──
             setTimeout(async () => {
                 try {
                     const { data: perfilActualizado } = await axios.get(`${API_URL}/perfil/mi-perfil`, {
@@ -621,8 +623,135 @@ const PerfilGraduado = () => {
         <div style={s.cargando}><div style={s.spinner} /></div>
     );
 
+    // ── Estilos responsivos calculados ────────────────
+    const bodyStyle = {
+        ...s.body,
+        gridTemplateColumns: isMobile
+            ? '1fr'
+            : isTablet
+                ? '1fr 1fr'
+                : '240px 1fr 230px',
+    };
+
+    const cabeceraTopStyle = {
+        ...s.cabeceraTop,
+        flexDirection: isMobile ? 'column' : 'row',
+        alignItems: isMobile ? 'stretch' : 'flex-start',
+    };
+
+    const fotoYNombreStyle = {
+        ...s.fotoYNombre,
+        flexDirection: isMobile ? 'column' : 'row',
+        alignItems: isMobile ? 'center' : 'flex-start',
+        textAlign: isMobile ? 'center' : 'left',
+    };
+
+    const nombreInfoStyle = {
+        ...s.nombreInfo,
+        textAlign: isMobile ? 'center' : 'left',
+    };
+
+    const badgesRowStyle = {
+        ...s.badgesRow,
+        justifyContent: isMobile ? 'center' : 'flex-start',
+    };
+
+    const cabBotonesStyle = {
+        display: 'flex',
+        gap: 8,
+        flexDirection: isMobile ? 'row' : 'column',
+        alignItems: isMobile ? 'stretch' : 'flex-end',
+        width: isMobile ? '100%' : 'auto',
+        flexWrap: isMobile ? 'wrap' : 'nowrap',
+    };
+
+    const btnEditarCabStyle = {
+        ...s.btnEditarCab,
+        flex: isMobile ? 1 : 'none',
+        justifyContent: 'center',
+    };
+
+    const btnPublicarCabStyle = {
+        ...s.btnPublicarCab,
+        flex: isMobile ? 1 : 'none',
+        justifyContent: 'center',
+    };
+
+    const grid2Style = {
+        ...s.grid2,
+        gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
+    };
+
+    const proyGridStyle = {
+        ...s.proyGrid,
+        gridTemplateColumns: isMobile
+            ? '1fr'
+            : isTablet
+                ? 'repeat(auto-fill, minmax(180px, 1fr))'
+                : 'repeat(auto-fill, minmax(210px, 1fr))',
+    };
+
+    const certGridStyle = {
+        ...s.certGrid,
+        gridTemplateColumns: isMobile
+            ? '1fr'
+            : isTablet
+                ? 'repeat(auto-fill, minmax(180px, 1fr))'
+                : 'repeat(auto-fill, minmax(210px, 1fr))',
+    };
+
+    const modalStyle = {
+        ...s.modal,
+        maxWidth: isMobile ? '100%' : 500,
+        maxHeight: isMobile ? '95vh' : '90vh',
+        margin: isMobile ? '0' : undefined,
+        borderRadius: isMobile ? '16px 16px 0 0' : 12,
+    };
+
+    const overlayStyle = {
+        ...s.overlay,
+        alignItems: isMobile ? 'flex-end' : 'center',
+        padding: isMobile ? 0 : 16,
+    };
+
+    const toastContainerStyle = {
+        ...s.toastContainer,
+        left: isMobile ? 12 : 'auto',
+        right: isMobile ? 12 : 24,
+        bottom: isMobile ? 16 : 24,
+        maxWidth: isMobile ? 'calc(100vw - 24px)' : 370,
+    };
+
+    const secHeaderStyle = {
+        ...s.secHeader,
+        flexDirection: isMobile ? 'row' : 'row',
+        alignItems: isMobile ? 'center' : 'flex-start',
+    };
+
     return (
         <div style={s.page}>
+            {/* ── CSS global para animaciones y media tweaks ── */}
+            <style>{`
+                @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+                .spin { animation: spin 0.8s linear infinite; }
+
+                /* Scrollbar fino en modales */
+                .modal-body-scroll::-webkit-scrollbar { width: 4px; }
+                .modal-body-scroll::-webkit-scrollbar-track { background: transparent; }
+                .modal-body-scroll::-webkit-scrollbar-thumb { background: #dee2e6; border-radius: 4px; }
+
+                /* Touch targets mínimos en móvil */
+                @media (max-width: 767px) {
+                    button { min-height: 38px; }
+                    input, select, textarea { font-size: 16px !important; }
+                }
+
+                /* Columna derecha en tablet va debajo del centro */
+                @media (min-width: 768px) and (max-width: 1023px) {
+                    .col-der-tablet { grid-column: 1 / -1; }
+                }
+            `}</style>
+
             <div style={s.container}>
 
                 {/* ── BANNER PERFIL INCOMPLETO ── */}
@@ -634,22 +763,31 @@ const PerfilGraduado = () => {
                     if (!perfil?.provinciaActual || perfil.provinciaActual.trim() === '') faltante.push('provincia');
                     if (!perfil?.cantonActual || perfil.cantonActual.trim() === '') faltante.push('cantón');
                     return (
-                        <div style={s.banner}>
+                        <div style={{
+                            ...s.banner,
+                            flexWrap: isMobile ? 'wrap' : 'nowrap',
+                        }}>
                             <FaExclamationTriangle style={{ color: '#f57f17', fontSize: '1rem', flexShrink: 0, marginTop: 1 }} />
-                            <div style={{ flex: 1 }}>
+                            <div style={{ flex: 1, minWidth: isMobile ? '100%' : 0 }}>
                                 <p style={s.bannerTitulo}>Perfil incompleto — {progreso}% completado</p>
                                 <p style={s.bannerSub}>Te falta: <strong>{faltante.join(', ')}</strong></p>
                             </div>
-                            <button style={s.bannerBtn} onClick={() => setModalAbierto(true)}>Completar</button>
+                            <button style={{
+                                ...s.bannerBtn,
+                                width: isMobile ? '100%' : 'auto',
+                            }} onClick={() => setModalAbierto(true)}>Completar</button>
                         </div>
                     );
                 })()}
 
                 {/* ══ CABECERA ══ */}
                 <div style={s.cabecera}>
-                    <div style={s.cabeceraTop}>
-                        <div style={s.fotoYNombre}>
-                            <div style={s.fotoWrap} onClick={() => fotoRef.current.click()}>
+                    <div style={cabeceraTopStyle}>
+                        <div style={fotoYNombreStyle}>
+                            <div style={{
+                                ...s.fotoWrap,
+                                margin: isMobile ? '0 auto' : undefined,
+                            }} onClick={() => fotoRef.current.click()}>
                                 {previewFoto
                                     ? <img src={previewFoto} alt="perfil" style={s.fotoImg} />
                                     : <FaUserCircle style={s.fotoIcono} />
@@ -663,10 +801,13 @@ const PerfilGraduado = () => {
                             </div>
                             <input ref={fotoRef} type="file" accept="image/jpeg,image/png,image/webp"
                                 onChange={handleFoto} style={{ display: 'none' }} />
-                            <div style={s.nombreInfo}>
-                                <h1 style={s.nombre}>{perfil?.nombres} {perfil?.apellidos}</h1>
+                            <div style={nombreInfoStyle}>
+                                <h1 style={{
+                                    ...s.nombre,
+                                    fontSize: isMobile ? '1rem' : '1.15rem',
+                                }}>{perfil?.nombres} {perfil?.apellidos}</h1>
                                 <p style={s.tituloProf}>Ingeniero/a de Software · ESPOCH</p>
-                                <div style={s.badgesRow}>
+                                <div style={badgesRowStyle}>
                                     <span style={{
                                         ...s.badge,
                                         backgroundColor: perfil?.disponibilidad === 'disponible' ? '#e8f5e9' : '#ffebee',
@@ -698,12 +839,14 @@ const PerfilGraduado = () => {
                                 </div>
                             </div>
                         </div>
-                        <div style={{ display: 'flex', gap: 8, flexDirection: 'column', alignItems: 'flex-end' }}>
-                            <button style={s.btnEditarCab} onClick={() => setModalAbierto(true)}>
+
+                        {/* Botones cabecera */}
+                        <div style={cabBotonesStyle}>
+                            <button style={btnEditarCabStyle} onClick={() => setModalAbierto(true)}>
                                 <FaEdit style={{ marginRight: 5 }} />Editar perfil
                             </button>
                             {!perfil?.tesisVerificada && (
-                                <button style={s.btnPublicarCab} onClick={abrirModalTesis}>
+                                <button style={btnPublicarCabStyle} onClick={abrirModalTesis}>
                                     <FaGraduationCap style={{ marginRight: 5 }} />Publicar perfil
                                 </button>
                             )}
@@ -722,14 +865,17 @@ const PerfilGraduado = () => {
                         </div>
                     )}
 
-                    <div style={s.extras}>
+                    <div style={{
+                        ...s.extras,
+                        justifyContent: isMobile ? 'center' : 'flex-start',
+                    }}>
                         {perfil?.github && <a href={perfil.github} target="_blank" rel="noopener noreferrer" style={s.redLink}><FaGithub style={{ marginRight: 4 }} />GitHub</a>}
                         {perfil?.linkedin && <a href={perfil.linkedin} target="_blank" rel="noopener noreferrer" style={s.redLink}><FaLinkedin style={{ marginRight: 4 }} />LinkedIn</a>}
                     </div>
                 </div>
 
-                {/* ══ CUERPO: 3 COLUMNAS ══ */}
-                <div style={s.body}>
+                {/* ══ CUERPO: COLUMNAS ══ */}
+                <div style={bodyStyle}>
 
                     {/* ── COLUMNA IZQUIERDA ── */}
                     <div style={s.colIzq}>
@@ -745,8 +891,6 @@ const PerfilGraduado = () => {
                                 </p>
                             </div>
                         )}
-
-
 
                         <div style={s.card}>
                             <h2 style={s.cardH}><FaChartBar style={s.cardIco} />Especialidades</h2>
@@ -774,8 +918,6 @@ const PerfilGraduado = () => {
                                 </div>
                             )}
                         </div>
-
-
                     </div>
 
                     {/* ── COLUMNA CENTRO ── */}
@@ -783,7 +925,7 @@ const PerfilGraduado = () => {
 
                         {/* ═══ PROYECTOS ═══ */}
                         <div style={s.card}>
-                            <div style={s.secHeader}>
+                            <div style={secHeaderStyle}>
                                 <div>
                                     <h2 style={s.cardH}><FaBriefcase style={s.cardIco} />Proyectos</h2>
                                     <p style={s.cardSub}>
@@ -802,12 +944,10 @@ const PerfilGraduado = () => {
                                 </button>
                             </div>
 
-
-
                             {verFormProy && (
                                 <div style={s.formCard}>
                                     <h3 style={s.formH}>{editandoProy ? 'Editar proyecto' : 'Nuevo proyecto'}</h3>
-                                    <div style={s.grid2}>
+                                    <div style={grid2Style}>
                                         <div style={s.campo}>
                                             <label style={s.lbl}>Título *</label>
                                             <div style={s.inputWrap}>
@@ -838,7 +978,10 @@ const PerfilGraduado = () => {
                                         </span>
                                         <div style={s.guiaBox}>
                                             <p style={s.guiaTitulo}>Incluye en tu descripción:</p>
-                                            <div style={s.guiaGrid}>
+                                            <div style={{
+                                                ...s.guiaGrid,
+                                                gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
+                                            }}>
                                                 <span style={s.guiaItem}>¿Solo o en equipo?</span>
                                                 <span style={s.guiaItem}>¿Qué tecnologías usaste?</span>
                                                 <span style={s.guiaItem}>¿Qué problema resolviste?</span>
@@ -890,7 +1033,7 @@ const PerfilGraduado = () => {
                                     </button>
                                 </div>
                             ) : (
-                                <div style={s.proyGrid}>
+                                <div style={proyGridStyle}>
                                     {proyectos.map(proy => (
                                         <div key={proy._id} style={s.proyCard}>
                                             {proy.imagen
@@ -925,7 +1068,7 @@ const PerfilGraduado = () => {
 
                         {/* ═══ CERTIFICADOS ═══ */}
                         <div style={s.card}>
-                            <div style={s.secHeader}>
+                            <div style={secHeaderStyle}>
                                 <div>
                                     <h2 style={s.cardH}><FaCertificate style={s.cardIco} />Certificados y Talleres</h2>
                                     <p style={s.cardSub}>
@@ -944,12 +1087,10 @@ const PerfilGraduado = () => {
                                 </button>
                             </div>
 
-
-
                             {verFormCert && (
                                 <div style={s.formCard}>
                                     <h3 style={s.formH}>{editandoCert ? 'Editar certificado' : 'Nuevo certificado / taller'}</h3>
-                                    <div style={s.grid2}>
+                                    <div style={grid2Style}>
                                         <div style={s.campo}>
                                             <label style={s.lbl}>Título *</label>
                                             <div style={s.inputWrap}>
@@ -1029,7 +1170,7 @@ const PerfilGraduado = () => {
                                     </button>
                                 </div>
                             ) : (
-                                <div style={s.certGrid}>
+                                <div style={certGridStyle}>
                                     {certificados.map(cert => (
                                         <div key={cert._id} style={s.certCard}>
                                             {cert.archivo
@@ -1066,39 +1207,56 @@ const PerfilGraduado = () => {
                     </div>
 
                     {/* ── COLUMNA DERECHA — CONSEJOS ── */}
-                    <div style={s.colDer}>
-                        <div style={s.consejosSticky}>
+                    {/* En tablet usamos className para forzar full-width via CSS */}
+                    <div style={{
+                        ...s.colDer,
+                        ...(isTablet ? { gridColumn: '1 / -1' } : {}),
+                    }} className={isTablet ? 'col-der-tablet' : ''}>
+                        <div style={{
+                            ...s.consejosSticky,
+                            position: isMobile || isTablet ? 'static' : 'sticky',
+                        }}>
                             <PanelConsejos
                                 onPublicar={abrirModalTesis}
                                 tesisVerificada={perfil?.tesisVerificada}
                             />
-                            <div style={{ ...s.card, marginTop: 12 }}>
-                                <h2 style={s.cardH}><FaHandshake style={s.cardIco} />Habilidades Blandas</h2>
-                                <p style={s.cardSub}>Detectadas desde tus proyectos y certificados</p>
-                                {perfil?.habilidadesBlandas?.length > 0 ? (
-                                    <div style={s.tagsWrap}>
-                                        {perfil.habilidadesBlandas.map((h, i) => <span key={i} style={s.tagBlanda}>{h}</span>)}
-                                    </div>
-                                ) : (
-                                    <div style={s.emptySmall}>
-                                        <FaHandshake style={{ fontSize: '1.6rem', color: '#dee2e6', marginBottom: 6 }} />
-                                        <p style={s.emptySmallTxt}>Agrega proyectos o certificados para detectar habilidades blandas</p>
-                                    </div>
-                                )}
-                            </div>
-                            <div style={{ ...s.card, marginTop: 12 }}>
-                                <h2 style={s.cardH}><FaCode style={s.cardIco} />Tecnologías</h2>
-                                <p style={s.cardSub}>Detectadas desde tus proyectos y certificados</p>
-                                {perfil?.tecnologias?.length > 0 ? (
-                                    <div style={s.tagsWrap}>
-                                        {perfil.tecnologias.map((t, i) => <span key={i} style={s.tagTec}>{t}</span>)}
-                                    </div>
-                                ) : (
-                                    <div style={s.emptySmall}>
-                                        <FaCode style={{ fontSize: '1.6rem', color: '#dee2e6', marginBottom: 6 }} />
-                                        <p style={s.emptySmallTxt}>Agrega certificados para detectar tecnologías</p>
-                                    </div>
-                                )}
+
+                            {/* En tablet mostramos habilidades y tecnologías en fila */}
+                            <div style={{
+                                display: isTablet ? 'grid' : 'flex',
+                                gridTemplateColumns: isTablet ? '1fr 1fr' : undefined,
+                                flexDirection: isTablet ? undefined : 'column',
+                                gap: 12,
+                                marginTop: 12,
+                            }}>
+                                <div style={s.card}>
+                                    <h2 style={s.cardH}><FaHandshake style={s.cardIco} />Habilidades Blandas</h2>
+                                    <p style={s.cardSub}>Detectadas desde tus proyectos y certificados</p>
+                                    {perfil?.habilidadesBlandas?.length > 0 ? (
+                                        <div style={s.tagsWrap}>
+                                            {perfil.habilidadesBlandas.map((h, i) => <span key={i} style={s.tagBlanda}>{h}</span>)}
+                                        </div>
+                                    ) : (
+                                        <div style={s.emptySmall}>
+                                            <FaHandshake style={{ fontSize: '1.6rem', color: '#dee2e6', marginBottom: 6 }} />
+                                            <p style={s.emptySmallTxt}>Agrega proyectos o certificados para detectar habilidades blandas</p>
+                                        </div>
+                                    )}
+                                </div>
+                                <div style={s.card}>
+                                    <h2 style={s.cardH}><FaCode style={s.cardIco} />Tecnologías</h2>
+                                    <p style={s.cardSub}>Detectadas desde tus proyectos y certificados</p>
+                                    {perfil?.tecnologias?.length > 0 ? (
+                                        <div style={s.tagsWrap}>
+                                            {perfil.tecnologias.map((t, i) => <span key={i} style={s.tagTec}>{t}</span>)}
+                                        </div>
+                                    ) : (
+                                        <div style={s.emptySmall}>
+                                            <FaCode style={{ fontSize: '1.6rem', color: '#dee2e6', marginBottom: 6 }} />
+                                            <p style={s.emptySmallTxt}>Agrega certificados para detectar tecnologías</p>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1109,8 +1267,8 @@ const PerfilGraduado = () => {
                 MODAL PUBLICAR PERFIL — TESIS
             ══════════════════════════════════════════════════ */}
             {modalTesis && (
-                <div style={s.overlay} onClick={e => { if (e.target === e.currentTarget && !verificandoTesis && !aceptandoCons) cerrarModalTesis(); }}>
-                    <div style={{ ...s.modal, maxWidth: 540 }}>
+                <div style={overlayStyle} onClick={e => { if (e.target === e.currentTarget && !verificandoTesis && !aceptandoCons) cerrarModalTesis(); }}>
+                    <div style={{ ...modalStyle, maxWidth: isMobile ? '100%' : 540 }}>
                         <div style={{ ...s.modalHeader, borderBottom: '2px solid #6a1b9a' }}>
                             <div>
                                 <h2 style={s.modalTitulo}>
@@ -1141,10 +1299,9 @@ const PerfilGraduado = () => {
                             </div>
                         </div>
 
-                        <div style={s.modalBody}>
+                        <div style={s.modalBody} className="modal-body-scroll">
                             {pasoTesis === 1 && (
                                 <>
-                                    {/* Aviso carrera de Software */}
                                     <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, backgroundColor: '#f3e8ff', border: '1px solid #ddd6fe', borderRadius: 8, padding: '10px 14px', marginBottom: 16 }}>
                                         <FaGraduationCap style={{ color: '#6a1b9a', flexShrink: 0, fontSize: '1rem', marginTop: 1 }} />
                                         <div>
@@ -1176,7 +1333,6 @@ const PerfilGraduado = () => {
 
                             {pasoTesis === 2 && datosTesisDspace && (
                                 <>
-                                    
                                     <div style={st.terminosBox}>
                                         <div style={st.terminosBadge}>Res. 423.CP.2024 · LOPDP Ecuador</div>
                                         <h4 style={st.terminosTitulo}>Autorización de Tratamiento de Datos Personales</h4>
@@ -1247,8 +1403,8 @@ const PerfilGraduado = () => {
 
             {/* ══ MODAL EDITAR PERFIL ══ */}
             {modalAbierto && (
-                <div style={s.overlay} onClick={e => { if (e.target === e.currentTarget) setModalAbierto(false); }}>
-                    <div style={s.modal}>
+                <div style={overlayStyle} onClick={e => { if (e.target === e.currentTarget) setModalAbierto(false); }}>
+                    <div style={modalStyle}>
                         <div style={s.modalHeader}>
                             <div>
                                 <h2 style={s.modalTitulo}>{progreso < 100 ? 'Completar perfil' : 'Editar perfil'}</h2>
@@ -1256,16 +1412,11 @@ const PerfilGraduado = () => {
                             </div>
                             <button style={s.modalClose} onClick={() => setModalAbierto(false)}><FaTimes /></button>
                         </div>
-                        <div style={s.modalBody}>
+                        <div style={s.modalBody} className="modal-body-scroll">
 
-                            {/* ── Sección: datos de contacto (editables) ── */}
                             <div style={s.modalSec}>
                                 <h3 style={s.modalSecH}>Datos de contacto</h3>
-
-
-
-                                {/* Datos fijos (solo lectura) */}
-                                <div style={s.grid2}>
+                                <div style={grid2Style}>
                                     <div style={s.campo}>
                                         <label style={s.lbl}>Nombres</label>
                                         <div style={{ ...s.inputWrap, backgroundColor: '#f5f5f5', cursor: 'not-allowed' }}>
@@ -1280,7 +1431,6 @@ const PerfilGraduado = () => {
                                     </div>
                                 </div>
 
-                                {/* Teléfono (editable) */}
                                 <div style={s.campo}>
                                     <label style={s.lbl}>Teléfono celular</label>
                                     <div style={s.inputWrap}>
@@ -1300,7 +1450,6 @@ const PerfilGraduado = () => {
                                     </span>
                                 </div>
 
-                                {/* Correo personal (editable) */}
                                 <div style={s.campo}>
                                     <label style={s.lbl}>Correo personal</label>
                                     <div style={s.inputWrap}>
@@ -1319,7 +1468,6 @@ const PerfilGraduado = () => {
                                     </span>
                                 </div>
 
-                                {/* Discapacidad (editable) */}
                                 <div style={s.campo}>
                                     <label style={s.lbl}>Discapacidad</label>
                                     <select name="tieneDiscapacidad" value={mf.tieneDiscapacidad} onChange={cambiarMf} style={s.select}>
@@ -1335,7 +1483,6 @@ const PerfilGraduado = () => {
                                 </div>
                             </div>
 
-                            {/* ── Sección: descripción profesional ── */}
                             <div style={s.modalSec}>
                                 <h3 style={s.modalSecH}>Descripción profesional</h3>
                                 <div style={{ ...s.inputWrap, alignItems: 'flex-start', paddingTop: 10 }}>
@@ -1350,7 +1497,6 @@ const PerfilGraduado = () => {
                                 </div>
                             </div>
 
-                            {/* ── Sección: disponibilidad ── */}
                             <div style={s.modalSec}>
                                 <h3 style={s.modalSecH}>Disponibilidad</h3>
                                 <select name="disponibilidad" value={mf.disponibilidad} onChange={cambiarMf} style={s.select}>
@@ -1359,17 +1505,12 @@ const PerfilGraduado = () => {
                                 </select>
                             </div>
 
-                            {/* ── Sección: ubicación actual ── */}
                             <div style={s.modalSec}>
-                                <h3 style={s.modalSecH}>
-                                    
-                                    Ubicación actual
-                                </h3>
+                                <h3 style={s.modalSecH}>Ubicación actual</h3>
                                 <p style={{ margin: '0 0 10px', fontSize: '0.73rem', color: 'var(--color-texto-secundario)', lineHeight: 1.5 }}>
                                     Indica dónde te encuentras actualmente. Esta información es necesaria para publicar tu perfil.
                                 </p>
 
-                                {/* Provincia */}
                                 <div style={s.campo}>
                                     <label style={s.lbl}>Provincia *</label>
                                     <select
@@ -1390,7 +1531,6 @@ const PerfilGraduado = () => {
                                     )}
                                 </div>
 
-                                {/* Cantón */}
                                 <div style={s.campo}>
                                     <label style={s.lbl}>Cantón *</label>
                                     <div style={s.inputWrap}>
@@ -1411,7 +1551,6 @@ const PerfilGraduado = () => {
                                 </div>
                             </div>
 
-                            {/* ── Sección: redes ── */}
                             <div style={s.modalSec}>
                                 <h3 style={s.modalSecH}>Redes y portafolio</h3>
                                 <div style={s.campo}>
@@ -1430,7 +1569,6 @@ const PerfilGraduado = () => {
                                 </div>
                             </div>
 
-                            {/* ── Sección: visibilidad ── */}
                             {perfil?.tesisVerificada && (
                                 <div style={{ ...s.modalSec, borderBottom: 'none', marginBottom: 0 }}>
                                     <h3 style={s.modalSecH}>Visibilidad del perfil</h3>
@@ -1488,8 +1626,11 @@ const PerfilGraduado = () => {
 
             {/* ══ MODAL CONFIRMAR ELIMINACIÓN ══ */}
             {modalConfirm.abierto && (
-                <div style={s.overlay} onClick={e => { if (e.target === e.currentTarget) cerrarModalConfirm(); }}>
-                    <div style={s.modalConfirm}>
+                <div style={overlayStyle} onClick={e => { if (e.target === e.currentTarget) cerrarModalConfirm(); }}>
+                    <div style={{
+                        ...s.modalConfirm,
+                        width: isMobile ? 'calc(100% - 32px)' : undefined,
+                    }}>
                         <div style={s.modalConfirmIco}>
                             <FaTrash style={{ fontSize: '1.5rem', color: 'var(--estado-error)' }} />
                         </div>
@@ -1506,12 +1647,13 @@ const PerfilGraduado = () => {
                     </div>
                 </div>
             )}
+
             {mostrarBienvenida && (
                 <ModalBienvenida onCerrar={() => setMostrarBienvenida(false)} />
             )}
 
             {/* ══ TOASTS ══ */}
-            <div style={s.toastContainer}>
+            <div style={toastContainerStyle}>
                 {toasts.map(t => (
                     <div key={t.id} style={{
                         ...s.toastItem,
@@ -1536,7 +1678,7 @@ const PerfilGraduado = () => {
 };
 
 // ═══════════════════════════════════════════════════════
-// ESTILOS
+// ESTILOS BASE (sin cambios respecto al original)
 // ═══════════════════════════════════════════════════════
 const s = {
     cargando: { display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', backgroundColor: 'var(--color-fondo-web)' },
@@ -1660,6 +1802,7 @@ const s = {
     certImg: { width: '100%', height: 105, objectFit: 'cover' },
     certImgPlaceholder: { width: '100%', height: 70, display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--color-fondo-web)', borderBottom: '1px solid #f0f0f0' },
     certBody: { padding: '10px 12px', display: 'flex', flexDirection: 'column', flex: 1 },
+
     overlay: { position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.55)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 16, backdropFilter: 'blur(2px)' },
     modal: { backgroundColor: 'white', borderRadius: 12, width: '100%', maxWidth: 500, maxHeight: '90vh', display: 'flex', flexDirection: 'column', boxShadow: '0 8px 32px rgba(0,0,0,0.18)' },
     modalHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', padding: '16px 20px 13px', borderBottom: '2px solid var(--color-espoch-rojo)', flexShrink: 0 },
@@ -1682,7 +1825,7 @@ const s = {
     toastClose: { background: 'none', border: 'none', cursor: 'pointer', padding: '0 0 0 4px', opacity: 0.6, display: 'flex', alignItems: 'center', flexShrink: 0, color: 'inherit' },
 };
 
-// Estilos panel consejos
+// Estilos panel consejos (sin cambios)
 const sc = {
     panel: { backgroundColor: 'white', borderRadius: 10, border: '1px solid #e9ecef', boxShadow: '0 1px 4px rgba(0,0,0,0.05)', overflow: 'hidden' },
     panelHeader: { display: 'flex', alignItems: 'center', gap: 10, padding: '13px 14px 11px', borderBottom: '1px solid #f0f0f0', backgroundColor: '#fffbf0' },
@@ -1701,7 +1844,7 @@ const sc = {
     panelFooterTxt: { margin: 0, fontSize: '0.68rem', color: '#6d4c00', lineHeight: 1.4 },
 };
 
-// Estilos exclusivos del modal tesis
+// Estilos exclusivos del modal tesis (sin cambios)
 const st = {
     pasosBar: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, padding: '12px 20px', borderBottom: '1px solid #f0f0f0', backgroundColor: 'var(--color-fondo-web)', flexShrink: 0 },
     paso: { display: 'flex', alignItems: 'center', gap: 6, opacity: 0.45 },
@@ -1722,7 +1865,7 @@ const st = {
     visPrivadoAviso: { display: 'flex', alignItems: 'flex-start', gap: 10, backgroundColor: '#f3e8ff', border: '1px solid #ddd6fe', borderRadius: 8, padding: '10px 12px' },
 };
 
-// Estilos específicos del modal editar perfil
+// Estilos específicos del modal editar perfil (sin cambios)
 const sm = {
     avisoFijo: { display: 'flex', alignItems: 'flex-start', gap: 8, backgroundColor: '#f3e8ff', border: '1px solid #ddd6fe', borderRadius: 8, padding: '9px 12px', marginBottom: 12 },
 };

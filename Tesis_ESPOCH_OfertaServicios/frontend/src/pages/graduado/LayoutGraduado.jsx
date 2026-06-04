@@ -6,7 +6,7 @@ import {
     FaUserCircle, FaClipboardList,
     FaBell, FaBullhorn, FaSignOutAlt,
     FaCircle, FaCheckDouble, FaEnvelope,
-    FaBuilding, FaUser,
+    FaBuilding, FaUser, FaBars, FaTimes,
 } from 'react-icons/fa';
 import { leerSesion, eliminarSesion } from '../../utils/storageSeguro';
 import useInactivityTimeout from '../../utils/useInactivityTimeout';
@@ -22,10 +22,25 @@ const hdrs = () => {
 };
 
 const NAV_ITEMS = [
-    { icon: FaBullhorn,    label: 'Noticias',  path: '/graduado/noticias' },
+    { icon: FaBullhorn,      label: 'Noticias',  path: '/graduado/noticias' },
     { icon: FaClipboardList, label: 'Encuestas', path: '/graduado/encuestas' },
-    { icon: FaUserCircle,  label: 'Mi Perfil', path: '/graduado/perfil' },
+    { icon: FaUserCircle,    label: 'Mi Perfil', path: '/graduado/perfil' },
 ];
+
+// ══════════════════════════════════════════════
+// HOOK ANCHO DE VENTANA
+// ══════════════════════════════════════════════
+const useWindowWidth = () => {
+    const [width, setWidth] = useState(
+        typeof window !== 'undefined' ? window.innerWidth : 1024
+    );
+    useEffect(() => {
+        const fn = () => setWidth(window.innerWidth);
+        window.addEventListener('resize', fn);
+        return () => window.removeEventListener('resize', fn);
+    }, []);
+    return width;
+};
 
 // ══════════════════════════════════════════════
 // FILA EMAIL
@@ -125,6 +140,9 @@ const LayoutGraduado = () => {
     const navigate  = useNavigate();
     const location  = useLocation();
     const notifRef  = useRef(null);
+    const width     = useWindowWidth();
+    const isMobile  = width <= 768;
+    const isTablet  = width <= 1024;
 
     // ─────────────────────────────────────────────────────────────────────────
     // TODOS LOS useState PRIMERO — antes de cualquier return condicional
@@ -136,6 +154,7 @@ const LayoutGraduado = () => {
     const [cargandoNotif,      setCargandoNotif]      = useState(false);
     const [notifDetalle,       setNotifDetalle]       = useState(null);
     const [showSessionWarning, setShowSessionWarning] = useState(false);
+    const [menuMovilAbierto,   setMenuMovilAbierto]   = useState(false);
 
     // ─────────────────────────────────────────────────────────────────────────
     // TODOS LOS useCallback Y HOOKS PERSONALIZADOS — antes del return condicional
@@ -147,8 +166,8 @@ const LayoutGraduado = () => {
     }, [navigate]);
 
     const { extendSession } = useInactivityTimeout({
-        timeoutMs: 15 * 60 * 1000,  // ⬅ PRUEBA: 2 min → cambiar a 15 * 60 * 1000 en producción
-        warningMs: 30 * 1000,       // ⬅ advertencia 30 s antes del cierre
+        timeoutMs: 15 * 60 * 1000,
+        warningMs: 30 * 1000,
         onWarning: () => setShowSessionWarning(true),
         onLogout:  handleSessionLogout,
     });
@@ -181,6 +200,16 @@ const LayoutGraduado = () => {
         const intervalo = setInterval(cargarNotificaciones, POLL_INTERVAL);
         return () => clearInterval(intervalo);
     }, [cargarNotificaciones]);
+
+    // Cerrar menú móvil al cambiar de ruta
+    useEffect(() => {
+        setMenuMovilAbierto(false);
+    }, [location.pathname]);
+
+    // Cerrar menú móvil al hacer resize a desktop
+    useEffect(() => {
+        if (!isMobile) setMenuMovilAbierto(false);
+    }, [isMobile]);
 
     // ─────────────────────────────────────────────────────────────────────────
     // Funciones regulares (no hooks) — pueden ir en cualquier lugar
@@ -242,9 +271,46 @@ const LayoutGraduado = () => {
 
     const isActive = (path) => location.pathname === path;
 
+    // ══════════════════════════════════════════════
+    // ESTILOS RESPONSIVOS DINÁMICOS
+    // ══════════════════════════════════════════════
+    const navbarStyle = {
+        height: isMobile ? '56px' : '62px',
+        minHeight: isMobile ? '56px' : '62px',
+        backgroundColor: 'var(--color-espoch-rojo)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: isMobile ? '0 14px' : isTablet ? '0 16px' : '0 24px',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+        flexShrink: 0,
+        zIndex: 100,
+        position: 'relative',
+    };
+
+    const notifPanelStyle = {
+        position: 'fixed',
+        top: isMobile ? '56px' : 'auto',
+        right: isMobile ? '0' : '0',
+        left: isMobile ? '0' : 'auto',
+        bottom: isMobile ? '0' : 'auto',
+        marginTop: isMobile ? '0' : '10px',
+        width: isMobile ? '100%' : '320px',
+        backgroundColor: 'white',
+        border: isMobile ? 'none' : '1px solid #e9ecef',
+        borderRadius: isMobile ? '0' : '10px',
+        boxShadow: '0 8px 28px rgba(0,0,0,0.16)',
+        zIndex: 200,
+        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column',
+        maxHeight: isMobile ? 'calc(100vh - 56px)' : '420px',
+    };
+
     return (
         <div style={styles.root}>
-            <nav style={styles.navbar}>
+            {/* ══ NAVBAR ══ */}
+            <nav style={navbarStyle}>
 
                 {/* Logo */}
                 <div style={styles.logoArea}>
@@ -266,39 +332,45 @@ const LayoutGraduado = () => {
                         />
                     </div>
                     <div>
-                        <div style={styles.logoTitulo}>Portal de Graduados</div>
-                        <div style={styles.logoSub}>Carrera de Software · ESPOCH</div>
+                        <div style={{ ...styles.logoTitulo, fontSize: isMobile ? '0.78rem' : '0.9rem' }}>
+                            Portal de Graduados
+                        </div>
+                        {!isMobile && (
+                            <div style={styles.logoSub}>Carrera de Software · ESPOCH</div>
+                        )}
                     </div>
                 </div>
 
-                {/* Nav central */}
-                <div style={styles.navCentro}>
-                    {NAV_ITEMS.map(({ icon: Icon, label, path }) => {
-                        const activo = isActive(path);
-                        return (
-                            <button
-                                key={path}
-                                onClick={() => navigate(path)}
-                                style={{ ...styles.navBtn, ...(activo ? styles.navBtnActivo : {}) }}
-                            >
-                                <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                    <Icon style={styles.navIcon} />
-                                    {label}
-                                </span>
-                                <span style={{
-                                    display: 'block', height: '2px',
-                                    width: activo ? '100%' : '0%',
-                                    backgroundColor: 'white', borderRadius: '2px',
-                                    transition: 'width 0.2s ease',
-                                }} />
-                            </button>
-                        );
-                    })}
-                </div>
+                {/* Nav central — solo en desktop/tablet */}
+                {!isMobile && (
+                    <div style={styles.navCentro}>
+                        {NAV_ITEMS.map(({ icon: Icon, label, path }) => {
+                            const activo = isActive(path);
+                            return (
+                                <button
+                                    key={path}
+                                    onClick={() => navigate(path)}
+                                    style={{ ...styles.navBtn, ...(activo ? styles.navBtnActivo : {}) }}
+                                >
+                                    <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                        <Icon style={styles.navIcon} />
+                                        {!isTablet || width > 900 ? label : null}
+                                    </span>
+                                    <span style={{
+                                        display: 'block', height: '2px',
+                                        width: activo ? '100%' : '0%',
+                                        backgroundColor: 'white', borderRadius: '2px',
+                                        transition: 'width 0.2s ease',
+                                    }} />
+                                </button>
+                            );
+                        })}
+                    </div>
+                )}
 
                 {/* Derecha */}
-                <div style={styles.navDerecha}>
-                    {usuario && (
+                <div style={{ ...styles.navDerecha, gap: isMobile ? '6px' : '10px' }}>
+                    {!isMobile && usuario && (
                         <span style={styles.userName}>
                             {usuario.nombres?.split(' ')[0] || usuario.nombre?.split(' ')[0]}
                         </span>
@@ -311,7 +383,7 @@ const LayoutGraduado = () => {
                             onClick={abrirPanel}
                             title="Notificaciones"
                         >
-                            <FaBell size={15} />
+                            <FaBell size={isMobile ? 17 : 15} />
                             {noLeidas > 0 && (
                                 <span style={styles.badge}>
                                     {noLeidas > 9 ? '9+' : noLeidas}
@@ -329,7 +401,7 @@ const LayoutGraduado = () => {
                                     }}
                                 />
 
-                                <div style={styles.notifPanel}>
+                                <div style={notifPanelStyle}>
 
                                     <div style={styles.notifHeader}>
                                         <span style={styles.notifTitulo}>Notificaciones</span>
@@ -345,12 +417,14 @@ const LayoutGraduado = () => {
                                     </div>
 
                                     {notifDetalle ? (
-                                        <DetalleContacto
-                                            notif={notifDetalle}
-                                            onVolver={() => setNotifDetalle(null)}
-                                        />
+                                        <div style={{ flex: 1, overflowY: 'auto' }}>
+                                            <DetalleContacto
+                                                notif={notifDetalle}
+                                                onVolver={() => setNotifDetalle(null)}
+                                            />
+                                        </div>
                                     ) : (
-                                        <div style={styles.notifLista}>
+                                        <div style={{ ...styles.notifLista, flex: 1, overflowY: 'auto' }}>
                                             {cargandoNotif ? (
                                                 <div style={styles.notifVacio}>
                                                     <p style={{ margin: 0, fontSize: '0.78rem', color: '#adb5bd' }}>
@@ -434,13 +508,116 @@ const LayoutGraduado = () => {
                         )}
                     </div>
 
-                    <button style={styles.btnSalir} onClick={cerrarSesion}>
-                        <FaSignOutAlt size={11} />
-                        Salir
-                    </button>
+                    {!isMobile && (
+                        <button style={styles.btnSalir} onClick={cerrarSesion}>
+                            <FaSignOutAlt size={11} />
+                            Salir
+                        </button>
+                    )}
+
+                    {/* Hamburguesa — solo móvil */}
+                    {isMobile && (
+                        <button
+                            onClick={() => setMenuMovilAbierto(v => !v)}
+                            style={{
+                                background: 'rgba(255,255,255,0.15)',
+                                border: '1px solid rgba(255,255,255,0.25)',
+                                borderRadius: 7,
+                                color: 'white',
+                                width: 36,
+                                height: 36,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                cursor: 'pointer',
+                                flexShrink: 0,
+                            }}
+                        >
+                            {menuMovilAbierto ? <FaTimes size={15} /> : <FaBars size={15} />}
+                        </button>
+                    )}
                 </div>
             </nav>
 
+            {/* ══ MENÚ MÓVIL DESPLEGABLE ══ */}
+            {isMobile && menuMovilAbierto && (
+                <div style={{
+                    backgroundColor: '#a01825',
+                    zIndex: 99,
+                    flexShrink: 0,
+                    borderBottom: '2px solid rgba(255,255,255,0.15)',
+                    padding: '6px 0 8px',
+                }}>
+                    {/* Nombre usuario */}
+                    {usuario && (
+                        <div style={{
+                            padding: '6px 18px 10px',
+                            borderBottom: '1px solid rgba(255,255,255,0.15)',
+                            marginBottom: 4,
+                        }}>
+                            <span style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.7)' }}>Hola, </span>
+                            <span style={{ fontSize: '0.82rem', fontWeight: '700', color: 'white' }}>
+                                {usuario.nombres?.split(' ')[0] || usuario.nombre?.split(' ')[0]}
+                            </span>
+                        </div>
+                    )}
+
+                    {/* Ítems de nav */}
+                    {NAV_ITEMS.map(({ icon: Icon, label, path }) => {
+                        const activo = isActive(path);
+                        return (
+                            <button
+                                key={path}
+                                onClick={() => navigate(path)}
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: 10,
+                                    width: '100%',
+                                    padding: '11px 18px',
+                                    background: activo ? 'rgba(255,255,255,0.18)' : 'transparent',
+                                    border: 'none',
+                                    borderLeft: activo ? '3px solid white' : '3px solid transparent',
+                                    color: activo ? 'white' : 'rgba(255,255,255,0.75)',
+                                    fontSize: '0.87rem',
+                                    fontWeight: activo ? '700' : '500',
+                                    cursor: 'pointer',
+                                    textAlign: 'left',
+                                }}
+                            >
+                                <Icon style={{ fontSize: '0.9rem', flexShrink: 0 }} />
+                                {label}
+                            </button>
+                        );
+                    })}
+
+                    {/* Cerrar sesión */}
+                    <div style={{ borderTop: '1px solid rgba(255,255,255,0.15)', marginTop: 6, paddingTop: 6 }}>
+                        <button
+                            onClick={cerrarSesion}
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 10,
+                                width: '100%',
+                                padding: '10px 18px',
+                                background: 'transparent',
+                                border: 'none',
+                                color: 'rgba(255,255,255,0.65)',
+                                fontSize: '0.85rem',
+                                fontWeight: '500',
+                                cursor: 'pointer',
+                                textAlign: 'left',
+                            }}
+                        >
+                            <FaSignOutAlt size={13} />
+                            Cerrar sesión
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {/* ══ CONTENIDO ══ */}
             <div style={styles.contenido}>
                 <Outlet />
             </div>
@@ -461,8 +638,7 @@ const LayoutGraduado = () => {
 // ══════════════════════════════════════════════
 const styles = {
     root:           { display: 'flex', flexDirection: 'column', height: '100vh', width: '100vw', backgroundColor: 'var(--color-fondo-web)', overflow: 'hidden' },
-    navbar:         { height: '62px', minHeight: '62px', backgroundColor: 'var(--color-espoch-rojo)', display: 'grid', gridTemplateColumns: '1fr auto 1fr', alignItems: 'center', padding: '0 24px', boxShadow: '0 2px 8px rgba(0,0,0,0.15)', flexShrink: 0, zIndex: 100 },
-    logoArea:       { display: 'flex', alignItems: 'center', gap: '10px', minWidth: '200px', flexShrink: 0 },
+    logoArea:       { display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0 },
     logoBadge:      { width: '38px', height: '38px', backgroundColor: 'white', border: '1px solid rgba(255,255,255,0.3)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, overflow: 'hidden', padding: '3px' },
     logoTitulo:     { color: 'white', fontWeight: '700', fontSize: '0.9rem', lineHeight: 1.2 },
     logoSub:        { color: 'rgba(255,255,255,0.55)', fontSize: '0.62rem', letterSpacing: '0.04em', marginTop: '1px' },
@@ -472,12 +648,11 @@ const styles = {
     navIcon:        { fontSize: '0.82rem', flexShrink: 0 },
     navDerecha:     { display: 'flex', alignItems: 'center', gap: '10px', justifyContent: 'flex-end', flexShrink: 0 },
     userName:       { fontSize: '0.8rem', fontWeight: '500', color: 'rgba(255,255,255,0.88)' },
-    btnSalir:       { display: 'flex', alignItems: 'center', gap: '5px', padding: '6px 13px', backgroundColor: 'transparent', border: '1px solid rgba(255,255,255,0.25)', borderRadius: '6px', color: 'rgba(255,255,255,0.70)', cursor: 'pointer', fontSize: '0.78rem', fontWeight: '500', transition: 'background-color 0.15s' },
+    btnSalir:       { display: 'flex', alignItems: 'center', gap: '5px', padding: '6px 13px', backgroundColor: 'transparent', border: '1px solid rgba(255,255,255,0.25)', borderRadius: '6px', color: 'rgba(255,255,255,0.70)', cursor: 'pointer', fontSize: '0.78rem', fontWeight: '500', transition: 'background-color 0.15s', whiteSpace: 'nowrap' },
     contenido:      { flex: 1, overflowY: 'auto', overflowX: 'hidden', backgroundColor: 'var(--color-fondo-web)' },
     btnCampana:     { position: 'relative', background: 'transparent', border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.80)', padding: '6px 8px', display: 'flex', alignItems: 'center', borderRadius: 6, transition: 'color 0.15s' },
     badge:          { position: 'absolute', top: 2, right: 2, backgroundColor: '#ff3d3d', color: 'white', borderRadius: '50%', fontSize: '0.58rem', fontWeight: '700', width: 14, height: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1.5px solid var(--color-espoch-rojo)', lineHeight: 1 },
-    notifPanel:     { position: 'absolute', top: 'calc(100% + 10px)', right: 0, width: 320, backgroundColor: 'white', border: '1px solid #e9ecef', borderRadius: 10, boxShadow: '0 8px 28px rgba(0,0,0,0.16)', zIndex: 200, overflow: 'hidden' },
-    notifHeader:    { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '11px 14px 9px', borderBottom: '1px solid #f0f0f0', backgroundColor: '#fafafa' },
+    notifHeader:    { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '11px 14px 9px', borderBottom: '1px solid #f0f0f0', backgroundColor: '#fafafa', flexShrink: 0 },
     notifTitulo:    { fontSize: '0.84rem', fontWeight: '700', color: '#2c3e50' },
     btnMarcarTodas: { display: 'flex', alignItems: 'center', background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.72rem', color: 'var(--color-espoch-rojo)', fontWeight: '600', padding: 0 },
     notifLista:     { maxHeight: 340, overflowY: 'auto' },
@@ -486,14 +661,14 @@ const styles = {
     notifFecha:     { fontSize: '0.68rem', color: '#adb5bd' },
     tipoBadge:      { fontSize: '0.62rem', color: '#be1e2d', fontWeight: '700' },
     notifVacio:     { textAlign: 'center', padding: '28px 16px', display: 'flex', flexDirection: 'column', alignItems: 'center' },
-    notifFooter:    { textAlign: 'center', padding: '8px', fontSize: '0.72rem', color: '#adb5bd', backgroundColor: '#fafafa', borderTop: '1px solid #f0f0f0' },
+    notifFooter:    { textAlign: 'center', padding: '8px', fontSize: '0.72rem', color: '#adb5bd', backgroundColor: '#fafafa', borderTop: '1px solid #f0f0f0', flexShrink: 0 },
 };
 
 // ══════════════════════════════════════════════
 // ESTILOS DETALLE CONTACTO
 // ══════════════════════════════════════════════
 const nd = {
-    wrap:       { padding: '12px 14px', maxHeight: 380, overflowY: 'auto' },
+    wrap:       { padding: '12px 14px' },
     btnVolver:  { background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.74rem', color: 'var(--color-espoch-rojo)', fontWeight: '700', padding: '0 0 10px', display: 'block' },
     cabecera:   { display: 'flex', alignItems: 'flex-start', gap: 10, backgroundColor: '#fff1f2', border: '1px solid #fecdd3', borderRadius: 8, padding: '10px 12px', marginBottom: 12 },
     iconoWrap:  { width: 32, height: 32, borderRadius: 8, backgroundColor: 'white', border: '1px solid #fecdd3', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },

@@ -36,7 +36,6 @@ const useInactivityTimeout = ({
         }
     }, [startTimers]);
 
-    // ── NUEVO: cerrar sesión al perder conectividad ──────────────────────────
     useEffect(() => {
         const handleOffline = () => {
             clearTimers();

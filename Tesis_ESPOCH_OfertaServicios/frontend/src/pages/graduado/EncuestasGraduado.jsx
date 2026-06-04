@@ -32,9 +32,24 @@ const calcularEstado = (enc) => {
 };
 
 const ESTADO_CFG = {
-    pendiente: { bg: '#fff8e1', color: '#f57f17', label: 'Pendiente', Ico: FaClock },
+    pendiente:  { bg: '#fff8e1', color: '#f57f17', label: 'Pendiente',  Ico: FaClock },
     completada: { bg: '#e8f5e9', color: '#2e7d32', label: 'Completada', Ico: FaCheckCircle },
-    cerrada: { bg: '#f5f5f5', color: '#9e9e9e', label: 'Cerrada', Ico: FaLock },
+    cerrada:    { bg: '#f5f5f5', color: '#9e9e9e', label: 'Cerrada',    Ico: FaLock },
+};
+
+// ══════════════════════════════════════════════
+// HOOK ANCHO DE VENTANA
+// ══════════════════════════════════════════════
+const useWindowWidth = () => {
+    const [width, setWidth] = useState(
+        typeof window !== 'undefined' ? window.innerWidth : 1024
+    );
+    useEffect(() => {
+        const fn = () => setWidth(window.innerWidth);
+        window.addEventListener('resize', fn);
+        return () => window.removeEventListener('resize', fn);
+    }, []);
+    return width;
 };
 
 // ══════════════════════════════════════════════════════════════
@@ -86,6 +101,10 @@ const Toast = ({ mensaje, visible, onOcultar }) => {
             display: 'flex', alignItems: 'flex-start', gap: 12,
             animation: 'slideInToast 0.3s ease',
             fontFamily: FONT_SANS, borderLeft: `4px solid ${ROJO}`,
+            // En móvil: ocupa todo el ancho inferior
+            left: typeof window !== 'undefined' && window.innerWidth <= 768 ? 12 : 'auto',
+            right: typeof window !== 'undefined' && window.innerWidth <= 768 ? 12 : 24,
+            maxWidth: typeof window !== 'undefined' && window.innerWidth <= 768 ? 'calc(100% - 24px)' : 380,
         }}>
             <div style={{ width: 6, height: 6, borderRadius: '50%', background: ROJO, flexShrink: 0, marginTop: 6 }} />
             <div style={{ flex: 1 }}>
@@ -106,7 +125,7 @@ const Toast = ({ mensaje, visible, onOcultar }) => {
 // ══════════════════════════════════════════════════════════════
 const CabeceraModal = ({ titulo, onCerrar }) => (
     <div style={{
-        background: ROJO, padding: '24px 28px 20px',
+        background: ROJO, padding: '20px 20px 16px',
         borderRadius: '16px 16px 0 0', position: 'relative', overflow: 'hidden',
         display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexShrink: 0,
     }}>
@@ -115,11 +134,11 @@ const CabeceraModal = ({ titulo, onCerrar }) => (
             <div style={{ position: 'absolute', top: -40, right: -40, width: 200, height: 200, border: '40px solid white', borderRadius: '50%' }} />
             <div style={{ position: 'absolute', bottom: -60, right: -20, width: 140, height: 140, border: '30px solid white', borderRadius: '50%' }} />
         </div>
-        <div style={{ minWidth: 0 }}>
+        <div style={{ minWidth: 0, flex: 1 }}>
             <p style={{ margin: '0 0 5px', fontSize: '0.6rem', fontWeight: '700', color: 'rgba(255,255,255,0.65)', letterSpacing: '2px', textTransform: 'uppercase', fontFamily: FONT_SANS }}>
                 Encuesta de Graduados · ESPOCH
             </p>
-            <h2 style={{ margin: 0, fontSize: '1.05rem', fontWeight: '600', color: 'white', fontFamily: FONT_FORM, lineHeight: 1.3, maxWidth: 580, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            <h2 style={{ margin: 0, fontSize: '1rem', fontWeight: '600', color: 'white', fontFamily: FONT_FORM, lineHeight: 1.3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', paddingRight: 8 }}>
                 {titulo}
             </h2>
         </div>
@@ -137,16 +156,16 @@ const CabeceraModal = ({ titulo, onCerrar }) => (
 // ══════════════════════════════════════════════════════════════
 const PASOS_CFG = [
     { id: 'consentimiento', label: 'Consentimiento' },
-    { id: 'info_general', label: 'Mis Datos' },
-    { id: 'preguntas', label: 'Encuesta' },
+    { id: 'info_general',   label: 'Mis Datos' },
+    { id: 'preguntas',      label: 'Encuesta' },
 ];
 const PASO_IDX = { consentimiento: 0, info_general: 1, preguntas: 2 };
 
-const BarraPasos = ({ paso }) => {
+const BarraPasos = ({ paso, isMobile }) => {
     const actIdx = PASO_IDX[paso] ?? -1;
     if (actIdx < 0) return null;
     return (
-        <div style={{ display: 'flex', alignItems: 'center', gap: 0, marginBottom: 26, fontFamily: FONT_SANS, padding: '16px 28px 0' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 0, marginBottom: 20, fontFamily: FONT_SANS, padding: isMobile ? '14px 16px 0' : '16px 28px 0' }}>
             {PASOS_CFG.map((p, i) => {
                 const comp = i < actIdx;
                 const actv = i === actIdx;
@@ -165,7 +184,7 @@ const BarraPasos = ({ paso }) => {
                                 {comp ? '✓' : i + 1}
                             </div>
                             <span style={{
-                                fontSize: '0.65rem', fontWeight: actv ? '700' : '400',
+                                fontSize: isMobile ? '0.6rem' : '0.65rem', fontWeight: actv ? '700' : '400',
                                 color: actv ? ROJO : comp ? TEXTO : TEXTO_S,
                                 letterSpacing: '0.3px', textAlign: 'center', lineHeight: 1.2,
                             }}>{p.label}</span>
@@ -184,13 +203,13 @@ const BarraPasos = ({ paso }) => {
 // TABLA MATRIZ
 // ══════════════════════════════════════════════════════════════
 const TablaMatriz = ({ items, columnas, respuestas, onRespuesta, pregId, esOpcionMultiple }) => (
-    <div style={{ overflowX: 'auto', marginTop: 8 }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.78rem', fontFamily: FONT_SANS }}>
+    <div style={{ overflowX: 'auto', marginTop: 8, WebkitOverflowScrolling: 'touch' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.78rem', fontFamily: FONT_SANS, minWidth: 320 }}>
             <thead>
                 <tr>
                     <th style={{ padding: '8px 12px', textAlign: 'left', width: '40%', color: TEXTO_S, fontWeight: '600', borderBottom: `2px solid ${GRIS_LN}`, fontSize: '0.7rem', letterSpacing: '0.3px' }}></th>
                     {columnas.map((col, i) => (
-                        <th key={i} style={{ padding: '8px 6px', textAlign: 'center', color: TEXTO_S, fontWeight: '700', minWidth: 58, borderBottom: `2px solid ${GRIS_LN}`, fontSize: '0.7rem' }}>{col}</th>
+                        <th key={i} style={{ padding: '8px 6px', textAlign: 'center', color: TEXTO_S, fontWeight: '700', minWidth: 48, borderBottom: `2px solid ${GRIS_LN}`, fontSize: '0.7rem' }}>{col}</th>
                     ))}
                 </tr>
             </thead>
@@ -257,8 +276,8 @@ const inputBase = {
 // ══════════════════════════════════════════════════════════════
 // PASO 1 — CONSENTIMIENTO
 // ══════════════════════════════════════════════════════════════
-const PasoConsentimiento = ({ encuesta, onAceptar, onRechazar }) => (
-    <div style={{ padding: '0 28px 28px' }}>
+const PasoConsentimiento = ({ encuesta, onAceptar, onRechazar, isMobile }) => (
+    <div style={{ padding: isMobile ? '0 16px 24px' : '0 28px 28px' }}>
         <div style={{ marginBottom: 8 }}>
             <h3 style={{ margin: '0 0 3px', fontSize: '0.95rem', fontWeight: '600', color: TEXTO, fontFamily: FONT_FORM }}>
                 Consentimiento Informado
@@ -270,7 +289,7 @@ const PasoConsentimiento = ({ encuesta, onAceptar, onRechazar }) => (
                 background: '#FAFAFA', border: `1px solid ${GRIS_LN}`,
                 borderLeft: `3px solid ${ROJO}`, borderRadius: '0 6px 6px 0',
                 padding: '18px 20px', marginBottom: 22,
-                maxHeight: 250, overflowY: 'auto', lineHeight: 1.75,
+                maxHeight: isMobile ? 200 : 250, overflowY: 'auto', lineHeight: 1.75,
             }}>
                 <p style={{ margin: 0, fontSize: '0.83rem', color: '#3A3A3A', fontFamily: FONT_SANS, textAlign: 'justify' }}>
                     {encuesta.consentimientoInformado ||
@@ -282,7 +301,7 @@ const PasoConsentimiento = ({ encuesta, onAceptar, onRechazar }) => (
         <p style={{ margin: '0 0 14px', fontSize: '0.82rem', fontWeight: '600', color: TEXTO, textAlign: 'center', fontFamily: FONT_SANS }}>
             ¿Acepta participar en esta investigación?
         </p>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 10 }}>
             <button onClick={onAceptar} style={{
                 padding: '13px', background: '#F0FAF2',
                 border: '1.5px solid #2e7d32', borderRadius: 6,
@@ -302,7 +321,7 @@ const PasoConsentimiento = ({ encuesta, onAceptar, onRechazar }) => (
 // ══════════════════════════════════════════════════════════════
 // PASO 2 — INFORMACIÓN GENERAL
 // ══════════════════════════════════════════════════════════════
-const PasoInfoGeneral = ({ onSiguiente, onAtras }) => {
+const PasoInfoGeneral = ({ onSiguiente, onAtras, isMobile }) => {
     const [datos, setDatos] = useState(null);
     const [loading, setLoading] = useState(true);
     const [guardando, setGuardando] = useState(false);
@@ -329,17 +348,13 @@ const PasoInfoGeneral = ({ onSiguiente, onAtras }) => {
 
     const validarYSiguiente = async () => {
         setError(''); setExito('');
-        // Teléfono — exactamente 10 dígitos
         if (!telefono.trim()) { setError('El campo Celular es obligatorio.'); return; }
         if (!/^[0-9]{10}$/.test(telefono.trim())) { setError('El celular debe tener exactamente 10 dígitos.'); return; }
-        // Email — al menos @
         if (!email.trim()) { setError('El campo Correo Personal es obligatorio.'); return; }
         if (!email.includes('@')) { setError('El correo debe contener @.'); return; }
-        // Año
         if (!anio.trim()) { setError('El año de graduación es obligatorio.'); return; }
         const anioNum = parseInt(anio);
         if (isNaN(anioNum) || anioNum < 1990 || anioNum > new Date().getFullYear()) { setError(`El año debe estar entre 1990 y ${new Date().getFullYear()}.`); return; }
-        // Ciudadanía
         if (!ciudadania) { setError('Debe seleccionar su ciudadanía.'); return; }
 
         setGuardando(true);
@@ -356,7 +371,7 @@ const PasoInfoGeneral = ({ onSiguiente, onAtras }) => {
     };
 
     if (loading) return (
-        <div style={{ padding: '0 28px 28px' }}>
+        <div style={{ padding: isMobile ? '0 16px 24px' : '0 28px 28px' }}>
             <div style={{ textAlign: 'center', padding: '50px 0' }}>
                 <div style={frmCss.spinner} />
                 <p style={{ margin: '14px 0 0', fontSize: '0.82rem', color: TEXTO_S, fontFamily: FONT_SANS }}>Cargando tus datos...</p>
@@ -364,8 +379,13 @@ const PasoInfoGeneral = ({ onSiguiente, onAtras }) => {
         </div>
     );
 
+    // Grid de datos de solo lectura: 3 col en desktop, 1 col en móvil
+    const gridDatosCol = isMobile ? '1fr' : '1fr 1fr 1fr';
+    // Grid de campos editables: 2 col en desktop, 1 col en móvil
+    const gridEditCol = isMobile ? '1fr' : '1fr 1fr';
+
     return (
-        <div style={{ padding: '0 28px 28px' }}>
+        <div style={{ padding: isMobile ? '0 16px 24px' : '0 28px 28px' }}>
             {/* Aviso */}
             <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, background: '#EFF6FF', border: '1px solid #BFDBFE', borderRadius: 6, padding: '10px 14px', marginBottom: 20 }}>
                 <span style={{ flexShrink: 0, fontSize: '0.9rem' }}>ℹ️</span>
@@ -376,7 +396,7 @@ const PasoInfoGeneral = ({ onSiguiente, onAtras }) => {
 
             {/* Datos de solo lectura */}
             <SeccionLabel>Datos Personales</SeccionLabel>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px 14px', marginBottom: 18 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: gridDatosCol, gap: '8px 14px', marginBottom: 18 }}>
                 <Campo label="Nombres y Apellidos" val={`${datos?.nombres || ''} ${datos?.apellidos || ''}`.trim()} />
                 <Campo label="Fecha de Nacimiento" val={fmtFechaNac(datos?.fechaNacimiento)} />
                 <Campo label="Género" val={datos?.genero || '—'} />
@@ -393,7 +413,7 @@ const PasoInfoGeneral = ({ onSiguiente, onAtras }) => {
                     placeholder="correo@gmail.com" className="eg-inp" style={inputBase} />
             </CampoForm>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 18px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: gridEditCol, gap: isMobile ? 0 : '0 18px' }}>
                 {/* Celular */}
                 <CampoForm label="Número de Celular *">
                     <input type="text" value={telefono}
@@ -419,11 +439,13 @@ const PasoInfoGeneral = ({ onSiguiente, onAtras }) => {
 
             {/* Ciudadanía */}
             <CampoForm label="Ciudadanía *">
-                <div style={{ display: 'flex', gap: 8 }}>
+                <div style={{ display: 'flex', gap: 8, flexWrap: isMobile ? 'wrap' : 'nowrap' }}>
                     {['Nacional', 'Extranjera'].map(op => (
                         <label key={op} className="eg-radio-btn" style={{
                             display: 'flex', alignItems: 'center', gap: 7, cursor: 'pointer',
                             padding: '9px 20px', borderRadius: 5,
+                            flex: isMobile ? '1 1 auto' : 'none',
+                            justifyContent: isMobile ? 'center' : 'flex-start',
                             border: `1.5px solid ${ciudadania === op ? ROJO : GRIS_LN}`,
                             background: ciudadania === op ? ROJO_CLARO : 'white',
                             fontSize: '0.83rem', fontFamily: FONT_SANS,
@@ -453,7 +475,7 @@ const PasoInfoGeneral = ({ onSiguiente, onAtras }) => {
             {/* Navegación */}
             <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, paddingTop: 16, borderTop: `1px solid ${GRIS_LN}`, marginTop: 8 }}>
                 <button className="eg-btn-atras" onClick={onAtras} disabled={guardando} style={{
-                    display: 'flex', alignItems: 'center', padding: '10px 20px',
+                    display: 'flex', alignItems: 'center', padding: isMobile ? '11px 16px' : '10px 20px',
                     background: '#F0F0F0', border: 'none', borderRadius: 6,
                     cursor: 'pointer', fontWeight: '600', fontSize: '0.84rem',
                     color: TEXTO_S, fontFamily: FONT_SANS, transition: 'background 0.15s',
@@ -461,7 +483,7 @@ const PasoInfoGeneral = ({ onSiguiente, onAtras }) => {
                     <FaArrowLeft style={{ marginRight: 6, fontSize: '0.72rem' }} /> Atrás
                 </button>
                 <button className="eg-btn-sig" onClick={validarYSiguiente} disabled={guardando} style={{
-                    display: 'flex', alignItems: 'center', padding: '10px 24px',
+                    display: 'flex', alignItems: 'center', padding: isMobile ? '11px 20px' : '10px 24px',
                     background: ROJO, color: 'white', border: 'none', borderRadius: 6,
                     cursor: 'pointer', fontWeight: '700', fontSize: '0.84rem',
                     fontFamily: FONT_SANS, boxShadow: `0 4px 14px rgba(190,30,45,0.25)`,
@@ -476,7 +498,7 @@ const PasoInfoGeneral = ({ onSiguiente, onAtras }) => {
 // ══════════════════════════════════════════════════════════════
 // PASO 3 — PREGUNTAS
 // ══════════════════════════════════════════════════════════════
-const PasoPreguntas = ({ encuesta, onAtras, onEnviar }) => {
+const PasoPreguntas = ({ encuesta, onAtras, onEnviar, isMobile }) => {
     const [preguntas, setPreguntas] = useState([]);
     const [loading, setLoading] = useState(true);
     const [enviando, setEnviando] = useState(false);
@@ -595,7 +617,7 @@ const PasoPreguntas = ({ encuesta, onAtras, onEnviar }) => {
                     );
                 })}
                 {tipo === 'escala' && (
-                    <div style={{ display: 'flex', gap: 5 }}>
+                    <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
                         {[1, 2, 3, 4, 5].map(n => (
                             <button key={n} className="eg-btn-escala" onClick={() => setR(subId, n, tipo)} style={{ width: 30, height: 30, borderRadius: '50%', border: `2px solid ${resp[subId] === n ? ROJO : GRIS_LN}`, background: resp[subId] === n ? ROJO : 'white', color: resp[subId] === n ? 'white' : TEXTO_S, cursor: 'pointer', fontWeight: '700', fontSize: '0.72rem', transition: 'all 0.15s' }}>{n}</button>
                         ))}
@@ -615,7 +637,7 @@ const PasoPreguntas = ({ encuesta, onAtras, onEnviar }) => {
                         }}
                         placeholder="Ingresa un número..."
                         style={{
-                            width: '180px',
+                            width: isMobile ? '100%' : '180px',
                             padding: '7px 10px',
                             border: `1px solid ${GRIS_LN}`,
                             borderRadius: 4,
@@ -641,7 +663,7 @@ const PasoPreguntas = ({ encuesta, onAtras, onEnviar }) => {
             );
         }
 
-        const base = { marginBottom: 12, padding: '16px 18px', background: 'white', border: `1px solid ${GRIS_LN}`, borderRadius: 8 };
+        const base = { marginBottom: 12, padding: isMobile ? '14px 14px' : '16px 18px', background: 'white', border: `1px solid ${GRIS_LN}`, borderRadius: 8 };
 
         // Matriz
         if (preg.esMatriz && preg.items?.length > 0) {
@@ -654,7 +676,7 @@ const PasoPreguntas = ({ encuesta, onAtras, onEnviar }) => {
                     </p>
                     {preg.descripcionMatriz && <p style={{ margin: '0 0 8px', fontSize: '0.74rem', color: TEXTO_S, fontFamily: FONT_SANS }}>{preg.descripcionMatriz}</p>}
                     {preg.tipo === 'escala' && (
-                        <div style={{ display: 'flex', gap: 14, marginBottom: 6 }}>
+                        <div style={{ display: 'flex', gap: 14, marginBottom: 6, flexWrap: 'wrap' }}>
                             {preg.etiquetaMin && <span style={{ fontSize: '0.68rem', color: TEXTO_S, fontFamily: FONT_SANS }}>1 = {preg.etiquetaMin}</span>}
                             {preg.etiquetaMax && <span style={{ fontSize: '0.68rem', color: TEXTO_S, fontFamily: FONT_SANS }}>5 = {preg.etiquetaMax}</span>}
                         </div>
@@ -669,7 +691,7 @@ const PasoPreguntas = ({ encuesta, onAtras, onEnviar }) => {
         // Pregunta estándar
         return (
             <div key={preg._id} className="eg-tarjeta-preg" style={base}>
-                <p style={{ margin: '0 0 12px', fontSize: '0.87rem', fontWeight: '600', color: TEXTO, fontFamily: FONT_SANS, lineHeight: 1.45 }}>
+                <p style={{ margin: '0 0 12px', fontSize: isMobile ? '0.85rem' : '0.87rem', fontWeight: '600', color: TEXTO, fontFamily: FONT_SANS, lineHeight: 1.45 }}>
                     <span style={{ color: ROJO, fontWeight: '700', marginRight: 6 }}>{num}.</span>
                     {preg.texto}{preg.obligatoria && <span style={{ color: ROJO, marginLeft: 3 }}>*</span>}
                 </p>
@@ -684,7 +706,7 @@ const PasoPreguntas = ({ encuesta, onAtras, onEnviar }) => {
                     <input type="number" value={resp[preg._id] || ''} min="0" className="eg-inp"
                         onChange={ev => { const v = ev.target.value; if (v === '' || (/^\d+$/.test(v) && parseInt(v) >= 0)) setR(preg._id, v, preg.tipo); }}
                         placeholder="Ingresa un número..."
-                        style={{ ...inputBase, width: '180px' }} />
+                        style={{ ...inputBase, width: isMobile ? '100%' : '180px' }} />
                 )}
 
                 {preg.tipo === 'opcion_multiple' && (
@@ -692,7 +714,7 @@ const PasoPreguntas = ({ encuesta, onAtras, onEnviar }) => {
                         {(preg.opciones || []).map((op, i) => (
                             <label key={i} className="eg-opcion" style={{
                                 display: 'flex', alignItems: 'center', gap: 9, cursor: 'pointer',
-                                padding: '9px 12px', borderRadius: 5, fontSize: '0.83rem', fontFamily: FONT_SANS,
+                                padding: isMobile ? '10px 12px' : '9px 12px', borderRadius: 5, fontSize: '0.83rem', fontFamily: FONT_SANS,
                                 background: resp[preg._id] === op ? ROJO_CLARO : '#FAFAFA',
                                 border: `1.5px solid ${resp[preg._id] === op ? ROJO : GRIS_LN}`,
                                 color: resp[preg._id] === op ? ROJO_OSC : TEXTO,
@@ -714,7 +736,7 @@ const PasoPreguntas = ({ encuesta, onAtras, onEnviar }) => {
                             return (
                                 <label key={i} className="eg-opcion" style={{
                                     display: 'flex', alignItems: 'center', gap: 9, cursor: 'pointer',
-                                    padding: '9px 12px', borderRadius: 5, fontSize: '0.83rem', fontFamily: FONT_SANS,
+                                    padding: isMobile ? '10px 12px' : '9px 12px', borderRadius: 5, fontSize: '0.83rem', fontFamily: FONT_SANS,
                                     background: sel ? ROJO_CLARO : '#FAFAFA',
                                     border: `1.5px solid ${sel ? ROJO : GRIS_LN}`,
                                     color: sel ? ROJO_OSC : TEXTO,
@@ -731,10 +753,10 @@ const PasoPreguntas = ({ encuesta, onAtras, onEnviar }) => {
 
                 {preg.tipo === 'escala' && (
                     <div>
-                        <div style={{ display: 'flex', gap: 8, justifyContent: 'center', margin: '8px 0 6px' }}>
+                        <div style={{ display: 'flex', gap: isMobile ? 6 : 8, justifyContent: 'center', margin: '8px 0 6px', flexWrap: 'wrap' }}>
                             {[1, 2, 3, 4, 5].map(n => (
                                 <button key={n} className="eg-btn-escala" onClick={() => setR(preg._id, n, preg.tipo)} style={{
-                                    width: 40, height: 40, borderRadius: '50%',
+                                    width: isMobile ? 44 : 40, height: isMobile ? 44 : 40, borderRadius: '50%',
                                     border: `2px solid ${resp[preg._id] === n ? ROJO : GRIS_LN}`,
                                     background: resp[preg._id] === n ? ROJO : 'white',
                                     color: resp[preg._id] === n ? 'white' : TEXTO_S,
@@ -756,11 +778,11 @@ const PasoPreguntas = ({ encuesta, onAtras, onEnviar }) => {
                         <div style={{ display: 'flex', gap: 8 }}>
                             {['Sí', 'No'].map(op => (
                                 <button key={op} className="eg-btn-sinno" onClick={() => setR(preg._id, op, preg.tipo)} style={{
-                                    flex: 1, padding: '10px', borderRadius: 5,
+                                    flex: 1, padding: isMobile ? '12px' : '10px', borderRadius: 5,
                                     border: `2px solid ${resp[preg._id] === op ? (op === 'Sí' ? '#2e7d32' : ROJO) : GRIS_LN}`,
                                     background: resp[preg._id] === op ? (op === 'Sí' ? '#F0FAF2' : ROJO_CLARO) : 'white',
                                     color: resp[preg._id] === op ? (op === 'Sí' ? '#2e7d32' : ROJO) : TEXTO_S,
-                                    cursor: 'pointer', fontWeight: '700', fontSize: '0.87rem',
+                                    cursor: 'pointer', fontWeight: '700', fontSize: isMobile ? '0.9rem' : '0.87rem',
                                     fontFamily: FONT_SANS, transition: 'all 0.15s',
                                 }}>{op}</button>
                             ))}
@@ -784,7 +806,7 @@ const PasoPreguntas = ({ encuesta, onAtras, onEnviar }) => {
     };
 
     if (loading) return (
-        <div style={{ padding: '0 28px 28px' }}>
+        <div style={{ padding: isMobile ? '0 16px 24px' : '0 28px 28px' }}>
             <div style={{ textAlign: 'center', padding: '50px 0' }}>
                 <div style={frmCss.spinner} />
                 <p style={{ margin: '14px 0 0', fontSize: '0.82rem', color: TEXTO_S, fontFamily: FONT_SANS }}>Cargando preguntas...</p>
@@ -792,7 +814,6 @@ const PasoPreguntas = ({ encuesta, onAtras, onEnviar }) => {
         </div>
     );
 
-    // Calcular números visibles (sin contar títulos)
     let numCounter = 0;
     const preguntasConNum = preguntas.map(preg => ({
         preg, num: preg.tipo !== 'titulo' ? ++numCounter : null,
@@ -800,7 +821,7 @@ const PasoPreguntas = ({ encuesta, onAtras, onEnviar }) => {
     const totalPregs = preguntasConNum.filter(x => x.num !== null).length;
 
     return (
-        <div style={{ padding: '0 28px 28px' }}>
+        <div style={{ padding: isMobile ? '0 12px 24px' : '0 28px 28px' }}>
             <Toast mensaje={toastMsg} visible={toastVisible} onOcultar={() => setToastVisible(false)} />
 
             {preguntas.length === 0 ? (
@@ -823,7 +844,7 @@ const PasoPreguntas = ({ encuesta, onAtras, onEnviar }) => {
                     {/* Navegación */}
                     <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12 }}>
                         <button className="eg-btn-atras" onClick={onAtras} disabled={enviando} style={{
-                            display: 'flex', alignItems: 'center', padding: '10px 20px',
+                            display: 'flex', alignItems: 'center', padding: isMobile ? '11px 16px' : '10px 20px',
                             background: '#F0F0F0', border: 'none', borderRadius: 6,
                             cursor: 'pointer', fontWeight: '600', fontSize: '0.84rem',
                             color: TEXTO_S, fontFamily: FONT_SANS, transition: 'background 0.15s',
@@ -831,9 +852,9 @@ const PasoPreguntas = ({ encuesta, onAtras, onEnviar }) => {
                             <FaArrowLeft style={{ marginRight: 6, fontSize: '0.72rem' }} /> Atrás
                         </button>
                         <button className="eg-btn-enviar" onClick={enviar} disabled={enviando} style={{
-                            padding: '11px 28px', background: ROJO, color: 'white',
+                            padding: isMobile ? '12px 22px' : '11px 28px', background: ROJO, color: 'white',
                             border: 'none', borderRadius: 6, cursor: 'pointer',
-                            fontWeight: '700', fontSize: '0.88rem', fontFamily: FONT_SANS,
+                            fontWeight: '700', fontSize: isMobile ? '0.9rem' : '0.88rem', fontFamily: FONT_SANS,
                             letterSpacing: '0.3px', boxShadow: `0 4px 16px rgba(190,30,45,0.25)`,
                         }}>
                             {enviando ? 'Enviando...' : 'Enviar respuestas'}
@@ -851,17 +872,26 @@ const PasoPreguntas = ({ encuesta, onAtras, onEnviar }) => {
 const ModalResponder = ({ encuesta, onCerrar, onCompletada }) => {
     const [paso, setPaso] = useState('consentimiento');
     const enProgreso = ['consentimiento', 'info_general', 'preguntas'].includes(paso);
+    const width    = useWindowWidth();
+    const isMobile = width <= 768;
 
     return (
         <div onClick={ev => { if (ev.target === ev.currentTarget) onCerrar(); }}
             style={{
                 position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.60)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                zIndex: 1000, padding: '16px',
+                display: 'flex',
+                alignItems: isMobile ? 'flex-end' : 'center',
+                justifyContent: 'center',
+                zIndex: 1000,
+                padding: isMobile ? '0' : '16px',
             }}>
             <div onClick={ev => ev.stopPropagation()} style={{
-                background: '#F2F2F2', borderRadius: 16, width: '100%', maxWidth: 760,
-                maxHeight: '92vh', overflow: 'hidden',
+                background: '#F2F2F2',
+                borderRadius: isMobile ? '16px 16px 0 0' : 16,
+                width: '100%',
+                maxWidth: isMobile ? '100%' : 760,
+                maxHeight: isMobile ? '96vh' : '92vh',
+                overflow: 'hidden',
                 boxShadow: '0 20px 60px rgba(0,0,0,0.35)',
                 display: 'flex', flexDirection: 'column',
             }}>
@@ -870,17 +900,17 @@ const ModalResponder = ({ encuesta, onCerrar, onCompletada }) => {
 
                 {/* Barra de pasos */}
                 {enProgreso && (
-                    <div style={{ background: 'white', borderBottom: `1px solid ${GRIS_LN}`, paddingBottom: 14 }}>
-                        <BarraPasos paso={paso} />
+                    <div style={{ background: 'white', borderBottom: `1px solid ${GRIS_LN}`, paddingBottom: isMobile ? 10 : 14 }}>
+                        <BarraPasos paso={paso} isMobile={isMobile} />
                     </div>
                 )}
 
                 {/* Contenido scrollable */}
-                <div style={{ flex: 1, overflowY: 'auto' }}>
-                    {/* Pequeño espaciado superior dentro del contenido */}
-                    <div style={{ paddingTop: 22 }}>
+                <div style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch' }}>
+                    <div style={{ paddingTop: isMobile ? 16 : 22 }}>
                         {paso === 'consentimiento' && (
                             <PasoConsentimiento encuesta={encuesta}
+                                isMobile={isMobile}
                                 onAceptar={() => setPaso('info_general')}
                                 onRechazar={async () => {
                                     try {
@@ -894,17 +924,19 @@ const ModalResponder = ({ encuesta, onCerrar, onCompletada }) => {
                         )}
                         {paso === 'info_general' && (
                             <PasoInfoGeneral
+                                isMobile={isMobile}
                                 onSiguiente={() => setPaso('preguntas')}
                                 onAtras={() => setPaso('consentimiento')} />
                         )}
                         {paso === 'preguntas' && (
                             <PasoPreguntas encuesta={encuesta}
+                                isMobile={isMobile}
                                 onAtras={() => setPaso('info_general')}
                                 onEnviar={() => { setPaso('enviado'); onCompletada && onCompletada(); }} />
                         )}
 
                         {paso === 'enviado' && (
-                            <div style={{ textAlign: 'center', padding: '56px 28px' }}>
+                            <div style={{ textAlign: 'center', padding: isMobile ? '44px 20px' : '56px 28px' }}>
                                 <div style={{ width: 56, height: 56, borderRadius: '50%', background: '#F0FAF2', border: '2px solid #2e7d32', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', fontSize: '1.5rem' }}>✓</div>
                                 <h3 style={{ margin: '0 0 10px', fontSize: '1.1rem', fontWeight: '600', color: '#2e7d32', fontFamily: FONT_FORM }}>
                                     ¡Gracias por tu participación!
@@ -924,7 +956,7 @@ const ModalResponder = ({ encuesta, onCerrar, onCompletada }) => {
                         )}
 
                         {paso === 'rechazado' && (
-                            <div style={{ textAlign: 'center', padding: '56px 28px' }}>
+                            <div style={{ textAlign: 'center', padding: isMobile ? '44px 20px' : '56px 28px' }}>
                                 <div style={{ width: 52, height: 52, borderRadius: '50%', background: ROJO_CLARO, border: `2px solid ${ROJO}`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', fontSize: '1.3rem' }}>✗</div>
                                 <h3 style={{ margin: '0 0 10px', fontSize: '1rem', fontWeight: '600', color: ROJO, fontFamily: FONT_FORM }}>
                                     Participación no consentida
@@ -961,7 +993,7 @@ const frmCss = {
 };
 
 // ══════════════════════════════════════════════════════════════
-// COMPONENTE PRINCIPAL — SIN CAMBIOS
+// COMPONENTE PRINCIPAL
 // ══════════════════════════════════════════════════════════════
 const EncuestasGraduado = () => {
     const [encuestas, setEncuestas] = useState([]);
@@ -970,6 +1002,9 @@ const EncuestasGraduado = () => {
     const [filtro, setFiltro] = useState('todas');
     const [sinTesis, setSinTesis] = useState(false);
     const [encuestaActiva, setEncuestaActiva] = useState(null);
+
+    const width    = useWindowWidth();
+    const isMobile = width <= 768;
 
     const cargar = useCallback(async () => {
         setLoading(true); setError('');
@@ -982,41 +1017,61 @@ const EncuestasGraduado = () => {
     }, []);
 
     useEffect(() => { cargar(); }, [cargar]);
-    const lista = encuestas.filter(enc => { const est = calcularEstado(enc); if (filtro === 'todas') return true; if (filtro === 'pendiente') return est === 'pendiente'; if (filtro === 'completada') return est === 'completada'; return true; });
 
-    const pendientes = encuestas.filter(e => calcularEstado(e) === 'pendiente').length;
+    const lista = encuestas.filter(enc => {
+        const est = calcularEstado(enc);
+        if (filtro === 'todas') return true;
+        if (filtro === 'pendiente') return est === 'pendiente';
+        if (filtro === 'completada') return est === 'completada';
+        return true;
+    });
+
+    const pendientes  = encuestas.filter(e => calcularEstado(e) === 'pendiente').length;
     const completadas = encuestas.filter(e => e.estadoRespuesta === 'completada').length;
 
     return (
         <div style={s.wrap}>
-            <div style={s.cuerpo}>
+            <div style={{
+                ...s.cuerpo,
+                padding: isMobile ? '14px 12px 50px' : '22px 20px 50px',
+                maxWidth: isMobile ? '100%' : 860,
+            }}>
                 <div style={s.encabezado}>
-                    <h1 style={s.tituloPag}>
+                    <h1 style={{ ...s.tituloPag, fontSize: isMobile ? '0.95rem' : '1.15rem' }}>
                         <FaClipboardList style={{ color: 'var(--color-espoch-rojo)', fontSize: '1rem' }} />
-                        Completa las encuestas asignadas y contribuye al seguimiento de graduados
+                        {isMobile
+                            ? 'Encuestas asignadas'
+                            : 'Completa las encuestas asignadas y contribuye al seguimiento de graduados'
+                        }
                     </h1>
-
                 </div>
 
+                {/* Tarjetas resumen */}
                 {!loading && !error && !sinTesis && (
-                    <div style={s.resumenGrid}>
-                        <div style={{ ...s.resumenCard, borderTop: '3px solid #f57f17' }}>
-                            <span style={{ ...s.resumenNum, color: '#f57f17' }}>{pendientes}</span>
-                            <span style={s.resumenLbl}>Pendientes</span>
+                    <div style={{
+                        ...s.resumenGrid,
+                        gridTemplateColumns: isMobile ? 'repeat(3, 1fr)' : 'repeat(3, 1fr)',
+                        gap: isMobile ? 8 : 12,
+                        marginBottom: isMobile ? 14 : 20,
+                    }}>
+                        <div style={{ ...s.resumenCard, borderTop: '3px solid #f57f17', padding: isMobile ? '10px 12px' : '14px 18px' }}>
+                            <span style={{ ...s.resumenNum, color: '#f57f17', fontSize: isMobile ? '1.3rem' : '1.6rem' }}>{pendientes}</span>
+                            <span style={{ ...s.resumenLbl, fontSize: isMobile ? '0.62rem' : '0.73rem' }}>Pendientes</span>
                         </div>
-                        <div style={{ ...s.resumenCard, borderTop: '3px solid #2e7d32' }}>
-                            <span style={{ ...s.resumenNum, color: '#2e7d32' }}>{completadas}</span>
-                            <span style={s.resumenLbl}>Completadas</span>
+                        <div style={{ ...s.resumenCard, borderTop: '3px solid #2e7d32', padding: isMobile ? '10px 12px' : '14px 18px' }}>
+                            <span style={{ ...s.resumenNum, color: '#2e7d32', fontSize: isMobile ? '1.3rem' : '1.6rem' }}>{completadas}</span>
+                            <span style={{ ...s.resumenLbl, fontSize: isMobile ? '0.62rem' : '0.73rem' }}>Completadas</span>
                         </div>
-                        <div style={{ ...s.resumenCard, borderTop: '3px solid var(--color-espoch-rojo)' }}>
-                            <span style={{ ...s.resumenNum, color: 'var(--color-espoch-rojo)' }}>{encuestas.length}</span>
-                            <span style={s.resumenLbl}>Total asignadas</span>
+                        <div style={{ ...s.resumenCard, borderTop: '3px solid var(--color-espoch-rojo)', padding: isMobile ? '10px 12px' : '14px 18px' }}>
+                            <span style={{ ...s.resumenNum, color: 'var(--color-espoch-rojo)', fontSize: isMobile ? '1.3rem' : '1.6rem' }}>{encuestas.length}</span>
+                            <span style={{ ...s.resumenLbl, fontSize: isMobile ? '0.62rem' : '0.73rem' }}>Total</span>
                         </div>
                     </div>
                 )}
 
+                {/* Filtros */}
                 {!loading && !error && !sinTesis && (
-                    <div style={s.filtros}>
+                    <div style={{ ...s.filtros, marginBottom: isMobile ? 12 : 16 }}>
                         {['todas', 'pendiente', 'completada'].map(f => (
                             <button key={f} onClick={() => setFiltro(f)} style={{
                                 ...s.filtroBtn,
@@ -1024,6 +1079,8 @@ const EncuestasGraduado = () => {
                                 color: filtro === f ? 'white' : '#6c757d',
                                 border: filtro === f ? '1px solid var(--color-espoch-rojo)' : '1px solid #e9ecef',
                                 fontWeight: filtro === f ? '700' : '500',
+                                padding: isMobile ? '5px 12px' : '6px 16px',
+                                fontSize: isMobile ? '0.75rem' : '0.78rem',
                             }}>{{ todas: 'Todas', pendiente: 'Pendientes', completada: 'Completadas' }[f]}</button>
                         ))}
                     </div>
@@ -1043,7 +1100,7 @@ const EncuestasGraduado = () => {
                 )}
 
                 {!loading && !error && sinTesis && (
-                    <div style={{ background: 'white', borderRadius: 10, border: '1px solid #e8eaed', padding: '44px 24px', textAlign: 'center', boxShadow: '0 1px 5px rgba(0,0,0,0.06)' }}>
+                    <div style={{ background: 'white', borderRadius: 10, border: '1px solid #e8eaed', padding: isMobile ? '32px 18px' : '44px 24px', textAlign: 'center', boxShadow: '0 1px 5px rgba(0,0,0,0.06)' }}>
                         <div style={{ fontSize: '3.5rem', marginBottom: 14 }}>🎓</div>
                         <h3 style={{ margin: '0 0 10px', fontSize: '1rem', fontWeight: '700', color: '#2c3e50', fontFamily: FONT }}>Graduación no verificada</h3>
                         <p style={{ margin: '0 0 8px', fontSize: '0.82rem', color: '#6c757d', lineHeight: 1.65, maxWidth: 440, marginLeft: 'auto', marginRight: 'auto', fontFamily: FONT }}>
@@ -1067,21 +1124,41 @@ const EncuestasGraduado = () => {
                             const estadoKey = calcularEstado(enc);
                             const esPend = estadoKey === 'pendiente';
                             return (
-                                <div key={enc._id} style={s.card}>
+                                <div key={enc._id} style={{
+                                    ...s.card,
+                                    flexDirection: isMobile ? 'column' : 'row',
+                                    alignItems: isMobile ? 'flex-start' : 'center',
+                                    padding: isMobile ? '14px 14px' : '16px 18px',
+                                    gap: isMobile ? 12 : 16,
+                                }}>
                                     <div style={s.cardLeft}>
-                                        <h3 style={s.cardTit}>{enc.titulo}</h3>
+                                        <h3 style={{ ...s.cardTit, fontSize: isMobile ? '0.9rem' : '0.95rem' }}>{enc.titulo}</h3>
                                         {enc.descripcion && <p style={s.cardDesc}>{enc.descripcion}</p>}
-                                        <div style={s.cardMeta}>
+                                        <div style={{ ...s.cardMeta, flexWrap: 'wrap' }}>
                                             {enc.totalPreguntas > 0 && (
                                                 <span style={s.metaItem}><FaClipboardList style={{ fontSize: '0.6rem' }} />{enc.totalPreguntas} preguntas</span>
                                             )}
                                             <span style={s.metaItem}><FaClock style={{ fontSize: '0.6rem' }} />Límite: {fmtFecha(enc.fechaCierre)}</span>
                                         </div>
                                     </div>
-                                    <div style={s.cardRight}>
+                                    <div style={{ ...s.cardRight, width: isMobile ? '100%' : 'auto' }}>
                                         {esPend
-                                            ? <button onClick={() => setEncuestaActiva(enc)} style={s.btnResponder}>Responder</button>
-                                            : <span style={{ padding: '9px 22px', background: '#e8f5e9', color: '#2e7d32', border: '1px solid #c8e6c9', borderRadius: 7, fontSize: '0.83rem', fontWeight: '700', fontFamily: FONT, display: 'inline-flex', alignItems: 'center', gap: 6 }}>Completada</span>
+                                            ? <button onClick={() => setEncuestaActiva(enc)} style={{
+                                                ...s.btnResponder,
+                                                width: isMobile ? '100%' : 'auto',
+                                                padding: isMobile ? '11px 22px' : '9px 22px',
+                                                fontSize: isMobile ? '0.88rem' : '0.83rem',
+                                              }}>Responder</button>
+                                            : <span style={{
+                                                padding: '9px 22px',
+                                                background: '#e8f5e9', color: '#2e7d32',
+                                                border: '1px solid #c8e6c9', borderRadius: 7,
+                                                fontSize: '0.83rem', fontWeight: '700', fontFamily: FONT,
+                                                display: 'inline-flex', alignItems: 'center', gap: 6,
+                                                width: isMobile ? '100%' : 'auto',
+                                                justifyContent: isMobile ? 'center' : 'flex-start',
+                                                boxSizing: 'border-box',
+                                              }}>Completada</span>
                                         }
                                     </div>
                                 </div>
@@ -1103,34 +1180,34 @@ const EncuestasGraduado = () => {
 };
 
 // ══════════════════════════════════════════════════════════════
-// ESTILOS — parte exterior (tarjetas, filtros) sin cambios
+// ESTILOS — parte exterior (tarjetas, filtros)
 // ══════════════════════════════════════════════════════════════
 const s = {
-    wrap: { minHeight: '100%', background: 'var(--color-fondo-web, #f4f5f7)', fontFamily: FONT },
-    cuerpo: { maxWidth: 860, margin: '0 auto', padding: '22px 20px 50px' },
-    encabezado: { marginBottom: 20 },
-    tituloPag: { margin: '0 0 4px', fontSize: '1.15rem', fontWeight: '800', color: '#1a1a2e', display: 'flex', alignItems: 'center', gap: 9, fontFamily: FONT },
+    wrap:         { minHeight: '100%', background: 'var(--color-fondo-web, #f4f5f7)', fontFamily: FONT },
+    cuerpo:       { maxWidth: 860, margin: '0 auto', padding: '22px 20px 50px' },
+    encabezado:   { marginBottom: 20 },
+    tituloPag:    { margin: '0 0 4px', fontSize: '1.15rem', fontWeight: '800', color: '#1a1a2e', display: 'flex', alignItems: 'center', gap: 9, fontFamily: FONT },
     subtituloPag: { margin: 0, fontSize: '0.78rem', color: '#6c757d', fontFamily: FONT },
-    resumenGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginBottom: 20 },
-    resumenCard: { background: 'white', borderRadius: 9, border: '1px solid #e8eaed', padding: '14px 18px', display: 'flex', flexDirection: 'column', gap: 2, boxShadow: '0 1px 4px rgba(0,0,0,0.05)' },
-    resumenNum: { fontSize: '1.6rem', fontWeight: '800', lineHeight: 1, fontFamily: FONT },
-    resumenLbl: { fontSize: '0.73rem', color: '#6c757d', fontFamily: FONT },
-    filtros: { display: 'flex', gap: 7, marginBottom: 16 },
-    filtroBtn: { padding: '6px 16px', borderRadius: 20, cursor: 'pointer', fontSize: '0.78rem', fontFamily: FONT, transition: 'all 0.15s' },
-    estadoBox: { display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '44px 20px', background: 'white', borderRadius: 10, border: '1px solid #e8eaed', textAlign: 'center' },
-    spinner: { width: 32, height: 32, border: '3px solid #f0f0f0', borderTop: '3px solid var(--color-espoch-rojo)', borderRadius: '50%', animation: 'spin 0.8s linear infinite' },
-    lista: { display: 'flex', flexDirection: 'column', gap: 12 },
-    card: { background: 'white', borderRadius: 10, border: '1px solid #e8eaed', padding: '16px 18px', display: 'flex', alignItems: 'center', gap: 16, boxShadow: '0 1px 5px rgba(0,0,0,0.06)' },
-    cardLeft: { flex: 1, minWidth: 0 },
-    cardRight: { flexShrink: 0 },
-    cardTit: { margin: '0 0 5px', fontSize: '0.95rem', fontWeight: '700', color: '#1a1a2e', fontFamily: FONT },
-    cardDesc: { margin: '0 0 9px', fontSize: '0.78rem', color: '#6c757d', lineHeight: 1.55, fontFamily: FONT },
-    cardMeta: { display: 'flex', gap: 14, flexWrap: 'wrap' },
-    metaItem: { display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.7rem', color: '#adb5bd', fontFamily: FONT },
+    resumenGrid:  { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginBottom: 20 },
+    resumenCard:  { background: 'white', borderRadius: 9, border: '1px solid #e8eaed', padding: '14px 18px', display: 'flex', flexDirection: 'column', gap: 2, boxShadow: '0 1px 4px rgba(0,0,0,0.05)' },
+    resumenNum:   { fontSize: '1.6rem', fontWeight: '800', lineHeight: 1, fontFamily: FONT },
+    resumenLbl:   { fontSize: '0.73rem', color: '#6c757d', fontFamily: FONT },
+    filtros:      { display: 'flex', gap: 7, marginBottom: 16, flexWrap: 'wrap' },
+    filtroBtn:    { padding: '6px 16px', borderRadius: 20, cursor: 'pointer', fontSize: '0.78rem', fontFamily: FONT, transition: 'all 0.15s' },
+    estadoBox:    { display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '44px 20px', background: 'white', borderRadius: 10, border: '1px solid #e8eaed', textAlign: 'center' },
+    spinner:      { width: 32, height: 32, border: '3px solid #f0f0f0', borderTop: '3px solid var(--color-espoch-rojo)', borderRadius: '50%', animation: 'spin 0.8s linear infinite' },
+    lista:        { display: 'flex', flexDirection: 'column', gap: 12 },
+    card:         { background: 'white', borderRadius: 10, border: '1px solid #e8eaed', padding: '16px 18px', display: 'flex', alignItems: 'center', gap: 16, boxShadow: '0 1px 5px rgba(0,0,0,0.06)' },
+    cardLeft:     { flex: 1, minWidth: 0 },
+    cardRight:    { flexShrink: 0 },
+    cardTit:      { margin: '0 0 5px', fontSize: '0.95rem', fontWeight: '700', color: '#1a1a2e', fontFamily: FONT },
+    cardDesc:     { margin: '0 0 9px', fontSize: '0.78rem', color: '#6c757d', lineHeight: 1.55, fontFamily: FONT },
+    cardMeta:     { display: 'flex', gap: 14, flexWrap: 'wrap' },
+    metaItem:     { display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.7rem', color: '#adb5bd', fontFamily: FONT },
     btnResponder: { padding: '9px 22px', background: 'var(--color-espoch-rojo)', color: 'white', border: 'none', borderRadius: 7, fontSize: '0.83rem', fontWeight: '700', cursor: 'pointer', fontFamily: FONT },
-    emptyBox: { display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '44px 20px', background: 'white', borderRadius: 10, border: '1px dashed #dee2e6', textAlign: 'center' },
-    emptyTit: { margin: '0 0 4px', fontWeight: '700', color: '#2c3e50', fontSize: '0.9rem', fontFamily: FONT },
-    emptySub: { margin: 0, fontSize: '0.75rem', color: '#adb5bd', fontFamily: FONT },
+    emptyBox:     { display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '44px 20px', background: 'white', borderRadius: 10, border: '1px dashed #dee2e6', textAlign: 'center' },
+    emptyTit:     { margin: '0 0 4px', fontWeight: '700', color: '#2c3e50', fontSize: '0.9rem', fontFamily: FONT },
+    emptySub:     { margin: 0, fontSize: '0.75rem', color: '#adb5bd', fontFamily: FONT },
 };
 
 if (typeof document !== 'undefined' && !document.getElementById('EncuestasGraduado-styles')) {

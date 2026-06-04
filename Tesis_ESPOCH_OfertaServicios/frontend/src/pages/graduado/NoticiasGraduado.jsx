@@ -10,6 +10,21 @@ const API  = import.meta.env.VITE_API_URL  || 'http://localhost:4000/api';
 const BASE = import.meta.env.VITE_BASE_URL || 'http://localhost:4000';
 const FONT = "'Segoe UI', Roboto, 'Helvetica Neue', sans-serif";
 
+// ══════════════════════════════════════════════
+// HOOK ANCHO DE VENTANA
+// ══════════════════════════════════════════════
+const useWindowWidth = () => {
+    const [width, setWidth] = useState(
+        typeof window !== 'undefined' ? window.innerWidth : 1024
+    );
+    useEffect(() => {
+        const fn = () => setWidth(window.innerWidth);
+        window.addEventListener('resize', fn);
+        return () => window.removeEventListener('resize', fn);
+    }, []);
+    return width;
+};
+
 /* ── Helpers ── */
 const fmtLarga = (d) => d ? new Date(d).toLocaleDateString('es-EC', { day:'numeric', month:'long',  year:'numeric' }) : '—';
 const fmtCorta = (d) => d ? new Date(d).toLocaleDateString('es-EC', { day:'2-digit', month:'short', year:'numeric' }) : '—';
@@ -98,6 +113,10 @@ const Sk = ({ h=11, w='100%', mb=0 }) => (
 const NoticiasGraduado = () => {
     useEffect(() => { document.title = 'Noticias · Portal de Graduados ESPOCH'; }, []);
 
+    const width    = useWindowWidth();
+    const isMobile = width <= 768;
+    const isTablet = width <= 1024;
+
     const [vista,     setVista]     = useState('noticias');
     const [noticias,  setNoticias]  = useState([]);
     const [eventos,   setEventos]   = useState([]);
@@ -146,7 +165,7 @@ const NoticiasGraduado = () => {
         const fin  = Math.min(totalPags, ini + 4);
         const pags = Array.from({ length: fin - ini + 1 }, (_, i) => ini + i);
         return (
-            <div style={{ display:'flex', justifyContent:'center', gap:5, marginTop:28, alignItems:'center' }}>
+            <div style={{ display:'flex', justifyContent:'center', gap:5, marginTop:28, alignItems:'center', flexWrap:'wrap' }}>
                 <button style={{ ...s.pagBtn, opacity:pagina===1?0.4:1 }}
                     disabled={pagina===1} onClick={() => irPag(pagina-1)}>
                     <FaChevronLeft style={{ fontSize:'0.6rem' }} />
@@ -171,89 +190,96 @@ const NoticiasGraduado = () => {
     };
 
     /* ── Vista Eventos ── */
-    const VistaEventos = () => (
-        <div style={s.gridEventos}>
-            {cargando
-                ? Array.from({length:6}).map((_,i) => (
-                    <div key={i} style={s.evCard}>
-                        <div style={{ height:150, background:'#efefef', borderRadius:'9px 9px 0 0' }} />
-                        <div style={{ padding:'12px 14px' }}>
-                            <Sk h={10} w="40%" mb={8} />
-                            <Sk h={14} w="85%" mb={6} />
-                            <Sk h={10} w="60%" mb={4} />
-                            <Sk h={10} w="50%" mb={0} />
-                        </div>
-                    </div>
-                ))
-                : eventos.length === 0
-                    ? <div style={{ ...s.emptyBox, gridColumn:'1/-1' }}>
-                        <FaCalendarAlt style={{ fontSize:'2.5rem', color:'#dee2e6', marginBottom:10 }} />
-                        <p style={s.emptyTit}>Sin eventos vigentes</p>
-                        <p style={s.emptySub}>Los próximos eventos aparecerán aquí.</p>
-                      </div>
-                    : eventos.map((ev, i) => {
-                        const url  = imgUrl(ev.imagen);
-                        const bEst = ev.estado === 'en_curso'
-                            ? { bg:'#e8f5e9', color:'#2e7d32', label:'En curso' }
-                            : { bg:'#e3f2fd', color:'#1565c0', label:'Próximo'  };
-                        const MIc = MOD_ICO[ev.modalidad] || FaLink;
-                        return (
-                            <div key={ev._id} style={s.evCard}
-                                onClick={() => setModal({ item:ev, tipo:'evento' })}
-                                onKeyDown={e => e.key==='Enter' && setModal({ item:ev, tipo:'evento' })}
-                                tabIndex={0} role="button">
-                                <ImgBlur url={url} grad={GRADS[i % GRADS.length]} h={150} radius="9px 9px 0 0">
-                                    <span style={{ position:'absolute', top:9, right:9, ...s.badge, background:bEst.bg, color:bEst.color }}>
-                                        {bEst.label}
-                                    </span>
-                                </ImgBlur>
-                                <div style={s.evBody}>
-                                    <h3 style={s.evTit}>{ev.titulo}</h3>
-                                    <div style={s.evFechasBox}>
-                                        <div style={s.evFechaItem}>
-                                            <span style={s.evFechaLabel}>Inicio</span>
-                                            <span style={s.evFechaVal}>
-                                                {fmtCorta(ev.fechaInicio)}
-                                                {fmtHora(ev.fechaInicio) && ` · ${fmtHora(ev.fechaInicio)}`}
-                                            </span>
-                                        </div>
-                                        <div style={s.evFechaSep}>→</div>
-                                        <div style={s.evFechaItem}>
-                                            <span style={s.evFechaLabel}>Fin</span>
-                                            <span style={s.evFechaVal}>
-                                                {fmtCorta(ev.fechaFin)}
-                                                {fmtHora(ev.fechaFin) && ` · ${fmtHora(ev.fechaFin)}`}
-                                            </span>
-                                        </div>
-                                    </div>
-                                    {(ev.lugar || ev.urlAcceso) && (
-                                        <div style={{ display:'flex', alignItems:'center', gap:4, marginTop:6 }}>
-                                            <MIc style={{ fontSize:'0.6rem', color:'#adb5bd', flexShrink:0 }} />
-                                            <span style={{ fontSize:'0.69rem', color:'#adb5bd' }}>
-                                                {ev.modalidad==='virtual' ? 'Virtual'
-                                                    : ev.modalidad==='hibrida' ? `${ev.lugar||''} · Virtual`
-                                                    : (ev.lugar||'Presencial')}
-                                            </span>
-                                        </div>
-                                    )}
-                                </div>
+    const VistaEventos = () => {
+        // En móvil: 1 col | tablet: 2 col | desktop: 3 col
+        const colsEventos = isMobile ? '1fr' : isTablet ? '1fr 1fr' : 'repeat(3,1fr)';
+        return (
+            <div style={{ ...s.gridEventos, gridTemplateColumns: colsEventos }}>
+                {cargando
+                    ? Array.from({length:6}).map((_,i) => (
+                        <div key={i} style={s.evCard}>
+                            <div style={{ height:150, background:'#efefef', borderRadius:'9px 9px 0 0' }} />
+                            <div style={{ padding:'12px 14px' }}>
+                                <Sk h={10} w="40%" mb={8} />
+                                <Sk h={14} w="85%" mb={6} />
+                                <Sk h={10} w="60%" mb={4} />
+                                <Sk h={10} w="50%" mb={0} />
                             </div>
-                        );
-                    })
-            }
-        </div>
-    );
+                        </div>
+                    ))
+                    : eventos.length === 0
+                        ? <div style={{ ...s.emptyBox, gridColumn:'1/-1' }}>
+                            <FaCalendarAlt style={{ fontSize:'2.5rem', color:'#dee2e6', marginBottom:10 }} />
+                            <p style={s.emptyTit}>Sin eventos vigentes</p>
+                            <p style={s.emptySub}>Los próximos eventos aparecerán aquí.</p>
+                          </div>
+                        : eventos.map((ev, i) => {
+                            const url  = imgUrl(ev.imagen);
+                            const bEst = ev.estado === 'en_curso'
+                                ? { bg:'#e8f5e9', color:'#2e7d32', label:'En curso' }
+                                : { bg:'#e3f2fd', color:'#1565c0', label:'Próximo'  };
+                            const MIc = MOD_ICO[ev.modalidad] || FaLink;
+                            return (
+                                <div key={ev._id} style={s.evCard}
+                                    onClick={() => setModal({ item:ev, tipo:'evento' })}
+                                    onKeyDown={e => e.key==='Enter' && setModal({ item:ev, tipo:'evento' })}
+                                    tabIndex={0} role="button">
+                                    <ImgBlur url={url} grad={GRADS[i % GRADS.length]} h={isMobile ? 160 : 150} radius="9px 9px 0 0">
+                                        <span style={{ position:'absolute', top:9, right:9, ...s.badge, background:bEst.bg, color:bEst.color }}>
+                                            {bEst.label}
+                                        </span>
+                                    </ImgBlur>
+                                    <div style={s.evBody}>
+                                        <h3 style={{ ...s.evTit, fontSize: isMobile ? '0.9rem' : '0.83rem' }}>{ev.titulo}</h3>
+                                        <div style={s.evFechasBox}>
+                                            <div style={s.evFechaItem}>
+                                                <span style={s.evFechaLabel}>Inicio</span>
+                                                <span style={s.evFechaVal}>
+                                                    {fmtCorta(ev.fechaInicio)}
+                                                    {fmtHora(ev.fechaInicio) && ` · ${fmtHora(ev.fechaInicio)}`}
+                                                </span>
+                                            </div>
+                                            <div style={s.evFechaSep}>→</div>
+                                            <div style={s.evFechaItem}>
+                                                <span style={s.evFechaLabel}>Fin</span>
+                                                <span style={s.evFechaVal}>
+                                                    {fmtCorta(ev.fechaFin)}
+                                                    {fmtHora(ev.fechaFin) && ` · ${fmtHora(ev.fechaFin)}`}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        {(ev.lugar || ev.urlAcceso) && (
+                                            <div style={{ display:'flex', alignItems:'center', gap:4, marginTop:6 }}>
+                                                <MIc style={{ fontSize:'0.6rem', color:'#adb5bd', flexShrink:0 }} />
+                                                <span style={{ fontSize:'0.69rem', color:'#adb5bd' }}>
+                                                    {ev.modalidad==='virtual' ? 'Virtual'
+                                                        : ev.modalidad==='hibrida' ? `${ev.lugar||''} · Virtual`
+                                                        : (ev.lugar||'Presencial')}
+                                                </span>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            );
+                        })
+                }
+            </div>
+        );
+    };
 
     /* ── Vista Noticias ── */
     const principal   = noticias[0] || null;
     const secundarias = noticias.slice(1);
+
+    // En móvil: 1 col | desktop: 2 col
+    const colsNoticias = isMobile ? '1fr' : '1fr 1fr';
 
     const VistaNoticiasContent = () => (
         <>
             {/* NOTICIA DESTACADA */}
             {cargando ? (
                 <div style={s.featCard}>
-                    <div style={{ height:260, background:'#efefef', borderRadius:'10px 10px 0 0' }} />
+                    <div style={{ height: isMobile ? 200 : 260, background:'#efefef', borderRadius:'10px 10px 0 0' }} />
                     <div style={{ padding:'18px 22px' }}>
                         <Sk h={10} w="25%" mb={12} />
                         <Sk h={22} w="78%" mb={7} />
@@ -268,7 +294,7 @@ const NoticiasGraduado = () => {
                     onClick={() => setModal({ item:principal, tipo:'noticia' })}
                     onKeyDown={e => e.key==='Enter' && setModal({ item:principal, tipo:'noticia' })}
                     tabIndex={0} role="button">
-                    <ImgBlur url={imgUrl(principal.imagen)} grad={GRADS[0]} h={260} radius="10px 10px 0 0">
+                    <ImgBlur url={imgUrl(principal.imagen)} grad={GRADS[0]} h={isMobile ? 200 : 260} radius="10px 10px 0 0">
                         {(() => {
                             const c = CAT_CLR[principal.categoria] || CAT_CLR.comunicado;
                             return (
@@ -278,15 +304,17 @@ const NoticiasGraduado = () => {
                             );
                         })()}
                     </ImgBlur>
-                    <div style={s.featBody}>
+                    <div style={{ ...s.featBody, padding: isMobile ? '14px 16px 16px' : '16px 20px 18px' }}>
                         <div style={{ display:'flex', alignItems:'center', gap:6, marginBottom:8 }}>
                             <FaCalendarAlt style={{ fontSize:'0.68rem', color:'#adb5bd' }} />
                             <span style={s.fechaTxt}>
                                 {fmtLarga(principal.fechaPublicacion || principal.createdAt)}
                             </span>
                         </div>
-                        <h2 style={s.featTit}>{principal.titulo}</h2>
-                        <p  style={s.featDesc}>{truncar(principal.resumen || principal.contenido, 220)}</p>
+                        <h2 style={{ ...s.featTit, fontSize: isMobile ? '1rem' : '1.18rem' }}>{principal.titulo}</h2>
+                        <p  style={{ ...s.featDesc, fontSize: isMobile ? '0.8rem' : '0.83rem' }}>
+                            {truncar(principal.resumen || principal.contenido, isMobile ? 140 : 220)}
+                        </p>
                         <span style={s.btnLeer}>
                             Leer más <FaChevronRight style={{ fontSize:'0.6rem', marginLeft:4 }} />
                         </span>
@@ -302,11 +330,11 @@ const NoticiasGraduado = () => {
 
             {/* GRID SECUNDARIAS */}
             {(cargando || secundarias.length > 0) && (
-                <div style={s.grid2}>
+                <div style={{ ...s.grid2, gridTemplateColumns: colsNoticias }}>
                     {cargando
                         ? Array.from({length:4}).map((_,i) => (
                             <div key={i} style={s.secCard}>
-                                <div style={{ height:145, background:'#efefef', borderRadius:'9px 9px 0 0' }} />
+                                <div style={{ height: isMobile ? 170 : 145, background:'#efefef', borderRadius:'9px 9px 0 0' }} />
                                 <div style={{ padding:'12px 14px' }}>
                                     <Sk h={9}  w="35%" mb={8} />
                                     <Sk h={14} w="90%" mb={5} />
@@ -321,7 +349,7 @@ const NoticiasGraduado = () => {
                                 onClick={() => setModal({ item:n, tipo:'noticia' })}
                                 onKeyDown={e => e.key==='Enter' && setModal({ item:n, tipo:'noticia' })}
                                 tabIndex={0} role="button">
-                                <ImgBlur url={imgUrl(n.imagen)} grad={GRADS[(i+1) % GRADS.length]} h={145} radius="9px 9px 0 0" />
+                                <ImgBlur url={imgUrl(n.imagen)} grad={GRADS[(i+1) % GRADS.length]} h={isMobile ? 170 : 145} radius="9px 9px 0 0" />
                                 <div style={s.secBody}>
                                     <div style={{ display:'flex', alignItems:'center', gap:5, marginBottom:5 }}>
                                         <FaCalendarAlt style={{ fontSize:'0.6rem', color:'#adb5bd' }} />
@@ -329,8 +357,8 @@ const NoticiasGraduado = () => {
                                             {fmtCorta(n.fechaPublicacion || n.createdAt)}
                                         </span>
                                     </div>
-                                    <h3 style={s.secTit}>{n.titulo}</h3>
-                                    <p  style={s.secDesc}>{truncar(n.resumen || n.contenido, 100)}</p>
+                                    <h3 style={{ ...s.secTit, fontSize: isMobile ? '0.9rem' : '0.87rem' }}>{n.titulo}</h3>
+                                    <p  style={s.secDesc}>{truncar(n.resumen || n.contenido, isMobile ? 80 : 100)}</p>
                                     <span style={s.btnLeerSm}>
                                         Leer más <FaChevronRight style={{ fontSize:'0.55rem', marginLeft:3 }} />
                                     </span>
@@ -349,9 +377,16 @@ const NoticiasGraduado = () => {
     ════════════════════════════════════════════════════ */
     return (
         <div style={s.wrap}>
-            <div style={s.cuerpo}>
+            <div style={{
+                ...s.cuerpo,
+                padding: isMobile ? '14px 12px 50px' : '22px 20px 50px',
+                maxWidth: isMobile ? '100%' : 1060,
+            }}>
                 {/* Pestañas */}
-                <div style={s.tabs}>
+                <div style={{
+                    ...s.tabs,
+                    borderRadius: isMobile ? '8px 8px 0 0' : '8px 8px 0 0',
+                }}>
                     {[
                         { k:'noticias', l:'Noticias',  ico: FaNewspaper },
                         { k:'eventos',  l:'Eventos',   ico: FaCalendarAlt },
@@ -365,6 +400,8 @@ const NoticiasGraduado = () => {
                                 color:        activo ? 'var(--color-espoch-rojo)' : '#6c757d',
                                 fontWeight:   activo ? '700' : '500',
                                 background:   activo ? 'white' : 'transparent',
+                                padding:      isMobile ? '10px 16px' : '10px 20px',
+                                fontSize:     isMobile ? '0.87rem' : '0.84rem',
                             }}>
                                 <Ico style={{ fontSize:'0.75rem' }} /> {t.l}
                             </button>
@@ -392,9 +429,19 @@ const NoticiasGraduado = () => {
                     <div style={s.overlay}
                         role="dialog" aria-modal="true" aria-label={item.titulo}
                         onClick={e => { if(e.target===e.currentTarget) setModal(null); }}>
-                        <div style={s.modalBox}>
+                        <div style={{
+                            ...s.modalBox,
+                            maxWidth:    isMobile ? '100%'  : 660,
+                            width:       isMobile ? '100%'  : '100%',
+                            maxHeight:   isMobile ? '95vh'  : '88vh',
+                            borderRadius: isMobile ? '14px 14px 0 0' : 14,
+                            // En móvil: pegar al fondo de la pantalla
+                            marginTop:   isMobile ? 'auto'  : undefined,
+                            alignSelf:   isMobile ? 'flex-end' : 'center',
+                        }}>
 
-                            <ImgBlur url={url} grad={GRADS[0]} h={210} radius="14px 14px 0 0">
+                            <ImgBlur url={url} grad={GRADS[0]} h={isMobile ? 170 : 210}
+                                radius={isMobile ? '14px 14px 0 0' : '14px 14px 0 0'}>
                                 {tipo==='noticia'
                                     ? <span style={{ position:'absolute', top:12, left:14, ...s.badge, background:cat.bg, color:cat.color }}>
                                         {CAT_LABEL[item.categoria]||item.categoria}
@@ -408,10 +455,12 @@ const NoticiasGraduado = () => {
                                 </button>
                                 <div style={{
                                     position:'absolute', bottom:0, left:0, right:0,
-                                    padding:'28px 20px 14px',
+                                    padding: isMobile ? '20px 16px 12px' : '28px 20px 14px',
                                     background:'linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 100%)',
                                 }}>
-                                    <h2 style={s.modalImgTit}>{item.titulo}</h2>
+                                    <h2 style={{ ...s.modalImgTit, fontSize: isMobile ? '0.98rem' : '1.1rem' }}>
+                                        {item.titulo}
+                                    </h2>
                                     <div style={{ display:'flex', alignItems:'center', gap:6, flexWrap:'wrap' }}>
                                         <FaCalendarAlt style={{ fontSize:'0.65rem', color:'rgba(255,255,255,0.7)' }} />
                                         <span style={{ fontSize:'0.72rem', color:'rgba(255,255,255,0.85)', fontFamily:FONT }}>
@@ -423,7 +472,7 @@ const NoticiasGraduado = () => {
                                 </div>
                             </ImgBlur>
 
-                            <div style={s.modalBody}>
+                            <div style={{ ...s.modalBody, padding: isMobile ? '14px 16px' : '16px 22px' }}>
                                 {tipo==='evento' && (
                                     <div style={s.evInfoBox}>
                                         <div style={{ display:'flex', flexWrap:'wrap', gap:10 }}>
@@ -476,11 +525,11 @@ const NoticiasGraduado = () => {
                                 {item.contenido &&
                                     item.contenido.split('\n')
                                         .map(p => p.trim()).filter(Boolean)
-                                        .map((p, i) => <p key={i} style={s.modalP}>{p}</p>)
+                                        .map((p, i) => <p key={i} style={{ ...s.modalP, fontSize: isMobile ? '0.83rem' : '0.85rem' }}>{p}</p>)
                                 }
                             </div>
 
-                            <div style={s.modalFoot}>
+                            <div style={{ ...s.modalFoot, padding: isMobile ? '10px 16px' : '10px 22px' }}>
                                 <span style={{ fontSize:'0.69rem', color:'#adb5bd', fontFamily:FONT }}>
                                     Carrera de Software — ESPOCH
                                 </span>
@@ -573,7 +622,7 @@ const s = {
     pagPts: { fontSize:'0.8rem', color:'#adb5bd', padding:'0 3px' },
 
     /* Modal */
-    overlay:    { position:'fixed', inset:0, backgroundColor:'rgba(0,0,0,0.6)', display:'flex', alignItems:'center', justifyContent:'center', zIndex:2000, padding:16, backdropFilter:'blur(4px)' },
+    overlay:    { position:'fixed', inset:0, backgroundColor:'rgba(0,0,0,0.6)', display:'flex', alignItems:'center', justifyContent:'center', zIndex:2000, padding:0, backdropFilter:'blur(4px)', flexDirection:'column' },
     modalBox:   { backgroundColor:'white', borderRadius:14, width:'100%', maxWidth:660, maxHeight:'88vh', display:'flex', flexDirection:'column', boxShadow:'0 20px 60px rgba(0,0,0,0.28)', overflow:'hidden' },
     modalImgTit:{ margin:'0 0 4px', fontSize:'1.1rem', fontWeight:'800', color:'white', lineHeight:1.3, textShadow:'0 1px 6px rgba(0,0,0,0.5)', fontFamily:FONT },
     modalClose: { position:'absolute', top:10, right:10, width:30, height:30, borderRadius:'50%', background:'rgba(0,0,0,0.42)', border:'none', cursor:'pointer', color:'white', display:'flex', alignItems:'center', justifyContent:'center' },
