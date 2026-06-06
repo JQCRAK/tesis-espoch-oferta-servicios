@@ -525,21 +525,47 @@ exports.solicitarCodigoRecuperacion = async (req, res) => {
 
         const emailLimpio = email.trim().toLowerCase();
 
+        // ── Buscar si es admin primero ────────────────────────────────────
+        const admin = await Admin.findOne({ email: emailLimpio });
+        if (admin) {
+            const codigo = generarCodigoVerificacion();
+            const expiracion = new Date(Date.now() + 15 * 60 * 1000);
+
+            admin.codigoRecuperacion = { codigo, expiresAt: expiracion, intentos: 0 };
+            await admin.save();
+
+            console.log(`[AuthController] Código de recuperación (admin) generado: ${codigo}`);
+
+            try {
+                // Reutilizamos el mismo servicio de email que el graduado
+                await enviarCodigoRecuperacion({
+                    emailPersonal: emailLimpio,
+                    nombres: admin.nombre,
+                    codigo,
+                });
+                console.log('[AuthController] ✅ Código de recuperación (admin) enviado\n');
+            } catch (emailError) {
+                console.error('[AuthController] ❌ Error al enviar código (admin):', emailError.message);
+                return res.status(500).json({ msg: 'Error al enviar el código. Intenta nuevamente.' });
+            }
+
+            return res.status(200).json({
+                msg: 'Código enviado a tu correo institucional.',
+                email: emailLimpio,
+            });
+        }
+
+        // ── Si no es admin, buscar en graduados ───────────────────────────
         const graduado = await Graduado.findOne({ emailPersonal: emailLimpio });
         if (!graduado)
             return res.status(400).json({ msg: 'No encontramos una cuenta con ese correo.' });
 
         const codigo = generarCodigoVerificacion();
-        const ahora = new Date();
-        const expiracion = new Date(ahora.getTime() + 15 * 60 * 1000);
+        const expiracion = new Date(Date.now() + 15 * 60 * 1000);
 
-        graduado.codigoRecuperacion = {
-            codigo,
-            expiresAt: expiracion,
-            intentos: 0
-        };
-
+        graduado.codigoRecuperacion = { codigo, expiresAt: expiracion, intentos: 0 };
         await graduado.save();
+
         console.log(`[AuthController] Código de recuperación generado: ${codigo}`);
 
         try {
@@ -551,9 +577,7 @@ exports.solicitarCodigoRecuperacion = async (req, res) => {
             console.log('[AuthController] ✅ Código de recuperación enviado\n');
         } catch (emailError) {
             console.error('[AuthController] ❌ Error al enviar código:', emailError.message);
-            return res.status(500).json({
-                msg: 'Error al enviar el código. Intenta nuevamente.'
-            });
+            return res.status(500).json({ msg: 'Error al enviar el código. Intenta nuevamente.' });
         }
 
         res.status(200).json({
@@ -582,11 +606,14 @@ exports.verificarCodigoYCambiarPassword = async (req, res) => {
 
         const emailLimpio = email.trim().toLowerCase();
 
-        const graduado = await Graduado.findOne({ emailPersonal: emailLimpio });
-        if (!graduado)
+        // ── Determinar si es admin o graduado ─────────────────────────────
+        const admin    = await Admin.findOne({ email: emailLimpio });
+        const usuario  = admin || await Graduado.findOne({ emailPersonal: emailLimpio });
+
+        if (!usuario)
             return res.status(400).json({ msg: 'Usuario no encontrado.' });
 
-        const { codigoRecuperacion } = graduado;
+        const { codigoRecuperacion } = usuario;
 
         if (!codigoRecuperacion || !codigoRecuperacion.codigo)
             return res.status(400).json({ msg: 'No hay solicitud de recuperación activa.' });
@@ -598,28 +625,33 @@ exports.verificarCodigoYCambiarPassword = async (req, res) => {
             return res.status(429).json({ msg: 'Demasiados intentos fallidos. Solicita un nuevo código.' });
 
         if (codigoRecuperacion.codigo !== codigo.trim()) {
-            graduado.codigoRecuperacion.intentos += 1;
-            await graduado.save();
-            const intentosRestantes = 5 - graduado.codigoRecuperacion.intentos;
+            usuario.codigoRecuperacion.intentos += 1;
+            await usuario.save();
+            const intentosRestantes = 5 - usuario.codigoRecuperacion.intentos;
             return res.status(400).json({
                 msg: `Código incorrecto. ${intentosRestantes} intentos restantes.`
             });
         }
 
-        // ✅ Código correcto
+        // ✅ Código correcto — validar nueva contraseña
         if (!validarPasswordFuerte(nuevaPassword))
             return res.status(400).json({ msg: 'La contraseña no cumple los requisitos de seguridad.' });
 
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(nuevaPassword, salt);
 
-        graduado.password = hashedPassword;
-        graduado.codigoRecuperacion = { codigo: '', expiresAt: null, intentos: 0 };
-        graduado.intentosFallidos = { contador: 0, bloqueadoHasta: null, ultimoIntento: null };
+        usuario.password = hashedPassword;
+        usuario.codigoRecuperacion = { codigo: '', expiresAt: null, intentos: 0 };
 
-        await graduado.save();
+        // Resetear intentos fallidos de login si existen (por si el admin fue bloqueado)
+        if (usuario.intentosFallidos) {
+            usuario.intentosFallidos = { contador: 0, bloqueadoHasta: null, ultimoIntento: null };
+        }
 
-        console.log('[AuthController] ✅ Contraseña cambiada exitosamente\n');
+        await usuario.save();
+
+        const tipoUsuario = admin ? 'Administrador' : 'Graduado';
+        console.log(`[AuthController] ✅ Contraseña cambiada (${tipoUsuario}): ${emailLimpio}\n`);
 
         res.status(200).json({
             msg: 'Contraseña cambiada exitosamente. Ahora puedes iniciar sesión.',

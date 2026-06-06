@@ -6,7 +6,20 @@ const AdminSchema = new mongoose.Schema({
     email:     { type: String, required: true, unique: true, lowercase: true, trim: true },
     password:  { type: String, required: true },
     cargo:     { type: String, required: true, trim: true },
-    rol:       { type: String, default: 'admin' }
+    rol:       { type: String, default: 'admin' },
+
+    codigoRecuperacion: {
+        codigo:    { type: String, default: '' },
+        expiresAt: { type: Date,   default: null },
+        intentos:  { type: Number, default: 0 },
+    },
+
+    intentosFallidos: {
+        contador:      { type: Number, default: 0 },
+        bloqueadoHasta:{ type: Date,   default: null },
+        ultimoIntento: { type: Date,   default: null },
+    },
+
 }, { timestamps: true });
 
 module.exports = mongoose.model('Admin', AdminSchema);
