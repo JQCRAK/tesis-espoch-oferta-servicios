@@ -503,7 +503,7 @@ const Login = () => {
             setFormData(p => ({ ...p, nuevaPassword: '', confirmarPassword: '' }));
             setModo('login');
             setCargando(false);
-            setTimeout(() => setError('✅ Contraseña cambiada exitosamente. Ahora puedes iniciar sesión.'), 100);
+            setTimeout(() => setError('Contraseña cambiada exitosamente. Ahora puedes iniciar sesión.'), 100);
         } catch (err) {
             setError(err.response?.data?.msg || 'Error al cambiar la contraseña.');
             setCargando(false);
