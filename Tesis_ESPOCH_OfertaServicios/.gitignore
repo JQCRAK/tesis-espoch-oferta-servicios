@@ -16,6 +16,8 @@ frontend/dist/
 
 # Expo (no es parte del proyecto)
 .expo/
+# Scripts personales
+backend/src/scripts/crearAdminJQ.js
 
 # Logs
 *.log

@@ -670,8 +670,8 @@ const Login = () => {
 
                     {/* ── ALERTA ── */}
                     {error && (
-                        <div id="login-error-banner" style={error.includes('✅') ? s.alertaExito : s.alertaError}>
-                            {error.includes('✅')
+                        <div id="login-error-banner" style={error.includes('') ? s.alertaExito : s.alertaError}>
+                            {error.includes('')
                                 ? <FaCheckCircle style={{ marginRight: 8, flexShrink: 0 }} />
                                 : <FaExclamationTriangle style={{ marginRight: 8, flexShrink: 0, marginTop: 1 }} />}
                             <span>{error}</span>
@@ -743,7 +743,7 @@ const Login = () => {
                                     </Campo>
                                     <p style={s.hint}>Mínimo 8 caracteres · 1 mayúscula · 1 número · 1 carácter especial</p>
                                     <button onClick={cambiarContraseña} style={s.btnPrincipal} disabled={cargando}>
-                                        {cargando ? <><FaSpinner style={s.spin} /> Cambiando...</> : '✅ Cambiar Contraseña'}
+                                        {cargando ? <><FaSpinner style={s.spin} /> Cambiando...</> : 'Cambiar Contraseña'}
                                     </button>
                                     <button onClick={() => setVerificandoCodigoRec(false)} style={s.btnTexto}>← Atrás</button>
                                 </div>
@@ -829,7 +829,7 @@ const Login = () => {
                             <div style={{ display: 'flex', gap: 8, flexDirection: isMobile ? 'column' : 'row' }}>
                                 <button onClick={confirmarYEnviarCodigo}
                                     style={{ ...s.btnPrincipal, flex: 1, marginBottom: 0 }} disabled={cargando}>
-                                    {cargando ? <><FaSpinner style={s.spin} /> Enviando...</> : '✅ Confirmar y continuar'}
+                                    {cargando ? <><FaSpinner style={s.spin} /> Enviando...</> : 'Confirmar y continuar'}
                                 </button>
                                 <button onClick={() => setMostrarConfirmacion(false)}
                                     style={{ ...s.btnCancelar, width: isMobile ? '100%' : 'auto' }}>
@@ -1044,7 +1044,7 @@ const Login = () => {
                                             style={s.inp} value={formData.emailPersonal} onChange={handleChange} required />
                                     </div>
                                 </Campo>
-                                <Campo label="Correo @espoch.edu.ec" required extra="✅ Requerido">
+                                <Campo label="Correo @espoch.edu.ec" required extra="Requerido">
                                     <div style={s.inputGroupVerde}>
                                         <FaUniversity style={s.icoVerde} />
                                         <input type="email" name="emailInstitucional"
