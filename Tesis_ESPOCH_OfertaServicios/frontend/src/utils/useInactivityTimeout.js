@@ -1,4 +1,3 @@
-// frontend/src/utils/useInactivityTimeout.js
 import { useEffect, useRef, useCallback } from 'react';
 
 const useInactivityTimeout = ({

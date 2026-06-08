@@ -201,7 +201,7 @@ const ModalContacto = ({ graduado, onCerrar }) => {
                                 style={{ ...ms.inp, minHeight: 90, resize: 'vertical' }} />
                         </div>
 
-                        <p style={ms.aviso}>🔒 Tu información solo será vista por el administrador de la carrera.</p>
+                        <p style={ms.aviso}>Tu información solo será vista por el administrador de la carrera.</p>
 
                         <div style={ms.footerModal}>
                             <button style={ms.btnCancelar} onClick={onCerrar}>Cancelar</button>

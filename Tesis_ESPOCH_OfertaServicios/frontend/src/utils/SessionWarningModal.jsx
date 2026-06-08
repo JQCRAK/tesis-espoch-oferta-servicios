@@ -1,16 +1,5 @@
-// frontend/src/utils/SessionWarningModal.jsx
-// ─────────────────────────────────────────────────────────────────────────────
-// Modal de advertencia de sesión por inactividad
-// Se muestra 30 segundos antes del cierre automático
-// ─────────────────────────────────────────────────────────────────────────────
 import { useEffect, useState } from 'react';
 
-/**
- * @param {boolean}  visible    - Mostrar u ocultar el modal
- * @param {number}   secondsLeft- Segundos restantes al momento de abrir
- * @param {Function} onExtend   - Callback para extender la sesión
- * @param {Function} onLogout   - Callback para cerrar sesión manualmente
- */
 const SessionWarningModal = ({ visible, secondsLeft, onExtend, onLogout }) => {
     const [countdown, setCountdown] = useState(secondsLeft);
 
@@ -30,7 +19,6 @@ const SessionWarningModal = ({ visible, secondsLeft, onExtend, onLogout }) => {
 
     if (!visible) return null;
 
-    // Color del countdown: rojo cuando queda poco
     const countColor = countdown <= 10 ? '#dc2626' : '#e67e22';
 
     return (
@@ -71,7 +59,6 @@ const SessionWarningModal = ({ visible, secondsLeft, onExtend, onLogout }) => {
     );
 };
 
-// ── Estilos inline (sin dependencias externas) ────────────────────────────────
 const m = {
     overlay: {
         position:        'fixed',
@@ -122,7 +109,7 @@ const m = {
         justifyContent: 'center',
     },
     btnExtend: {
-        backgroundColor: '#be1e2d',   // rojo ESPOCH
+        backgroundColor: '#be1e2d',   
         color:           '#fff',
         border:          'none',
         borderRadius:    '8px',

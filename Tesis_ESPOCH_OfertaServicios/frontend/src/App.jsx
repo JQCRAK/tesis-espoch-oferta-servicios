@@ -68,9 +68,7 @@ const Proximamente = ({ titulo, subtitulo, color = '#BE1E2D' }) => (
     </div>
 );
 
-/* ──────────────────────────────────────────────────────
-   GUARDIA DE RUTA
-────────────────────────────────────────────────────── */
+//PROTEGER LA RUTA
 const ProtegerRuta = ({ children, rolRequerido }) => {
     const usuario = leerSesion('usuario');
     if (!usuario) return <Navigate to="/login" replace />;
@@ -80,9 +78,7 @@ const ProtegerRuta = ({ children, rolRequerido }) => {
     return children;
 };
 
-/* ══════════════════════════════════════════════════════
-   APP
-══════════════════════════════════════════════════════ */
+//APP
 function App() {
     return (
         <Router>

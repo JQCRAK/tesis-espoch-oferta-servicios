@@ -43,9 +43,7 @@ const NAV_ITEMS = [
 const SIDEBAR_W = 200;
 const COLLAPSED = 54;
 
-// ══════════════════════════════════════════════
 // COMPONENTE AUXILIAR — tarjeta de cada solicitud
-// ══════════════════════════════════════════════
 const SolicitudItem = ({ sol }) => (
     <div style={sn.solicItem}>
         <div style={sn.solicHeader}>
@@ -63,9 +61,7 @@ const SolicitudItem = ({ sol }) => (
     </div>
 );
 
-// ══════════════════════════════════════════════
 // COMPONENTE DETALLE NOTIFICACIÓN
-// ══════════════════════════════════════════════
 const DetalleNotif = ({ notif, onVolver }) => (
     <div style={sn.detalle}>
         <button style={sn.btnVolver} onClick={onVolver}>
@@ -106,9 +102,7 @@ const DetalleNotif = ({ notif, onVolver }) => (
     </div>
 );
 
-// ══════════════════════════════════════════════
 // ADMIN LAYOUT
-// ══════════════════════════════════════════════
 const AdminLayout = () => {
     const navigate = useNavigate();
     const location = useLocation();
@@ -129,8 +123,8 @@ const AdminLayout = () => {
     }, [navigate]);
 
     const { extendSession } = useInactivityTimeout({
-        timeoutMs: 15 * 60 * 1000, 
-        warningMs: 30 * 1000,      
+        timeoutMs: 10 * 1000, 
+        warningMs: 5 * 1000,      
         onWarning: () => setShowSessionWarning(true),
         onLogout: handleSessionLogout,
     });
@@ -476,7 +470,7 @@ const AdminLayout = () => {
             {/* ══ MODAL INACTIVIDAD — ISO/IEC 27002:2022 Control 8.1 / NIST AC-12 ══ */}
             <SessionWarningModal
                 visible={showSessionWarning}
-                secondsLeft={30}          // ← debe coincidir con warningMs / 1000
+                secondsLeft={5}          // ← debe coincidir con warningMs / 1000
                 onExtend={() => { extendSession(); setShowSessionWarning(false); }}
                 onLogout={handleSessionLogout}
             />

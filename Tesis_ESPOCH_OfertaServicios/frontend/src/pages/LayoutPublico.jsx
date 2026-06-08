@@ -83,16 +83,14 @@ const LayoutPublico = () => {
     const width         = useWindowWidth();
     const isMobile      = width < 768;
     const isTablet      = width >= 768 && width < 1024;
-    const isSmall       = width < 1024; // mobile + tablet
+    const isSmall       = width < 1024; 
 
     const [menuAbierto, setMenuAbierto] = useState(false);
 
-    // Cerrar menú al cambiar de ruta
     useEffect(() => {
         setMenuAbierto(false);
     }, [location.pathname]);
 
-    // Bloquear scroll del body cuando el menú móvil está abierto
     useEffect(() => {
         if (isMobile && menuAbierto) {
             document.body.style.overflow = 'hidden';
@@ -117,7 +115,6 @@ const LayoutPublico = () => {
     const esActivo = (path) =>
         path === '/' ? location.pathname === '/' : location.pathname.startsWith(path);
 
-    // ── Footer grid: 4 col desktop, 2 col tablet, 1 col mobile ──────────────
     const footerGridStyle = isMobile
         ? { ...s.footerInner, gridTemplateColumns: '1fr', gap: 28 }
         : isTablet
