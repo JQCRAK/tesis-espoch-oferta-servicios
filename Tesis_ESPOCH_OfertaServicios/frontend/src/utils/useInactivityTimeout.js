@@ -44,7 +44,6 @@ const useInactivityTimeout = ({
         window.addEventListener('offline', handleOffline);
         return () => window.removeEventListener('offline', handleOffline);
     }, [onLogout, clearTimers]);
-    // ────────────────────────────────────────────────────────────────────────
 
     useEffect(() => {
         const EVENTS = ['mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart'];

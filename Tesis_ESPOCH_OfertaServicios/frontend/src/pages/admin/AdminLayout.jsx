@@ -123,8 +123,8 @@ const AdminLayout = () => {
     }, [navigate]);
 
     const { extendSession } = useInactivityTimeout({
-        timeoutMs: 10 * 1000, 
-        warningMs: 5 * 1000,      
+        timeoutMs: 15*60 * 1000, 
+        warningMs: 30 * 1000,      
         onWarning: () => setShowSessionWarning(true),
         onLogout: handleSessionLogout,
     });
@@ -467,10 +467,9 @@ const AdminLayout = () => {
                 </main>
             </div>
 
-            {/* ══ MODAL INACTIVIDAD — ISO/IEC 27002:2022 Control 8.1 / NIST AC-12 ══ */}
             <SessionWarningModal
                 visible={showSessionWarning}
-                secondsLeft={5}          // ← debe coincidir con warningMs / 1000
+                secondsLeft={30}          
                 onExtend={() => { extendSession(); setShowSessionWarning(false); }}
                 onLogout={handleSessionLogout}
             />
