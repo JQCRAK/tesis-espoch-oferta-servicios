@@ -78,12 +78,12 @@ const AcordeonFooter = () => {
 // LAYOUT PÚBLICO
 // ══════════════════════════════════════════════
 const LayoutPublico = () => {
-    const navigate      = useNavigate();
-    const location      = useLocation();
-    const width         = useWindowWidth();
-    const isMobile      = width < 768;
-    const isTablet      = width >= 768 && width < 1024;
-    const isSmall       = width < 1024; 
+    const navigate = useNavigate();
+    const location = useLocation();
+    const width = useWindowWidth();
+    const isMobile = width < 768;
+    const isTablet = width >= 768 && width < 1024;
+    const isSmall = width < 1024;
 
     const [menuAbierto, setMenuAbierto] = useState(false);
 
@@ -101,9 +101,9 @@ const LayoutPublico = () => {
     }, [isMobile, menuAbierto]);
 
     const navItems = [
-        { path: '/',          label: 'Perfiles',   labelFull: 'Perfiles Profesionales', icon: <FaUsers /> },
-        { path: '/noticias',  label: 'Noticias',   labelFull: 'Noticias',               icon: <FaNewspaper /> },
-        { path: '/proyectos', label: 'Proyectos',  labelFull: 'Proyectos',              icon: <FaProjectDiagram /> },
+        { path: '/', label: 'Perfiles', labelFull: 'Perfiles Profesionales', icon: <FaUsers /> },
+        { path: '/noticias', label: 'Noticias', labelFull: 'Noticias', icon: <FaNewspaper /> },
+        { path: '/proyectos', label: 'Proyectos', labelFull: 'Proyectos', icon: <FaProjectDiagram /> },
     ];
 
     const irA = (path) => {
@@ -188,14 +188,27 @@ const LayoutPublico = () => {
                         </div>
                     )}
 
-                    {/* Botón Login desktop */}
+                    {/* Botones desktop */}
                     {!isSmall && (
-                        <button
-                            style={s.navBtnLogin}
-                            onClick={() => navigate('/login')}
-                        >
-                            Ingresar
-                        </button>
+                        <div style={{ display: 'flex', gap: 8, marginLeft: 8, flexShrink: 0 }}>
+                            <button
+                                style={s.navBtnLogin}
+                                onClick={() => navigate('/login')}
+                            >
+                                Ingresar
+                            </button>
+                            <button
+                                style={{
+                                    ...s.navBtnLogin,
+                                    backgroundColor: 'white',
+                                    color: 'var(--color-espoch-rojo)',
+                                    border: '1px solid white',
+                                }}
+                                onClick={() => navigate('/login', { state: { modo: 'registro' } })}
+                            >
+                                Registrarse
+                            </button>
+                        </div>
                     )}
 
                     {/* Hamburguesa móvil */}
@@ -280,154 +293,167 @@ const LayoutPublico = () => {
                                 >
                                     Iniciar Sesión
                                 </button>
-                                <p style={{
-                                    margin: '10px 0 0', fontSize: '0.68rem',
-                                    color: '#9ca3af', textAlign: 'center',
-                                    fontFamily: FONT, lineHeight: 1.5,
-                                }}>
-                                    Acceso exclusivo para graduados<br />
-                                    <strong style={{ color: '#6b7280' }}>@espoch.edu.ec</strong>
-                                </p>
-                            </div>
-                        </div>
-                    </>
-                )}
-            </nav>
-
-            {/* ════════ CONTENIDO ════════ */}
-            <main style={s.main}>
-                <Outlet />
-            </main>
-
-            {/* ════════ FOOTER ════════ */}
-            <footer style={s.footer}>
-                <div style={footerGridStyle}>
-
-                    {/* Columna 1 — Identidad */}
-                    <div style={s.footerCol}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 }}>
-                            <div style={s.footerFieLogoWrap}>
-                                <img
-                                    src="/img/FIE_LOGO.png"
-                                    alt="FIE ESPOCH"
-                                    style={s.footerFieLogo}
-                                    onError={e => {
-                                        e.target.parentElement.style.display = 'none';
-                                        const fallback = e.target.parentElement.nextSibling;
-                                        if (fallback) fallback.style.display = 'flex';
+                                <button
+                                    style={{
+                                        ...s.menuPanelLoginBtn,
+                                        marginTop: 8,
+                                        backgroundColor: 'transparent',
+                                        border: '1px solid #be1e2d',
+                                        color: '#be1e2d',
+                                        boxShadow: 'none',
                                     }}
-                                />
-                            </div>
-                            <div style={{ ...s.footerFieLogoFallback, display: 'none' }}>
-                                <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.55rem', fontWeight: 700 }}>FIE</span>
-                            </div>
-                            <div>
-                                <div style={s.footerBrand}>Facultad de Informática y Electrónica</div>
-                                <div style={s.footerBrandSub}>Escuela Superior Politécnica de Chimborazo</div>
-                            </div>
-                        </div>
-                        <p style={{ ...s.footerDesc, lineHeight: 1.7, marginBottom: 16 }}>
-                            Escuela Superior Politécnica de Chimborazo<br />
-                            © {new Date().getFullYear()}. Todos los derechos reservados.
-                        </p>
-                        <div style={{ display: 'flex', gap: 8 }}>
-                            <a href="https://www.facebook.com/ESPOCH.FIE" target="_blank" rel="noopener noreferrer"
-                                style={s.iconBtn} title="Facebook · FIE ESPOCH">
-                                <FaFacebook />
-                            </a>
-                            <a href="https://www.espoch.edu.ec" target="_blank" rel="noopener noreferrer"
-                                style={s.iconBtn} title="Sitio web ESPOCH">
-                                <FaGlobe />
-                            </a>
-                        </div>
-                    </div>
-
-                    {/* Columna 2 — Contactos */}
-                    <div style={s.footerCol}>
-                        <h4 style={s.footerTitulo}>Contactos</h4>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 11 }}>
-                            <div style={s.footerContactoItem}>
-                                <FaMapMarkerAlt style={s.footerIco} />
-                                <span>Panamericana Sur Km 1½,<br />Riobamba, Chimborazo, Ecuador</span>
-                            </div>
-                            <div style={s.footerContactoItem}>
-                                <FaPhoneAlt style={s.footerIco} />
-                                <span>032-998-200 Extensión 2605</span>
-                            </div>
-                            <div style={s.footerContactoItem}>
-                                <FaEnvelope style={s.footerIco} />
-                                <span>carrera.software@espoch.edu.ec</span>
-                            </div>
-                            <a href="https://www.espoch.edu.ec" target="_blank" rel="noopener noreferrer"
-                                style={s.footerWebLink}>
-                                <FaGlobe style={{ marginRight: 6 }} />www.espoch.edu.ec
-                            </a>
-                        </div>
-                        <div style={s.fichaWrap}>
-                            <div style={s.fichaItem}>
-                                <span style={s.fichaLabel}>Duración</span>
-                                <span style={s.fichaValor}>8 semestres</span>
-                            </div>
-                            <div style={s.fichaItem}>
-                                <span style={s.fichaLabel}>Modalidad</span>
-                                <span style={s.fichaValor}>Presencial</span>
-                            </div>
-                        </div>
-                        <div style={{ marginTop: 14 }}>
-                            <p style={{ ...s.footerDesc, fontWeight: 700, color: 'rgba(255,255,255,0.75)', marginBottom: 4, fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.6px' }}>
-                                Coordinador
+                                    onClick={() => { navigate('/login', { state: { modo: 'registro' } }); setMenuAbierto(false); }}
+>
+                                Registrarse
+                            </button>
+                            <p style={{
+                                margin: '10px 0 0', fontSize: '0.68rem',
+                                color: '#9ca3af', textAlign: 'center',
+                                fontFamily: FONT, lineHeight: 1.5,
+                            }}>
+                                Acceso exclusivo para graduados<br />
+                                <strong style={{ color: '#6b7280' }}>@espoch.edu.ec</strong>
                             </p>
-                            <p style={{ ...s.footerDesc, color: 'rgba(255,255,255,0.65)', marginBottom: 5 }}>
-                                Ing. Omar Salvador Gómez Gómez
-                            </p>
-                            <div style={s.footerContactoItem}>
-                                <FaEnvelope style={{ ...s.footerIco, marginTop: 1 }} />
-                                <span style={{ fontSize: '0.76rem' }}>ogomez@espoch.edu.ec</span>
-                            </div>
                         </div>
                     </div>
+            </>
+                )}
+        </nav>
 
-                    {/* Columna 3 — Explorar */}
-                    <div style={s.footerCol}>
-                        <h4 style={s.footerTitulo}>Explorar</h4>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 18 }}>
-                            {navItems.map(item => (
-                                <button key={item.path} style={s.footerLink} onClick={() => irA(item.path)}>
-                                    <span style={{ marginRight: 8, display: 'flex', alignItems: 'center' }}>{item.icon}</span>
-                                    {item.labelFull}
-                                </button>
-                            ))}
-                        </div>
-                        <AcordeonFooter />
+            {/* ════════ CONTENIDO ════════ */ }
+    <main style={s.main}>
+        <Outlet />
+    </main>
+
+    {/* ════════ FOOTER ════════ */ }
+    <footer style={s.footer}>
+        <div style={footerGridStyle}>
+
+            {/* Columna 1 — Identidad */}
+            <div style={s.footerCol}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 }}>
+                    <div style={s.footerFieLogoWrap}>
+                        <img
+                            src="/img/FIE_LOGO.png"
+                            alt="FIE ESPOCH"
+                            style={s.footerFieLogo}
+                            onError={e => {
+                                e.target.parentElement.style.display = 'none';
+                                const fallback = e.target.parentElement.nextSibling;
+                                if (fallback) fallback.style.display = 'flex';
+                            }}
+                        />
                     </div>
+                    <div style={{ ...s.footerFieLogoFallback, display: 'none' }}>
+                        <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.55rem', fontWeight: 700 }}>FIE</span>
+                    </div>
+                    <div>
+                        <div style={s.footerBrand}>Facultad de Informática y Electrónica</div>
+                        <div style={s.footerBrandSub}>Escuela Superior Politécnica de Chimborazo</div>
+                    </div>
+                </div>
+                <p style={{ ...s.footerDesc, lineHeight: 1.7, marginBottom: 16 }}>
+                    Escuela Superior Politécnica de Chimborazo<br />
+                    © {new Date().getFullYear()}. Todos los derechos reservados.
+                </p>
+                <div style={{ display: 'flex', gap: 8 }}>
+                    <a href="https://www.facebook.com/ESPOCH.FIE" target="_blank" rel="noopener noreferrer"
+                        style={s.iconBtn} title="Facebook · FIE ESPOCH">
+                        <FaFacebook />
+                    </a>
+                    <a href="https://www.espoch.edu.ec" target="_blank" rel="noopener noreferrer"
+                        style={s.iconBtn} title="Sitio web ESPOCH">
+                        <FaGlobe />
+                    </a>
+                </div>
+            </div>
 
-                    {/* Columna 4 — Portal Graduados */}
-                    <div style={s.footerCol}>
-                        <h4 style={s.footerTitulo}>Portal Graduados</h4>
-                        <p style={s.footerDesc}>
-                            ¿Eres graduado de la Carrera de Software? Accede a tu perfil profesional
-                            y gestiona tu portafolio de manera segura.
-                        </p>
-                        <button style={s.btnAcceso} onClick={() => navigate('/login')}>
-                            Iniciar Sesión
+            {/* Columna 2 — Contactos */}
+            <div style={s.footerCol}>
+                <h4 style={s.footerTitulo}>Contactos</h4>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 11 }}>
+                    <div style={s.footerContactoItem}>
+                        <FaMapMarkerAlt style={s.footerIco} />
+                        <span>Panamericana Sur Km 1½,<br />Riobamba, Chimborazo, Ecuador</span>
+                    </div>
+                    <div style={s.footerContactoItem}>
+                        <FaPhoneAlt style={s.footerIco} />
+                        <span>032-998-200 Extensión 2605</span>
+                    </div>
+                    <div style={s.footerContactoItem}>
+                        <FaEnvelope style={s.footerIco} />
+                        <span>carrera.software@espoch.edu.ec</span>
+                    </div>
+                    <a href="https://www.espoch.edu.ec" target="_blank" rel="noopener noreferrer"
+                        style={s.footerWebLink}>
+                        <FaGlobe style={{ marginRight: 6 }} />www.espoch.edu.ec
+                    </a>
+                </div>
+                <div style={s.fichaWrap}>
+                    <div style={s.fichaItem}>
+                        <span style={s.fichaLabel}>Duración</span>
+                        <span style={s.fichaValor}>8 semestres</span>
+                    </div>
+                    <div style={s.fichaItem}>
+                        <span style={s.fichaLabel}>Modalidad</span>
+                        <span style={s.fichaValor}>Presencial</span>
+                    </div>
+                </div>
+                <div style={{ marginTop: 14 }}>
+                    <p style={{ ...s.footerDesc, fontWeight: 700, color: 'rgba(255,255,255,0.75)', marginBottom: 4, fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.6px' }}>
+                        Coordinador
+                    </p>
+                    <p style={{ ...s.footerDesc, color: 'rgba(255,255,255,0.65)', marginBottom: 5 }}>
+                        Ing. Omar Salvador Gómez Gómez
+                    </p>
+                    <div style={s.footerContactoItem}>
+                        <FaEnvelope style={{ ...s.footerIco, marginTop: 1 }} />
+                        <span style={{ fontSize: '0.76rem' }}>ogomez@espoch.edu.ec</span>
+                    </div>
+                </div>
+            </div>
+
+            {/* Columna 3 — Explorar */}
+            <div style={s.footerCol}>
+                <h4 style={s.footerTitulo}>Explorar</h4>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 18 }}>
+                    {navItems.map(item => (
+                        <button key={item.path} style={s.footerLink} onClick={() => irA(item.path)}>
+                            <span style={{ marginRight: 8, display: 'flex', alignItems: 'center' }}>{item.icon}</span>
+                            {item.labelFull}
                         </button>
-                        <p style={{ ...s.footerDesc, marginTop: 10, fontSize: '0.73rem', lineHeight: 1.6 }}>
-                            Acceso exclusivo con correo<br />
-                            <strong style={{ color: 'rgba(255,255,255,0.7)' }}>@espoch.edu.ec</strong>
-                        </p>
-                    </div>
+                    ))}
                 </div>
+                <AcordeonFooter />
+            </div>
 
-                <div style={s.footerBottom}>
-                    <p style={s.footerCopy}>
-                        Escuela Superior Politécnica de Chimborazo © {new Date().getFullYear()}. Todos los derechos reservados.
-                    </p>
-                    <p style={s.footerCopy}>
-                        Carrera de Software · Facultad de Informática y Electrónica · Plataforma de Vinculación con la Colectividad
-                    </p>
-                </div>
-            </footer>
+            {/* Columna 4 — Portal Graduados */}
+            <div style={s.footerCol}>
+                <h4 style={s.footerTitulo}>Portal Graduados</h4>
+                <p style={s.footerDesc}>
+                    ¿Eres graduado de la Carrera de Software? Accede a tu perfil profesional
+                    y gestiona tu portafolio de manera segura.
+                </p>
+                <button style={s.btnAcceso} onClick={() => navigate('/login')}>
+                    Iniciar Sesión
+                </button>
+                <p style={{ ...s.footerDesc, marginTop: 10, fontSize: '0.73rem', lineHeight: 1.6 }}>
+                    Acceso exclusivo con correo<br />
+                    <strong style={{ color: 'rgba(255,255,255,0.7)' }}>@espoch.edu.ec</strong>
+                </p>
+            </div>
         </div>
+
+        <div style={s.footerBottom}>
+            <p style={s.footerCopy}>
+                Escuela Superior Politécnica de Chimborazo © {new Date().getFullYear()}. Todos los derechos reservados.
+            </p>
+            <p style={s.footerCopy}>
+                Carrera de Software · Facultad de Informática y Electrónica · Plataforma de Vinculación con la Colectividad
+            </p>
+        </div>
+    </footer>
+        </div >
     );
 };
 
@@ -435,17 +461,17 @@ const LayoutPublico = () => {
 // ESTILOS
 // ══════════════════════════════════════════════
 const s = {
-    page:    { minHeight: '100vh', backgroundColor: 'var(--color-fondo-web)', fontFamily: FONT, display: 'flex', flexDirection: 'column' },
-    main:    { flex: 1 },
+    page: { minHeight: '100vh', backgroundColor: 'var(--color-fondo-web)', fontFamily: FONT, display: 'flex', flexDirection: 'column' },
+    main: { flex: 1 },
 
     // NAVBAR
-    navbar:  { backgroundColor: 'var(--color-espoch-rojo)', boxShadow: '0 2px 12px rgba(0,0,0,0.25)', position: 'sticky', top: 0, zIndex: 100 },
+    navbar: { backgroundColor: 'var(--color-espoch-rojo)', boxShadow: '0 2px 12px rgba(0,0,0,0.25)', position: 'sticky', top: 0, zIndex: 100 },
     navInner: { maxWidth: 1200, margin: '0 auto', display: 'flex', alignItems: 'center', height: 64, gap: 16 },
     navBrand: { display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', flexShrink: 0 },
     navBrandPrincipal: { color: 'white', fontWeight: 800, fontSize: '0.92rem', letterSpacing: '0.2px', fontFamily: FONT },
     navBrandSub: { color: 'rgba(255,255,255,0.62)', fontSize: '0.67rem', fontWeight: 400, fontFamily: FONT },
     navLinks: { display: 'flex', gap: 4, marginLeft: 'auto', alignItems: 'center' },
-    navLink:  { display: 'flex', alignItems: 'center', gap: 6, padding: '7px 14px', borderRadius: 6, backgroundColor: 'transparent', border: 'none', color: 'rgba(255,255,255,0.82)', cursor: 'pointer', fontSize: '0.84rem', fontWeight: 500, fontFamily: FONT },
+    navLink: { display: 'flex', alignItems: 'center', gap: 6, padding: '7px 14px', borderRadius: 6, backgroundColor: 'transparent', border: 'none', color: 'rgba(255,255,255,0.82)', cursor: 'pointer', fontSize: '0.84rem', fontWeight: 500, fontFamily: FONT },
     navLinkActivo: { backgroundColor: 'rgba(255,255,255,0.18)', color: 'white', fontWeight: 700 },
     navBtnLogin: {
         marginLeft: 8, padding: '7px 16px',
@@ -641,9 +667,9 @@ const ac = {
         fontSize: '0.72rem', fontWeight: 700, color: 'rgba(255,255,255,0.68)',
         textAlign: 'left', fontFamily: FONT, textTransform: 'uppercase', letterSpacing: '0.7px',
     },
-    chevron:  { color: '#BE1E2D', fontSize: '0.68rem', flexShrink: 0 },
-    cuerpo:   { paddingBottom: 12, display: 'flex', flexDirection: 'column', gap: 9 },
-    fila:     { display: 'flex', alignItems: 'flex-start', gap: 8 },
+    chevron: { color: '#BE1E2D', fontSize: '0.68rem', flexShrink: 0 },
+    cuerpo: { paddingBottom: 12, display: 'flex', flexDirection: 'column', gap: 9 },
+    fila: { display: 'flex', alignItems: 'flex-start', gap: 8 },
     cod: {
         display: 'inline-block', minWidth: 32,
         backgroundColor: '#BE1E2D', color: '#FFFFFF',

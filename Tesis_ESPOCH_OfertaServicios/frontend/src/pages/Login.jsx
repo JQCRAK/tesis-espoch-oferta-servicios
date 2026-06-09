@@ -1,6 +1,6 @@
 // src/pages/Login.jsx
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import {
     FaEnvelope, FaLock, FaUniversity,
@@ -16,7 +16,7 @@ import { guardarSesion } from '../utils/storageSeguro';
 
 const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:4000/api') + '/auth';
 
-const ofuscar    = (obj) => btoa(unescape(encodeURIComponent(JSON.stringify(obj))));
+const ofuscar = (obj) => btoa(unescape(encodeURIComponent(JSON.stringify(obj))));
 const desofuscar = (str) => JSON.parse(decodeURIComponent(escape(atob(str))));
 
 // ─── Hook responsive ─────────────────────────────────────────────────────────
@@ -115,42 +115,43 @@ const ImageUploader = ({ label, required: req, preview, onChange, onQuitar, acce
 
 // ═════════════════════════════════════════════════════════════════════════════
 const Login = () => {
-    const navigate   = useNavigate();
-    const width      = useWindowWidth();
-    const isMobile   = width < 768;
-    const isTablet   = width >= 768 && width < 1024;
+    const navigate = useNavigate();
+    const location = useLocation();
+    const width = useWindowWidth();
+    const isMobile = width < 768;
+    const isTablet = width >= 768 && width < 1024;
 
     const [modo, setModo] = useState('login');
     const [error, setError] = useState('');
     const [cargando, setCargando] = useState(false);
 
     const [flujoRegistro, setFlujoRegistro] = useState('ninguno');
-    const [pasoRegistro, setPasoRegistro]   = useState(1);
+    const [pasoRegistro, setPasoRegistro] = useState(1);
 
-    const [esperandoCodigo, setEsperandoCodigo]         = useState(false);
-    const [verificandoCodigo, setVerificandoCodigo]     = useState(false);
+    const [esperandoCodigo, setEsperandoCodigo] = useState(false);
+    const [verificandoCodigo, setVerificandoCodigo] = useState(false);
     const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false);
 
-    const [cedFrontalFile, setCedFrontalFile]         = useState(null);
-    const [cedFrontalPreview, setCedFrontalPreview]   = useState(null);
-    const [cedPosteriorFile, setCedPosteriorFile]     = useState(null);
+    const [cedFrontalFile, setCedFrontalFile] = useState(null);
+    const [cedFrontalPreview, setCedFrontalPreview] = useState(null);
+    const [cedPosteriorFile, setCedPosteriorFile] = useState(null);
     const [cedPosteriorPreview, setCedPosteriorPreview] = useState(null);
-    const [urlDspaceB, setUrlDspaceB]                 = useState('');
-    const [verificandoB, setVerificandoB]             = useState(false);
-    const [verificadoB, setVerificadoB]               = useState(false);
-    const [datosVerificadosB, setDatosVerificadosB]   = useState(null);
+    const [urlDspaceB, setUrlDspaceB] = useState('');
+    const [verificandoB, setVerificandoB] = useState(false);
+    const [verificadoB, setVerificadoB] = useState(false);
+    const [datosVerificadosB, setDatosVerificadosB] = useState(null);
 
-    const frontalRef   = useRef(null);
+    const frontalRef = useRef(null);
     const posteriorRef = useRef(null);
 
-    const [mostrarRecuperacion, setMostrarRecuperacion]               = useState(false);
+    const [mostrarRecuperacion, setMostrarRecuperacion] = useState(false);
     const [emailRecuperacionIngresado, setEmailRecuperacionIngresado] = useState('');
-    const [esperandoCodigoRec, setEsperandoCodigoRec]                 = useState(false);
-    const [verificandoCodigoRec, setVerificandoCodigoRec]             = useState(false);
+    const [esperandoCodigoRec, setEsperandoCodigoRec] = useState(false);
+    const [verificandoCodigoRec, setVerificandoCodigoRec] = useState(false);
 
-    const [tiempoRestante, setTiempoRestante]                   = useState(0);
-    const [codigoIngresado, setCodigoIngresado]                 = useState('');
-    const [codigoRecuperacionIngresado, setCodigoRecIngresado]  = useState('');
+    const [tiempoRestante, setTiempoRestante] = useState(0);
+    const [codigoIngresado, setCodigoIngresado] = useState('');
+    const [codigoRecuperacionIngresado, setCodigoRecIngresado] = useState('');
 
     const [formData, setFormData] = useState({
         password: '', nombres: '', apellidos: '', cedula: '',
@@ -160,19 +161,24 @@ const Login = () => {
     });
 
     useEffect(() => {
-        const datosTemporales = localStorage.getItem('tempRegistroGraduado');
-        if (datosTemporales) {
-            try {
-                const datos = desofuscar(datosTemporales);
-                setFormData(datos);
-                if (datos.emailInstitucional) {
-                    setEsperandoCodigo(true);
-                    setFlujoRegistro('conCorreo');
-                    setModo('registro');
-                }
-            } catch { localStorage.removeItem('tempRegistroGraduado'); }
-        }
-    }, []);
+    if (location.state?.modo === 'registro') {
+        setModo('registro');
+        setPasoRegistro(1);
+    }
+
+    const datosTemporales = localStorage.getItem('tempRegistroGraduado');
+    if (datosTemporales) {
+        try {
+            const datos = desofuscar(datosTemporales);
+            setFormData(datos);
+            if (datos.emailInstitucional) {
+                setEsperandoCodigo(true);
+                setFlujoRegistro('conCorreo');
+                setModo('registro');
+            }
+        } catch { localStorage.removeItem('tempRegistroGraduado'); }
+    }
+}, []);
 
     useEffect(() => {
         if (tiempoRestante > 0) {
@@ -395,7 +401,7 @@ const Login = () => {
 
     const handleVerificarB = async () => {
         setError('');
-        if (!cedFrontalFile)   { setError('❌ Debes subir la foto del frente de tu cédula.'); return; }
+        if (!cedFrontalFile) { setError('❌ Debes subir la foto del frente de tu cédula.'); return; }
         if (!cedPosteriorFile) { setError('❌ Debes subir la foto del reverso de tu cédula.'); return; }
         if (!urlDspaceB || !urlDspaceB.includes('dspace.espoch.edu.ec')) {
             setError('❌ La URL debe ser del repositorio dspace.espoch.edu.ec'); return;
@@ -563,12 +569,12 @@ const Login = () => {
             width: '100%',
             fontFamily: "'Segoe UI', Roboto, 'Helvetica Neue', sans-serif",
             backgroundColor: '#ffffff',
-          }
+        }
         : {
             ...s.contenedorPadre,
             // en tablet reducimos el lado imagen
             gridTemplateColumns: isTablet ? '38% 1fr' : undefined,
-          };
+        };
 
     const ladoFormularioStyle = isMobile
         ? {
@@ -579,11 +585,11 @@ const Login = () => {
             justifyContent: 'center',
             padding: '20px 16px 40px',
             overflowY: 'auto',
-          }
+        }
         : {
             ...s.ladoFormulario,
             padding: isTablet ? '24px 20px' : s.ladoFormulario.padding,
-          };
+        };
 
     const contenedorFormStyle = isMobile
         ? { width: '100%', maxWidth: '100%' }
@@ -750,7 +756,7 @@ const Login = () => {
                             )}
                         </div>
 
-                    /* ════ ESPERANDO CÓDIGO (Flujo A) ══════════════════════════════ */
+                        /* ════ ESPERANDO CÓDIGO (Flujo A) ══════════════════════════════ */
                     ) : esperandoCodigo && !verificandoCodigo ? (
                         <div style={{ textAlign: 'center' }}>
                             <div style={s.encabezado}>
@@ -935,8 +941,7 @@ const Login = () => {
                                                 <option value="">Seleccione...</option>
                                                 <option>Masculino</option>
                                                 <option>Femenino</option>
-                                                <option>No binario</option>
-                                                <option>Prefiero no decirlo</option>
+                                                <option>LGBTI</option>
                                             </select>
                                         </div>
                                     </Campo>
@@ -1322,7 +1327,7 @@ const s = {
         borderRadius: 8, padding: '10px 12px', border: '2px solid #16a34a',
         gap: 8, width: '100%', boxSizing: 'border-box',
     },
-    ico:      { color: '#9ca3af', fontSize: '0.88rem', flexShrink: 0 },
+    ico: { color: '#9ca3af', fontSize: '0.88rem', flexShrink: 0 },
     icoVerde: { color: '#16a34a', fontSize: '0.88rem', flexShrink: 0 },
     inp: {
         border: 'none', backgroundColor: 'transparent',
@@ -1421,7 +1426,7 @@ const s = {
         color: '#475569', display: 'flex', alignItems: 'center',
         justifyContent: 'center', transition: 'all 0.2s',
     },
-    flujoBtnActivo:  { backgroundColor: '#dcfce7', borderColor: '#16a34a', color: '#15803d' },
+    flujoBtnActivo: { backgroundColor: '#dcfce7', borderColor: '#16a34a', color: '#15803d' },
     flujoBtnActivoB: { backgroundColor: '#dbeafe', borderColor: '#2563eb', color: '#1d4ed8' },
 
     // Imágenes cédula

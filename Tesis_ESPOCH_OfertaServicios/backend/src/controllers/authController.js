@@ -131,7 +131,7 @@ exports.solicitarCodigoVerificacion = async (req, res) => {
                 telefono: 'temp',
                 telefonoHash: 'temp',
                 password: 'temp',
-                genero: 'Prefiero no decir',
+                genero: 'LGBTI',
                 fechaNacimiento: new Date('2000-01-01'),
                 tieneDiscapacidad: 'No',
                 emailPersonal: 'temp@temp.com',

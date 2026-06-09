@@ -1,31 +1,3 @@
-/**
- * tfidf.js
- * ─────────────────────────────────────────────────────────────────────────────
- * Implementación propia de TF-IDF (Term Frequency – Inverse Document Frequency)
- * en Node.js puro, sin dependencias externas.
- *
- * Rol en el sistema: ponderador léxico.
- * NO clasifica con un modelo supervisado (no es TF-IDF + SVM).
- * Su función es asignar pesos matemáticos a los términos técnicos para que:
- *   - Términos especializados y poco frecuentes → peso ALTO
- *   - Términos genéricos y muy frecuentes → peso BAJO (filtro de "ruido")
- *
- * Esto mejora la precisión al calcular las especialidades del graduado
- * en comparación con un simple conteo de ocurrencias (Bag of Words).
- *
- * Marco teórico: Sección 2.3.2 – Modelo TF-IDF para ponderación de términos
- * Referencia: Ali et al. (2022), Guleria et al. (2025)
- * ─────────────────────────────────────────────────────────────────────────────
- */
-
-/**
- * Normaliza y tokeniza un texto en español/inglés técnico.
- * Elimina signos de puntuación y convierte a minúsculas.
- * Conserva guiones y puntos dentro de términos técnicos (e.g. "node.js", "ci/cd").
- *
- * @param {string} texto
- * @returns {string[]} Array de tokens limpios
- */
 function tokenizar(texto) {
     if (!texto || typeof texto !== 'string') return [];
 

@@ -1,27 +1,3 @@
-/**
- * clasificador.js
- * ─────────────────────────────────────────────────────────────────────────────
- * Orquestador del motor NLP. Expone la función principal:
- *
- *   recalcularHabilidades(graduadoId)
- *
- * Esta función se invoca desde proyectoController.js y certificadoController.js
- * cada vez que el graduado guarda o elimina un proyecto o certificado.
- *
- * Proceso completo:
- *   1. Obtiene todos los proyectos y certificados activos del graduado
- *   2. Construye el texto completo (título + descripción de cada uno)
- *   3. Obtiene textos de otros graduados como corpus para IDF
- *   4. Aplica TF-IDF para ponderar los términos
- *   5. Detecta tecnologías por coincidencia de patrones léxicos
- *   6. Calcula porcentaje de afinidad por categoría usando TF-IDF
- *   7. Detecta habilidades blandas por frases contextuales
- *   8. Actualiza el modelo Graduado en MongoDB
- *
- * Marco teórico: Secciones 2.3.1, 2.3.2 y 2.3.3
- * ─────────────────────────────────────────────────────────────────────────────
- */
-
 const Graduado = require('../../models/Graduado');
 const Proyecto = require('../../models/Proyecto');
 const Certificado = require('../../models/Certificado');

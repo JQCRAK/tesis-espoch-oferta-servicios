@@ -14,7 +14,7 @@ const GraduadoSchema = new mongoose.Schema({
 
     genero: {
         type: String,
-        enum: ['Masculino', 'Femenino', 'No binario', 'Prefiero no decir'],
+        enum: ['Masculino', 'Femenino', 'LGBTI'],
         required: true,
         trim: true
     },
