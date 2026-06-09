@@ -888,7 +888,6 @@ const Login = () => {
                         </>
 
                     ) : pasoRegistro === 1 ? (
-                        /* ════ REGISTRO PASO 1 ══════════════════════════════════════ */
                         <>
                             <div style={s.encabezado}>
                                 <h2 style={s.titulo}>Crear Cuenta</h2>
@@ -901,23 +900,26 @@ const Login = () => {
                             </div>
 
                             <form onSubmit={handlePaso1}>
-                                <div style={filaDobleStyle}>
+                                {/* Fila: Nombres + Apellidos */}
+                                <div style={gridForm2col}>
                                     <Campo label="Nombres" required>
-                                        <div style={s.inputGroup}>
+                                        <div style={s.inputGroupIconFull}>
                                             <input type="text" name="nombres" placeholder="Tus nombres"
                                                 style={s.inp} value={formData.nombres} onChange={handleChange} required />
                                         </div>
                                     </Campo>
                                     <Campo label="Apellidos" required>
-                                        <div style={s.inputGroup}>
+                                        <div style={s.inputGroupIconFull}>
                                             <input type="text" name="apellidos" placeholder="Tus apellidos"
                                                 style={s.inp} value={formData.apellidos} onChange={handleChange} required />
                                         </div>
                                     </Campo>
                                 </div>
-                                <div style={filaDobleStyle}>
+
+                                {/* Fila: Cédula + Celular */}
+                                <div style={gridForm2col}>
                                     <Campo label="Cédula" required>
-                                        <div style={s.inputGroupIcon}>
+                                        <div style={s.inputGroupIconFull}>
                                             <FaIdCard style={s.ico} />
                                             <input type="text" name="cedula" placeholder="10 dígitos"
                                                 style={s.inp} value={formData.cedula} onChange={handleChange}
@@ -925,7 +927,7 @@ const Login = () => {
                                         </div>
                                     </Campo>
                                     <Campo label="Celular" required>
-                                        <div style={s.inputGroupIcon}>
+                                        <div style={s.inputGroupIconFull}>
                                             <FaPhone style={s.ico} />
                                             <input type="tel" name="telefono" placeholder="09XXXXXXXX"
                                                 style={s.inp} value={formData.telefono} onChange={handleChange}
@@ -933,9 +935,11 @@ const Login = () => {
                                         </div>
                                     </Campo>
                                 </div>
-                                <div style={filaDobleStyle}>
+
+                                {/* Fila: Género + Discapacidad */}
+                                <div style={gridForm2col}>
                                     <Campo label="Género" required>
-                                        <div style={{ ...s.inputGroupIcon, height: 44 }}>
+                                        <div style={s.inputGroupIconFull}>
                                             <FaVenusMars style={s.ico} />
                                             <select name="genero" style={s.inp} value={formData.genero} onChange={handleChange} required>
                                                 <option value="">Seleccione...</option>
@@ -946,7 +950,7 @@ const Login = () => {
                                         </div>
                                     </Campo>
                                     <Campo label="Discapacidad" required>
-                                        <div style={{ ...s.inputGroupIcon, height: 44 }}>
+                                        <div style={s.inputGroupIconFull}>
                                             <FaWheelchair style={s.ico} />
                                             <select name="tieneDiscapacidad" style={s.inp} value={formData.tieneDiscapacidad} onChange={handleChange} required>
                                                 <option value="">Seleccione...</option>
@@ -961,8 +965,10 @@ const Login = () => {
                                         </div>
                                     </Campo>
                                 </div>
+
+                                {/* Fecha nacimiento — ancho completo */}
                                 <Campo label="Fecha de nacimiento" required>
-                                    <div style={s.inputGroupIcon}>
+                                    <div style={s.inputGroupIconFull}>
                                         <FaCalendarAlt style={s.ico} />
                                         <input type="date" name="fechaNacimiento"
                                             style={{ ...s.inp, colorScheme: 'light' }}
@@ -971,7 +977,7 @@ const Login = () => {
                                     </div>
                                 </Campo>
 
-                                {/* ── Flujo selector ── */}
+                                {/* Selector flujo */}
                                 <div style={s.flujoSelector}>
                                     <p style={s.flujoSelectorLabel}>
                                         <FaUniversity style={{ marginRight: 6, color: 'var(--color-espoch-rojo)' }} />
@@ -980,10 +986,7 @@ const Login = () => {
                                     <div style={flujoOpcionesStyle}>
                                         <button
                                             type="button"
-                                            style={{
-                                                ...s.flujoBtn,
-                                                ...(flujoRegistro === 'conCorreo' ? s.flujoBtnActivo : {})
-                                            }}
+                                            style={{ ...s.flujoBtn, ...(flujoRegistro === 'conCorreo' ? s.flujoBtnActivo : {}) }}
                                             onClick={() => { setFlujoRegistro('conCorreo'); setError(''); }}
                                         >
                                             <FaCheckCircle style={{ marginRight: 6, fontSize: '0.85rem' }} />
@@ -991,10 +994,7 @@ const Login = () => {
                                         </button>
                                         <button
                                             type="button"
-                                            style={{
-                                                ...s.flujoBtn,
-                                                ...(flujoRegistro === 'sinCorreo' ? s.flujoBtnActivoB : {})
-                                            }}
+                                            style={{ ...s.flujoBtn, ...(flujoRegistro === 'sinCorreo' ? s.flujoBtnActivoB : {}) }}
                                             onClick={() => { setFlujoRegistro('sinCorreo'); setError(''); }}
                                         >
                                             <FaShieldAlt style={{ marginRight: 6, fontSize: '0.85rem' }} />
@@ -1205,6 +1205,12 @@ const checkItem = (cumple) => ({
     display: 'flex', alignItems: 'center', gap: 4
 });
 
+const gridForm2col = {
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr',
+    gap: 10,
+    alignItems: 'start',
+};
 // ══════════════════════════════════════════════════════════════════════════════
 // ESTILOS BASE (sin cambios en la lógica original)
 // ══════════════════════════════════════════════════════════════════════════════
@@ -1216,6 +1222,19 @@ const s = {
         width: '100vw',
         overflow: 'hidden',
         fontFamily: "'Segoe UI', Roboto, 'Helvetica Neue', sans-serif",
+    },
+
+    inputGroupIconFull: {
+        display: 'flex',
+        alignItems: 'center',
+        backgroundColor: 'white',
+        borderRadius: 8,
+        padding: '10px 12px',
+        border: '1.5px solid #e5e7eb',
+        gap: 8,
+        width: '100%',
+        height: 44,
+        boxSizing: 'border-box',
     },
 
     // Lado imagen (tablet/desktop)
