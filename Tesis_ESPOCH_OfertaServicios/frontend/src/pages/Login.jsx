@@ -161,24 +161,24 @@ const Login = () => {
     });
 
     useEffect(() => {
-    if (location.state?.modo === 'registro') {
-        setModo('registro');
-        setPasoRegistro(1);
-    }
+        if (location.state?.modo === 'registro') {
+            setModo('registro');
+            setPasoRegistro(1);
+        }
 
-    const datosTemporales = localStorage.getItem('tempRegistroGraduado');
-    if (datosTemporales) {
-        try {
-            const datos = desofuscar(datosTemporales);
-            setFormData(datos);
-            if (datos.emailInstitucional) {
-                setEsperandoCodigo(true);
-                setFlujoRegistro('conCorreo');
-                setModo('registro');
-            }
-        } catch { localStorage.removeItem('tempRegistroGraduado'); }
-    }
-}, []);
+        const datosTemporales = localStorage.getItem('tempRegistroGraduado');
+        if (datosTemporales) {
+            try {
+                const datos = desofuscar(datosTemporales);
+                setFormData(datos);
+                if (datos.emailInstitucional) {
+                    setEsperandoCodigo(true);
+                    setFlujoRegistro('conCorreo');
+                    setModo('registro');
+                }
+            } catch { localStorage.removeItem('tempRegistroGraduado'); }
+        }
+    }, []);
 
     useEffect(() => {
         if (tiempoRestante > 0) {
@@ -935,7 +935,7 @@ const Login = () => {
                                 </div>
                                 <div style={filaDobleStyle}>
                                     <Campo label="Género" required>
-                                        <div style={s.inputGroupIcon}>
+                                        <div style={{ ...s.inputGroupIcon, height: 44 }}>
                                             <FaVenusMars style={s.ico} />
                                             <select name="genero" style={s.inp} value={formData.genero} onChange={handleChange} required>
                                                 <option value="">Seleccione...</option>
@@ -946,7 +946,7 @@ const Login = () => {
                                         </div>
                                     </Campo>
                                     <Campo label="Discapacidad" required>
-                                        <div style={s.inputGroupIcon}>
+                                        <div style={{ ...s.inputGroupIcon, height: 44 }}>
                                             <FaWheelchair style={s.ico} />
                                             <select name="tieneDiscapacidad" style={s.inp} value={formData.tieneDiscapacidad} onChange={handleChange} required>
                                                 <option value="">Seleccione...</option>
