@@ -127,7 +127,7 @@ const Login = () => {
     const [esperandoCodigo, setEsperandoCodigo] = useState(false);
     const [verificandoCodigo, setVerificandoCodigo] = useState(false);
     const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false);
-    const [confirmarSalida, setConfirmarSalida] = useState(false);
+    const [mostrarConfirmaNombre, setMostrarConfirmaNombre] = useState(false);
 
     const [cedFrontalFile, setCedFrontalFile] = useState(null);
     const [cedFrontalPreview, setCedFrontalPreview] = useState(null);
@@ -270,7 +270,7 @@ const Login = () => {
         if (flujoRegistro === 'ninguno') {
             setError('Indica si tienes acceso a tu correo @espoch.edu.ec.'); return;
         }
-        setPasoRegistro(2);
+        setMostrarConfirmaNombre(true);
     };
 
     const handlePaso2A = (e) => {
@@ -635,6 +635,57 @@ const Login = () => {
 
     return (
         <div style={contenedorPadreStyle}>
+
+            {mostrarConfirmaNombre && (
+                <div style={s.overlaySalida}>
+                    <div style={s.overlayCard}>
+                        <div style={{
+                            width: 48, height: 48, borderRadius: '50%',
+                            backgroundColor: '#fffbeb', border: '2px solid #fde68a',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            margin: '0 auto 12px', fontSize: '1.4rem'
+                        }}>⚠️</div>
+                        <h3 style={{ margin: '0 0 6px', fontSize: '1.05rem', fontWeight: 800, color: '#1a1a1a' }}>
+                            ¿Los nombres son correctos?
+                        </h3>
+                        <p style={{ margin: '0 0 14px', fontSize: '0.83rem', color: '#6b7280' }}>
+                            Detectamos que ingresaste:
+                        </p>
+                        <div style={{
+                            backgroundColor: '#f9fafb', border: '1px solid #e5e7eb',
+                            borderRadius: 8, padding: '10px 14px', marginBottom: 12,
+                            textAlign: 'left', fontSize: '0.85rem', color: '#111827'
+                        }}>
+                            <p style={{ margin: '0 0 4px' }}>Nombres: <strong>{formData.nombres}</strong></p>
+                            <p style={{ margin: 0 }}>Apellidos: <strong>{formData.apellidos}</strong></p>
+                        </div>
+                        <div style={{
+                            backgroundColor: '#fffbeb', border: '1px solid #fde68a',
+                            borderRadius: 7, padding: '9px 12px', marginBottom: 16,
+                            fontSize: '0.77rem', color: '#92400e', textAlign: 'left',
+                            display: 'flex', gap: 7, alignItems: 'flex-start'
+                        }}>
+                            <span style={{ flexShrink: 0 }}>⚠️</span>
+                            <span>
+                                Estos datos <strong>no podrán modificarse</strong> después del registro.
+                                Si tienes dos nombres o dos apellidos, corrígelos ahora.
+                            </span>
+                        </div>
+                        <div style={{ display: 'flex', gap: 8 }}>
+                            <button
+                                onClick={() => setMostrarConfirmaNombre(false)}
+                                style={{ ...s.btnCancelar, flex: 1 }}>
+                                ← Corregir
+                            </button>
+                            <button
+                                onClick={() => { setMostrarConfirmaNombre(false); setPasoRegistro(2); }}
+                                style={{ ...s.btnPrincipal, flex: 1, marginBottom: 0 }}>
+                                Sí, son correctos
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {confirmarSalida && (
                 <div style={s.overlaySalida}>
