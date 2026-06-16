@@ -12,8 +12,8 @@ const hdrs = () => {
 };
 
 const FONT = "'Segoe UI', Roboto, 'Helvetica Neue', sans-serif";
-const FONT_FORM = "'Georgia', 'Times New Roman', serif";
-const FONT_SANS = "'Segoe UI', system-ui, -apple-system, sans-serif";
+const FONT_FORM = "'Segoe UI', Roboto, 'Helvetica Neue', sans-serif";
+const FONT_SANS = "'Segoe UI', Roboto, 'Helvetica Neue', sans-serif";
 
 // ── Colores del formulario (igual que EncuestaEmpleador) ──
 const ROJO = '#BE1E2D';
@@ -59,8 +59,6 @@ if (typeof document !== 'undefined' && !document.getElementById('eg-estilos-glob
     const st = document.createElement('style');
     st.id = 'eg-estilos-globales';
     st.textContent = `
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Sans+3:wght@300;400;500;600;700&display=swap');
-
         @keyframes spin          { to { transform: rotate(360deg); } }
         @keyframes slideInToast  { from { opacity:0; transform:translateY(20px) scale(0.96);} to { opacity:1; transform:translateY(0) scale(1);} }
         @keyframes fadeInUp      { from { opacity:0; transform:translateY(16px);} to { opacity:1; transform:translateY(0);} }
