@@ -493,6 +493,7 @@ app.listen(PORT, () => {
     console.log(`🔗 Url local: http://localhost:4000`);
     console.log(`⏰ Crons activos:`);
     console.log(`   • Eventos/Encuestas  — cada hora`);
+    console.log(`   • Backup BD             — 1 ene y 1 jul 03:00 [retención 6 años / alerta si -15%]`);
     console.log(`   • Tendencias         — cada lunes 00:05`);
     console.log(`   • Limpieza sin tesis — cada día 01:00 [548 días aviso / 30 días para eliminar]`);
     console.log('Buscando uploads en:', path.join(__dirname, 'uploads'));
