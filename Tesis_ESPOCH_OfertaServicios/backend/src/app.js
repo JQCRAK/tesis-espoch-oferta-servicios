@@ -299,6 +299,184 @@ cron.schedule('0 1 * * *', async () => {
     }
 
 }, { timezone: 'America/Guayaquil' });
+/* ══════════════════════════════════════════════════════════════════
+   CRON — Backup automático de la base de datos cada 6 meses
+   ──────────────────────────────────────────────────────────────────
+
+   CUÁNDO:
+     • El 1 de enero y el 1 de julio a las 03:00 (America/Guayaquil).
+
+   QUÉ HACE:
+     • Exporta todas las colecciones relevantes a JSON comprimido (.gz)
+       en la carpeta uploads/backups/.
+     • Mantiene un archivo registro.json con el historial de backups
+       (fecha, tamaño, total de documentos).
+     • Elimina silenciosamente los backups con más de 6 años de
+       antigüedad (ya no son útiles como referencia).
+
+   NOTIFICACIONES AL ADMIN (panel interno):
+     • Siempre: confirma que el backup se completó con éxito.
+     • Alerta: si el nuevo backup es más pequeño que el anterior,
+       avisa que puede haber habido pérdida de datos.
+     Solo notifica sobre problemas de tamaño, no sobre eliminaciones.
+
+   DEPENDENCIAS: zlib, fs, path (nativas de Node.js — sin instalar nada).
+   El campo `graduado` de NotificacionAdmin usa el ObjectId
+   '000000000000000000000000' como placeholder del sistema.
+══════════════════════════════════════════════════════════════════ */
+cron.schedule('0 3 1 1,7 *', async () => {
+    const TAG   = '[Cron-Backup]';
+    const ahora = new Date();
+    const label = ahora.toISOString().slice(0, 10); // "2026-01-01"
+
+    console.log(`\n${TAG} ${ahora.toLocaleString('es-EC', { timeZone: 'America/Guayaquil' })} — Iniciando backup de base de datos`);
+
+    try {
+        const fs       = require('fs');
+        const path     = require('path');
+        const zlib     = require('zlib');
+        const mongoose = require('mongoose');
+
+        // ── Directorio y registro ──────────────────────────────────
+        const dirBackups = path.join(__dirname, '..', 'uploads', 'backups');
+        const regPath    = path.join(dirBackups, 'registro.json');
+        if (!fs.existsSync(dirBackups)) fs.mkdirSync(dirBackups, { recursive: true });
+
+        // ── Colecciones a exportar ─────────────────────────────────
+        // Se excluyen auditoria_logs y auditoria_errores (son logs,
+        // no datos críticos de negocio, y reducen el tamaño del backup).
+        const colecciones = [
+            'graduados', 'admins', 'empleadors',
+            'encuestas', 'preguntas', 'respuestaencuestas', 'respuestaempleadors',
+            'proyectos', 'certificados', 'tesis',
+            'notificaciones', 'notificacionadmins',
+            'eventos', 'noticias', 'tendenciassemanales', 'verificacionpendientes',
+        ];
+
+        // ── Exportar colecciones ───────────────────────────────────
+        const db      = mongoose.connection.db;
+        const datos   = {};
+        let totalDocs = 0;
+
+        for (const nombre of colecciones) {
+            try {
+                const docs = await db.collection(nombre).find({}).toArray();
+                datos[nombre] = docs;
+                totalDocs += docs.length;
+                console.log(`${TAG}   • ${nombre}: ${docs.length} docs`);
+            } catch {
+                console.warn(`${TAG}   ⚠️  Colección "${nombre}" no encontrada, omitida.`);
+                datos[nombre] = [];
+            }
+        }
+
+        // ── Comprimir y guardar ────────────────────────────────────
+        const jsonStr  = JSON.stringify({
+            generadoEn:  ahora.toISOString(),
+            version:     '1.0',
+            totalDocs,
+            colecciones: Object.keys(datos).map(k => ({ nombre: k, total: datos[k].length })),
+            datos,
+        });
+        const archivoGz  = path.join(dirBackups, `backup_${label}.json.gz`);
+        fs.writeFileSync(archivoGz, zlib.gzipSync(Buffer.from(jsonStr, 'utf8')));
+
+        const tamañoBytes = fs.statSync(archivoGz).size;
+        const tamañoMB    = (tamañoBytes / 1024 / 1024).toFixed(2);
+        console.log(`${TAG} ✅ Backup generado: backup_${label}.json.gz (${tamañoMB} MB, ${totalDocs} docs)`);
+
+        // ── Leer historial de backups ──────────────────────────────
+        let registro = [];
+        if (fs.existsSync(regPath)) {
+            try { registro = JSON.parse(fs.readFileSync(regPath, 'utf8')); } catch { registro = []; }
+        }
+
+        // ── Comparar tamaño con el backup anterior ─────────────────
+        const anterior = registro.length > 0 ? registro[registro.length - 1] : null;
+        let   hayAlerta = false;
+        let   pctCambio = 0;
+
+        if (anterior && anterior.tamañoBytes > 0) {
+            pctCambio = ((tamañoBytes - anterior.tamañoBytes) / anterior.tamañoBytes) * 100;
+            console.log(`${TAG} 📊 Anterior: ${(anterior.tamañoBytes / 1024 / 1024).toFixed(2)} MB | Actual: ${tamañoMB} MB | Δ ${pctCambio.toFixed(1)}%`);
+            if (pctCambio < -15) hayAlerta = true;
+        }
+
+        // ── Notificar al admin (siempre) ───────────────────────────
+        try {
+            const NotificacionAdmin = require('./models/NotificacionAdmin');
+            const SISTEMA_OID = new mongoose.Types.ObjectId('000000000000000000000000');
+
+            if (hayAlerta) {
+                // Alerta de reducción significativa
+                await NotificacionAdmin.create({
+                    graduado:    SISTEMA_OID,
+                    titulo:      '⚠️ Alerta de backup — Reducción inusual en la base de datos',
+                    mensaje:     `El backup del ${label} pesa ${tamañoMB} MB, un ${Math.abs(pctCambio).toFixed(1)}% menos que el backup anterior del ${anterior.fecha} (${(anterior.tamañoBytes / 1024 / 1024).toFixed(2)} MB). Esto puede indicar pérdida de datos. Se recomienda revisar las colecciones y comparar los archivos de backup manualmente.`,
+                    solicitudes: [],
+                    vistoPor:    [],
+                    leido:       false,
+                });
+                console.log(`${TAG} 🔔 Notificación de ALERTA enviada a admins.`);
+            } else {
+                // Confirmación de backup exitoso
+                const infoAnterior = anterior
+                    ? ` El anterior (${anterior.fecha}) pesaba ${(anterior.tamañoBytes / 1024 / 1024).toFixed(2)} MB.`
+                    : ' Es el primer backup del sistema.';
+                await NotificacionAdmin.create({
+                    graduado:    SISTEMA_OID,
+                    titulo:      `✅ Backup completado — ${label}`,
+                    mensaje:     `El backup semestral de la base de datos se generó correctamente. Archivo: backup_${label}.json.gz (${tamañoMB} MB, ${totalDocs} documentos respaldados).${infoAnterior}`,
+                    solicitudes: [],
+                    vistoPor:    [],
+                    leido:       false,
+                });
+                console.log(`${TAG} 🔔 Notificación de confirmación enviada a admins.`);
+            }
+        } catch (notifErr) {
+            console.error(`${TAG} ❌ Error creando notificación:`, notifErr.message);
+        }
+
+        // ── Registrar nuevo backup en el historial ─────────────────
+        registro.push({
+            fecha:       label,
+            archivo:     `backup_${label}.json.gz`,
+            tamañoBytes,
+            tamañoMB:    parseFloat(tamañoMB),
+            totalDocs,
+            generadoEn:  ahora.toISOString(),
+        });
+
+        // ── Eliminar backups con más de 6 años de antigüedad ───────
+        // Silencioso: no notifica al admin, solo limpia el disco.
+        // Ej: en 2027, elimina los del 2021 y anteriores.
+        const SEIS_AÑOS_MS = 6 * 365.25 * 24 * 60 * 60 * 1000;
+        const limiteAntiguedad = new Date(ahora.getTime() - SEIS_AÑOS_MS);
+
+        const registroFiltrado = [];
+        for (const entrada of registro) {
+            const fechaBackup = new Date(entrada.generadoEn || entrada.fecha);
+            if (fechaBackup < limiteAntiguedad) {
+                const rutaVieja = path.join(dirBackups, entrada.archivo);
+                if (fs.existsSync(rutaVieja)) {
+                    fs.unlinkSync(rutaVieja);
+                    console.log(`${TAG} 🗑️  Backup eliminado por antigüedad (> 6 años): ${entrada.archivo}`);
+                }
+                // No se agrega al registro filtrado → desaparece del historial
+            } else {
+                registroFiltrado.push(entrada);
+            }
+        }
+
+        // ── Guardar historial actualizado ──────────────────────────
+        fs.writeFileSync(regPath, JSON.stringify(registroFiltrado, null, 2), 'utf8');
+        console.log(`${TAG} 📋 Backups en disco: ${registroFiltrado.length} | Proceso completado.\n`);
+
+    } catch (err) {
+        console.error(`${TAG} ❌ Error crítico en el cron de backup:`, err.message);
+    }
+
+}, { timezone: 'America/Guayaquil' });
 
 
 const PORT = process.env.PORT || 4000;
