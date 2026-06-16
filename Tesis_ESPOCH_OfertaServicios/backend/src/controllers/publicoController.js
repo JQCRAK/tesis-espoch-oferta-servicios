@@ -28,16 +28,100 @@ function elegirCategoriaPorSemana(semana) {
 
 // ═══════════════════════════════════════════════════════════
 // GET /api/publico/graduados
+// Query params:
+//   page         = número de página (default 1)
+//   limit        = resultados por página (default 20)
+//   q            = búsqueda por nombre
+//   disponibilidad = 'disponible' | 'no_disponible'
+//   tecnologia   = string (filtra si contiene esa tecnología)
+//   especialidad = string (filtra por afinidades[].categoria)
 // ═══════════════════════════════════════════════════════════
 exports.listarGraduadosPublicos = async (req, res) => {
     try {
-        const graduados = await Graduado.find({
+        const {
+            page          = '1',
+            limit         = '20',
+            q             = '',
+            disponibilidad = '',
+            tecnologia    = '',
+            especialidad  = '',
+        } = req.query;
+
+        const LIMIT  = Math.min(Math.max(parseInt(limit) || 20, 1), 50);
+        const pagina = Math.max(parseInt(page) || 1, 1);
+        const skip   = (pagina - 1) * LIMIT;
+
+        // ── Construir filtro base ──────────────────────────────
+        const filtro = {
             perfilPublico:   true,
             tesisVerificada: true,
-        })
-        .select('nombres apellidos fotoPerfil bio tecnologias afinidades habilidadesBlandas disponibilidad ciudad')
-        .sort({ updatedAt: -1 });
-        res.json(graduados);
+        };
+
+        // Búsqueda por nombre
+        if (q.trim()) {
+            const rx = { $regex: q.trim(), $options: 'i' };
+            filtro.$or = [
+                { nombres:   rx },
+                { apellidos: rx },
+            ];
+        }
+
+        // Filtro disponibilidad
+        if (disponibilidad && ['disponible', 'no_disponible'].includes(disponibilidad)) {
+            filtro.disponibilidad = disponibilidad;
+        }
+
+        // Filtro por tecnología
+        if (tecnologia.trim()) {
+            filtro.tecnologias = { $regex: tecnologia.trim(), $options: 'i' };
+        }
+
+        // Filtro por especialidad (campo afinidades[].categoria)
+        if (especialidad.trim()) {
+            filtro['afinidades.categoria'] = { $regex: especialidad.trim(), $options: 'i' };
+        }
+
+        // ── Ejecutar consulta con paginación ──────────────────
+        const [graduados, total] = await Promise.all([
+            Graduado.find(filtro)
+                .select('nombres apellidos fotoPerfil bio tecnologias afinidades habilidadesBlandas disponibilidad ciudad anioGraduacion')
+                .sort({ updatedAt: -1 })
+                .skip(skip)
+                .limit(LIMIT)
+                .lean(),
+            Graduado.countDocuments(filtro),
+        ]);
+
+        // ── Calcular top tecnologías para los filtros rápidos ──
+        // Solo en la primera página sin filtros activos para no sobrecargar
+        let topTecnologias = [];
+        if (pagina === 1 && !q && !tecnologia && !especialidad && !disponibilidad) {
+            const todos = await Graduado.find({
+                perfilPublico: true, tesisVerificada: true,
+            }).select('tecnologias').lean();
+
+            const freq = {};
+            todos.forEach(g => (g.tecnologias || []).forEach(t => {
+                const k = t.trim().toLowerCase();
+                if (!k) return;
+                freq[k] = (freq[k] || { nombre: t.trim(), count: 0 });
+                freq[k].count++;
+            }));
+            topTecnologias = Object.values(freq)
+                .sort((a, b) => b.count - a.count)
+                .slice(0, 8)
+                .map(t => t.nombre);
+        }
+
+        const pages = Math.ceil(total / LIMIT) || 1;
+
+        res.json({
+            graduados,
+            total,
+            page:  pagina,
+            pages,
+            topTecnologias,
+        });
     } catch (error) {
         console.error('Error listarGraduadosPublicos:', error);
         res.status(500).json({ msg: 'Error al obtener graduados.' });
@@ -264,11 +348,9 @@ function calcularPills(proyectos, keywordsTendencia) {
 exports.notificar = async (req, res) => {
     const { graduadoId, nombre, email, empresa, mensaje } = req.body;
 
-    // ── 1. Validación básica de campos ───────────────────
     if (!nombre?.trim() || !email?.trim() || !mensaje?.trim() || !graduadoId)
         return res.status(400).json({ msg: 'Faltan campos obligatorios.' });
 
-    // ── 2. Validar longitud de campos ────────────────────
     if (nombre.trim().length > 100)
         return res.status(400).json({ msg: 'El nombre es demasiado largo.' });
     if (mensaje.trim().length > 1000)
@@ -276,12 +358,10 @@ exports.notificar = async (req, res) => {
     if (empresa && empresa.trim().length > 150)
         return res.status(400).json({ msg: 'El nombre de empresa es demasiado largo.' });
 
-    // ── 3. Validar formato email ─────────────────────────
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email.trim()))
         return res.status(400).json({ msg: 'El correo electrónico no es válido.' });
 
-    // ── 4. Sanitizar contra inyección MongoDB manual ─────
     const camposTexto    = [nombre, empresa, mensaje].filter(Boolean);
     const tieneInyeccion = camposTexto.some(c =>
         c.includes('$') || c.includes('{') || c.includes('}')
@@ -289,7 +369,6 @@ exports.notificar = async (req, res) => {
     if (tieneInyeccion)
         return res.status(400).json({ msg: 'Caracteres no permitidos en los campos.' });
 
-    // ── 5. Rate limit por IP ─────────────────────────────
     const ip    = req.ip || req.connection?.remoteAddress || 'unknown';
     const ahora = Date.now();
     const reg   = intentosPorIP.get(ip) || { count: 0, desde: ahora };
@@ -307,7 +386,6 @@ exports.notificar = async (req, res) => {
     const emailNorm = email.trim().toLowerCase();
 
     try {
-        // ── 6. Graduado existe y es público ──────────────
         const graduado = await Graduado.findOne({
             _id: graduadoId, perfilPublico: true, tesisVerificada: true,
         }).select('nombres apellidos emailPersonal');
@@ -315,8 +393,7 @@ exports.notificar = async (req, res) => {
         if (!graduado)
             return res.status(404).json({ msg: 'Perfil no encontrado.' });
 
-        // ── 7. Anti-duplicado 24h por email ──────────────
-        const hace24h          = new Date(Date.now() - 24 * 60 * 60 * 1000);
+        const hace24h           = new Date(Date.now() - 24 * 60 * 60 * 1000);
         const NotificacionAdmin = require('../models/NotificacionAdmin');
 
         const duplicado = await NotificacionAdmin.findOne({
@@ -334,12 +411,10 @@ exports.notificar = async (req, res) => {
                 msg: 'Ya enviaste una solicitud a este graduado en las últimas 24 horas. Por favor espera antes de volver a intentarlo.',
             });
 
-        // ── 8. Admins activos con email ───────────────────
-        const Admin       = require('../models/Admin');
-        const admins      = await Admin.find({ activo: true }).select('email nombre');
+        const Admin        = require('../models/Admin');
+        const admins       = await Admin.find({ activo: true }).select('email nombre');
         const emailsAdmins = admins.map(a => a.email).filter(Boolean);
 
-        // ── 9. Crear/actualizar NotificacionAdmin ─────────
         let notifAdmin = await NotificacionAdmin.findOne({
             graduado: graduadoId,
             leido:    false,
@@ -368,7 +443,6 @@ exports.notificar = async (req, res) => {
             });
         }
 
-        // ── 10. Notificación en campana del graduado ──────
         const Notificacion = require('../models/Notificacion');
         await Notificacion.create({
             graduado: graduadoId,
@@ -383,10 +457,8 @@ exports.notificar = async (req, res) => {
             },
         });
 
-        // ── 11. Enviar correos en paralelo ────────────────
         const {
             enviarAlGraduado,
-            enviarCopiaRemitente,
             enviarCopiaAdmins,
         } = require('../services/emailContactoService');
 
@@ -428,7 +500,6 @@ exports.notificar = async (req, res) => {
 
 // ═══════════════════════════════════════════════════════════
 // GET /api/publico/top-tecnologias
-// Devuelve las 5 tecnologías más frecuentes entre graduados públicos
 // ═══════════════════════════════════════════════════════════
 exports.topTecnologias = async (req, res) => {
     try {

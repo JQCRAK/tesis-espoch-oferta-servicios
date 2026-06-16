@@ -4,8 +4,8 @@ import axios from 'axios';
 
 const API = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
 
-const FONT      = "'Georgia', 'Times New Roman', serif";
-const FONT_SANS = "'Segoe UI', system-ui, -apple-system, sans-serif";
+const FONT      = "'Segoe UI', Roboto, 'Helvetica Neue', sans-serif";
+const FONT_SANS = "'Segoe UI', Roboto, 'Helvetica Neue', sans-serif";
 const ROJO      = '#BE1E2D';
 const ROJO_OSCURO = '#8B1421';
 const ROJO_CLARO  = '#F9E8EA';
@@ -17,8 +17,6 @@ if (typeof document !== 'undefined' && !document.getElementById('emp-estilos-glo
     const st = document.createElement('style');
     st.id = 'emp-estilos-globales';
     st.textContent = `
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Sans+3:wght@300;400;500;600;700&display=swap');
-
         @keyframes spin { to { transform: rotate(360deg); } }
         @keyframes slideInToast {
             from { opacity: 0; transform: translateY(20px) scale(0.96); }

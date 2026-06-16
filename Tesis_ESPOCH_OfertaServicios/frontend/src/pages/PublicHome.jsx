@@ -1,12 +1,12 @@
 // frontend/src/pages/PublicHome.jsx
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import {
     FaUserCircle, FaMapMarkerAlt, FaCode, FaBriefcase,
-    FaSearch, FaEnvelope, FaGraduationCap, FaSpinner,
-    FaTimes, FaCheckCircle, FaExclamationTriangle,
-    FaEye,
+    FaSearch, FaGraduationCap, FaSpinner,
+    FaTimes, FaEye, FaChevronLeft, FaChevronRight,
+    FaFilter, FaSlidersH,
 } from 'react-icons/fa';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
@@ -102,6 +102,7 @@ const Constellation = () => {
 const Counter = ({ value, label }) => {
     const [count, setCount] = useState(0);
     useEffect(() => {
+        if (!value) return;
         let start = 0;
         const step = Math.ceil(value / 28);
         const t = setInterval(() => {
@@ -120,100 +121,70 @@ const Counter = ({ value, label }) => {
 };
 
 // ══════════════════════════════════════════════
-// MODAL CONTACTO
+// SKELETON TARJETA
 // ══════════════════════════════════════════════
-const ModalContacto = ({ graduado, onCerrar }) => {
-    const [form,     setForm]     = useState({ nombre: '', email: '', empresa: '', mensaje: '' });
-    const [enviando, setEnviando] = useState(false);
-    const [exito,    setExito]    = useState(false);
-    const [error,    setError]    = useState('');
+const SkeletonCard = () => (
+    <div style={{ ...ts.card, gap: 12 }}>
+        <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+            <div style={{ width: 56, height: 56, borderRadius: '50%', background: 'linear-gradient(90deg,#f0f0f0 25%,#e8e8e8 50%,#f0f0f0 75%)', backgroundSize: '200%', animation: 'shimmer 1.3s infinite', flexShrink: 0 }} />
+            <div style={{ flex: 1 }}>
+                <div style={{ height: 14, borderRadius: 4, background: 'linear-gradient(90deg,#f0f0f0 25%,#e8e8e8 50%,#f0f0f0 75%)', backgroundSize: '200%', animation: 'shimmer 1.3s infinite', marginBottom: 8, width: '70%' }} />
+                <div style={{ height: 10, borderRadius: 4, background: 'linear-gradient(90deg,#f0f0f0 25%,#e8e8e8 50%,#f0f0f0 75%)', backgroundSize: '200%', animation: 'shimmer 1.3s infinite', width: '50%' }} />
+            </div>
+        </div>
+        <div style={{ height: 10, borderRadius: 4, background: 'linear-gradient(90deg,#f0f0f0 25%,#e8e8e8 50%,#f0f0f0 75%)', backgroundSize: '200%', animation: 'shimmer 1.3s infinite', width: '40%' }} />
+        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+            {[60, 80, 50].map((w, i) => (
+                <div key={i} style={{ height: 22, borderRadius: 20, width: w, background: 'linear-gradient(90deg,#f0f0f0 25%,#e8e8e8 50%,#f0f0f0 75%)', backgroundSize: '200%', animation: 'shimmer 1.3s infinite' }} />
+            ))}
+        </div>
+    </div>
+);
 
-    const handleChange = (e) => setForm(p => ({ ...p, [e.target.name]: e.target.value }));
-
-    const handleEnviar = async () => {
-        if (!form.nombre || !form.email || !form.mensaje) {
-            setError('Por favor completa los campos obligatorios.'); return;
-        }
-        setEnviando(true); setError('');
-        try {
-            await axios.post(`${API_URL}/contacto`, { graduadoId: graduado._id, ...form });
-            setExito(true);
-        } catch (err) {
-            setError(err.response?.data?.msg || 'Error al enviar. Intenta nuevamente.');
-        } finally { setEnviando(false); }
-    };
+// ══════════════════════════════════════════════
+// PAGINADOR
+// ══════════════════════════════════════════════
+const Paginador = ({ page, pages, onIr, isMobile }) => {
+    if (pages <= 1) return null;
+    const ini  = Math.max(1, page - 2);
+    const fin  = Math.min(pages, ini + 4);
+    const nums = Array.from({ length: fin - ini + 1 }, (_, i) => ini + i);
 
     return (
-        <div style={ms.overlay} onClick={e => { if (e.target === e.currentTarget) onCerrar(); }}>
-            <div style={ms.modal}>
-                <div style={ms.mHeader}>
-                    <div>
-                        <h2 style={ms.titulo}>Solicitar contacto</h2>
-                        <p style={ms.sub}>Tu solicitud irá al administrador, quien se pondrá en contacto contigo.</p>
-                    </div>
-                    <button style={ms.btnClose} onClick={onCerrar}><FaTimes /></button>
-                </div>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: isMobile ? 4 : 5, marginTop: 28 }}>
+            <button
+                style={{ ...s.pagBtn, opacity: page <= 1 ? 0.4 : 1 }}
+                disabled={page <= 1}
+                onClick={() => onIr(page - 1)}
+            >
+                <FaChevronLeft style={{ fontSize: '0.6rem' }} />
+            </button>
 
-                {exito ? (
-                    <div style={ms.exitoWrap}>
-                        <FaCheckCircle style={{ fontSize: '2.5rem', color: 'var(--estado-exito)', marginBottom: 12 }} />
-                        <h3 style={{ margin: '0 0 8px', color: 'var(--color-texto-principal)' }}>¡Solicitud enviada!</h3>
-                        <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--color-texto-secundario)', textAlign: 'center' }}>
-                            El administrador revisará tu solicitud pronto.
-                        </p>
-                        <button style={ms.btnPrincipal} onClick={onCerrar}>Cerrar</button>
-                    </div>
-                ) : (
-                    <div style={ms.body}>
-                        <div style={ms.chip}>
-                            {graduado.fotoPerfil
-                                ? <img src={urlFoto(graduado.fotoPerfil)} alt="" style={ms.chipFoto} />
-                                : <FaUserCircle style={{ fontSize: '2rem', color: 'var(--color-texto-secundario)' }} />
-                            }
-                            <div>
-                                <p style={ms.chipNombre}>{graduado.nombres} {graduado.apellidos}</p>
-                                <p style={ms.chipSub}>{graduado.ciudad}</p>
-                            </div>
-                        </div>
+            {ini > 1 && <span style={s.pagSep}>···</span>}
 
-                        {error && (
-                            <div style={ms.alerta}>
-                                <FaExclamationTriangle style={{ marginRight: 6 }} />{error}
-                            </div>
-                        )}
+            {nums.map(n => (
+                <button
+                    key={n}
+                    onClick={() => onIr(n)}
+                    style={{
+                        ...s.pagBtn,
+                        background:  n === page ? 'var(--color-espoch-rojo)' : 'white',
+                        color:       n === page ? 'white' : '#6c757d',
+                        border:      n === page ? '1px solid var(--color-espoch-rojo)' : '1px solid #e9ecef',
+                        fontWeight:  n === page ? 700 : 400,
+                    }}
+                >{n}</button>
+            ))}
 
-                        {[
-                            { name: 'nombre',  label: 'Tu nombre completo *',             type: 'text',  placeholder: 'Ej: Juan Pérez' },
-                            { name: 'email',   label: 'Tu correo electrónico *',           type: 'email', placeholder: 'tu@correo.com' },
-                            { name: 'empresa', label: 'Empresa u organización (opcional)', type: 'text',  placeholder: 'Ej: Mi Empresa S.A.' },
-                        ].map(({ name, label, type, placeholder }) => (
-                            <div key={name} style={ms.campo}>
-                                <label style={ms.lbl}>{label}</label>
-                                <input type={type} name={name} value={form[name]}
-                                    onChange={handleChange} placeholder={placeholder} style={ms.inp} />
-                            </div>
-                        ))}
+            {fin < pages && <span style={s.pagSep}>···</span>}
 
-                        <div style={ms.campo}>
-                            <label style={ms.lbl}>¿Por qué te interesa este perfil? *</label>
-                            <textarea name="mensaje" value={form.mensaje} onChange={handleChange}
-                                placeholder="Cuéntanos sobre el proyecto o vacante..."
-                                style={{ ...ms.inp, minHeight: 90, resize: 'vertical' }} />
-                        </div>
-
-                        <p style={ms.aviso}>Tu información solo será vista por el administrador de la carrera.</p>
-
-                        <div style={ms.footerModal}>
-                            <button style={ms.btnCancelar} onClick={onCerrar}>Cancelar</button>
-                            <button style={ms.btnPrincipal} onClick={handleEnviar} disabled={enviando}>
-                                {enviando
-                                    ? <><FaSpinner style={{ marginRight: 6, animation: 'spin 1s linear infinite' }} />Enviando...</>
-                                    : <><FaEnvelope style={{ marginRight: 6 }} />Enviar solicitud</>}
-                            </button>
-                        </div>
-                    </div>
-                )}
-            </div>
+            <button
+                style={{ ...s.pagBtn, opacity: page >= pages ? 0.4 : 1 }}
+                disabled={page >= pages}
+                onClick={() => onIr(page + 1)}
+            >
+                <FaChevronRight style={{ fontSize: '0.6rem' }} />
+            </button>
         </div>
     );
 };
@@ -221,14 +192,13 @@ const ModalContacto = ({ graduado, onCerrar }) => {
 // ══════════════════════════════════════════════
 // TARJETA GRADUADO
 // ══════════════════════════════════════════════
-const TarjetaGraduado = ({ graduado, onContactar }) => {
+const TarjetaGraduado = ({ graduado }) => {
     const navigate = useNavigate();
     const [hov, setHov] = useState(false);
 
     const disp = {
         disponible:    { bg: '#e8f5e9', color: '#1b5e20', border: '#a5d6a7', label: 'Disponible',    dot: '#2e7d32' },
-        ocupado:       { bg: '#fff8e1', color: '#e65100', border: '#ffe082', label: 'Ocupado',       dot: '#f57f17' },
-        no_disponible: { bg: '#ffebee', color: '#b71c1c', border: '#ffcdd2', label: 'No disponible', dot: '#c62828' },
+        no_disponible: { bg: '#fff8e1', color: '#e65100', border: '#ffe082', label: 'No disponible', dot: '#f57f17' },
     }[graduado.disponibilidad] || { bg: '#f5f5f5', color: '#616161', border: '#e0e0e0', label: '—', dot: '#9e9e9e' };
 
     return (
@@ -237,9 +207,9 @@ const TarjetaGraduado = ({ graduado, onContactar }) => {
             onMouseLeave={() => setHov(false)}
             style={{
                 ...ts.card,
-                transform:  hov ? 'translateY(-4px)' : 'none',
-                boxShadow:  hov ? '0 12px 32px rgba(0,0,0,0.13)' : '0 2px 8px rgba(0,0,0,0.06)',
-                transition: 'transform 0.22s ease, box-shadow 0.22s ease',
+                transform:  hov ? 'translateY(-3px)' : 'none',
+                boxShadow:  hov ? '0 10px 28px rgba(0,0,0,0.11)' : '0 2px 8px rgba(0,0,0,0.06)',
+                transition: 'transform 0.2s ease, box-shadow 0.2s ease',
             }}
         >
             <div style={ts.header}>
@@ -251,10 +221,12 @@ const TarjetaGraduado = ({ graduado, onContactar }) => {
                 <div style={ts.info}>
                     <h3 style={ts.nombre}>{graduado.nombres} {graduado.apellidos}</h3>
                     <p style={ts.subtitulo}>Ing. Software · ESPOCH</p>
-                    <p style={ts.ciudad}>
-                        <FaMapMarkerAlt style={{ marginRight: 4, fontSize: '0.7rem' }} />
-                        {graduado.ciudad}
-                    </p>
+                    {graduado.ciudad && (
+                        <p style={ts.ciudad}>
+                            <FaMapMarkerAlt style={{ marginRight: 4, fontSize: '0.7rem' }} />
+                            {graduado.ciudad}
+                        </p>
+                    )}
                 </div>
             </div>
 
@@ -292,10 +264,6 @@ const TarjetaGraduado = ({ graduado, onContactar }) => {
                 </div>
             )}
 
-            {graduado.tarifaHora > 0 && (
-                <p style={ts.tarifa}><strong>${graduado.tarifaHora}</strong>/hora</p>
-            )}
-
             <div style={ts.footerCard}>
                 <button style={ts.btnVerPerfil} onClick={() => navigate(`/perfil/${graduado._id}`)}>
                     <FaEye style={{ marginRight: 5 }} />Ver perfil
@@ -313,85 +281,150 @@ const PublicHome = () => {
     const isMobile = width < 768;
     const isTablet = width >= 768 && width < 1024;
 
-    const [graduados,     setGraduados]     = useState([]);
-    const [cargando,      setCargando]      = useState(true);
-    const [busqueda,      setBusqueda]      = useState('');
-    const [filtroDisp,    setFiltroDisp]    = useState('todos');
-    const [modalGraduado, setModalGraduado] = useState(null);
-    const [topTecs,       setTopTecs]       = useState(['React', 'Node.js', 'Python', 'Flutter', 'Machine Learning']);
-    const inputRef = useRef(null);
+    // ── Estado de datos ──────────────────────────────────────
+    const [graduados,      setGraduados]      = useState([]);
+    const [total,          setTotal]          = useState(0);
+    const [page,           setPage]           = useState(1);
+    const [pages,          setPages]          = useState(1);
+    const [topTecnologias, setTopTecnologias] = useState([]);
+    const [cargando,       setCargando]       = useState(true);
+
+    // ── Estado de filtros ────────────────────────────────────
+    const [busqueda,       setBusqueda]       = useState('');
+    const [filtroDisp,     setFiltroDisp]     = useState('');
+    const [filtroTec,      setFiltroTec]      = useState('');
+    const [mostrarFiltros, setMostrarFiltros] = useState(false);
+
+    // ── Stats para el hero (se calculan una sola vez) ────────
+    const [stats, setStats] = useState({ total: 0, disponibles: 0, tecnologias: 0, especializados: 0 });
+
+    const debounceRef = useRef(null);
+    const inputRef    = useRef(null);
 
     useEffect(() => {
         document.title = 'Perfiles Profesionales · Carrera de Software ESPOCH';
-        Promise.all([
-            axios.get(`${API_URL}/publico/graduados`),
-            axios.get(`${API_URL}/publico/top-tecnologias`),
-        ])
-        .then(([gradRes, tecRes]) => {
-            setGraduados(gradRes.data);
-            if (tecRes.data.tecnologias?.length > 0)
-                setTopTecs(tecRes.data.tecnologias);
-        })
-        .catch(err => console.error(err))
-        .finally(() => setCargando(false));
+        // Cargar stats iniciales (sin filtros)
+        cargarStats();
     }, []);
 
-    const graduadosFiltrados = graduados.filter(g => {
-        const t = busqueda.toLowerCase();
-        const matchBusqueda = !busqueda ||
-            `${g.nombres} ${g.apellidos}`.toLowerCase().includes(t) ||
-            g.tecnologias?.some(x => x.toLowerCase().includes(t)) ||
-            g.afinidades?.some(a => (a.categoria || a).toLowerCase().includes(t)) ||
-            g.ciudad?.toLowerCase().includes(t);
-        const matchDisp = filtroDisp === 'todos' ||
-            (filtroDisp === 'disponible'    && g.disponibilidad === 'disponible') ||
-            (filtroDisp === 'no_disponible' && g.disponibilidad === 'no_disponible');
-        return matchBusqueda && matchDisp;
-    });
+    const cargarStats = async () => {
+        try {
+            const [dispRes, allRes] = await Promise.all([
+                axios.get(`${API_URL}/publico/graduados`, { params: { limit: 1, disponibilidad: 'disponible' } }),
+                axios.get(`${API_URL}/publico/graduados`, { params: { limit: 1 } }),
+            ]);
+            // Para tecnologías y especializados usamos top-tecnologias
+            const tecRes = await axios.get(`${API_URL}/publico/top-tecnologias`);
+            setStats({
+                total:         allRes.data.total || 0,
+                disponibles:   dispRes.data.total || 0,
+                tecnologias:   tecRes.data.tecnologias?.length || 0,
+                especializados: allRes.data.total || 0,
+            });
+        } catch { /* silencioso */ }
+    };
 
-    const totalTecs         = new Set(graduados.flatMap(g => (g.tecnologias || []).map(t => t.trim().toLowerCase()))).size;
-    const disponibles       = graduados.filter(g => g.disponibilidad === 'disponible').length;
-    const conEspecialidades = graduados.filter(g => g.afinidades?.length > 0).length;
+    // ── Fetch principal con todos los filtros ────────────────
+    const fetchGraduados = useCallback(async (params = {}) => {
+        setCargando(true);
+        try {
+            const { data } = await axios.get(`${API_URL}/publico/graduados`, {
+                params: {
+                    page:          params.page          || 1,
+                    limit:         20,
+                    q:             params.q             ?? busqueda,
+                    disponibilidad: params.disponibilidad ?? filtroDisp,
+                    tecnologia:    params.tecnologia    ?? filtroTec,
+                },
+            });
+            setGraduados(data.graduados   || []);
+            setTotal(data.total           || 0);
+            setPage(data.page             || 1);
+            setPages(data.pages           || 1);
+            if (data.topTecnologias?.length > 0) setTopTecnologias(data.topTecnologias);
+        } catch { /* silencioso */ }
+        finally { setCargando(false); }
+    }, [busqueda, filtroDisp, filtroTec]);
 
-    const filtroOpciones = [
-        { val: 'todos',         label: 'Todos',       dot: null },
-        { val: 'disponible',    label: 'Disponibles', dot: '#2e7d32' },
-        { val: 'no_disponible', label: 'Ocupados',    dot: '#f57f17' },
-    ];
+    useEffect(() => { fetchGraduados({ page: 1 }); }, []);
 
-    // Stats: en móvil se muestran en 2x2, en desktop en fila
+    // ── Handlers ─────────────────────────────────────────────
+    const handleBusqueda = (valor) => {
+        setBusqueda(valor);
+        clearTimeout(debounceRef.current);
+        debounceRef.current = setTimeout(() => {
+            setPage(1);
+            fetchGraduados({ q: valor, disponibilidad: filtroDisp, tecnologia: filtroTec, page: 1 });
+        }, 400);
+    };
+
+    const handleFiltroDisp = (val) => {
+        const nuevo = filtroDisp === val ? '' : val;
+        setFiltroDisp(nuevo);
+        setPage(1);
+        fetchGraduados({ q: busqueda, disponibilidad: nuevo, tecnologia: filtroTec, page: 1 });
+    };
+
+    const handleFiltroTec = (tec) => {
+        const nuevo = filtroTec === tec ? '' : tec;
+        setFiltroTec(nuevo);
+        setPage(1);
+        fetchGraduados({ q: busqueda, disponibilidad: filtroDisp, tecnologia: nuevo, page: 1 });
+    };
+
+    const limpiarTodo = () => {
+        setBusqueda('');
+        setFiltroDisp('');
+        setFiltroTec('');
+        setPage(1);
+        fetchGraduados({ q: '', disponibilidad: '', tecnologia: '', page: 1 });
+        if (inputRef.current) inputRef.current.value = '';
+    };
+
+    const irPagina = (pg) => {
+        setPage(pg);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        fetchGraduados({ page: pg });
+    };
+
+    const hayFiltros = busqueda || filtroDisp || filtroTec;
+
     const statsData = [
-        { value: graduados.length,  label: 'Graduados'     },
-        { value: disponibles,       label: 'Disponibles'   },
-        { value: totalTecs,         label: 'Tecnologías'   },
-        { value: conEspecialidades, label: 'Especializados' },
+        { value: stats.total,         label: 'Graduados'     },
+        { value: stats.disponibles,   label: 'Disponibles'   },
+        { value: stats.tecnologias,   label: 'Tecnologías'   },
+        { value: stats.especializados, label: 'Verificados'  },
     ];
 
     return (
         <>
+            <style>{`
+                @keyframes spin    { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
+                @keyframes fadeIn  { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
+                @keyframes shimmer { from { background-position:-200% center; } to { background-position:200% center; } }
+            `}</style>
+
             {/* ════════ HERO ════════ */}
             <header style={{
                 ...s.hero,
-                padding: isMobile ? '36px 16px 44px' : '56px 20px 64px',
+                padding: isMobile ? '32px 16px 36px' : '52px 20px 60px',
             }}>
                 <div style={s.heroBgImagen} />
                 <div style={s.heroBgOverlay} />
                 <Constellation />
-                <div style={{
-                    ...s.heroContent,
-                    maxWidth: isMobile ? '100%' : 740,
-                }}>
+
+                <div style={{ ...s.heroContent, maxWidth: isMobile ? '100%' : 740 }}>
                     <div style={{
                         ...s.heroBadge,
-                        fontSize: isMobile ? '0.68rem' : '0.77rem',
-                        padding: isMobile ? '4px 14px' : '5px 18px',
+                        fontSize: isMobile ? '0.67rem' : '0.75rem',
+                        padding:  isMobile ? '4px 12px' : '5px 18px',
                     }}>
                         Facultad de Informática y Electrónica · ESPOCH
                     </div>
 
                     <h1 style={{
                         ...s.heroTitulo,
-                        fontSize: isMobile ? '1.8rem' : isTablet ? '2.2rem' : '2.8rem',
+                        fontSize:     isMobile ? '1.7rem' : isTablet ? '2.1rem' : '2.6rem',
                         marginBottom: isMobile ? 10 : 14,
                     }}>
                         Encuentra Talento en<br />
@@ -409,80 +442,84 @@ const PublicHome = () => {
                     <div style={{
                         ...s.buscadorCard,
                         padding: isMobile ? '6px 6px 10px' : '8px 8px 12px',
-                        marginBottom: isMobile ? 20 : 32,
+                        marginBottom: isMobile ? 18 : 28,
                     }}>
                         <div style={s.buscadorFila}>
                             <FaSearch style={s.buscadorIco} />
                             <input
                                 ref={inputRef}
                                 type="text"
-                                placeholder={isMobile ? 'Buscar tecnología, nombre...' : 'Busca por tecnología, nombre, especialidad o ciudad...'}
-                                value={busqueda}
-                                onChange={e => setBusqueda(e.target.value)}
+                                placeholder={isMobile ? 'Buscar nombre o tecnología...' : 'Busca por nombre, tecnología o especialidad...'}
+                                defaultValue={busqueda}
+                                onChange={e => handleBusqueda(e.target.value)}
                                 style={{
                                     ...s.buscadorInput,
-                                    fontSize: isMobile ? '0.9rem' : '1rem',
+                                    fontSize: isMobile ? '0.88rem' : '0.98rem',
                                 }}
                                 autoComplete="off"
                             />
                             {busqueda && (
-                                <button style={s.buscadorLimpiar} onClick={() => { setBusqueda(''); inputRef.current?.focus(); }}>
+                                <button style={s.buscadorLimpiar} onClick={limpiarTodo}>
                                     <FaTimes />
                                 </button>
                             )}
                         </div>
 
-                        {/* Sugerencias: scroll horizontal en móvil */}
-                        <div style={{
-                            ...s.sugerencias,
-                            flexWrap: isMobile ? 'nowrap' : 'wrap',
-                            overflowX: isMobile ? 'auto' : 'visible',
-                            paddingBottom: isMobile ? 4 : 0,
-                            WebkitOverflowScrolling: 'touch',
-                            scrollbarWidth: 'none',
-                        }}>
-                            <span style={{
-                                ...s.sugLabel,
-                                flexShrink: 0,
-                                fontSize: isMobile ? '0.68rem' : '0.73rem',
+                        {/* Pills tecnologías — scroll horizontal en móvil */}
+                        {topTecnologias.length > 0 && (
+                            <div style={{
+                                ...s.sugerencias,
+                                flexWrap:            isMobile ? 'nowrap' : 'wrap',
+                                overflowX:           isMobile ? 'auto' : 'visible',
+                                paddingBottom:       isMobile ? 4 : 0,
+                                WebkitOverflowScrolling: 'touch',
+                                scrollbarWidth:      'none',
                             }}>
-                                Populares:
-                            </span>
-                            {topTecs.map(tag => (
-                                <button
-                                    key={tag}
-                                    style={{
-                                        ...s.sugTag,
-                                        flexShrink: 0,
-                                        fontSize: isMobile ? '0.68rem' : '0.73rem',
-                                        padding: isMobile ? '2px 9px' : '3px 12px',
-                                    }}
-                                    onClick={() => setBusqueda(tag)}
-                                >
-                                    {tag}
-                                </button>
-                            ))}
-                        </div>
+                                <span style={{ ...s.sugLabel, flexShrink: 0, fontSize: isMobile ? '0.67rem' : '0.72rem' }}>
+                                    Populares:
+                                </span>
+                                {topTecnologias.map(tag => (
+                                    <button
+                                        key={tag}
+                                        style={{
+                                            ...s.sugTag,
+                                            flexShrink:  0,
+                                            fontSize:    isMobile ? '0.67rem' : '0.72rem',
+                                            padding:     isMobile ? '2px 8px' : '3px 11px',
+                                            background:  filtroTec === tag ? 'var(--color-espoch-rojo)' : 'var(--color-tech-azul-claro)',
+                                            color:       filtroTec === tag ? 'white' : 'var(--color-tech-azul)',
+                                            border:      filtroTec === tag ? '1px solid var(--color-espoch-rojo)' : '1px solid #b8d4f5',
+                                            fontWeight:  filtroTec === tag ? 700 : 500,
+                                        }}
+                                        onClick={() => handleFiltroTec(tag)}
+                                    >
+                                        {tag}
+                                    </button>
+                                ))}
+                            </div>
+                        )}
                     </div>
 
-                    {/* Stats */}
+                    {/* Stats — grid 2x2 en móvil, fila en desktop */}
                     {isMobile ? (
                         <div style={{
                             display: 'grid',
                             gridTemplateColumns: '1fr 1fr',
-                            gap: '12px 0',
+                            gap: 0,
                             width: '100%',
                         }}>
                             {statsData.map((st, i) => (
-                                <React.Fragment key={st.label}>
-                                    <Counter value={st.value} label={st.label} />
-                                    {i % 2 === 0 && (
-                                        <div style={{
-                                            position: 'absolute',
-                                            display: 'none',
-                                        }} />
-                                    )}
-                                </React.Fragment>
+                                <div key={st.label} style={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    padding: '10px 8px',
+                                    borderRight:  i % 2 === 0 ? '1px solid rgba(255,255,255,0.15)' : 'none',
+                                    borderBottom: i < 2 ? '1px solid rgba(255,255,255,0.15)' : 'none',
+                                }}>
+                                    <span style={{ ...s.heroStatNum, fontSize: '1.6rem' }}>{fmtNum(st.value)}</span>
+                                    <span style={{ ...s.heroStatLabel, fontSize: '0.65rem' }}>{st.label}</span>
+                                </div>
                             ))}
                         </div>
                     ) : (
@@ -498,102 +535,129 @@ const PublicHome = () => {
                 </div>
             </header>
 
-            {/* ════════ GRID PERFILES ════════ */}
+            {/* ════════ CONTENIDO ════════ */}
             <div style={{
                 ...s.contenido,
-                padding: isMobile ? '20px 12px 40px' : '28px 20px 52px',
+                padding: isMobile ? '18px 12px 40px' : '24px 20px 52px',
             }}>
+
                 {/* Barra de filtros */}
                 <div style={{
                     ...s.filtrosBar,
                     flexDirection: isMobile ? 'column' : 'row',
-                    alignItems: isMobile ? 'flex-start' : 'center',
-                    gap: isMobile ? 10 : 10,
-                    marginBottom: isMobile ? 16 : 20,
+                    alignItems:    isMobile ? 'stretch' : 'center',
+                    gap:           10,
+                    marginBottom:  isMobile ? 14 : 18,
                 }}>
-                    <div style={{
-                        ...s.filtrosIzq,
-                        flexWrap: 'wrap',
-                        gap: isMobile ? 6 : 8,
-                    }}>
-                        <span style={s.filtrosLabel}>Filtrar:</span>
-                        {filtroOpciones.map(({ val, label, dot }) => (
+                    {/* Filtros disponibilidad */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                        <span style={{ ...s.filtrosLabel, display: 'flex', alignItems: 'center', gap: 5 }}>
+                            <FaSlidersH style={{ fontSize: '0.72rem' }} />
+                            Disponibilidad:
+                        </span>
+                        {[
+                            { val: 'disponible',    label: 'Disponibles', dot: '#2e7d32' },
+                            { val: 'no_disponible', label: 'Ocupados',    dot: '#f57f17' },
+                        ].map(({ val, label, dot }) => (
                             <button
                                 key={val}
                                 style={{
                                     ...s.chip,
                                     ...(filtroDisp === val ? s.chipActivo : {}),
-                                    fontSize: isMobile ? '0.74rem' : '0.8rem',
-                                    padding: isMobile ? '4px 10px' : '5px 14px',
+                                    fontSize: isMobile ? '0.73rem' : '0.78rem',
+                                    padding:  isMobile ? '4px 10px' : '5px 13px',
                                 }}
-                                onClick={() => setFiltroDisp(val)}
+                                onClick={() => handleFiltroDisp(val)}
                             >
-                                {dot && (
-                                    <span style={{
-                                        display: 'inline-block', width: 8, height: 8, borderRadius: '50%',
-                                        backgroundColor: filtroDisp === val ? 'white' : dot,
-                                        marginRight: 6, flexShrink: 0,
-                                    }} />
-                                )}
+                                <span style={{
+                                    display: 'inline-block', width: 7, height: 7, borderRadius: '50%',
+                                    backgroundColor: filtroDisp === val ? 'white' : dot,
+                                    marginRight: 5, flexShrink: 0,
+                                }} />
                                 {label}
                             </button>
                         ))}
                     </div>
-                    <span style={{
-                        ...s.filtrosDer,
-                        fontSize: isMobile ? '0.74rem' : '0.82rem',
-                    }}>
-                        {busqueda
-                            ? <>{graduadosFiltrados.length} resultado{graduadosFiltrados.length !== 1 ? 's' : ''} para "<strong>{busqueda}</strong>"</>
-                            : <>{graduados.length} perfil{graduados.length !== 1 ? 'es' : ''} registrado{graduados.length !== 1 ? 's' : ''}</>
-                        }
-                    </span>
+
+                    {/* Contador + limpiar */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginLeft: isMobile ? 0 : 'auto', flexWrap: 'wrap' }}>
+                        <span style={{ ...s.filtrosDer, fontSize: isMobile ? '0.73rem' : '0.8rem' }}>
+                            {cargando
+                                ? 'Buscando...'
+                                : busqueda
+                                    ? <><strong>{total}</strong> resultado{total !== 1 ? 's' : ''} para "<em>{busqueda}</em>"</>
+                                    : <><strong>{total}</strong> perfil{total !== 1 ? 'es' : ''} encontrado{total !== 1 ? 's' : ''}</>
+                            }
+                        </span>
+                        {hayFiltros && (
+                            <button onClick={limpiarTodo} style={s.btnLimpiarFiltros}>
+                                <FaTimes style={{ marginRight: 4, fontSize: '0.6rem' }} />
+                                Limpiar filtros
+                            </button>
+                        )}
+                    </div>
                 </div>
 
-                {cargando ? (
-                    <div style={s.cargando}>
-                        <FaSpinner style={{ fontSize: '2.2rem', color: 'var(--color-espoch-rojo)', animation: 'spin 1s linear infinite' }} />
-                        <p style={{ marginTop: 14, color: 'var(--color-texto-secundario)' }}>Cargando perfiles...</p>
+                {/* Filtro tecnología activo — chip visible */}
+                {filtroTec && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14, flexWrap: 'wrap' }}>
+                        <span style={{ fontSize: '0.74rem', color: '#6c757d', fontFamily: FONT }}>
+                            <FaFilter style={{ marginRight: 5, fontSize: '0.62rem' }} />
+                            Tecnología:
+                        </span>
+                        <span style={s.chipTecActivo}>
+                            {filtroTec}
+                            <button onClick={() => handleFiltroTec(filtroTec)} style={s.chipTecX}>
+                                <FaTimes style={{ fontSize: '0.55rem' }} />
+                            </button>
+                        </span>
                     </div>
-                ) : graduadosFiltrados.length === 0 ? (
+                )}
+
+                {/* Grid de perfiles */}
+                {cargando ? (
+                    <div style={{
+                        ...s.grid,
+                        gridTemplateColumns: isMobile ? '1fr' : isTablet ? 'repeat(2,1fr)' : 'repeat(auto-fill,minmax(280px,1fr))',
+                    }}>
+                        {Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)}
+                    </div>
+                ) : graduados.length === 0 ? (
                     <div style={s.vacio}>
-                        <FaGraduationCap style={{ fontSize: '3.5rem', color: '#dee2e6', marginBottom: 14 }} />
-                        <p style={{ fontWeight: 700, color: 'var(--color-texto-principal)', marginBottom: 4 }}>
-                            {busqueda ? 'Sin resultados para tu búsqueda' : 'No hay perfiles registrados aún'}
+                        <FaGraduationCap style={{ fontSize: '3rem', color: '#dee2e6', marginBottom: 12 }} />
+                        <p style={{ fontWeight: 700, color: 'var(--color-texto-principal)', marginBottom: 4, fontFamily: FONT, fontSize: '0.95rem' }}>
+                            {hayFiltros ? 'Sin resultados para estos filtros' : 'No hay perfiles registrados aún'}
                         </p>
-                        <p style={{ fontSize: '0.85rem', color: 'var(--color-texto-secundario)', marginBottom: 16 }}>
-                            {busqueda ? 'Prueba con otro término' : 'Pronto aparecerán los perfiles aquí'}
+                        <p style={{ fontSize: '0.82rem', color: 'var(--color-texto-secundario)', marginBottom: 16, fontFamily: FONT }}>
+                            {hayFiltros ? 'Prueba ajustando los filtros o limpiando la búsqueda' : 'Pronto aparecerán los perfiles aquí'}
                         </p>
-                        {busqueda && (
-                            <button style={s.btnLimpiarVacio} onClick={() => setBusqueda('')}>
-                                Limpiar búsqueda
+                        {hayFiltros && (
+                            <button style={s.btnLimpiarVacio} onClick={limpiarTodo}>
+                                Ver todos los perfiles
                             </button>
                         )}
                     </div>
                 ) : (
-                    <div style={{
-                        ...s.grid,
-                        gridTemplateColumns: isMobile
-                            ? '1fr'
-                            : isTablet
-                                ? 'repeat(2, 1fr)'
-                                : 'repeat(auto-fill, minmax(280px, 1fr))',
-                    }}>
-                        {graduadosFiltrados.map(g => (
-                            <TarjetaGraduado key={g._id} graduado={g} onContactar={setModalGraduado} />
-                        ))}
-                    </div>
+                    <>
+                        <div style={{
+                            ...s.grid,
+                            gridTemplateColumns: isMobile ? '1fr' : isTablet ? 'repeat(2,1fr)' : 'repeat(auto-fill,minmax(280px,1fr))',
+                        }}>
+                            {graduados.map(g => (
+                                <TarjetaGraduado key={g._id} graduado={g} />
+                            ))}
+                        </div>
+
+                        <Paginador page={page} pages={pages} onIr={irPagina} isMobile={isMobile} />
+
+                        {pages > 1 && (
+                            <p style={{ textAlign: 'center', marginTop: 10, fontSize: '0.72rem', color: '#adb5bd', fontFamily: FONT }}>
+                                Mostrando {((page - 1) * 20) + 1}–{Math.min(page * 20, total)} de {total} perfiles
+                            </p>
+                        )}
+                    </>
                 )}
             </div>
-
-            {modalGraduado && (
-                <ModalContacto graduado={modalGraduado} onCerrar={() => setModalGraduado(null)} />
-            )}
-
-            <style>{`
-                @keyframes spin   { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-                @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
-            `}</style>
         </>
     );
 };
@@ -606,81 +670,59 @@ const s = {
     heroBgImagen:   { position: 'absolute', inset: 0, backgroundImage: 'url("/img/EDIFICIO_FIE_LOGO.jpg")', backgroundSize: 'cover', backgroundPosition: 'center 35%', backgroundRepeat: 'no-repeat', filter: 'saturate(0.7) brightness(0.5) contrast(1.05)', zIndex: 0 },
     heroBgOverlay:  { position: 'absolute', inset: 0, background: 'linear-gradient(160deg, rgba(190,30,45,0.68) 0%, rgba(120,10,18,0.62) 40%, rgba(12,18,40,0.80) 100%)', zIndex: 1 },
     heroContent:    { margin: '0 auto', position: 'relative', zIndex: 2 },
-    heroBadge:      { display: 'inline-block', backgroundColor: 'rgba(255,255,255,0.11)', border: '1px solid rgba(255,255,255,0.28)', color: 'rgba(255,255,255,0.92)', fontWeight: 600, borderRadius: 20, marginBottom: 20, letterSpacing: '0.6px', fontFamily: FONT },
-    heroTitulo:     { color: '#FFFFFF', fontWeight: 900, margin: '0 0 14px', lineHeight: 1.15, fontFamily: FONT, textShadow: '0 2px 16px rgba(0,0,0,0.5)' },
+    heroBadge:      { display: 'inline-block', backgroundColor: 'rgba(255,255,255,0.11)', border: '1px solid rgba(255,255,255,0.28)', color: 'rgba(255,255,255,0.92)', fontWeight: 600, borderRadius: 20, marginBottom: 18, letterSpacing: '0.6px', fontFamily: FONT },
+    heroTitulo:     { color: '#FFFFFF', fontWeight: 900, margin: '0 0 12px', lineHeight: 1.15, fontFamily: FONT, textShadow: '0 2px 16px rgba(0,0,0,0.5)' },
     heroAcento:     { color: 'rgba(255,255,255,0.78)' },
-    heroSub:        { color: 'rgba(255,255,255,0.85)', fontSize: '1rem', lineHeight: 1.7, margin: '0 auto 32px', maxWidth: 560, fontFamily: FONT, textShadow: '0 1px 6px rgba(0,0,0,0.4)' },
+    heroSub:        { color: 'rgba(255,255,255,0.85)', fontSize: '0.96rem', lineHeight: 1.7, margin: '0 auto 28px', maxWidth: 520, fontFamily: FONT, textShadow: '0 1px 6px rgba(0,0,0,0.4)' },
     buscadorCard:   { backgroundColor: 'white', borderRadius: 14, boxShadow: '0 8px 40px rgba(0,0,0,0.38)' },
     buscadorFila:   { display: 'flex', alignItems: 'center', gap: 6, padding: '4px 8px' },
-    buscadorIco:    { color: 'var(--color-espoch-rojo)', fontSize: '1.15rem', flexShrink: 0, marginLeft: 4 },
+    buscadorIco:    { color: 'var(--color-espoch-rojo)', fontSize: '1.1rem', flexShrink: 0, marginLeft: 4 },
     buscadorInput:  { flex: 1, border: 'none', outline: 'none', color: 'var(--color-texto-principal)', padding: '10px 8px', fontFamily: FONT, backgroundColor: 'transparent' },
     buscadorLimpiar:{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-texto-secundario)', display: 'flex', alignItems: 'center', padding: 6 },
-    sugerencias:    { display: 'flex', alignItems: 'center', gap: 8, padding: '4px 16px 2px' },
+    sugerencias:    { display: 'flex', alignItems: 'center', gap: 7, padding: '4px 14px 2px' },
     sugLabel:       { color: 'var(--color-texto-secundario)', fontWeight: 600, fontFamily: FONT },
-    sugTag:         { backgroundColor: 'var(--color-tech-azul-claro)', color: 'var(--color-tech-azul)', border: '1px solid #b8d4f5', borderRadius: 20, cursor: 'pointer', fontWeight: 500, fontFamily: FONT },
+    sugTag:         { borderRadius: 20, cursor: 'pointer', fontFamily: FONT, transition: 'all 0.15s' },
     heroStats:      { display: 'flex', justifyContent: 'center', alignItems: 'center' },
-    heroStatItem:   { display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '0 22px' },
-    heroStatNum:    { color: 'white', fontSize: '1.9rem', fontWeight: 900, lineHeight: 1, display: 'block', fontFamily: FONT, textShadow: '0 2px 8px rgba(0,0,0,0.4)' },
-    heroStatLabel:  { color: 'rgba(255,255,255,0.62)', fontSize: '0.73rem', marginTop: 5, display: 'block', fontFamily: FONT },
-    heroStatDiv:    { width: 1, height: 36, backgroundColor: 'rgba(255,255,255,0.22)' },
+    heroStatItem:   { display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '0 20px' },
+    heroStatNum:    { color: 'white', fontSize: '1.85rem', fontWeight: 900, lineHeight: 1, display: 'block', fontFamily: FONT, textShadow: '0 2px 8px rgba(0,0,0,0.4)' },
+    heroStatLabel:  { color: 'rgba(255,255,255,0.62)', fontSize: '0.72rem', marginTop: 4, display: 'block', fontFamily: FONT },
+    heroStatDiv:    { width: 1, height: 32, backgroundColor: 'rgba(255,255,255,0.22)' },
     contenido:      { maxWidth: 1200, margin: '0 auto' },
     filtrosBar:     { display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' },
-    filtrosIzq:     { display: 'flex', alignItems: 'center' },
-    filtrosLabel:   { fontSize: '0.8rem', color: 'var(--color-texto-secundario)', fontWeight: 600, fontFamily: FONT, marginRight: 4 },
-    chip:           { display: 'inline-flex', alignItems: 'center', borderRadius: 20, border: '1px solid #dee2e6', backgroundColor: 'white', color: 'var(--color-texto-secundario)', cursor: 'pointer', fontWeight: 500, fontFamily: FONT },
+    filtrosLabel:   { fontSize: '0.78rem', color: 'var(--color-texto-secundario)', fontWeight: 600, fontFamily: FONT },
+    chip:           { display: 'inline-flex', alignItems: 'center', borderRadius: 20, border: '1px solid #dee2e6', backgroundColor: 'white', color: 'var(--color-texto-secundario)', cursor: 'pointer', fontWeight: 500, fontFamily: FONT, transition: 'all 0.15s' },
     chipActivo:     { backgroundColor: 'var(--color-espoch-rojo)', color: 'white', borderColor: 'var(--color-espoch-rojo)', fontWeight: 700 },
     filtrosDer:     { color: 'var(--color-texto-secundario)', fontFamily: FONT },
-    grid:           { display: 'grid', gap: 20, animation: 'fadeIn 0.3s' },
-    cargando:       { textAlign: 'center', padding: '70px 20px', display: 'flex', flexDirection: 'column', alignItems: 'center' },
-    vacio:          { textAlign: 'center', padding: '60px 20px' },
-    btnLimpiarVacio:{ padding: '9px 22px', backgroundColor: 'var(--color-espoch-rojo)', color: 'white', border: 'none', borderRadius: 7, cursor: 'pointer', fontWeight: 600, fontFamily: FONT },
+    btnLimpiarFiltros: { display: 'inline-flex', alignItems: 'center', padding: '4px 10px', backgroundColor: '#f8f9fa', border: '1px solid #dee2e6', borderRadius: 6, cursor: 'pointer', fontSize: '0.72rem', fontWeight: 600, color: 'var(--color-texto-secundario)', fontFamily: FONT },
+    chipTecActivo:  { display: 'inline-flex', alignItems: 'center', gap: 6, backgroundColor: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', borderRadius: 20, padding: '3px 10px', fontSize: '0.74rem', fontWeight: 600, fontFamily: FONT },
+    chipTecX:       { background: 'none', border: 'none', cursor: 'pointer', color: '#1d4ed8', display: 'flex', alignItems: 'center', padding: 0, marginLeft: 2 },
+    grid:           { display: 'grid', gap: 18, animation: 'fadeIn 0.3s' },
+    vacio:          { textAlign: 'center', padding: '52px 20px', display: 'flex', flexDirection: 'column', alignItems: 'center' },
+    btnLimpiarVacio:{ padding: '9px 20px', backgroundColor: 'var(--color-espoch-rojo)', color: 'white', border: 'none', borderRadius: 7, cursor: 'pointer', fontWeight: 600, fontFamily: FONT, fontSize: '0.84rem' },
+    pagBtn:         { minWidth: 34, height: 34, borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: '0.79rem', fontFamily: FONT, border: '1px solid #e9ecef', background: 'white', color: '#6c757d', padding: '0 8px', transition: 'all 0.15s' },
+    pagSep:         { fontSize: '0.8rem', color: '#adb5bd', padding: '0 3px', fontFamily: FONT },
 };
 
 const ts = {
-    card:        { backgroundColor: 'white', borderRadius: 12, padding: '18px', border: '1px solid #e9ecef', display: 'flex', flexDirection: 'column', gap: 10, animation: 'fadeIn 0.3s', fontFamily: FONT },
+    card:        { backgroundColor: 'white', borderRadius: 12, padding: '16px', border: '1px solid #e9ecef', display: 'flex', flexDirection: 'column', gap: 10, animation: 'fadeIn 0.3s', fontFamily: FONT },
     header:      { display: 'flex', gap: 12, alignItems: 'flex-start' },
     fotoWrap:    { width: 56, height: 56, borderRadius: '50%', overflow: 'hidden', border: '2px solid var(--color-espoch-rojo)', flexShrink: 0 },
     foto:        { width: '100%', height: '100%', objectFit: 'cover' },
     fotoIcon:    { fontSize: 56, color: '#dee2e6', display: 'block' },
     info:        { flex: 1, minWidth: 0 },
-    nombre:      { margin: '0 0 2px', fontSize: '0.95rem', fontWeight: 700, color: 'var(--color-texto-principal)', fontFamily: FONT },
-    subtitulo:   { margin: '0 0 2px', fontSize: '0.75rem', color: 'var(--color-espoch-rojo)', fontWeight: 600, fontFamily: FONT },
-    ciudad:      { margin: 0, fontSize: '0.73rem', color: 'var(--color-texto-secundario)', display: 'flex', alignItems: 'center', fontFamily: FONT },
-    badge:       { display: 'inline-flex', alignItems: 'center', padding: '3px 10px', borderRadius: 20, fontSize: '0.72rem', fontWeight: 600, alignSelf: 'flex-start', fontFamily: FONT },
-    bio:         { margin: 0, fontSize: '0.8rem', color: 'var(--color-texto-principal)', lineHeight: 1.55, display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden', fontFamily: FONT },
-    seccion:     { display: 'flex', flexDirection: 'column', gap: 6 },
-    secLabel:    { margin: 0, fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-texto-principal)', display: 'flex', alignItems: 'center', fontFamily: FONT },
+    nombre:      { margin: '0 0 2px', fontSize: '0.93rem', fontWeight: 700, color: 'var(--color-texto-principal)', fontFamily: FONT },
+    subtitulo:   { margin: '0 0 2px', fontSize: '0.73rem', color: 'var(--color-espoch-rojo)', fontWeight: 600, fontFamily: FONT },
+    ciudad:      { margin: 0, fontSize: '0.71rem', color: 'var(--color-texto-secundario)', display: 'flex', alignItems: 'center', fontFamily: FONT },
+    badge:       { display: 'inline-flex', alignItems: 'center', padding: '3px 10px', borderRadius: 20, fontSize: '0.71rem', fontWeight: 600, alignSelf: 'flex-start', fontFamily: FONT },
+    bio:         { margin: 0, fontSize: '0.79rem', color: 'var(--color-texto-principal)', lineHeight: 1.55, display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden', fontFamily: FONT },
+    seccion:     { display: 'flex', flexDirection: 'column', gap: 5 },
+    secLabel:    { margin: 0, fontSize: '0.73rem', fontWeight: 700, color: 'var(--color-texto-principal)', display: 'flex', alignItems: 'center', fontFamily: FONT },
     tagsWrap:    { display: 'flex', flexWrap: 'wrap', gap: 5 },
-    tag:         { backgroundColor: 'var(--tag-bg-azul)', color: 'var(--tag-text-azul)', padding: '2px 8px', borderRadius: 20, fontSize: '0.7rem', fontWeight: 500, border: '1px solid #bbdefb', fontFamily: FONT },
-    tagMas:      { backgroundColor: 'var(--color-fondo-web)', color: 'var(--color-texto-secundario)', padding: '2px 8px', borderRadius: 20, fontSize: '0.7rem', fontFamily: FONT },
-    tagEsp:      { backgroundColor: '#fce4ec', color: 'var(--color-espoch-rojo)', padding: '2px 8px', borderRadius: 20, fontSize: '0.7rem', fontWeight: 500, border: '1px solid #f8bbd0', fontFamily: FONT },
-    tarifa:      { margin: 0, fontSize: '0.82rem', color: 'var(--color-espoch-verde)', backgroundColor: '#e8f5e9', padding: '4px 10px', borderRadius: 6, display: 'inline-block', alignSelf: 'flex-start', border: '1px solid #c8e6c9', fontFamily: FONT },
+    tag:         { backgroundColor: 'var(--tag-bg-azul)', color: 'var(--tag-text-azul)', padding: '2px 8px', borderRadius: 20, fontSize: '0.68rem', fontWeight: 500, border: '1px solid #bbdefb', fontFamily: FONT },
+    tagMas:      { backgroundColor: 'var(--color-fondo-web)', color: 'var(--color-texto-secundario)', padding: '2px 8px', borderRadius: 20, fontSize: '0.68rem', fontFamily: FONT },
+    tagEsp:      { backgroundColor: '#fce4ec', color: 'var(--color-espoch-rojo)', padding: '2px 8px', borderRadius: 20, fontSize: '0.68rem', fontWeight: 500, border: '1px solid #f8bbd0', fontFamily: FONT },
     footerCard:  { marginTop: 'auto', display: 'flex', gap: 7 },
-    btnVerPerfil:{ flex: 1, padding: '8px 10px', backgroundColor: 'white', color: 'var(--color-espoch-rojo)', border: '1px solid var(--color-espoch-rojo)', borderRadius: 8, cursor: 'pointer', fontSize: '0.8rem', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: FONT },
-    btnContactar:{ flex: 2, padding: '8px 10px', backgroundColor: 'var(--color-espoch-rojo)', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: '0.8rem', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: FONT },
-};
-
-const ms = {
-    overlay:     { position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.55)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 16 },
-    modal:       { backgroundColor: 'white', borderRadius: 12, width: '100%', maxWidth: 460, maxHeight: '90vh', display: 'flex', flexDirection: 'column', boxShadow: '0 8px 32px rgba(0,0,0,0.22)', overflow: 'hidden' },
-    mHeader:     { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', padding: '18px 20px 14px', borderBottom: '2px solid var(--color-espoch-rojo)' },
-    titulo:      { margin: '0 0 4px', fontSize: '1rem', fontWeight: 700, color: 'var(--color-texto-principal)', fontFamily: FONT },
-    sub:         { margin: 0, fontSize: '0.76rem', color: 'var(--color-texto-secundario)', lineHeight: 1.5, fontFamily: FONT },
-    btnClose:    { background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-texto-secundario)', fontSize: '1rem', padding: 4, display: 'flex', alignItems: 'center' },
-    body:        { flex: 1, overflowY: 'auto', padding: '16px 20px' },
-    exitoWrap:   { display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '32px 24px', textAlign: 'center' },
-    chip:        { display: 'flex', alignItems: 'center', gap: 12, backgroundColor: 'var(--color-fondo-web)', border: '1px solid #e9ecef', borderRadius: 10, padding: '10px 14px', marginBottom: 14 },
-    chipFoto:    { width: 40, height: 40, borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--color-espoch-rojo)', flexShrink: 0 },
-    chipNombre:  { margin: '0 0 2px', fontWeight: 700, fontSize: '0.88rem', color: 'var(--color-texto-principal)', fontFamily: FONT },
-    chipSub:     { margin: 0, fontSize: '0.73rem', color: 'var(--color-texto-secundario)', fontFamily: FONT },
-    alerta:      { backgroundColor: '#ffebee', color: 'var(--estado-error)', padding: '8px 12px', borderRadius: 6, fontSize: '0.8rem', marginBottom: 12, display: 'flex', alignItems: 'center', border: '1px solid #ffcdd2' },
-    campo:       { display: 'flex', flexDirection: 'column', gap: 5, marginBottom: 12 },
-    lbl:         { fontSize: '0.78rem', fontWeight: 600, color: 'var(--color-texto-principal)', fontFamily: FONT },
-    inp:         { padding: '9px 12px', border: '1px solid #e9ecef', borderRadius: 6, fontSize: '0.85rem', color: 'var(--color-texto-principal)', outline: 'none', fontFamily: FONT, backgroundColor: 'var(--color-fondo-web)' },
-    aviso:       { fontSize: '0.74rem', color: 'var(--color-texto-secundario)', backgroundColor: 'var(--color-tech-azul-claro)', padding: '8px 12px', borderRadius: 6, margin: '4px 0 14px', lineHeight: 1.5 },
-    footerModal: { display: 'flex', justifyContent: 'flex-end', gap: 8, padding: '12px 20px', borderTop: '1px solid #e9ecef', backgroundColor: 'var(--color-fondo-web)' },
-    btnCancelar: { padding: '8px 16px', backgroundColor: 'transparent', border: '1px solid #dee2e6', borderRadius: 6, cursor: 'pointer', fontSize: '0.83rem', fontWeight: 600, color: 'var(--color-texto-secundario)', fontFamily: FONT },
-    btnPrincipal:{ padding: '8px 18px', backgroundColor: 'var(--color-espoch-rojo)', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontSize: '0.83rem', fontWeight: 700, display: 'flex', alignItems: 'center', marginTop: 16, fontFamily: FONT },
+    btnVerPerfil:{ flex: 1, padding: '8px 10px', backgroundColor: 'white', color: 'var(--color-espoch-rojo)', border: '1px solid var(--color-espoch-rojo)', borderRadius: 8, cursor: 'pointer', fontSize: '0.79rem', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: FONT, transition: 'all 0.15s' },
 };
 
 export default PublicHome;
