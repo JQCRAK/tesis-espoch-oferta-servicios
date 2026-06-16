@@ -1,4 +1,3 @@
-// src/pages/Login.jsx
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
@@ -19,7 +18,9 @@ const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:4000/api') + 
 const ofuscar = (obj) => btoa(unescape(encodeURIComponent(JSON.stringify(obj))));
 const desofuscar = (str) => JSON.parse(decodeURIComponent(escape(atob(str))));
 
-// ─── Hook responsive ─────────────────────────────────────────────────────────
+const esPasswordFuerte = (pwd) =>
+    /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/.test(pwd || '');
+
 const useWindowWidth = () => {
     const [width, setWidth] = useState(
         typeof window !== 'undefined' ? window.innerWidth : 1200
@@ -32,7 +33,6 @@ const useWindowWidth = () => {
     return width;
 };
 
-// ─── Input contraseña con ojito ───────────────────────────────────────────────
 const PasswordInput = ({ value, onChange, placeholder = 'Contraseña', name = 'password', required = true, minLength = 8 }) => {
     const [show, setShow] = useState(false);
     return (
@@ -57,7 +57,6 @@ const PasswordInput = ({ value, onChange, placeholder = 'Contraseña', name = 'p
     );
 };
 
-// ─── Campo con label ──────────────────────────────────────────────────────────
 const Campo = ({ label, children, required: req, extra }) => (
     <div style={s.campoWrapper}>
         <label style={s.campoLabel}>
@@ -68,7 +67,6 @@ const Campo = ({ label, children, required: req, extra }) => (
     </div>
 );
 
-// ─── Barra de progreso ────────────────────────────────────────────────────────
 const BarraProgreso = ({ paso, total, labelPaso }) => (
     <div style={{ marginBottom: 20 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
@@ -85,7 +83,6 @@ const BarraProgreso = ({ paso, total, labelPaso }) => (
     </div>
 );
 
-// ─── Uploader compacto de cédula ─────────────────────────────────────────────
 const ImageUploader = ({ label, required: req, preview, onChange, onQuitar, accept = 'image/jpeg,image/png,image/webp', inputRef, opcional }) => (
     <div style={{ marginBottom: 10 }}>
         <label style={{ ...s.campoLabel, marginBottom: 4 }}>
@@ -113,7 +110,6 @@ const ImageUploader = ({ label, required: req, preview, onChange, onQuitar, acce
     </div>
 );
 
-// ═════════════════════════════════════════════════════════════════════════════
 const Login = () => {
     const navigate = useNavigate();
     const location = useLocation();
@@ -131,6 +127,7 @@ const Login = () => {
     const [esperandoCodigo, setEsperandoCodigo] = useState(false);
     const [verificandoCodigo, setVerificandoCodigo] = useState(false);
     const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false);
+    const [confirmarSalida, setConfirmarSalida] = useState(false);
 
     const [cedFrontalFile, setCedFrontalFile] = useState(null);
     const [cedFrontalPreview, setCedFrontalPreview] = useState(null);
@@ -241,7 +238,6 @@ const Login = () => {
     fechaMaxima.setFullYear(fechaMaxima.getFullYear() - 20);
     const fechaMaximaStr = fechaMaxima.toISOString().split('T')[0];
 
-    // ═══ LOGIN ════════════════════════════════════════════════════════════════
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
@@ -265,7 +261,6 @@ const Login = () => {
         }
     };
 
-    // ═══ REGISTRO PASO 1 ══════════════════════════════════════════════════════
     const handlePaso1 = (e) => {
         e.preventDefault();
         setError('');
@@ -278,12 +273,14 @@ const Login = () => {
         setPasoRegistro(2);
     };
 
-    // ═══ FLUJO A ══════════════════════════════════════════════════════════════
     const handlePaso2A = (e) => {
         e.preventDefault();
         setError('');
         if (formData.emailInstitucional.trim() === formData.emailPersonal.trim()) {
             setError('El correo personal y el institucional NO pueden ser iguales.'); return;
+        }
+        if (!esPasswordFuerte(formData.password)) {
+            setError('La contraseña debe tener mínimo 8 caracteres, una mayúscula, un número y un carácter especial.'); return;
         }
         setMostrarConfirmacion(true);
     };
@@ -373,7 +370,6 @@ const Login = () => {
         } catch { setError('No se pudo reenviar el código.'); setCargando(false); }
     };
 
-    // ═══ FLUJO B ══════════════════════════════════════════════════════════════
     const handleImagenFrontal = (e) => {
         const f = e.target.files[0]; if (!f) return;
         setCedFrontalFile(f);
@@ -409,8 +405,8 @@ const Login = () => {
         if (!formData.emailPersonal || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.emailPersonal)) {
             setError('❌ Ingresa un correo personal válido (ej: tucorreo@gmail.com)'); return;
         }
-        if (!formData.password || formData.password.length < 8) {
-            setError('❌ La contraseña debe tener al menos 8 caracteres.'); return;
+        if (!esPasswordFuerte(formData.password)) {
+            setError('❌ La contraseña debe tener mínimo 8 caracteres, una mayúscula, un número y un carácter especial.'); return;
         }
         setVerificandoB(true); setVerificadoB(false); setDatosVerificadosB(null);
         try {
@@ -470,7 +466,6 @@ const Login = () => {
         }
     };
 
-    // ═══ RECUPERACIÓN ═════════════════════════════════════════════════════════
     const solicitarCodigoRecuperacion = async (e) => {
         e.preventDefault();
         setCargando(true); setError('');
@@ -492,7 +487,7 @@ const Login = () => {
         }
         if (!formData.nuevaPassword) { setError('Ingresa tu nueva contraseña.'); return; }
         if (formData.nuevaPassword !== formData.confirmarPassword) { setError('Las contraseñas no coinciden.'); return; }
-        if (!/^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/.test(formData.nuevaPassword)) {
+        if (!esPasswordFuerte(formData.nuevaPassword)) {
             setError('La contraseña debe tener mínimo 8 caracteres, una mayúscula, un número y un carácter especial.'); return;
         }
         setCargando(true); setError('');
@@ -529,6 +524,7 @@ const Login = () => {
         setEsperandoCodigo(false); setVerificandoCodigo(false);
         setMostrarConfirmacion(false); setMostrarRecuperacion(false);
         setEsperandoCodigoRec(false); setVerificandoCodigoRec(false);
+        setConfirmarSalida(false);
         setError(''); setTiempoRestante(0);
         setCodigoIngresado(''); setCodigoRecIngresado('');
         setEmailRecuperacionIngresado(''); setPasoRegistro(1);
@@ -547,6 +543,16 @@ const Login = () => {
         setModo('login');
     };
 
+    const ejecutarSalidaCodigo = async () => {
+        const inst = formData.emailInstitucional;
+        if (inst) {
+            try {
+                await axios.post(`${API_URL}/cancelar-verificacion-pendiente`, { emailInstitucional: inst });
+            } catch { }
+        }
+        volverAlInicio();
+    };
+
     const lateral = textoLateral();
 
     const labelPaso = () => {
@@ -556,10 +562,6 @@ const Login = () => {
     };
 
     const totalPasos = 2;
-
-    // ── Estilos responsive dinámicos ─────────────────────────────────────────
-    // En móvil: layout de 1 columna, sin lado imagen (se muestra banner compacto arriba)
-    // En tablet/desktop: layout 2 columnas original
 
     const contenedorPadreStyle = isMobile
         ? {
@@ -572,7 +574,6 @@ const Login = () => {
         }
         : {
             ...s.contenedorPadre,
-            // en tablet reducimos el lado imagen
             gridTemplateColumns: isTablet ? '38% 1fr' : undefined,
         };
 
@@ -595,22 +596,14 @@ const Login = () => {
         ? { width: '100%', maxWidth: '100%' }
         : { ...s.contenedorForm, maxWidth: isTablet ? '380px' : '420px' };
 
-    // filaDoble: en móvil se convierte en columna
-    const filaDobleStyle = isMobile
-        ? { display: 'flex', flexDirection: 'column', gap: 0 }
-        : s.filaDoble;
-
-    // Botones de flujo: en móvil apilados
     const flujoOpcionesStyle = isMobile
         ? { display: 'flex', flexDirection: 'column', gap: 8 }
         : s.flujoOpciones;
 
-    // Grid cédulas: en móvil 1 col, en desktop 2 col
     const gridCedulasStyle = isMobile
         ? { display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 10 }
         : { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 10 };
 
-    // ─── Banner móvil superior (reemplaza el lado imagen) ─────────────────────
     const BannerMovil = () => (
         <div style={{
             background: `linear-gradient(135deg, rgba(190,30,45,0.92) 0%, rgba(120,10,18,0.95) 100%), url("${imagenActual()}")`,
@@ -640,14 +633,31 @@ const Login = () => {
         </div>
     );
 
-    // ══════════════════════════════════════════════════════════════════════════
     return (
         <div style={contenedorPadreStyle}>
 
-            {/* ══ BANNER MÓVIL (solo en mobile) ══ */}
+            {confirmarSalida && (
+                <div style={s.overlaySalida}>
+                    <div style={s.overlayCard}>
+                        <FaExclamationTriangle style={{ fontSize: '1.9rem', color: '#f59e0b', marginBottom: 10 }} />
+                        <h3 style={{ margin: '0 0 8px', fontSize: '1.05rem', fontWeight: 800, color: '#1a1a1a' }}>¿Salir de la verificación?</h3>
+                        <p style={{ margin: '0 0 16px', fontSize: '0.85rem', color: '#6b7280', lineHeight: 1.5 }}>
+                            Si sales ahora se descartará tu registro pendiente y deberás solicitar un nuevo código si quieres volver a intentarlo.
+                        </p>
+                        <div style={{ display: 'flex', gap: 8 }}>
+                            <button onClick={() => setConfirmarSalida(false)} style={{ ...s.btnCancelar, flex: 1 }}>
+                                Cancelar
+                            </button>
+                            <button onClick={ejecutarSalidaCodigo} style={{ ...s.btnPrincipal, flex: 1, marginBottom: 0 }} disabled={cargando}>
+                                {cargando ? <><FaSpinner style={s.spin} /></> : 'Sí, salir'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {isMobile && <BannerMovil />}
 
-            {/* ══ LADO IZQUIERDO — solo en tablet/desktop ══ */}
             {!isMobile && (
                 <div style={{ ...s.ladoImagen, backgroundImage: `url("${imagenActual()}")` }}>
                     <div style={s.capaOscura}>
@@ -670,21 +680,18 @@ const Login = () => {
                 </div>
             )}
 
-            {/* ══ LADO DERECHO — formulario ══ */}
             <div style={ladoFormularioStyle}>
                 <div style={contenedorFormStyle}>
 
-                    {/* ── ALERTA ── */}
                     {error && (
-                        <div id="login-error-banner" style={error.includes('') ? s.alertaExito : s.alertaError}>
-                            {error.includes('')
+                        <div id="login-error-banner" style={error.includes('exitosamente') ? s.alertaExito : s.alertaError}>
+                            {error.includes('exitosamente')
                                 ? <FaCheckCircle style={{ marginRight: 8, flexShrink: 0 }} />
                                 : <FaExclamationTriangle style={{ marginRight: 8, flexShrink: 0, marginTop: 1 }} />}
                             <span>{error}</span>
                         </div>
                     )}
 
-                    {/* ════ RECUPERACIÓN ════════════════════════════════════════════ */}
                     {mostrarRecuperacion ? (
                         <div>
                             <div style={s.encabezado}>
@@ -756,7 +763,6 @@ const Login = () => {
                             )}
                         </div>
 
-                        /* ════ ESPERANDO CÓDIGO (Flujo A) ══════════════════════════════ */
                     ) : esperandoCodigo && !verificandoCodigo ? (
                         <div style={{ textAlign: 'center' }}>
                             <div style={s.encabezado}>
@@ -775,7 +781,7 @@ const Login = () => {
                                     <FaRedo style={{ marginRight: 6 }} />
                                     {tiempoRestante > 0 ? `Reenviar en ${tiempoRestante}s` : 'Reenviar código'}
                                 </button>
-                                <button onClick={volverAlInicio} style={s.btnTexto}>Volver al inicio</button>
+                                <button onClick={() => setConfirmarSalida(true)} style={s.btnTexto}>Volver al inicio</button>
                             </div>
                         </div>
 
@@ -811,7 +817,6 @@ const Login = () => {
                                 <p style={{ color: 'var(--color-texto-secundario)', fontSize: '0.84rem', margin: 0 }}>Revisa que tus datos sean correctos antes de continuar.</p>
                             </div>
                             <div style={s.resumen}>
-                                {/* En móvil: 1 columna, en desktop: 2 columnas */}
                                 <div style={isMobile
                                     ? { display: 'flex', flexDirection: 'column', gap: 4 }
                                     : s.resumenGrid
@@ -845,7 +850,6 @@ const Login = () => {
                         </div>
 
                     ) : modo === 'login' ? (
-                        /* ════ LOGIN ════════════════════════════════════════════════ */
                         <>
                             <div style={s.encabezado}>
                                 <img src="/img/ESPOCH_LOGO.png" alt="ESPOCH" style={s.logo}
@@ -900,7 +904,6 @@ const Login = () => {
                             </div>
 
                             <form onSubmit={handlePaso1}>
-                                {/* Fila: Nombres + Apellidos */}
                                 <div style={gridForm2col}>
                                     <Campo label="Nombres" required>
                                         <div style={s.inputGroupIconFull}>
@@ -916,7 +919,6 @@ const Login = () => {
                                     </Campo>
                                 </div>
 
-                                {/* Fila: Cédula + Celular */}
                                 <div style={gridForm2col}>
                                     <Campo label="Cédula" required>
                                         <div style={s.inputGroupIconFull}>
@@ -936,7 +938,6 @@ const Login = () => {
                                     </Campo>
                                 </div>
 
-                                {/* Fila: Género + Discapacidad */}
                                 <div style={gridForm2col}>
                                     <Campo label="Género" required>
                                         <div style={s.inputGroupIconFull}>
@@ -966,7 +967,6 @@ const Login = () => {
                                     </Campo>
                                 </div>
 
-                                {/* Fecha nacimiento — ancho completo */}
                                 <Campo label="Fecha de nacimiento" required>
                                     <div style={s.inputGroupIconFull}>
                                         <FaCalendarAlt style={s.ico} />
@@ -977,7 +977,6 @@ const Login = () => {
                                     </div>
                                 </Campo>
 
-                                {/* Selector flujo */}
                                 <div style={s.flujoSelector}>
                                     <p style={s.flujoSelectorLabel}>
                                         <FaUniversity style={{ marginRight: 6, color: 'var(--color-espoch-rojo)' }} />
@@ -1034,7 +1033,6 @@ const Login = () => {
                         </>
 
                     ) : flujoRegistro === 'conCorreo' ? (
-                        /* ════ FLUJO A — PASO 2 ══════════════════════════════════════ */
                         <>
                             <div style={s.encabezado}>
                                 <h2 style={s.titulo}>Detalles de la cuenta</h2>
@@ -1069,8 +1067,9 @@ const Login = () => {
                                     <div style={s.checklistPass}>
                                         <p style={s.checklistTitulo}>La contraseña debe contener:</p>
                                         <p style={checkItem(formData.password.length >= 8)}>✓ Al menos 8 caracteres</p>
-                                        <p style={checkItem(/[A-Z]/.test(formData.password) && /[a-z]/.test(formData.password))}>✓ Una letra mayúscula y una minúscula</p>
-                                        <p style={checkItem(/[0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(formData.password))}>✓ Un número o símbolo especial</p>
+                                        <p style={checkItem(/[A-Z]/.test(formData.password))}>✓ Una letra mayúscula</p>
+                                        <p style={checkItem(/[0-9]/.test(formData.password))}>✓ Un número</p>
+                                        <p style={checkItem(/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(formData.password))}>✓ Un carácter especial</p>
                                     </div>
                                 </Campo>
                                 <div style={{
@@ -1097,14 +1096,12 @@ const Login = () => {
                         </>
 
                     ) : (
-                        /* ════ FLUJO B — PASO 2 ══════════════════════════════════════ */
                         <>
                             <div style={s.encabezado}>
                                 <h2 style={s.titulo}>Verificación de identidad</h2>
                             </div>
                             <BarraProgreso paso={2} total={totalPasos} labelPaso={labelPaso()} />
 
-                            {/* Fotos cédula */}
                             <div style={gridCedulasStyle}>
                                 <ImageUploader
                                     label="Cédula — frente"
@@ -1155,12 +1152,12 @@ const Login = () => {
                                 <div style={s.checklistPass}>
                                     <p style={s.checklistTitulo}>La contraseña debe contener:</p>
                                     <p style={checkItem(formData.password.length >= 8)}>✓ Al menos 8 caracteres</p>
-                                    <p style={checkItem(/[A-Z]/.test(formData.password) && /[a-z]/.test(formData.password))}>✓ Una letra mayúscula y una minúscula</p>
-                                    <p style={checkItem(/[0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(formData.password))}>✓ Un número o símbolo especial</p>
+                                    <p style={checkItem(/[A-Z]/.test(formData.password))}>✓ Una letra mayúscula</p>
+                                    <p style={checkItem(/[0-9]/.test(formData.password))}>✓ Un número</p>
+                                    <p style={checkItem(/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(formData.password))}>✓ Un carácter especial</p>
                                 </div>
                             </Campo>
 
-                            {/* Botones */}
                             <div style={{
                                 display: 'flex',
                                 gap: 8,
@@ -1211,11 +1208,8 @@ const gridForm2col = {
     gap: 10,
     alignItems: 'start',
 };
-// ══════════════════════════════════════════════════════════════════════════════
-// ESTILOS BASE (sin cambios en la lógica original)
-// ══════════════════════════════════════════════════════════════════════════════
+
 const s = {
-    // Layout principal (tablet/desktop — en mobile se sobreescribe inline)
     contenedorPadre: {
         display: 'flex',
         height: '100vh',
@@ -1223,7 +1217,6 @@ const s = {
         overflow: 'hidden',
         fontFamily: "'Segoe UI', Roboto, 'Helvetica Neue', sans-serif",
     },
-
     inputGroupIconFull: {
         display: 'flex',
         alignItems: 'center',
@@ -1236,8 +1229,6 @@ const s = {
         height: 44,
         boxSizing: 'border-box',
     },
-
-    // Lado imagen (tablet/desktop)
     ladoImagen: {
         flex: '0 0 42%',
         backgroundSize: 'cover',
@@ -1264,7 +1255,6 @@ const s = {
         borderRadius: 8, color: 'white', cursor: 'pointer',
         fontSize: '0.78rem', fontWeight: 600, backdropFilter: 'blur(4px)',
     },
-    // Botón volver en banner móvil
     btnVolverPublicoMovil: {
         display: 'flex', alignItems: 'center',
         padding: '6px 12px',
@@ -1278,8 +1268,6 @@ const s = {
     logoLateralText: { fontSize: '0.9rem', fontWeight: 700, color: 'white', letterSpacing: '-0.01em' },
     heroTitulo: { fontSize: '2rem', fontWeight: 800, margin: '0 0 14px', lineHeight: 1.2, letterSpacing: '-0.02em' },
     heroSub: { fontSize: '0.9rem', lineHeight: 1.65, margin: 0, color: 'rgba(255,255,255,0.82)' },
-
-    // Lado formulario (tablet/desktop)
     ladoFormulario: {
         flex: 1,
         backgroundColor: '#ffffff',
@@ -1290,13 +1278,11 @@ const s = {
         overflowY: 'auto',
     },
     contenedorForm: { width: '100%', maxWidth: '420px' },
-
     encabezado: { marginBottom: 20 },
     logo: { width: 80, height: 'auto', display: 'block', margin: '0 auto 16px', objectFit: 'contain' },
     titulo: { color: '#1a1a1a', margin: '0 0 4px', fontSize: '1.6rem', fontWeight: 800, letterSpacing: '-0.02em' },
     subtitulo: { color: '#6b7280', margin: 0, fontSize: '0.82rem' },
     subTituloSeccion: { color: '#1a1a1a', margin: '0 0 16px', fontSize: '1.1rem', fontWeight: 700 },
-
     alertaError: {
         display: 'flex', alignItems: 'flex-start',
         backgroundColor: '#fef2f2', color: '#dc2626',
@@ -1321,17 +1307,13 @@ const s = {
         borderRadius: 7, padding: '10px 12px', fontSize: '0.74rem',
         color: '#6b7280', marginTop: 16, lineHeight: 1.6, gap: 8,
     },
-
     campoWrapper: { marginBottom: 14 },
     campoLabel: {
         display: 'block', fontSize: '0.78rem', fontWeight: 600,
         color: '#374151', marginBottom: 5, letterSpacing: '0.01em',
     },
     campoExtra: { marginLeft: 8, fontSize: '0.7rem', color: '#16a34a', fontWeight: 600 },
-
-    // filaDoble: en desktop 2 col, en mobile se sobreescribe a column
     filaDoble: { display: 'flex', gap: 10 },
-
     inputGroup: {
         flex: 1, backgroundColor: 'white', borderRadius: 8,
         padding: '10px 12px', border: '1.5px solid #e5e7eb',
@@ -1379,7 +1361,6 @@ const s = {
         fontSize: '0.72rem', color: '#6b7280', paddingLeft: 2,
         marginTop: 4, lineHeight: 1.5, display: 'flex', alignItems: 'center', gap: 4,
     },
-
     btnPrincipal: {
         width: '100%', padding: '12px',
         backgroundColor: '#be1e2d', color: 'white',
@@ -1426,8 +1407,6 @@ const s = {
         margin: '0 auto 16px',
     },
     spin: { animation: 'spin 1s linear infinite', flexShrink: 0 },
-
-    // Selector flujo
     flujoSelector: {
         backgroundColor: '#f8fafc', border: '1px solid #e2e8f0',
         borderRadius: 10, padding: '12px 14px', marginBottom: 12,
@@ -1436,7 +1415,6 @@ const s = {
         margin: '0 0 10px', fontSize: '0.82rem', fontWeight: 600,
         color: '#1e293b', display: 'flex', alignItems: 'center',
     },
-    // flujoOpciones: en mobile se sobreescribe a column
     flujoOpciones: { display: 'flex', gap: 8 },
     flujoBtn: {
         flex: 1, padding: '9px 12px', borderRadius: 8,
@@ -1447,8 +1425,6 @@ const s = {
     },
     flujoBtnActivo: { backgroundColor: '#dcfce7', borderColor: '#16a34a', color: '#15803d' },
     flujoBtnActivoB: { backgroundColor: '#dbeafe', borderColor: '#2563eb', color: '#1d4ed8' },
-
-    // Imágenes cédula
     uploadZoneCompacta: {
         border: '1.5px dashed #d1d5db', borderRadius: 7, padding: '9px 12px',
         cursor: 'pointer', backgroundColor: '#fafafa',
@@ -1462,6 +1438,17 @@ const s = {
         padding: '2px 7px', backgroundColor: 'rgba(0,0,0,0.6)',
         color: 'white', border: 'none', borderRadius: 4,
         cursor: 'pointer', fontSize: '0.67rem', fontWeight: 600,
+    },
+    overlaySalida: {
+        position: 'fixed', inset: 0, zIndex: 1000,
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        padding: 20,
+    },
+    overlayCard: {
+        backgroundColor: 'white', borderRadius: 14, padding: '24px 22px',
+        maxWidth: 380, width: '100%', textAlign: 'center',
+        boxShadow: '0 20px 50px rgba(0,0,0,0.25)',
     },
 };
 
