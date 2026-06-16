@@ -6,12 +6,11 @@ const Tesis            = require('../models/Tesis');
 const TendenciaSemanal = require('../models/TendenciaSemanal');
 const { CATALOGO }     = require('./tendenciaController');
 
-// ── Rate limiting manual por IP (sin dependencias externas) ──
+// ── Rate limiting manual por IP ──
 const intentosPorIP = new Map();
-const RATE_VENTANA  = 60 * 60 * 1000; // 1 hora
-const RATE_LIMITE   = 10;             // máx 10 solicitudes por hora por IP
+const RATE_VENTANA  = 60 * 60 * 1000;
+const RATE_LIMITE   = 10;
 
-// ─────────────────────────────────────────────
 function getSemanaISO(date = new Date()) {
     const d      = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
     const dayNum = d.getUTCDay() || 7;
@@ -27,37 +26,73 @@ function elegirCategoriaPorSemana(semana) {
 }
 
 // ═══════════════════════════════════════════════════════════
+// GET /api/publico/stats
+// Devuelve estadísticas generales del portal en una sola llamada
+// ═══════════════════════════════════════════════════════════
+exports.getStats = async (req, res) => {
+    try {
+        // Graduados con tesis verificada y perfil público
+        const graduadosValidos = await Graduado.find({
+            perfilPublico:   true,
+            tesisVerificada: true,
+        }).select('_id tecnologias disponibilidad').lean();
+
+        const idsValidos = graduadosValidos.map(g => g._id);
+
+        // Total tecnologías únicas
+        const tecSet = new Set();
+        graduadosValidos.forEach(g =>
+            (g.tecnologias || []).forEach(t => {
+                if (t.trim()) tecSet.add(t.trim().toLowerCase());
+            })
+        );
+
+        // Disponibles
+        const disponibles = graduadosValidos.filter(
+            g => g.disponibilidad === 'disponible'
+        ).length;
+
+        // Total proyectos activos de graduados válidos
+        const totalProyectos = await Proyecto.countDocuments({
+            graduado: { $in: idsValidos },
+            activo:   true,
+        });
+
+        res.json({
+            totalGraduados:   graduadosValidos.length,
+            disponibles,
+            totalTecnologias: tecSet.size,
+            totalProyectos,
+        });
+    } catch (error) {
+        console.error('Error getStats:', error);
+        res.status(500).json({ msg: 'Error al obtener estadísticas.' });
+    }
+};
+
+// ═══════════════════════════════════════════════════════════
 // GET /api/publico/graduados
-// Query params:
-//   page         = número de página (default 1)
-//   limit        = resultados por página (default 20)
-//   q            = búsqueda por nombre
-//   disponibilidad = 'disponible' | 'no_disponible'
-//   tecnologia   = string (filtra si contiene esa tecnología)
-//   especialidad = string (filtra por afinidades[].categoria)
 // ═══════════════════════════════════════════════════════════
 exports.listarGraduadosPublicos = async (req, res) => {
     try {
         const {
-            page          = '1',
-            limit         = '20',
-            q             = '',
+            page           = '1',
+            limit          = '20',
+            q              = '',
             disponibilidad = '',
-            tecnologia    = '',
-            especialidad  = '',
+            tecnologia     = '',
+            especialidad   = '',
         } = req.query;
 
         const LIMIT  = Math.min(Math.max(parseInt(limit) || 20, 1), 50);
         const pagina = Math.max(parseInt(page) || 1, 1);
         const skip   = (pagina - 1) * LIMIT;
 
-        // ── Construir filtro base ──────────────────────────────
         const filtro = {
             perfilPublico:   true,
             tesisVerificada: true,
         };
 
-        // Búsqueda por nombre
         if (q.trim()) {
             const rx = { $regex: q.trim(), $options: 'i' };
             filtro.$or = [
@@ -66,22 +101,18 @@ exports.listarGraduadosPublicos = async (req, res) => {
             ];
         }
 
-        // Filtro disponibilidad
         if (disponibilidad && ['disponible', 'no_disponible'].includes(disponibilidad)) {
             filtro.disponibilidad = disponibilidad;
         }
 
-        // Filtro por tecnología
         if (tecnologia.trim()) {
             filtro.tecnologias = { $regex: tecnologia.trim(), $options: 'i' };
         }
 
-        // Filtro por especialidad (campo afinidades[].categoria)
         if (especialidad.trim()) {
             filtro['afinidades.categoria'] = { $regex: especialidad.trim(), $options: 'i' };
         }
 
-        // ── Ejecutar consulta con paginación ──────────────────
         const [graduados, total] = await Promise.all([
             Graduado.find(filtro)
                 .select('nombres apellidos fotoPerfil bio tecnologias afinidades habilidadesBlandas disponibilidad ciudad anioGraduacion')
@@ -92,8 +123,7 @@ exports.listarGraduadosPublicos = async (req, res) => {
             Graduado.countDocuments(filtro),
         ]);
 
-        // ── Calcular top tecnologías para los filtros rápidos ──
-        // Solo en la primera página sin filtros activos para no sobrecargar
+        // Top tecnologías solo en página 1 sin filtros
         let topTecnologias = [];
         if (pagina === 1 && !q && !tecnologia && !especialidad && !disponibilidad) {
             const todos = await Graduado.find({
@@ -104,7 +134,7 @@ exports.listarGraduadosPublicos = async (req, res) => {
             todos.forEach(g => (g.tecnologias || []).forEach(t => {
                 const k = t.trim().toLowerCase();
                 if (!k) return;
-                freq[k] = (freq[k] || { nombre: t.trim(), count: 0 });
+                if (!freq[k]) freq[k] = { nombre: t.trim(), count: 0 };
                 freq[k].count++;
             }));
             topTecnologias = Object.values(freq)
@@ -113,13 +143,11 @@ exports.listarGraduadosPublicos = async (req, res) => {
                 .map(t => t.nombre);
         }
 
-        const pages = Math.ceil(total / LIMIT) || 1;
-
         res.json({
             graduados,
             total,
             page:  pagina,
-            pages,
+            pages: Math.ceil(total / LIMIT) || 1,
             topTecnologias,
         });
     } catch (error) {
@@ -195,10 +223,8 @@ exports.listarProyectosPublicos = async (req, res) => {
 
         if (graduadosValidos.length === 0) {
             return res.json({
-                proyectos:       [],
-                tendencia:       tendenciaResumen(tendencia, semana, anio),
-                pillsTecnologia: [],
-                total: 0, page: pagina, pages: 0,
+                proyectos: [], tendencia: tendenciaResumen(tendencia, semana, anio),
+                pillsTecnologia: [], total: 0, page: pagina, pages: 0,
             });
         }
 
@@ -227,16 +253,15 @@ exports.listarProyectosPublicos = async (req, res) => {
             .lean();
 
         if (busqueda) {
-            const rxBusq        = new RegExp(busqueda, 'i');
-            const idsYaPasaron  = new Set(proyectosRaw.map(p => p._id.toString()));
+            const rxBusq       = new RegExp(busqueda, 'i');
+            const idsYaPasaron = new Set(proyectosRaw.map(p => p._id.toString()));
             const idsGradConEsp = graduadosValidos
                 .filter(g => rxBusq.test(g.afinidades?.[0]?.categoria || ''))
                 .map(g => g._id);
 
             if (idsGradConEsp.length > 0) {
                 const extraProys = await Proyecto.find({
-                    graduado: { $in: idsGradConEsp },
-                    activo:   true,
+                    graduado: { $in: idsGradConEsp }, activo: true,
                     _id:      { $nin: [...idsYaPasaron] },
                 })
                 .select('titulo descripcion tecnologias urlRepositorio imagen fechaRealizacion graduado')
@@ -249,12 +274,10 @@ exports.listarProyectosPublicos = async (req, res) => {
         let usandoFallback = false;
         if (proyectosRaw.length === 0 && todos !== 'true' && !busqueda && !techFiltro) {
             usandoFallback = true;
-            proyectosRaw   = await Proyecto.find({
-                graduado: { $in: idsValidos }, activo: true,
-            })
-            .select('titulo descripcion tecnologias urlRepositorio imagen fechaRealizacion graduado')
-            .sort({ fechaRealizacion: -1 })
-            .lean();
+            proyectosRaw   = await Proyecto.find({ graduado: { $in: idsValidos }, activo: true })
+                .select('titulo descripcion tecnologias urlRepositorio imagen fechaRealizacion graduado')
+                .sort({ fechaRealizacion: -1 })
+                .lean();
         }
 
         const pillsTecnologia = calcularPills(proyectosRaw, tendencia.keywords || []);
@@ -267,25 +290,17 @@ exports.listarProyectosPublicos = async (req, res) => {
             return {
                 ...p,
                 graduado: g ? {
-                    _id:             g._id,
-                    nombres:         g.nombres,
-                    apellidos:       g.apellidos,
-                    fotoPerfil:      g.fotoPerfil,
-                    ciudad:          g.ciudad,
-                    anioGraduacion:  g.anioGraduacion,
+                    _id: g._id, nombres: g.nombres, apellidos: g.apellidos,
+                    fotoPerfil: g.fotoPerfil, ciudad: g.ciudad,
+                    anioGraduacion: g.anioGraduacion,
                     especialidadTop: g.afinidades?.[0]?.categoria || null,
                 } : null,
             };
         });
 
         res.json({
-            proyectos,
-            tendencia:       tendenciaResumen(tendencia, semana, anio),
-            pillsTecnologia,
-            total,
-            page:  pagina,
-            pages,
-            usandoFallback,
+            proyectos, tendencia: tendenciaResumen(tendencia, semana, anio),
+            pillsTecnologia, total, page: pagina, pages, usandoFallback,
         });
     } catch (error) {
         console.error('Error listarProyectosPublicos:', error);
@@ -293,52 +308,37 @@ exports.listarProyectosPublicos = async (req, res) => {
     }
 };
 
-// ─────────────────────────────────────────────
-// HELPERS privados
-// ─────────────────────────────────────────────
 function tendenciaResumen(t, semana, anio) {
     return {
-        categoria:   t.categoria,
-        descripcion: t.descripcion,
-        color:       t.color,
-        keywords:    t.keywords,
-        modoManual:  t.modoManual,
-        semana,
-        anio,
+        categoria: t.categoria, descripcion: t.descripcion,
+        color: t.color, keywords: t.keywords,
+        modoManual: t.modoManual, semana, anio,
     };
 }
 
 function calcularPills(proyectos, keywordsTendencia) {
     if (!keywordsTendencia.length) return [];
-
     const techReales = new Set();
     proyectos.forEach(p => (p.tecnologias || []).forEach(t => techReales.add(t)));
-
     const pills = [];
     for (const kw of keywordsTendencia) {
         if (pills.length >= 5) break;
         const rx = new RegExp(`^${kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i');
         for (const tech of techReales) {
-            if (rx.test(tech) && !pills.includes(tech)) {
-                pills.push(tech);
-                break;
-            }
+            if (rx.test(tech) && !pills.includes(tech)) { pills.push(tech); break; }
         }
     }
-
     if (pills.length < 5) {
         for (const kw of keywordsTendencia) {
             if (pills.length >= 5) break;
-            const rxParcial = new RegExp(kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+            const rxP = new RegExp(kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
             for (const tech of techReales) {
-                if (rxParcial.test(tech) && !pills.some(p => p.toLowerCase() === tech.toLowerCase())) {
-                    pills.push(tech);
-                    break;
+                if (rxP.test(tech) && !pills.some(p => p.toLowerCase() === tech.toLowerCase())) {
+                    pills.push(tech); break;
                 }
             }
         }
     }
-
     return pills;
 }
 
@@ -350,7 +350,6 @@ exports.notificar = async (req, res) => {
 
     if (!nombre?.trim() || !email?.trim() || !mensaje?.trim() || !graduadoId)
         return res.status(400).json({ msg: 'Faltan campos obligatorios.' });
-
     if (nombre.trim().length > 100)
         return res.status(400).json({ msg: 'El nombre es demasiado largo.' });
     if (mensaje.trim().length > 1000)
@@ -363,22 +362,17 @@ exports.notificar = async (req, res) => {
         return res.status(400).json({ msg: 'El correo electrónico no es válido.' });
 
     const camposTexto    = [nombre, empresa, mensaje].filter(Boolean);
-    const tieneInyeccion = camposTexto.some(c =>
-        c.includes('$') || c.includes('{') || c.includes('}')
-    );
+    const tieneInyeccion = camposTexto.some(c => c.includes('$') || c.includes('{') || c.includes('}'));
     if (tieneInyeccion)
         return res.status(400).json({ msg: 'Caracteres no permitidos en los campos.' });
 
     const ip    = req.ip || req.connection?.remoteAddress || 'unknown';
     const ahora = Date.now();
     const reg   = intentosPorIP.get(ip) || { count: 0, desde: ahora };
-
     if (ahora - reg.desde > RATE_VENTANA) {
         intentosPorIP.set(ip, { count: 1, desde: ahora });
     } else if (reg.count >= RATE_LIMITE) {
-        return res.status(429).json({
-            msg: 'Demasiadas solicitudes desde tu dirección. Intenta en una hora.',
-        });
+        return res.status(429).json({ msg: 'Demasiadas solicitudes desde tu dirección. Intenta en una hora.' });
     } else {
         intentosPorIP.set(ip, { count: reg.count + 1, desde: reg.desde });
     }
@@ -389,43 +383,28 @@ exports.notificar = async (req, res) => {
         const graduado = await Graduado.findOne({
             _id: graduadoId, perfilPublico: true, tesisVerificada: true,
         }).select('nombres apellidos emailPersonal');
-
         if (!graduado)
             return res.status(404).json({ msg: 'Perfil no encontrado.' });
 
         const hace24h           = new Date(Date.now() - 24 * 60 * 60 * 1000);
         const NotificacionAdmin = require('../models/NotificacionAdmin');
-
         const duplicado = await NotificacionAdmin.findOne({
-            graduado:    graduadoId,
-            solicitudes: {
-                $elemMatch: {
-                    email:     emailNorm,
-                    enviadoEn: { $gte: hace24h },
-                },
-            },
+            graduado: graduadoId,
+            solicitudes: { $elemMatch: { email: emailNorm, enviadoEn: { $gte: hace24h } } },
         });
-
         if (duplicado)
             return res.status(429).json({
-                msg: 'Ya enviaste una solicitud a este graduado en las últimas 24 horas. Por favor espera antes de volver a intentarlo.',
+                msg: 'Ya enviaste una solicitud a este graduado en las últimas 24 horas.',
             });
 
         const Admin        = require('../models/Admin');
         const admins       = await Admin.find({ activo: true }).select('email nombre');
         const emailsAdmins = admins.map(a => a.email).filter(Boolean);
 
-        let notifAdmin = await NotificacionAdmin.findOne({
-            graduado: graduadoId,
-            leido:    false,
-        });
-
+        let notifAdmin = await NotificacionAdmin.findOne({ graduado: graduadoId, leido: false });
         const nuevaSolicitud = {
-            nombre:    nombre.trim(),
-            email:     emailNorm,
-            empresa:   empresa?.trim() || '',
-            mensaje:   mensaje.trim(),
-            enviadoEn: new Date(),
+            nombre: nombre.trim(), email: emailNorm,
+            empresa: empresa?.trim() || '', mensaje: mensaje.trim(), enviadoEn: new Date(),
         };
 
         if (notifAdmin) {
@@ -449,47 +428,29 @@ exports.notificar = async (req, res) => {
             tipo:     'contacto',
             titulo:   '💼 Alguien está interesado en tu perfil',
             mensaje:  `${nombre.trim()}${empresa ? ` de ${empresa.trim()}` : ''} quiere ponerse en contacto contigo.`,
-            metadata: {
-                nombre:  nombre.trim(),
-                email:   emailNorm,
-                empresa: empresa?.trim() || '',
-                mensaje: mensaje.trim(),
-            },
+            metadata: { nombre: nombre.trim(), email: emailNorm, empresa: empresa?.trim() || '', mensaje: mensaje.trim() },
         });
 
-        const {
-            enviarAlGraduado,
-            enviarCopiaAdmins,
-        } = require('../services/emailContactoService');
-
+        const { enviarAlGraduado, enviarCopiaAdmins } = require('../services/emailContactoService');
         Promise.allSettled([
             enviarAlGraduado({
-                emailPersonal:    graduado.emailPersonal,
-                nombresGraduado:  graduado.nombres,
-                nombreRemitente:  nombre.trim(),
-                emailRemitente:   emailNorm,
-                empresa:          empresa?.trim() || '',
-                mensaje:          mensaje.trim(),
+                emailPersonal: graduado.emailPersonal, nombresGraduado: graduado.nombres,
+                nombreRemitente: nombre.trim(), emailRemitente: emailNorm,
+                empresa: empresa?.trim() || '', mensaje: mensaje.trim(),
             }),
             enviarCopiaAdmins({
-                emailsAdmins,
-                nombreRemitente:   nombre.trim(),
-                emailRemitente:    emailNorm,
-                empresa:           empresa?.trim() || '',
-                mensaje:           mensaje.trim(),
-                nombresGraduado:   graduado.nombres,
-                apellidosGraduado: graduado.apellidos,
+                emailsAdmins, nombreRemitente: nombre.trim(), emailRemitente: emailNorm,
+                empresa: empresa?.trim() || '', mensaje: mensaje.trim(),
+                nombresGraduado: graduado.nombres, apellidosGraduado: graduado.apellidos,
             }),
         ]).then(resultados => {
             resultados.forEach((r, i) => {
-                const nombres = ['Graduado', 'Admins'];
                 if (r.status === 'rejected')
-                    console.error(`❌ [Contacto] Email ${nombres[i]}:`, r.reason);
+                    console.error(`❌ [Contacto] Email ${['Graduado','Admins'][i]}:`, r.reason);
             });
         });
 
         console.log(`📬 Contacto → ${graduado.nombres} ${graduado.apellidos} | De: ${nombre} <${emailNorm}>`);
-
         res.status(201).json({ msg: 'Solicitud enviada correctamente.' });
 
     } catch (error) {
@@ -504,8 +465,7 @@ exports.notificar = async (req, res) => {
 exports.topTecnologias = async (req, res) => {
     try {
         const graduados = await Graduado.find({
-            perfilPublico:   true,
-            tesisVerificada: true,
+            perfilPublico: true, tesisVerificada: true,
         }).select('tecnologias').lean();
 
         const frecuencia = {};
