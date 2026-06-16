@@ -31,6 +31,33 @@ const PROVINCIAS_EC = [
     'Zamora Chinchipe'
 ];
 
+const CANTONES_EC = {
+    'Azuay': ['Cuenca', 'Girón', 'Gualaceo', 'Nabón', 'Paute', 'Ponce Enríquez', 'Santa Isabel', 'Sigsig', 'Oña', 'Chordeleg', 'El Pan', 'Sevilla de Oro', 'Guachapala', 'Camilo Ponce Enríquez'],
+    'Bolívar': ['Guaranda', 'Chillanes', 'Chimbo', 'Echeandía', 'San Miguel', 'Caluma', 'Las Naves'],
+    'Cañar': ['Azogues', 'Biblián', 'Cañar', 'La Troncal', 'El Tambo', 'Déleg', 'Suscal'],
+    'Carchi': ['Tulcán', 'Bolívar', 'Espejo', 'Mira', 'Montúfar', 'San Pedro de Huaca'],
+    'Chimborazo': ['Riobamba', 'Alausí', 'Colta', 'Chambo', 'Chunchi', 'Guamote', 'Guano', 'Pallatanga', 'Penipe', 'Cumandá'],
+    'Cotopaxi': ['Latacunga', 'La Maná', 'Pangua', 'Pujilí', 'Salcedo', 'Saquisilí', 'Sigchos'],
+    'El Oro': ['Machala', 'Arenillas', 'Atahualpa', 'Balsas', 'Chilla', 'El Guabo', 'Huaquillas', 'Marcabelí', 'Pasaje', 'Piñas', 'Portovelo', 'Santa Rosa', 'Zaruma', 'Las Lajas'],
+    'Esmeraldas': ['Esmeraldas', 'Atacames', 'Eloy Alfaro', 'Muisne', 'Quinindé', 'San Lorenzo', 'Río Verde'],
+    'Galápagos': ['San Cristóbal', 'Isabela', 'Santa Cruz'],
+    'Guayas': ['Guayaquil', 'Alfredo Baquerizo Moreno', 'Balao', 'Balzar', 'Colimes', 'Daule', 'Durán', 'El Empalme', 'El Triunfo', 'Milagro', 'Naranjal', 'Naranjito', 'Palestina', 'Pedro Carbo', 'Samborondón', 'Santa Lucía', 'Salitre', 'San Jacinto de Yaguachi', 'Playas', 'Simón Bolívar', 'Coronel Marcelino Maridueña', 'Lomas de Sargentillo', 'Nobol', 'Isidro Ayora'],
+    'Imbabura': ['Ibarra', 'Antonio Ante', 'Cotacachi', 'Otavalo', 'Pimampiro', 'San Miguel de Urcuquí'],
+    'Loja': ['Loja', 'Calvas', 'Catamayo', 'Celica', 'Chaguarpamba', 'Espíndola', 'Gonzanamá', 'Macará', 'Paltas', 'Pindal', 'Quilanga', 'Saraguro', 'Sozoranga', 'Zapotillo', 'Puyango', 'Olmedo'],
+    'Los Ríos': ['Babahoyo', 'Baba', 'Montalvo', 'Puebloviejo', 'Quevedo', 'Urdaneta', 'Ventanas', 'Vínces', 'Palenque', 'Buena Fé', 'Valencia', 'Mocache', 'Quinsaloma'],
+    'Manabí': ['Portoviejo', 'Bolívar', 'Chone', 'El Carmen', 'Flavio Alfaro', 'Jipijapa', 'Junín', 'Manta', 'Montecristi', 'Paján', 'Pichincha', 'Rocafuerte', 'Santa Ana', 'Sucre', 'Tosagua', '24 de Mayo', 'Pedernales', 'Olmedo', 'Puerto López', 'Jama', 'Jaramijó', 'San Vicente'],
+    'Morona Santiago': ['Macas', 'Gualaquiza', 'Huamboya', 'Limón Indanza', 'Logroño', 'Palora', 'San Juan Bosco', 'Santiago', 'Sucúa', 'Taisha', 'Tiwintza'],
+    'Napo': ['Tena', 'Archidona', 'El Chaco', 'Quijos', 'Carlos Julio Arosemena Tola'],
+    'Orellana': ['Francisco de Orellana', 'Aguarico', 'La Joya de los Sachas', 'Loreto'],
+    'Pastaza': ['Puyo', 'Arajuno', 'Mera', 'Santa Clara'],
+    'Pichincha': ['Quito', 'Cayambe', 'Mejía', 'Pedro Moncayo', 'Rumiñahui', 'San Miguel de los Bancos', 'Pedro Vicente Maldonado', 'Puerto Quito'],
+    'Santa Elena': ['Santa Elena', 'La Libertad', 'Salinas'],
+    'Santo Domingo de los Tsáchilas': ['Santo Domingo', 'La Concordia'],
+    'Sucumbíos': ['Nueva Loja', 'Cascales', 'Cuyabeno', 'Gonzalo Pizarro', 'Putumayo', 'Shushufindi', 'Sucumbíos'],
+    'Tungurahua': ['Ambato', 'Baños de Agua Santa', 'Cevallos', 'Mocha', 'Patate', 'Quero', 'San Pedro de Pelileo', 'Santiago de Píllaro', 'Tisaleo'],
+    'Zamora Chinchipe': ['Zamora', 'Chinchipe', 'Nangaritza', 'Yacuambi', 'Yantzaza', 'El Pangui', 'Centinela del Cóndor', 'Palanda', 'Paquisha'],
+};
+
 const nivelAfinidad = (pct) => {
     if (pct >= 60) return { label: 'Experto', color: 'var(--color-espoch-rojo)', bg: '#ffebee' };
     if (pct >= 35) return { label: 'Avanzado', color: '#f57f17', bg: '#fff8e1' };
@@ -311,7 +338,11 @@ const PerfilGraduado = () => {
     // ── Modal perfil ──────────────────────────────────
     const cambiarMf = (e) => {
         const { name, value, type, checked } = e.target;
-        setMf(p => ({ ...p, [name]: type === 'checkbox' ? checked : value }));
+        if (name === 'provinciaActual') {
+            setMf(p => ({ ...p, provinciaActual: value, cantonActual: '' }));
+        } else {
+            setMf(p => ({ ...p, [name]: type === 'checkbox' ? checked : value }));
+        }
     };
 
     const guardarModal = async () => {
@@ -1533,16 +1564,20 @@ const PerfilGraduado = () => {
 
                                 <div style={s.campo}>
                                     <label style={s.lbl}>Cantón *</label>
-                                    <div style={s.inputWrap}>
-                                        <input
-                                            name="cantonActual"
-                                            value={mf.cantonActual}
-                                            onChange={cambiarMf}
-                                            placeholder="Ej: Riobamba, Ambato, Guayaquil..."
-                                            style={s.inp}
-                                            maxLength={80}
-                                        />
-                                    </div>
+                                    <select
+                                        name="cantonActual"
+                                        value={mf.cantonActual}
+                                        onChange={cambiarMf}
+                                        style={s.select}
+                                        disabled={!mf.provinciaActual}
+                                    >
+                                        <option value="">
+                                            {mf.provinciaActual ? 'Selecciona tu cantón...' : 'Primero selecciona una provincia'}
+                                        </option>
+                                        {(CANTONES_EC[mf.provinciaActual] || []).map(c => (
+                                            <option key={c} value={c}>{c}</option>
+                                        ))}
+                                    </select>
                                     {!mf.cantonActual && (
                                         <span style={{ fontSize: '0.68rem', color: '#f57f17', marginTop: 2 }}>
                                             ⚠ Obligatorio para publicar tu perfil

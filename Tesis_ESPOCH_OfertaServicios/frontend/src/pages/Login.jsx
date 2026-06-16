@@ -128,7 +128,7 @@ const Login = () => {
     const [verificandoCodigo, setVerificandoCodigo] = useState(false);
     const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false);
     const [mostrarConfirmaNombre, setMostrarConfirmaNombre] = useState(false);
-const [confirmarSalida, setConfirmarSalida] = useState(false);
+    const [confirmarSalida, setConfirmarSalida] = useState(false);
 
     const [cedFrontalFile, setCedFrontalFile] = useState(null);
     const [cedFrontalPreview, setCedFrontalPreview] = useState(null);
