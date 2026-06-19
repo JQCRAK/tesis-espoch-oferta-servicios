@@ -21,6 +21,28 @@ const desofuscar = (str) => JSON.parse(decodeURIComponent(escape(atob(str))));
 const esPasswordFuerte = (pwd) =>
     /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/.test(pwd || '');
 
+// Solo letras (incluye tildes, ñ y espacios para nombres compuestos)
+const soloLetras = (texto) => texto.replace(/[^a-zA-ZÁÉÍÓÚÑáéíóúñÜü\s]/g, '');
+
+// Solo números (cédula, teléfono)
+const soloNumeros = (texto) => texto.replace(/[^0-9]/g, '');
+
+// Solo caracteres válidos para un correo (letras, números, @, punto, guion, guion bajo, +)
+// Bloquea comas, comillas simples/dobles y cualquier otro símbolo no permitido
+const soloEmailValido = (texto) => texto.replace(/[^a-zA-Z0-9@._+-]/g, '');
+
+// Solo caracteres válidos para una URL (sin comillas, comas ni espacios)
+const soloUrlValida = (texto) => texto.replace(/[^a-zA-Z0-9:/._\-?=&%#~]/g, '');
+
+// Campos de texto que solo deben aceptar letras
+const CAMPOS_SOLO_LETRAS = ['nombres', 'apellidos'];
+
+// Campos de texto que solo deben aceptar números
+const CAMPOS_SOLO_NUMEROS = ['cedula', 'telefono'];
+
+// Campos de tipo correo electrónico
+const CAMPOS_EMAIL = ['email', 'emailPersonal', 'emailInstitucional'];
+
 const useWindowWidth = () => {
     const [width, setWidth] = useState(
         typeof window !== 'undefined' ? window.innerWidth : 1200
@@ -232,7 +254,17 @@ const Login = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData(p => ({ ...p, [name]: value }));
+        let valorFiltrado = value;
+
+        if (CAMPOS_SOLO_LETRAS.includes(name)) {
+            valorFiltrado = soloLetras(value);
+        } else if (CAMPOS_SOLO_NUMEROS.includes(name)) {
+            valorFiltrado = soloNumeros(value);
+        } else if (CAMPOS_EMAIL.includes(name)) {
+            valorFiltrado = soloEmailValido(value);
+        }
+
+        setFormData(p => ({ ...p, [name]: valorFiltrado }));
     };
 
     const fechaMaxima = new Date();
@@ -757,7 +789,7 @@ const Login = () => {
                                             <FaEnvelope style={s.ico} />
                                             <input type="email" placeholder="Tu correo personal registrado"
                                                 style={s.inp} value={emailRecuperacionIngresado}
-                                                onChange={e => setEmailRecuperacionIngresado(e.target.value)} required />
+                                                onChange={e => setEmailRecuperacionIngresado(soloEmailValido(e.target.value))} required />
                                         </div>
                                     </Campo>
                                     <p style={s.hint}>📧 Recibirás un código de 6 dígitos en este correo.</p>
@@ -977,7 +1009,7 @@ const Login = () => {
                                             <FaIdCard style={s.ico} />
                                             <input type="text" name="cedula" placeholder="10 dígitos"
                                                 style={s.inp} value={formData.cedula} onChange={handleChange}
-                                                pattern="[0-9]{10}" maxLength="10" required />
+                                                inputMode="numeric" pattern="[0-9]{10}" maxLength="10" required />
                                         </div>
                                     </Campo>
                                     <Campo label="Celular" required>
@@ -985,7 +1017,7 @@ const Login = () => {
                                             <FaPhone style={s.ico} />
                                             <input type="tel" name="telefono" placeholder="09XXXXXXXX"
                                                 style={s.inp} value={formData.telefono} onChange={handleChange}
-                                                pattern="[0-9]{10}" maxLength="10" required />
+                                                inputMode="numeric" pattern="[0-9]{10}" maxLength="10" required />
                                         </div>
                                     </Campo>
                                 </div>
@@ -1182,7 +1214,7 @@ const Login = () => {
                                     <FaSearch style={s.ico} />
                                     <input type="url" placeholder="https://dspace.espoch.edu.ec/items/..."
                                         style={s.inp} value={urlDspaceB}
-                                        onChange={e => { setUrlDspaceB(e.target.value); setVerificadoB(false); setDatosVerificadosB(null); }} />
+                                        onChange={e => { setUrlDspaceB(soloUrlValida(e.target.value)); setVerificadoB(false); setDatosVerificadosB(null); }} />
                                 </div>
                                 <span style={{ fontSize: '0.68rem', color: 'var(--color-texto-secundario)', marginTop: 3, display: 'block' }}>
                                     Ve a <a href="https://dspace.espoch.edu.ec" target="_blank" rel="noopener noreferrer"
