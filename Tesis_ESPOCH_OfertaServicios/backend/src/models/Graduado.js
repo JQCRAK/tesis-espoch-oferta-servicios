@@ -38,7 +38,7 @@ const GraduadoSchema = new mongoose.Schema({
     cantonActual:    { type: String, default: '', trim: true },
 
     // ── CORREOS ──────────────────────────────────────────────────
-    emailInstitucional: { type: String, required: false, default: null, unique: true, sparse: true, lowercase: true, trim: true },
+    emailInstitucional: { type: String, required: false, lowercase: true, trim: true },
     emailPersonal:      { type: String, required: true, unique: true, lowercase: true, trim: true },
 
     emailPersonalHash:  { type: String, default: '', trim: true },
@@ -100,5 +100,11 @@ const GraduadoSchema = new mongoose.Schema({
     perfilCompletado:  { type: Number, default: 0 },
 
 }, { timestamps: true });
+
+
+GraduadoSchema.index(
+    { emailInstitucional: 1 },
+    { unique: true, partialFilterExpression: { emailInstitucional: { $type: "string" } } }
+);
 
 module.exports = mongoose.model('Graduado', GraduadoSchema);

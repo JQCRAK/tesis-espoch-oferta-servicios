@@ -218,8 +218,7 @@ exports.registrarGraduado = async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        const graduado = new Graduado({
-            emailInstitucional: esSinCorreo ? null : instEmail,
+        const datosGraduado = {
             emailPersonal: persEmail,
             nombres: capitalizarPalabras(nombres),
             apellidos: capitalizarPalabras(apellidos),
@@ -236,7 +235,13 @@ exports.registrarGraduado = async (req, res) => {
             perfilPublico: false,
             terminosAceptados: false,
             intentosFallidos: { contador: 0, bloqueadoHasta: null, ultimoIntento: null },
-        });
+        };
+
+        if (!esSinCorreo) {
+            datosGraduado.emailInstitucional = instEmail;
+        }
+
+        const graduado = new Graduado(datosGraduado);
 
         if (restoDatos.tituloTesisVerificado)
             graduado.tituloTesisVerificado = restoDatos.tituloTesisVerificado;
