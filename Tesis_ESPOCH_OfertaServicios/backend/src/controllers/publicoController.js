@@ -101,8 +101,13 @@ exports.listarGraduadosPublicos = async (req, res) => {
             ];
         }
 
-        if (disponibilidad && ['disponible', 'no_disponible'].includes(disponibilidad)) {
-            filtro.disponibilidad = disponibilidad;
+        // Filtro de disponibilidad:
+        //   'disponible'      → exactamente 'disponible' (buscando empleo)
+        //   'no_disponibles'  → cualquier estado que NO sea 'disponible' (trabajando, estudiando, no_disponible)
+        if (disponibilidad === 'disponible') {
+            filtro.disponibilidad = 'disponible';
+        } else if (disponibilidad === 'no_disponibles') {
+            filtro.disponibilidad = { $ne: 'disponible' };
         }
 
         if (tecnologia.trim()) {
@@ -168,7 +173,8 @@ exports.getPerfilPublico = async (req, res) => {
         }).select(
             'nombres apellidos fotoPerfil bio tecnologias afinidades ' +
             'habilidadesBlandas disponibilidad ciudad github linkedin ' +
-            'perfilCompletado anioGraduacion updatedAt'
+            'perfilCompletado anioGraduacion updatedAt ' +
+            'experienciasLaborales educacionFormal'
         );
         if (!graduado)
             return res.status(404).json({ msg: 'Perfil no encontrado o no disponible.' });
@@ -242,9 +248,19 @@ exports.listarProyectosPublicos = async (req, res) => {
         } else if (techFiltro) {
             filtroBase.tecnologias = { $regex: techFiltro, $options: 'i' };
         } else if (todos !== 'true' && tendencia.keywords?.length > 0) {
-            filtroBase.$or = tendencia.keywords.map(kw => ({
-                tecnologias: { $regex: kw, $options: 'i' },
-            }));
+            // Filtro por tendencia con WORD BOUNDARY (\b) para evitar matches
+            // parciales (ej. 'app' dentro de 'aplicación', 'dart' en 'estandarte').
+            // Buscar en TÍTULO, TECNOLOGÍAS y DESCRIPCIÓN del proyecto, NO en
+            // la especialidad del graduado.
+            const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            filtroBase.$or = tendencia.keywords.flatMap(kw => {
+                const ek = escapeRegex(kw);
+                return [
+                    { titulo:      { $regex: `\\b${ek}\\b`, $options: 'i' } },
+                    { tecnologias: { $regex: `\\b${ek}\\b`, $options: 'i' } },
+                    { descripcion: { $regex: `\\b${ek}\\b`, $options: 'i' } },
+                ];
+            });
         }
 
         let proyectosRaw = await Proyecto.find(filtroBase)
@@ -252,23 +268,28 @@ exports.listarProyectosPublicos = async (req, res) => {
             .sort({ fechaRealizacion: -1 })
             .lean();
 
-        if (busqueda) {
-            const rxBusq       = new RegExp(busqueda, 'i');
-            const idsYaPasaron = new Set(proyectosRaw.map(p => p._id.toString()));
-            const idsGradConEsp = graduadosValidos
-                .filter(g => rxBusq.test(g.afinidades?.[0]?.categoria || ''))
-                .map(g => g._id);
-
-            if (idsGradConEsp.length > 0) {
-                const extraProys = await Proyecto.find({
-                    graduado: { $in: idsGradConEsp }, activo: true,
-                    _id:      { $nin: [...idsYaPasaron] },
-                })
-                .select('titulo descripcion tecnologias urlRepositorio imagen fechaRealizacion graduado')
-                .sort({ fechaRealizacion: -1 })
-                .lean();
-                proyectosRaw = [...proyectosRaw, ...extraProys];
-            }
+        // ── Ranking por relevancia cuando hay tendencia activa ──
+        // Score: título = 3 pts, tecnologías = 2 pts, descripción = 1 pt
+        // (por cada keyword que matchea). Así los proyectos más relacionados
+        // con el tema aparecen primero, y los marginales al final.
+        if (!busqueda && !techFiltro && todos !== 'true' && tendencia.keywords?.length > 0) {
+            const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const rxs = tendencia.keywords.map(kw => new RegExp(`\\b${escapeRegex(kw)}\\b`, 'i'));
+            proyectosRaw = proyectosRaw.map(p => {
+                let score = 0;
+                const tit  = p.titulo || '';
+                const tecs = (p.tecnologias || []).join(' ');
+                const des  = p.descripcion || '';
+                for (const rx of rxs) {
+                    if (rx.test(tit))  score += 3;
+                    if (rx.test(tecs)) score += 2;
+                    if (rx.test(des))  score += 1;
+                }
+                return { ...p, _score: score };
+            })
+            .filter(p => p._score > 0)
+            .sort((a, b) => b._score - a._score
+                || new Date(b.fechaRealizacion) - new Date(a.fechaRealizacion));
         }
 
         let usandoFallback = false;

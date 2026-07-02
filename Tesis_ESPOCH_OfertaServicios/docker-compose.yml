@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
 
   # ── BACKEND (Node.js / Express) ──────────────────────
@@ -11,22 +9,21 @@ services:
     restart: unless-stopped
     ports:
       - "4000:4000"
+    # Carga TODAS las variables del .env al contenedor automáticamente.
+    # Así, cualquier variable que agregues al .env (ej. MONGO_URI_ORIGEN,
+    # RESEND_API_KEY, etc.) llega al backend sin tener que listar aquí
+    # una por una — evita el error "variable no definida" cuando el .env
+    # crece con nuevas integraciones.
+    env_file:
+      - .env
     environment:
       NODE_ENV: production
       PORT: 4000
-      MONGO_URI: ${MONGO_URI}
-      JWT_SECRET: ${JWT_SECRET}
-      CRYPTO_SECRET: ${CRYPTO_SECRET}
-      FRONTEND_URL: ${FRONTEND_URL}
-      EMAIL_HOST: ${EMAIL_HOST}
-      EMAIL_PORT: ${EMAIL_PORT}
-      EMAIL_USER: ${EMAIL_USER}
-      EMAIL_PASS: ${EMAIL_PASS}
-      EMAIL_FROM: ${EMAIL_FROM}
-      CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME}
-      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY}
-      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET}
-      RESEND_API_KEY: ${RESEND_API_KEY}
+    volumes:
+      # Persisten los archivos subidos y los respaldos automáticos,
+      # para que NO se borren al recrear el contenedor.
+      - backend_uploads:/app/src/uploads
+      - backend_backups:/app/uploads
     networks:
       - portal_net
     healthcheck:
@@ -55,3 +52,7 @@ services:
 networks:
   portal_net:
     driver: bridge
+
+volumes:
+  backend_uploads:
+  backend_backups:

@@ -180,9 +180,11 @@ const TarjetaGraduado = ({ graduado }) => {
     const [hov, setHov] = useState(false);
 
     const disp = {
-        disponible:    { bg: '#e8f5e9', color: '#1b5e20', border: '#a5d6a7', label: 'Disponible',    dot: '#2e7d32' },
-        no_disponible: { bg: '#fff8e1', color: '#e65100', border: '#ffe082', label: 'No disponible', dot: '#f57f17' },
-    }[graduado.disponibilidad] || { bg: '#f5f5f5', color: '#616161', border: '#e0e0e0', label: '—', dot: '#9e9e9e' };
+        disponible:    { bg: '#e8f5e9', color: '#1b5e20', border: '#a5d6a7', label: 'Buscando empleo', dot: '#2e7d32' },
+        trabajando:    { bg: '#dbeafe', color: '#1d4ed8', border: '#93c5fd', label: 'Trabajando',      dot: '#3b82f6' },
+        estudiando:    { bg: '#f3e8ff', color: '#7c3aed', border: '#ddd6fe', label: 'Estudiando',      dot: '#a855f7' },
+        no_disponible: { bg: '#fff8e1', color: '#e65100', border: '#ffe082', label: 'No disponible',   dot: '#f57f17' },
+    }[graduado.disponibilidad] || { bg: '#f5f5f5', color: '#616161', border: '#e0e0e0', label: 'Sin definir', dot: '#9e9e9e' };
 
     return (
         <div
@@ -500,8 +502,8 @@ const PublicHome = () => {
                             <FaSlidersH style={{ fontSize: '0.72rem' }} />Disponibilidad:
                         </span>
                         {[
-                            { val: 'disponible',    label: 'Disponibles', dot: '#2e7d32' },
-                            { val: 'no_disponible', label: 'Ocupados',    dot: '#f57f17' },
+                            { val: 'disponible',     label: 'Disponibles',    dot: '#2e7d32' },
+                            { val: 'no_disponibles', label: 'No disponibles', dot: '#f57f17' },
                         ].map(({ val, label, dot }) => (
                             <button key={val} onClick={() => handleFiltroDisp(val)} style={{
                                 ...s.chip,

@@ -16,6 +16,8 @@ import '../../index.css';
 import { leerSesion, guardarSesion } from '../../utils/storageSeguro';
 import { eliminarSesion } from '../../utils/storageSeguro';
 import ModalBienvenida from '../../components/ModalBienvenida';
+import SeccionHojaVida from './SeccionHojaVida';
+import PreviewHojaVida from './PreviewHojaVida';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
 
@@ -56,6 +58,24 @@ const CANTONES_EC = {
     'Sucumbíos': ['Nueva Loja', 'Cascales', 'Cuyabeno', 'Gonzalo Pizarro', 'Putumayo', 'Shushufindi', 'Sucumbíos'],
     'Tungurahua': ['Ambato', 'Baños de Agua Santa', 'Cevallos', 'Mocha', 'Patate', 'Quero', 'San Pedro de Pelileo', 'Santiago de Píllaro', 'Tisaleo'],
     'Zamora Chinchipe': ['Zamora', 'Chinchipe', 'Nangaritza', 'Yacuambi', 'Yantzaza', 'El Pangui', 'Centinela del Cóndor', 'Palanda', 'Paquisha'],
+};
+
+// ─── Opciones de disponibilidad laboral ─────────────────
+// Mantiene compatibilidad con estadísticas (valores 'disponible' / 'no_disponible')
+// y agrega estados intermedios más descriptivos.
+const DISPONIBILIDAD_OPCIONES = [
+    { value: 'disponible',    label: 'Buscando empleo',  color: 'verde'   },
+    { value: 'trabajando',    label: 'Trabajando',       color: 'azul'    },
+    { value: 'estudiando',    label: 'Estudiando',       color: 'morado'  },
+    { value: 'no_disponible', label: 'No disponible',    color: 'gris'    },
+];
+const DISPONIBILIDAD_LABEL = Object.fromEntries(DISPONIBILIDAD_OPCIONES.map(o => [o.value, o.label]));
+const DISPONIBILIDAD_COLOR = Object.fromEntries(DISPONIBILIDAD_OPCIONES.map(o => [o.value, o.color]));
+const COLORES_DISPO = {
+    verde:  { bg: '#e8f5e9', fg: 'var(--estado-exito)', border: '#c8e6c9' },
+    azul:   { bg: 'var(--color-tech-azul-claro)', fg: 'var(--color-tech-azul)', border: '#bee3f8' },
+    morado: { bg: '#f3e8ff', fg: '#6a1b9a', border: '#ddd6fe' },
+    gris:   { bg: '#f5f5f5', fg: 'var(--color-texto-secundario)', border: '#e0e0e0' },
 };
 
 const nivelAfinidad = (pct) => {
@@ -119,8 +139,8 @@ const PanelConsejos = ({ onPublicar, tesisVerificada }) => {
         },
         {
             icon: FaTrophy, color: '#f57f17', bg: '#fff8e1', border: '#ffe082',
-            titulo: 'Perfil completo = 3× más visitas',
-            texto: 'Los graduados con foto, descripción, proyectos y certificados reciben tres veces más visitas de empresas.'
+            titulo: 'Perfil completo, más visitas',
+            texto: 'Los graduados con foto, descripción, proyectos y certificados reciben más visitas de empresas.'
         },
     ];
 
@@ -260,6 +280,9 @@ const PerfilGraduado = () => {
         titulo: '', institucion: '', fechaFinalizacion: '', url: '', descripcion: '', archivo: null
     });
     const [mostrarBienvenida, setMostrarBienvenida] = useState(false);
+
+    // ── Modal Hoja de Vida (preview + descarga PDF/Word) ──
+    const [mostrarHojaVida, setMostrarHojaVida] = useState(false);
 
     // ── Modal confirmar eliminación ───────────────────
     const [modalConfirm, setModalConfirm] = useState({
@@ -839,14 +862,19 @@ const PerfilGraduado = () => {
                                 }}>{perfil?.nombres} {perfil?.apellidos}</h1>
                                 <p style={s.tituloProf}>Ingeniero/a de Software · ESPOCH</p>
                                 <div style={badgesRowStyle}>
-                                    <span style={{
-                                        ...s.badge,
-                                        backgroundColor: perfil?.disponibilidad === 'disponible' ? '#e8f5e9' : '#ffebee',
-                                        color: perfil?.disponibilidad === 'disponible' ? 'var(--estado-exito)' : 'var(--estado-error)',
-                                        border: `1px solid ${perfil?.disponibilidad === 'disponible' ? '#c8e6c9' : '#ffcdd2'}`,
-                                    }}>
-                                        {perfil?.disponibilidad === 'disponible' ? 'Disponible' : 'No disponible'}
-                                    </span>
+                                    {(() => {
+                                        const c = COLORES_DISPO[DISPONIBILIDAD_COLOR[perfil?.disponibilidad] || 'gris'];
+                                        return (
+                                            <span style={{
+                                                ...s.badge,
+                                                backgroundColor: c.bg,
+                                                color: c.fg,
+                                                border: `1px solid ${c.border}`,
+                                            }}>
+                                                {DISPONIBILIDAD_LABEL[perfil?.disponibilidad] || 'No disponible'}
+                                            </span>
+                                        );
+                                    })()}
                                     <span style={{
                                         ...s.badge,
                                         backgroundColor: perfil?.perfilPublico ? 'var(--color-tech-azul-claro)' : '#f5f5f5',
@@ -876,6 +904,20 @@ const PerfilGraduado = () => {
                             <button style={btnEditarCabStyle} onClick={() => setModalAbierto(true)}>
                                 <FaEdit style={{ marginRight: 5 }} />Editar perfil
                             </button>
+                            {perfil?.tesisVerificada && (
+                                <button
+                                    style={{
+                                        ...btnEditarCabStyle,
+                                        backgroundColor: 'var(--color-espoch-rojo)',
+                                        color: 'white',
+                                        border: '1px solid var(--color-espoch-rojo)',
+                                    }}
+                                    onClick={() => setMostrarHojaVida(true)}
+                                    title="Descargar tu Hoja de Vida en PDF o Word"
+                                >
+                                    <FaCertificate style={{ marginRight: 5 }} />Hoja de Vida
+                                </button>
+                            )}
                             {!perfil?.tesisVerificada && (
                                 <button style={btnPublicarCabStyle} onClick={abrirModalTesis}>
                                     <FaGraduationCap style={{ marginRight: 5 }} />Publicar perfil
@@ -1235,6 +1277,16 @@ const PerfilGraduado = () => {
                                 </div>
                             )}
                         </div>
+
+                        {/* ═══ HOJA DE VIDA (experiencias + educación) ═══ */}
+                        <SeccionHojaVida
+                            token={token}
+                            experiencias={perfil?.experienciasLaborales || []}
+                            educacion={perfil?.educacionFormal || []}
+                            onOk={ok}
+                            onError={mostrarError}
+                            onActualizar={(patch) => setPerfil(p => ({ ...p, ...patch }))}
+                        />
                     </div>
 
                     {/* ── COLUMNA DERECHA — CONSEJOS ── */}
@@ -1462,55 +1514,69 @@ const PerfilGraduado = () => {
                                     </div>
                                 </div>
 
-                                <div style={s.campo}>
-                                    <label style={s.lbl}>Teléfono celular</label>
-                                    <div style={s.inputWrap}>
-                                        <FaPhone style={s.icoInp} />
-                                        <input
-                                            name="telefono"
-                                            value={mf.telefono}
-                                            onChange={cambiarMf}
-                                            placeholder="10 dígitos"
-                                            style={s.inp}
-                                            maxLength={10}
-                                            inputMode="numeric"
-                                        />
+                                {/* Teléfono + Correo personal — misma fila */}
+                                <div style={grid2Style}>
+                                    <div style={s.campo}>
+                                        <label style={s.lbl}>Teléfono celular</label>
+                                        <div style={s.inputWrap}>
+                                            <FaPhone style={s.icoInp} />
+                                            <input
+                                                name="telefono"
+                                                value={mf.telefono}
+                                                onChange={cambiarMf}
+                                                placeholder="10 dígitos"
+                                                style={s.inp}
+                                                maxLength={10}
+                                                inputMode="numeric"
+                                            />
+                                        </div>
+                                        <span style={{ fontSize: '0.69rem', color: 'var(--color-texto-secundario)', marginTop: 2 }}>
+                                            Solo dígitos · 10 caracteres exactos
+                                        </span>
                                     </div>
-                                    <span style={{ fontSize: '0.69rem', color: 'var(--color-texto-secundario)', marginTop: 2 }}>
-                                        Solo dígitos · 10 caracteres exactos
-                                    </span>
+
+                                    <div style={s.campo}>
+                                        <label style={s.lbl}>Correo personal</label>
+                                        <div style={s.inputWrap}>
+                                            <FaEnvelope style={s.icoInp} />
+                                            <input
+                                                name="emailPersonal"
+                                                type="email"
+                                                value={mf.emailPersonal}
+                                                onChange={cambiarMf}
+                                                placeholder="tucorreo@gmail.com"
+                                                style={s.inp}
+                                            />
+                                        </div>
+                                        <span style={{ fontSize: '0.69rem', color: 'var(--color-texto-secundario)', marginTop: 2 }}>
+                                            No puede ser un correo @espoch.edu.ec
+                                        </span>
+                                    </div>
                                 </div>
 
-                                <div style={s.campo}>
-                                    <label style={s.lbl}>Correo personal</label>
-                                    <div style={s.inputWrap}>
-                                        <FaEnvelope style={s.icoInp} />
-                                        <input
-                                            name="emailPersonal"
-                                            type="email"
-                                            value={mf.emailPersonal}
-                                            onChange={cambiarMf}
-                                            placeholder="tucorreo@gmail.com"
-                                            style={s.inp}
-                                        />
+                                {/* Discapacidad + Disponibilidad — misma fila */}
+                                <div style={grid2Style}>
+                                    <div style={s.campo}>
+                                        <label style={s.lbl}>Discapacidad</label>
+                                        <select name="tieneDiscapacidad" value={mf.tieneDiscapacidad} onChange={cambiarMf} style={s.select}>
+                                            <option value="">Seleccionar...</option>
+                                            <option>No</option>
+                                            <option>Sí - Visual</option>
+                                            <option>Sí - Auditiva</option>
+                                            <option>Sí - Física/Motriz</option>
+                                            <option>Sí - Intelectual</option>
+                                            <option>Sí - Psicosocial</option>
+                                            <option>Sí - Otra</option>
+                                        </select>
                                     </div>
-                                    <span style={{ fontSize: '0.69rem', color: 'var(--color-texto-secundario)', marginTop: 2 }}>
-                                        No puede ser un correo @espoch.edu.ec
-                                    </span>
-                                </div>
-
-                                <div style={s.campo}>
-                                    <label style={s.lbl}>Discapacidad</label>
-                                    <select name="tieneDiscapacidad" value={mf.tieneDiscapacidad} onChange={cambiarMf} style={s.select}>
-                                        <option value="">Seleccionar...</option>
-                                        <option>No</option>
-                                        <option>Sí - Visual</option>
-                                        <option>Sí - Auditiva</option>
-                                        <option>Sí - Física/Motriz</option>
-                                        <option>Sí - Intelectual</option>
-                                        <option>Sí - Psicosocial</option>
-                                        <option>Sí - Otra</option>
-                                    </select>
+                                    <div style={s.campo}>
+                                        <label style={s.lbl}>Disponibilidad laboral</label>
+                                        <select name="disponibilidad" value={mf.disponibilidad} onChange={cambiarMf} style={s.select}>
+                                            {DISPONIBILIDAD_OPCIONES.map(o => (
+                                                <option key={o.value} value={o.value}>{o.label}</option>
+                                            ))}
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
 
@@ -1529,60 +1595,55 @@ const PerfilGraduado = () => {
                             </div>
 
                             <div style={s.modalSec}>
-                                <h3 style={s.modalSecH}>Disponibilidad</h3>
-                                <select name="disponibilidad" value={mf.disponibilidad} onChange={cambiarMf} style={s.select}>
-                                    <option value="disponible">Disponible</option>
-                                    <option value="no_disponible">No disponible</option>
-                                </select>
-                            </div>
-
-                            <div style={s.modalSec}>
                                 <h3 style={s.modalSecH}>Ubicación actual</h3>
                                 <p style={{ margin: '0 0 10px', fontSize: '0.73rem', color: 'var(--color-texto-secundario)', lineHeight: 1.5 }}>
                                     Indica dónde te encuentras actualmente. Esta información es necesaria para publicar tu perfil.
                                 </p>
 
-                                <div style={s.campo}>
-                                    <label style={s.lbl}>Provincia *</label>
-                                    <select
-                                        name="provinciaActual"
-                                        value={mf.provinciaActual}
-                                        onChange={cambiarMf}
-                                        style={s.select}
-                                    >
-                                        <option value="">Selecciona tu provincia...</option>
-                                        {PROVINCIAS_EC.map(p => (
-                                            <option key={p} value={p}>{p}</option>
-                                        ))}
-                                    </select>
-                                    {!mf.provinciaActual && (
-                                        <span style={{ fontSize: '0.68rem', color: '#f57f17', marginTop: 2 }}>
-                                            ⚠ Obligatorio para publicar tu perfil
-                                        </span>
-                                    )}
-                                </div>
+                                {/* Provincia + Cantón — misma fila */}
+                                <div style={grid2Style}>
+                                    <div style={s.campo}>
+                                        <label style={s.lbl}>Provincia *</label>
+                                        <select
+                                            name="provinciaActual"
+                                            value={mf.provinciaActual}
+                                            onChange={cambiarMf}
+                                            style={s.select}
+                                        >
+                                            <option value="">Selecciona tu provincia...</option>
+                                            {PROVINCIAS_EC.map(p => (
+                                                <option key={p} value={p}>{p}</option>
+                                            ))}
+                                        </select>
+                                        {!mf.provinciaActual && (
+                                            <span style={{ fontSize: '0.68rem', color: '#f57f17', marginTop: 2 }}>
+                                                ⚠ Obligatorio para publicar tu perfil
+                                            </span>
+                                        )}
+                                    </div>
 
-                                <div style={s.campo}>
-                                    <label style={s.lbl}>Cantón *</label>
-                                    <select
-                                        name="cantonActual"
-                                        value={mf.cantonActual}
-                                        onChange={cambiarMf}
-                                        style={s.select}
-                                        disabled={!mf.provinciaActual}
-                                    >
-                                        <option value="">
-                                            {mf.provinciaActual ? 'Selecciona tu cantón...' : 'Primero selecciona una provincia'}
-                                        </option>
-                                        {(CANTONES_EC[mf.provinciaActual] || []).map(c => (
-                                            <option key={c} value={c}>{c}</option>
-                                        ))}
-                                    </select>
-                                    {!mf.cantonActual && (
-                                        <span style={{ fontSize: '0.68rem', color: '#f57f17', marginTop: 2 }}>
-                                            ⚠ Obligatorio para publicar tu perfil
-                                        </span>
-                                    )}
+                                    <div style={s.campo}>
+                                        <label style={s.lbl}>Cantón *</label>
+                                        <select
+                                            name="cantonActual"
+                                            value={mf.cantonActual}
+                                            onChange={cambiarMf}
+                                            style={s.select}
+                                            disabled={!mf.provinciaActual}
+                                        >
+                                            <option value="">
+                                                {mf.provinciaActual ? 'Selecciona tu cantón...' : 'Primero selecciona una provincia'}
+                                            </option>
+                                            {(CANTONES_EC[mf.provinciaActual] || []).map(c => (
+                                                <option key={c} value={c}>{c}</option>
+                                            ))}
+                                        </select>
+                                        {!mf.cantonActual && (
+                                            <span style={{ fontSize: '0.68rem', color: '#f57f17', marginTop: 2 }}>
+                                                ⚠ Obligatorio para publicar tu perfil
+                                            </span>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
 
@@ -1686,6 +1747,13 @@ const PerfilGraduado = () => {
             {mostrarBienvenida && (
                 <ModalBienvenida onCerrar={() => setMostrarBienvenida(false)} />
             )}
+
+            {/* ══ MODAL HOJA DE VIDA (preview + descarga PDF/Word) ══ */}
+            <PreviewHojaVida
+                token={token}
+                abierto={mostrarHojaVida}
+                onCerrar={() => setMostrarHojaVida(false)}
+            />
 
             {/* ══ TOASTS ══ */}
             <div style={toastContainerStyle}>
@@ -1867,8 +1935,8 @@ const sc = {
     panelIconWrap: { width: 32, height: 32, borderRadius: 8, backgroundColor: '#fff8e1', border: '1px solid #ffe082', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
     panelTitulo: { margin: 0, fontSize: '0.84rem', fontWeight: '700', color: 'var(--color-texto-principal)' },
     panelSub: { margin: '1px 0 0', fontSize: '0.68rem', color: 'var(--color-texto-secundario)' },
-    consejosLista: { padding: '10px 14px', display: 'flex', flexDirection: 'column', gap: 8 },
-    consejoItem: { display: 'flex', gap: 9, alignItems: 'flex-start', padding: '9px 10px', borderRadius: 8, border: '1px solid' },
+    consejosLista: { padding: '10px 14px', display: 'flex', flexDirection: 'column', gap: 8, minHeight: 150 },
+    consejoItem: { display: 'flex', gap: 9, alignItems: 'flex-start', padding: '9px 10px', borderRadius: 8, border: '1px solid', minHeight: 110, boxSizing: 'border-box' },
     consejoIcoWrap: { width: 28, height: 28, borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
     consejoTexto: { flex: 1, minWidth: 0 },
     consejoTitulo: { margin: '0 0 2px', fontSize: '0.72rem', fontWeight: '700' },

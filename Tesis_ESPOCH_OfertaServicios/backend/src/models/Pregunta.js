@@ -25,6 +25,14 @@ const PreguntaSchema = new mongoose.Schema({
     trim: true
   }],
 
+  // Para tipo 'checkboxes' (selección múltiple): límite de opciones que el
+  // encuestado puede marcar. 0 = sin límite.
+  limiteSeleccion: {
+    type: Number,
+    default: 0,
+    min: 0,
+  },
+
   escalaMin: { type: Number, default: 1 },
   escalaMax: { type: Number, default: 5 },
   escalaEtiquetas: {

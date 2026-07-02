@@ -439,7 +439,7 @@ const Proyectos = () => {
                 ) : (
                     <div style={{ ...p.grid, gridTemplateColumns: gridCols }}>
                         {proyectos.map((proy, i) => (
-                            <div key={proy._id} style={{ animation: `fadeUp .28s ease ${i * .04}s both` }}>
+                            <div key={proy._id} style={{ animation: `fadeUp .28s ease ${i * .04}s both`, height: '100%' }}>
                                 <ProyectoCard proyecto={proy} navigate={navigate} />
                             </div>
                         ))}
@@ -540,7 +540,7 @@ const p = {
 };
 
 const card = {
-    wrap:         { backgroundColor: 'white', borderRadius: 12, overflow: 'hidden', border: '1px solid #e9ecef', boxShadow: '0 2px 8px rgba(0,0,0,.05)', display: 'flex', flexDirection: 'column' },
+    wrap:         { backgroundColor: 'white', borderRadius: 12, overflow: 'hidden', border: '1px solid #e9ecef', boxShadow: '0 2px 8px rgba(0,0,0,.05)', display: 'flex', flexDirection: 'column', height: '100%' },
     imgBox:       { position: 'relative', height: 160, overflow: 'hidden', backgroundColor: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center' },
     img:          { width: '100%', height: '100%', objectFit: 'cover', display: 'block' },
     imgPlaceholder:{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f1f5f9' },

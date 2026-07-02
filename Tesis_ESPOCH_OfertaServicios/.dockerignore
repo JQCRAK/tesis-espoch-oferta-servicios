@@ -1,0 +1,21 @@
+# No copiar dependencias ni builds locales dentro de la imagen
+**/node_modules
+**/dist
+**/build
+
+# Variables de entorno con secretos (se inyectan por docker-compose, no se copian)
+.env
+**/.env
+
+# Git y archivos pesados/innecesarios
+.git
+.gitignore
+*.zip
+repomix-output.md
+.expo
+
+# Logs y temporales del sistema
+**/*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db

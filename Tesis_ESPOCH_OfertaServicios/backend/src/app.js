@@ -29,6 +29,11 @@ app.get('/', (req, res) => {
     res.send('API de Graduados ESPOCH funcionando correctamente 🚀');
 });
 
+// Health check — usado por Docker para saber si el contenedor está sano
+app.get('/api/health', (req, res) => {
+    res.status(200).json({ status: 'ok', uptime: process.uptime() });
+});
+
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/perfil', require('./routes/perfilRoutes'));
 app.use('/api/proyectos', require('./routes/proyectoRoutes'));

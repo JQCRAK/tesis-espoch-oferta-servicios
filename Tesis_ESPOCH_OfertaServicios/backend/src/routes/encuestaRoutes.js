@@ -14,6 +14,7 @@ const guardGraduado = [protegerRuta, soloRol('graduado')];
 
 router.post  ('/encuestas',               ...guardAdmin, encuestaController.crearEncuesta);
 router.get   ('/encuestas',               ...guardAdmin, encuestaController.listarEncuestas);
+router.get   ('/encuestas-meta/anios-graduacion', ...guardAdmin, encuestaController.aniosGraduacionDisponibles);
 router.get   ('/encuestas/:id',           ...guardAdmin, encuestaController.obtenerEncuesta);
 router.patch ('/encuestas/:id',           ...guardAdmin, encuestaController.actualizarEncuesta);
 router.post  ('/encuestas/:id/duplicar',  ...guardAdmin, encuestaController.duplicarEncuesta);

@@ -37,9 +37,6 @@ const ESTADO_CFG = {
     cerrada:    { bg: '#f5f5f5', color: '#9e9e9e', label: 'Cerrada',    Ico: FaLock },
 };
 
-// ══════════════════════════════════════════════
-// HOOK ANCHO DE VENTANA
-// ══════════════════════════════════════════════
 const useWindowWidth = () => {
     const [width, setWidth] = useState(
         typeof window !== 'undefined' ? window.innerWidth : 1024
@@ -52,9 +49,6 @@ const useWindowWidth = () => {
     return width;
 };
 
-// ══════════════════════════════════════════════════════════════
-// ESTILOS GLOBALES — inyectados una sola vez
-// ══════════════════════════════════════════════════════════════
 if (typeof document !== 'undefined' && !document.getElementById('eg-estilos-globales')) {
     const st = document.createElement('style');
     st.id = 'eg-estilos-globales';
@@ -549,7 +543,14 @@ const PasoPreguntas = ({ encuesta, onAtras, onEnviar, isMobile }) => {
             }
             const r = resp[preg._id];
             const vacia = preg.tipo === 'checkboxes' ? (!r || r.length === 0) : (r === undefined || r === null || r === '');
-            if (vacia) { errores.push({ num }); continue; }
+            if (vacia) { errores.push({ num, motivo: 'vacia' }); continue; }
+            // Validación de límite en checkboxes
+            if (preg.tipo === 'checkboxes' && Number(preg.limiteSeleccion) > 0) {
+                if (r.length > Number(preg.limiteSeleccion)) {
+                    errores.push({ num, motivo: 'excede', lim: Number(preg.limiteSeleccion) });
+                    continue;
+                }
+            }
             if (preg.tipo === 'si_no' && preg.tieneCondicional) {
                 const elegido = conds[preg._id];
                 if (elegido === 'Sí' && preg.preguntasCondicionalSi?.length > 0) {
@@ -567,6 +568,12 @@ const PasoPreguntas = ({ encuesta, onAtras, onEnviar, isMobile }) => {
     const enviar = async () => {
         const errores = validar();
         if (errores.length > 0) {
+            const excedidas = errores.filter(e => e.motivo === 'excede');
+            if (excedidas.length > 0) {
+                const e0 = excedidas[0];
+                mostrarToast(`En la pregunta #${e0.num} marcaste más de ${e0.lim} opciones. El máximo permitido es ${e0.lim}.`);
+                return;
+            }
             const nums = [...new Set(errores.map(e => e.num))].sort((a, b) => a - b);
             const lista = nums.length <= 5 ? nums.map(n => `#${n}`).join(', ') : nums.slice(0, 5).map(n => `#${n}`).join(', ') + ` y ${nums.length - 5} más`;
             mostrarToast(`Faltan respuestas obligatorias en las preguntas: ${lista}.`);
@@ -606,14 +613,41 @@ const PasoPreguntas = ({ encuesta, onAtras, onEnviar, isMobile }) => {
                         <input type="radio" name={subId} value={op} checked={resp[subId] === op} onChange={() => setR(subId, op, tipo)} style={{ accentColor: ROJO }} />{op}
                     </label>
                 ))}
-                {tipo === 'checkboxes' && (opciones || []).map((op, k) => {
-                    const sel = (resp[subId] || []).includes(op);
+                {tipo === 'checkboxes' && (() => {
+                    const lim = Number(preg.limiteSeleccion) || 0;
+                    const seleccionadas = (resp[subId] || []).length;
+                    const limAlcanzado = lim > 0 && seleccionadas >= lim;
                     return (
-                        <label key={k} className="eg-opcion" style={{ display: 'flex', alignItems: 'center', gap: 7, cursor: 'pointer', fontSize: '0.78rem', marginBottom: 4, padding: '5px 8px', borderRadius: 4, border: `1px solid ${sel ? ROJO : 'transparent'}`, background: sel ? ROJO_CLARO : 'transparent', fontFamily: FONT_SANS }}>
-                            <input type="checkbox" checked={sel} onChange={() => { const a = resp[subId] || []; setR(subId, a.includes(op) ? a.filter(x => x !== op) : [...a, op], tipo); }} style={{ accentColor: ROJO }} />{op}
-                        </label>
+                        <>
+                            {lim > 0 && (
+                                <div style={{
+                                    background: limAlcanzado ? '#ffebee' : '#fff8e1',
+                                    border: `1px solid ${limAlcanzado ? '#ffcdd2' : '#ffe082'}`,
+                                    color: limAlcanzado ? '#c62828' : '#6d4c00',
+                                    padding: '5px 9px', borderRadius: 4, fontSize: '0.7rem', fontWeight: 600,
+                                    marginBottom: 5, fontFamily: FONT_SANS,
+                                }}>
+                                    {limAlcanzado
+                                        ? `Alcanzaste el máximo de ${lim} selecciones — desmarca una para cambiar.`
+                                        : `Máximo ${lim} opción${lim === 1 ? '' : 'es'} (${seleccionadas}/${lim}).`}
+                                </div>
+                            )}
+                            {(opciones || []).map((op, k) => {
+                                const sel = (resp[subId] || []).includes(op);
+                                const bloq = !sel && limAlcanzado;
+                                return (
+                                    <label key={k} className="eg-opcion" style={{ display: 'flex', alignItems: 'center', gap: 7, cursor: bloq ? 'not-allowed' : 'pointer', fontSize: '0.78rem', marginBottom: 4, padding: '5px 8px', borderRadius: 4, border: `1px solid ${sel ? ROJO : 'transparent'}`, background: sel ? ROJO_CLARO : 'transparent', fontFamily: FONT_SANS, opacity: bloq ? 0.55 : 1 }}>
+                                        <input type="checkbox" checked={sel} disabled={bloq} onChange={() => {
+                                            const a = resp[subId] || [];
+                                            if (a.includes(op)) setR(subId, a.filter(x => x !== op), tipo);
+                                            else if (lim === 0 || a.length < lim) setR(subId, [...a, op], tipo);
+                                        }} style={{ accentColor: ROJO }} />{op}
+                                    </label>
+                                );
+                            })}
+                        </>
                     );
-                })}
+                })()}
                 {tipo === 'escala' && (
                     <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
                         {[1, 2, 3, 4, 5].map(n => (
@@ -692,6 +726,11 @@ const PasoPreguntas = ({ encuesta, onAtras, onEnviar, isMobile }) => {
                 <p style={{ margin: '0 0 12px', fontSize: isMobile ? '0.85rem' : '0.87rem', fontWeight: '600', color: TEXTO, fontFamily: FONT_SANS, lineHeight: 1.45 }}>
                     <span style={{ color: ROJO, fontWeight: '700', marginRight: 6 }}>{num}.</span>
                     {preg.texto}{preg.obligatoria && <span style={{ color: ROJO, marginLeft: 3 }}>*</span>}
+                    {preg.tipo === 'checkboxes' && Number(preg.limiteSeleccion) > 0 && (
+                        <span style={{ marginLeft: 8, fontSize: '0.74rem', fontWeight: 700, color: '#6d4c00', background: '#fff8e1', padding: '2px 8px', borderRadius: 10, border: '1px solid #ffe082' }}>
+                            Marca máximo {preg.limiteSeleccion} {preg.limiteSeleccion === 1 ? 'opción' : 'opciones'}
+                        </span>
+                    )}
                 </p>
 
                 {preg.tipo === 'texto_libre' && (
@@ -727,27 +766,53 @@ const PasoPreguntas = ({ encuesta, onAtras, onEnviar, isMobile }) => {
                     </div>
                 )}
 
-                {preg.tipo === 'checkboxes' && (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                        {(preg.opciones || []).map((op, i) => {
-                            const sel = (resp[preg._id] || []).includes(op);
-                            return (
-                                <label key={i} className="eg-opcion" style={{
-                                    display: 'flex', alignItems: 'center', gap: 9, cursor: 'pointer',
-                                    padding: isMobile ? '10px 12px' : '9px 12px', borderRadius: 5, fontSize: '0.83rem', fontFamily: FONT_SANS,
-                                    background: sel ? ROJO_CLARO : '#FAFAFA',
-                                    border: `1.5px solid ${sel ? ROJO : GRIS_LN}`,
-                                    color: sel ? ROJO_OSC : TEXTO,
-                                    fontWeight: sel ? '600' : '400',
-                                    transition: 'all 0.12s',
+                {preg.tipo === 'checkboxes' && (() => {
+                    const lim = Number(preg.limiteSeleccion) || 0;
+                    const seleccionadas = (resp[preg._id] || []).length;
+                    const limAlcanzado = lim > 0 && seleccionadas >= lim;
+                    return (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                            {lim > 0 && (
+                                <div style={{
+                                    background: limAlcanzado ? '#ffebee' : '#fff8e1',
+                                    border: `1px solid ${limAlcanzado ? '#ffcdd2' : '#ffe082'}`,
+                                    color: limAlcanzado ? '#c62828' : '#6d4c00',
+                                    padding: '6px 10px', borderRadius: 4, fontSize: '0.72rem', fontWeight: 600,
+                                    marginBottom: 4, fontFamily: FONT_SANS,
                                 }}>
-                                    <input type="checkbox" checked={sel} onChange={() => setChk(preg._id, op)}
-                                        style={{ accentColor: ROJO, flexShrink: 0 }} />{op}
-                                </label>
-                            );
-                        })}
-                    </div>
-                )}
+                                    {limAlcanzado
+                                        ? `Alcanzaste el máximo de ${lim} selecciones — desmarca una para cambiar.`
+                                        : `Máximo ${lim} opción${lim === 1 ? '' : 'es'} (${seleccionadas}/${lim} seleccionada${seleccionadas === 1 ? '' : 's'}).`}
+                                </div>
+                            )}
+                            {(preg.opciones || []).map((op, i) => {
+                                const sel = (resp[preg._id] || []).includes(op);
+                                const bloq = !sel && limAlcanzado;
+                                return (
+                                    <label key={i} className="eg-opcion" style={{
+                                        display: 'flex', alignItems: 'center', gap: 9,
+                                        cursor: bloq ? 'not-allowed' : 'pointer',
+                                        padding: isMobile ? '10px 12px' : '9px 12px', borderRadius: 5, fontSize: '0.83rem', fontFamily: FONT_SANS,
+                                        background: sel ? ROJO_CLARO : (bloq ? '#f5f5f5' : '#FAFAFA'),
+                                        border: `1.5px solid ${sel ? ROJO : GRIS_LN}`,
+                                        color: sel ? ROJO_OSC : (bloq ? '#adb5bd' : TEXTO),
+                                        fontWeight: sel ? '600' : '400',
+                                        opacity: bloq ? 0.55 : 1,
+                                        transition: 'all 0.12s',
+                                    }}>
+                                        <input type="checkbox" checked={sel} disabled={bloq}
+                                            onChange={() => {
+                                                const a = resp[preg._id] || [];
+                                                if (a.includes(op)) setR(preg._id, a.filter(x => x !== op), preg.tipo);
+                                                else if (lim === 0 || a.length < lim) setR(preg._id, [...a, op], preg.tipo);
+                                            }}
+                                            style={{ accentColor: ROJO, flexShrink: 0 }} />{op}
+                                    </label>
+                                );
+                            })}
+                        </div>
+                    );
+                })()}
 
                 {preg.tipo === 'escala' && (
                     <div>

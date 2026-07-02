@@ -180,6 +180,13 @@ const GestionEstadisticas = () => {
         const totalDis = lista.filter(g => g.disponibilidad === 'disponible').length;
         const totalPub = lista.filter(g => g.perfilPublico).length;
         const totalEmp = tot - totalDis;
+        // Conteo por cada estado de disponibilidad (4 estados actuales)
+        const disponibilidadCounts = {
+            disponible:    lista.filter(g => g.disponibilidad === 'disponible').length,
+            trabajando:    lista.filter(g => g.disponibilidad === 'trabajando').length,
+            estudiando:    lista.filter(g => g.disponibilidad === 'estudiando').length,
+            no_disponible: lista.filter(g => g.disponibilidad === 'no_disponible').length,
+        };
 
         const cGe = {}, cAn = {}, cPr = {}, cCa = {}, cTe = {}, cAf = {}, cHa = {};
         lista.forEach(g => {
@@ -231,6 +238,7 @@ const GestionEstadisticas = () => {
             totalGraduados:    tot,
             totalDisponibles:  totalDis,
             totalPublicos:     totalPub,
+            disponibilidadCounts,
             tasaEmpleabilidad: tasaEmp,
             tasaVisibilidad:   tasaVis,
             porGenero:         Object.entries(cGe).map(([label, valor]) => ({ label, valor })).sort((a, b) => b.valor - a.valor),

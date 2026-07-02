@@ -44,13 +44,13 @@ const generarGrafica = async (tipoGrafica, datos, total, opciones = {}) => {
 
         const tmpC = createCanvas(100, 100);
         const tmpCtx = tmpC.getContext('2d');
-        tmpCtx.font = `bold ${FONT_SZ}px Arial`;
+        tmpCtx.font = `bold ${FONT_SZ}px "DejaVu Sans", "Liberation Sans", sans-serif`;
         const NUM_COL_W = Math.ceil(
             Math.max(...datos.map(d => tmpCtx.measureText(String(d.cantidad)).width), 20)
         ) + 4;
 
         const wrapText = (text) => {
-            tmpCtx.font = `${FONT_SZ}px Arial`;
+            tmpCtx.font = `${FONT_SZ}px "DejaVu Sans", "Liberation Sans", sans-serif`;
             const words = text.split(' ');
             const lines = [];
             let cur = '';
@@ -92,7 +92,7 @@ const generarGrafica = async (tipoGrafica, datos, total, opciones = {}) => {
             ctx.fillStyle = color;
             ctx.fillRect(xBox, midY - BOX_SZ / 2, BOX_SZ, BOX_SZ);
 
-            ctx.font = `${FONT_SZ}px Arial`;
+            ctx.font = `${FONT_SZ}px "DejaVu Sans", "Liberation Sans", sans-serif`;
             ctx.fillStyle = '#2c3e50';
             ctx.textAlign = 'left';
             ctx.textBaseline = 'middle';
@@ -100,7 +100,7 @@ const generarGrafica = async (tipoGrafica, datos, total, opciones = {}) => {
             const textStartY = midY - textBlockH / 2 + LINE_H / 2;
             lines.forEach((line, li) => ctx.fillText(line, xTxt, textStartY + li * LINE_H));
 
-            ctx.font = `bold ${FONT_SZ}px Arial`;
+            ctx.font = `bold ${FONT_SZ}px "DejaVu Sans", "Liberation Sans", sans-serif`;
             ctx.fillStyle = color;
             ctx.textAlign = 'right';
             ctx.textBaseline = 'middle';
@@ -164,7 +164,7 @@ const generarGrafica = async (tipoGrafica, datos, total, opciones = {}) => {
 
         const tmpC = createCanvas(100, 100);
         const tmpCtx = tmpC.getContext('2d');
-        tmpCtx.font = `${FONT_SZ}px Arial`;
+        tmpCtx.font = `${FONT_SZ}px "DejaVu Sans", "Liberation Sans", sans-serif`;
         const truncLabels = datos.map(d => d.opcion.length > 55 ? d.opcion.substring(0, 55) + '\u2026' : d.opcion);
         const maxTextW = Math.max(...truncLabels.map(l => tmpCtx.measureText(l).width), 80);
         const numW = 36;
@@ -198,7 +198,7 @@ const generarGrafica = async (tipoGrafica, datos, total, opciones = {}) => {
         ctx.lineWidth = 2;
         ctx.stroke();
 
-        ctx.font = `${FONT_SZ - 2}px Arial`;
+        ctx.font = `${FONT_SZ - 2}px "DejaVu Sans", "Liberation Sans", sans-serif`;
         ctx.fillStyle = '#6c757d';
         ctx.textAlign = 'center';
         gridTicks.forEach((v, gi) => {
@@ -218,13 +218,13 @@ const generarGrafica = async (tipoGrafica, datos, total, opciones = {}) => {
             ctx.roundRect ? ctx.roundRect(0, midY - boxW / 2, boxW, boxW, 2) : ctx.rect(0, midY - boxW / 2, boxW, boxW);
             ctx.fill();
 
-            ctx.font = `${FONT_SZ}px Arial`;
+            ctx.font = `${FONT_SZ}px "DejaVu Sans", "Liberation Sans", sans-serif`;
             ctx.fillStyle = '#2c3e50';
             ctx.textAlign = 'left';
             ctx.textBaseline = 'middle';
             ctx.fillText(label, boxW + GAP, midY);
 
-            ctx.font = `bold ${FONT_SZ}px Arial`;
+            ctx.font = `bold ${FONT_SZ}px "DejaVu Sans", "Liberation Sans", sans-serif`;
             ctx.fillStyle = '#2c3e50';
             ctx.textAlign = 'right';
             ctx.fillText(String(d.cantidad), legendW - 16, midY);
@@ -305,7 +305,7 @@ const generarGrafica = async (tipoGrafica, datos, total, opciones = {}) => {
 
         const tmpC4 = ccAp(100, 100);
         const tmpCtx4 = tmpC4.getContext('2d');
-        tmpCtx4.font = `${FONT_SZ}px Arial`;
+        tmpCtx4.font = `${FONT_SZ}px "DejaVu Sans", "Liberation Sans", sans-serif`;
         const wrapAp = (text) => {
             const words = text.split(' ');
             const lines = [];
@@ -370,7 +370,7 @@ const generarGrafica = async (tipoGrafica, datos, total, opciones = {}) => {
 
             // Texto ítem + total a la derecha
             const totalFila = Object.values(d.valores).reduce((s, v) => s + v, 0);
-            ctx.font = `${FONT_SZ}px Arial`;
+            ctx.font = `${FONT_SZ}px "DejaVu Sans", "Liberation Sans", sans-serif`;
             ctx.fillStyle = '#2c3e50';
             ctx.textAlign = 'left';
             ctx.textBaseline = 'middle';
@@ -379,7 +379,7 @@ const generarGrafica = async (tipoGrafica, datos, total, opciones = {}) => {
             lines.forEach((line, li) => ctx.fillText(line, PAD_L, textStartY + li * LINE_H));
 
             // Total de la fila (bold, alineado a derecha antes de las barras)
-            ctx.font = `bold ${FONT_SZ}px Arial`;
+            ctx.font = `bold ${FONT_SZ}px "DejaVu Sans", "Liberation Sans", sans-serif`;
             ctx.fillStyle = '#2c3e50';
             ctx.textAlign = 'right';
             ctx.fillText(String(totalFila), legendW - 4, midY);
@@ -486,14 +486,14 @@ const generarGrafica = async (tipoGrafica, datos, total, opciones = {}) => {
             ctx.fillRect(lx, ly - 5, 11, 11);
 
             // Texto opción
-            ctx.font = `${FONT_SZ - 2}px Arial`;
+            ctx.font = `${FONT_SZ - 2}px "DejaVu Sans", "Liberation Sans", sans-serif`;
             ctx.fillStyle = '#495057';
             ctx.textAlign = 'left';
             ctx.textBaseline = 'middle';
             ctx.fillText(s.opcion, lx + 15, ly);
 
             // Cantidad en color
-            ctx.font = `bold ${FONT_SZ - 2}px Arial`;
+            ctx.font = `bold ${FONT_SZ - 2}px "DejaVu Sans", "Liberation Sans", sans-serif`;
             ctx.fillStyle = s.color;
             const txtW = ctx.measureText(s.opcion).width;
             ctx.fillText(`(${s.cantidad})`, lx + 15 + txtW + 4, ly);
@@ -503,7 +503,7 @@ const generarGrafica = async (tipoGrafica, datos, total, opciones = {}) => {
         const barTop = PAD_V + LEG_H + ETIQ_H;
         if (hayEtiquetas) {
             const etiqY = PAD_V + LEG_H + ETIQ_H / 2 + 2;
-            ctx.font = `italic ${FONT_SZ - 4}px Arial`;
+            ctx.font = `italic ${FONT_SZ - 4}px "DejaVu Sans", "Liberation Sans", sans-serif`;
             ctx.fillStyle = '#6c757d';
             ctx.textBaseline = 'middle';
             if (etiquetaMin) {
@@ -528,7 +528,7 @@ const generarGrafica = async (tipoGrafica, datos, total, opciones = {}) => {
 
             // % dentro si hay espacio
             if (s.pct >= 6) {
-                ctx.font = `bold ${FONT_SZ - 3}px Arial`;
+                ctx.font = `bold ${FONT_SZ - 3}px "DejaVu Sans", "Liberation Sans", sans-serif`;
                 ctx.fillStyle = '#ffffff';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
@@ -548,7 +548,7 @@ const generarGrafica = async (tipoGrafica, datos, total, opciones = {}) => {
         segmentos.forEach((s) => {
             if (s.pct === 0) return;
             const segW = Math.round((s.pct / 100) * BAR_W);
-            ctx.font = `${FONT_SZ - 4}px Arial`;
+            ctx.font = `${FONT_SZ - 4}px "DejaVu Sans", "Liberation Sans", sans-serif`;
             ctx.fillStyle = '#6c757d';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'top';

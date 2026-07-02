@@ -31,6 +31,7 @@
     "multer-storage-cloudinary": "^4.0.0",
     "node-cron": "^4.2.1",
     "nodemailer": "^8.0.7",
+    "pdfkit": "^0.15.0",
     "pizzip": "^3.2.0",
     "resend": "^6.12.4",
     "tesseract.js": "^7.0.0"

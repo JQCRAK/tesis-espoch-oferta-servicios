@@ -30,6 +30,14 @@ const EncuestaSchema = new mongoose.Schema({
         required: true
     },
 
+    // Años de graduación a los que va dirigida la encuesta.
+    // Array vacío = para TODOS los años (sin filtro).
+    // Solo aplica cuando tipo === 'graduados'.
+    aniosDirigidos: {
+        type: [Number],
+        default: [],
+    },
+
     estado: {
         type: String,
         enum: ['borrador', 'activa', 'cerrada'],

@@ -16,7 +16,7 @@ const crearEncuesta = async (req, res) => {
         const adminId = req.usuario?.id || req.usuario?._id;
         if (!adminId) return res.status(401).json({ msg: 'Usuario no autenticado' });
 
-        const { titulo, descripcion, consentimientoInformado, tipo, fechaInicio, fechaCierre } = req.body;
+        const { titulo, descripcion, consentimientoInformado, tipo, fechaInicio, fechaCierre, aniosDirigidos } = req.body;
 
         if (!titulo || !tipo || !fechaInicio || !fechaCierre)
             return res.status(400).json({ msg: 'Campos obligatorios faltantes' });
@@ -35,7 +35,10 @@ const crearEncuesta = async (req, res) => {
             creadoPor: adminId,
             totalRespuestas: 0,
             porcentajeRespuestas: 0,
-            respondieron: []
+            respondieron: [],
+            aniosDirigidos: Array.isArray(aniosDirigidos)
+                ? aniosDirigidos.map(Number).filter(n => Number.isFinite(n))
+                : [],
         });
 
         await nuevaEncuesta.save();
@@ -88,19 +91,30 @@ const listarEncuestasGraduado = async (req, res) => {
         const graduadoId = req.usuario?.id || req.usuario?._id;
         if (!graduadoId) return res.status(401).json({ msg: 'No autenticado' });
 
-        const graduado = await Graduado.findById(graduadoId).select('tesisVerificada');
+        const graduado = await Graduado.findById(graduadoId).select('tesisVerificada anioGraduacion');
         if (!graduado) return res.status(404).json({ msg: 'Graduado no encontrado' });
 
         if (!graduado.tesisVerificada) {
             return res.json({ encuestas: [], tesisVerificada: false });
         }
 
-        // Traer todas las encuestas de graduados (activas y cerradas)
-        const encuestas = await Encuesta.find({
+        // Filtro por audiencia (años de graduación):
+        //   - aniosDirigidos vacío  → encuesta para TODOS
+        //   - aniosDirigidos con N años → solo graduados cuyo anioGraduacion está en N
+        const anioGrad = Number(graduado.anioGraduacion);
+        const filtroEncuesta = {
             estado: { $in: ['activa', 'cerrada'] },
             tipo: 'graduados',
-        })
-            .select('titulo descripcion fechaInicio fechaCierre estado totalRespuestas consentimientoInformado')
+            $or: [
+                { aniosDirigidos: { $exists: false } },
+                { aniosDirigidos: { $size: 0 } },
+                ...(Number.isFinite(anioGrad) ? [{ aniosDirigidos: anioGrad }] : []),
+            ],
+        };
+
+        // Traer encuestas de graduados (activas y cerradas) dirigidas a este graduado
+        const encuestas = await Encuesta.find(filtroEncuesta)
+            .select('titulo descripcion fechaInicio fechaCierre estado totalRespuestas consentimientoInformado aniosDirigidos')
             .sort({ createdAt: -1 });
 
         const resultados = await Promise.all(
@@ -163,7 +177,7 @@ const actualizarEncuesta = async (req, res) => {
         const { id } = req.params;
         const adminId = req.usuario?.id || req.usuario?._id;
         const adminEmail = req.usuario?.email || 'desconocido';
-        const { titulo, descripcion, consentimientoInformado, estado, fechaInicio, fechaCierre } = req.body;
+        const { titulo, descripcion, consentimientoInformado, estado, fechaInicio, fechaCierre, aniosDirigidos } = req.body;
 
         const encuesta = await Encuesta.findById(id);
         if (!encuesta) return res.status(404).json({ msg: 'Encuesta no encontrada' });
@@ -187,6 +201,11 @@ const actualizarEncuesta = async (req, res) => {
         if (estado) encuesta.estado = estado;
         if (fechaInicio) encuesta.fechaInicio = fechaInicio;
         if (fechaCierre) encuesta.fechaCierre = fechaCierre;
+        if (aniosDirigidos !== undefined) {
+            encuesta.aniosDirigidos = Array.isArray(aniosDirigidos)
+                ? aniosDirigidos.map(Number).filter(n => Number.isFinite(n))
+                : [];
+        }
 
         await encuesta.save();
 
@@ -243,7 +262,8 @@ const duplicarEncuesta = async (req, res) => {
             creadoPor: adminId,
             totalRespuestas: 0,
             porcentajeRespuestas: 0,
-            respondieron: []
+            respondieron: [],
+            aniosDirigidos: encuestaOriginal.aniosDirigidos || [],
         });
 
         await nuevaEncuesta.save();
@@ -455,6 +475,7 @@ const crearPregunta = async (req, res) => {
             texto,
             tipo: tipo || 'opcion_multiple',
             opciones: opciones || [],
+            limiteSeleccion: Number(req.body.limiteSeleccion) || 0,
             escalaMin: escalaMin || 1,
             escalaMax: escalaMax || 5,
             escalaEtiquetas: escalaEtiquetas || { min: '', max: '' },
@@ -503,6 +524,22 @@ const obtenerPreguntas = async (req, res) => {
 const actualizarPregunta = async (req, res) => {
     try {
         const { preguntaId } = req.params;
+
+        // ── Atajo: si solo se actualiza el orden (reordenamiento desde el admin),
+        //    usamos findByIdAndUpdate para evitar disparar el hook pre('save')
+        //    que valida estructura completa. Así reordenar no requiere que la
+        //    pregunta cumpla TODAS las reglas de validación de creación.
+        const bodyKeys = Object.keys(req.body || {});
+        if (bodyKeys.length === 1 && bodyKeys[0] === 'orden') {
+            const r = await Pregunta.findByIdAndUpdate(
+                preguntaId,
+                { $set: { orden: Number(req.body.orden) || 0 } },
+                { new: true, runValidators: false },
+            );
+            if (!r) return res.status(404).json({ msg: 'Pregunta no encontrada' });
+            return res.json({ msg: 'Orden actualizado', pregunta: r });
+        }
+
         const {
             texto, tipo, opciones,
             escalaMin, escalaMax, obligatoria, orden,
@@ -518,6 +555,7 @@ const actualizarPregunta = async (req, res) => {
         if (texto !== undefined) pregunta.texto = texto;
         if (tipo !== undefined) pregunta.tipo = tipo;
         if (opciones !== undefined) pregunta.opciones = opciones;
+        if (req.body.limiteSeleccion !== undefined) pregunta.limiteSeleccion = Number(req.body.limiteSeleccion) || 0;
         if (escalaMin !== undefined) pregunta.escalaMin = escalaMin;
         if (escalaMax !== undefined) pregunta.escalaMax = escalaMax;
         if (obligatoria !== undefined) pregunta.obligatoria = obligatoria;
@@ -848,10 +886,33 @@ const notificarEmpleadores = async (req, res) => {
         res.status(500).json({ msg: 'Error al notificar empleadores', error: error.message });
     }
 };
+// ═══════════════════════════════════════════════════════════
+// AÑOS DE GRADUACIÓN DISPONIBLES (para selector de audiencia)
+// Devuelve los años distintos de anioGraduacion entre graduados con
+// tesis verificada, ordenados de más reciente a más antiguo.
+// ═══════════════════════════════════════════════════════════
+const aniosGraduacionDisponibles = async (req, res) => {
+    try {
+        const anios = await Graduado.distinct('anioGraduacion', {
+            tesisVerificada: true,
+            anioGraduacion: { $ne: null },
+        });
+        const ordenados = anios
+            .map(Number)
+            .filter(n => Number.isFinite(n))
+            .sort((a, b) => b - a);
+        res.json({ anios: ordenados });
+    } catch (error) {
+        console.error('Error en aniosGraduacionDisponibles:', error);
+        res.status(500).json({ msg: 'Error al cargar años', error: error.message });
+    }
+};
+
 module.exports = {
     crearEncuesta,
     listarEncuestas,
     listarEncuestasGraduado,
+    aniosGraduacionDisponibles,
     obtenerEncuesta,
     actualizarEncuesta,
     duplicarEncuesta,

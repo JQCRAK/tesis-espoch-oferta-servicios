@@ -181,10 +181,12 @@ const ModalVistaPrevia = ({ visible, encuesta, onCerrar }) => {
         if (tipo === 'si_no') setCondicionalesVisibles((prev) => ({ ...prev, [pregId]: valor }));
     };
 
-    const manejarCheckbox = (pregId, opcion) => {
+    const manejarCheckbox = (pregId, opcion, limite = 0) => {
         setRespuestas((prev) => {
             const actual = prev[pregId] || [];
             if (actual.includes(opcion)) return { ...prev, [pregId]: actual.filter((o) => o !== opcion) };
+            // Si hay límite y ya se alcanzó, no agregar más
+            if (limite > 0 && actual.length >= limite) return prev;
             return { ...prev, [pregId]: [...actual, opcion] };
         });
     };
@@ -302,25 +304,50 @@ const ModalVistaPrevia = ({ visible, encuesta, onCerrar }) => {
 
                 {preg.tipo === 'checkboxes' && (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                        {(preg.opciones || []).map((op, i) => {
-                            const sel = (respuestas[preg._id] || []).includes(op);
+                        {(() => {
+                            const lim = Number(preg.limiteSeleccion) || 0;
+                            const seleccionadas = (respuestas[preg._id] || []).length;
+                            const limiteAlcanzado = lim > 0 && seleccionadas >= lim;
                             return (
-                                <label key={i} style={{
-                                    display: 'flex', alignItems: 'center', gap: 9, cursor: 'pointer',
-                                    padding: '9px 12px', borderRadius: 5, fontSize: '0.83rem',
-                                    background: sel ? '#ffebee' : '#fafafa',
-                                    border: `1.5px solid ${sel ? 'var(--color-espoch-rojo)' : '#e9ecef'}`,
-                                    color: sel ? 'var(--color-espoch-rojo)' : '#2c3e50',
-                                    fontWeight: sel ? '600' : '400',
-                                    transition: 'all 0.12s',
-                                }}>
-                                    <input type="checkbox" checked={sel}
-                                        onChange={() => manejarCheckbox(preg._id, op)}
-                                        style={{ accentColor: 'var(--color-espoch-rojo)', flexShrink: 0 }} />
-                                    {op}
-                                </label>
+                                <>
+                                    {lim > 0 && (
+                                        <div style={{
+                                            background: limiteAlcanzado ? '#ffebee' : '#fff8e1',
+                                            border: `1px solid ${limiteAlcanzado ? '#ffcdd2' : '#ffe082'}`,
+                                            color: limiteAlcanzado ? '#c62828' : '#6d4c00',
+                                            padding: '6px 10px', borderRadius: 5, fontSize: '0.72rem', fontWeight: 600,
+                                        }}>
+                                            {limiteAlcanzado
+                                                ? `Has alcanzado el máximo de ${lim} selecciones — desmarca una para cambiar.`
+                                                : `Puedes marcar máximo ${lim} opción${lim === 1 ? '' : 'es'} (${seleccionadas}/${lim} seleccionada${seleccionadas === 1 ? '' : 's'}).`}
+                                        </div>
+                                    )}
+                                    {(preg.opciones || []).map((op, i) => {
+                                        const sel = (respuestas[preg._id] || []).includes(op);
+                                        const bloqueado = !sel && limiteAlcanzado;
+                                        return (
+                                            <label key={i} style={{
+                                                display: 'flex', alignItems: 'center', gap: 9,
+                                                cursor: bloqueado ? 'not-allowed' : 'pointer',
+                                                padding: '9px 12px', borderRadius: 5, fontSize: '0.83rem',
+                                                background: sel ? '#ffebee' : (bloqueado ? '#f5f5f5' : '#fafafa'),
+                                                border: `1.5px solid ${sel ? 'var(--color-espoch-rojo)' : '#e9ecef'}`,
+                                                color: sel ? 'var(--color-espoch-rojo)' : (bloqueado ? '#adb5bd' : '#2c3e50'),
+                                                fontWeight: sel ? '600' : '400',
+                                                opacity: bloqueado ? 0.55 : 1,
+                                                transition: 'all 0.12s',
+                                            }}>
+                                                <input type="checkbox" checked={sel}
+                                                    disabled={bloqueado}
+                                                    onChange={() => manejarCheckbox(preg._id, op, lim)}
+                                                    style={{ accentColor: 'var(--color-espoch-rojo)', flexShrink: 0 }} />
+                                                {op}
+                                            </label>
+                                        );
+                                    })}
+                                </>
                             );
-                        })}
+                        })()}
                     </div>
                 )}
 
@@ -512,6 +539,7 @@ const FormularioPregunta = ({ visible, encuestaId, preguntaEditar, onGuardar, on
     const esEdicion = !!preguntaEditar;
     const estadoInicial = {
         texto: '', tipo: 'opcion_multiple', opciones: ['', ''], obligatoria: true,
+        limiteSeleccion: 0,
         esMatriz: false, items: [''], descripcionMatriz: '', etiquetaMin: '', etiquetaMax: '',
         tieneCondicional: false,
         preguntasCondicionalSi: [''], tiposCondicionalSi: ['texto_libre'], opcionesCondicionalSi: [[]],
@@ -535,6 +563,7 @@ const FormularioPregunta = ({ visible, encuestaId, preguntaEditar, onGuardar, on
                 texto: preguntaEditar.texto || '', tipo: preguntaEditar.tipo || 'opcion_multiple',
                 opciones: preguntaEditar.opciones?.length >= 2 ? preguntaEditar.opciones : ['', ''],
                 obligatoria: preguntaEditar.obligatoria ?? true,
+                limiteSeleccion: Number(preguntaEditar.limiteSeleccion) || 0,
                 esMatriz: preguntaEditar.esMatriz || false,
                 items: preguntaEditar.items?.length > 0 ? preguntaEditar.items : [''],
                 descripcionMatriz: preguntaEditar.descripcionMatriz || '',
@@ -595,6 +624,7 @@ const FormularioPregunta = ({ visible, encuestaId, preguntaEditar, onGuardar, on
                 texto: form.texto.trim(), tipo: form.tipo,
                 opciones: (form.tipo === 'opcion_multiple' || form.tipo === 'checkboxes') ? form.opciones.filter((o) => o.trim()) : (form.tipo === 'si_no' ? ['Sí', 'No'] : []),
                 obligatoria: form.obligatoria,
+                limiteSeleccion: form.tipo === 'checkboxes' ? (Number(form.limiteSeleccion) || 0) : 0,
                 esMatriz: (form.tipo === 'escala' || form.tipo === 'opcion_multiple') ? form.esMatriz : false,
                 items: form.esMatriz ? form.items.filter((i) => i.trim()) : [],
                 descripcionMatriz: form.esMatriz ? form.descripcionMatriz.trim() : '',
@@ -724,6 +754,33 @@ const FormularioPregunta = ({ visible, encuestaId, preguntaEditar, onGuardar, on
                                 </div>
                             ))}
                             <button onClick={() => setForm({ ...form, opciones: [...form.opciones, ''] })} style={{ fontSize: '0.75rem', padding: '6px 10px', background: '#e3f2fd', color: '#1565c0', border: '1px solid #bbdefb', borderRadius: 4, cursor: 'pointer', fontWeight: '600' }}>+ Opción</button>
+
+                            {/* Límite de selección */}
+                            <div style={{ marginTop: 14, padding: 10, background: '#fff8e1', border: '1px solid #ffe082', borderRadius: 6 }}>
+                                <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: '700', marginBottom: 4, color: '#5d4037' }}>
+                                    Límite de selecciones
+                                </label>
+                                <p style={{ margin: '0 0 8px', fontSize: '0.7rem', color: '#6d4c00' }}>
+                                    ¿Cuántas opciones puede marcar el encuestado como máximo? Escribe <strong>0</strong> para no poner límite.
+                                </p>
+                                <input
+                                    type="number"
+                                    min={0}
+                                    max={Math.max(form.opciones.length, 0)}
+                                    value={form.limiteSeleccion ?? 0}
+                                    onChange={(e) => {
+                                        let v = parseInt(e.target.value, 10);
+                                        if (isNaN(v) || v < 0) v = 0;
+                                        setForm({ ...form, limiteSeleccion: v });
+                                    }}
+                                    style={{ width: 120, padding: '7px 10px', border: '1px solid #ffe082', borderRadius: 4, fontSize: '0.85rem', outline: 'none', fontWeight: 700 }}
+                                />
+                                <span style={{ marginLeft: 10, fontSize: '0.72rem', color: '#6d4c00' }}>
+                                    {Number(form.limiteSeleccion) > 0
+                                        ? `Máximo ${form.limiteSeleccion} de ${form.opciones.length} opciones`
+                                        : 'Sin límite (puede marcar todas)'}
+                                </span>
+                            </div>
                         </div>
                     )}
                     {form.esMatriz && (
@@ -835,6 +892,9 @@ const ModalPreguntas = ({ visible, encuestaId, onCerrar }) => {
     const [loading, setLoading] = useState(false);
     const [modalForm, setModalForm] = useState({ visible: false, pregunta: null });
     const [confirmarElim, setConfirmarElim] = useState({ visible: false, pregId: null });
+    // Estado para drag-and-drop de preguntas
+    const [draggingId, setDraggingId] = useState(null);
+    const [dragOverId, setDragOverId] = useState(null);
 
     useEffect(() => { if (visible && encuestaId) cargarPreguntas(); }, [visible, encuestaId]);
 
@@ -847,16 +907,49 @@ const ModalPreguntas = ({ visible, encuestaId, onCerrar }) => {
         finally { setLoading(false); }
     };
 
-    const manejarMover = async (pregId, dir) => {
-        const idx = preguntas.findIndex((p) => p._id === pregId);
-        if ((dir === 'arriba' && idx === 0) || (dir === 'abajo' && idx === preguntas.length - 1)) return;
-        const nuevas = [...preguntas];
-        const target = dir === 'arriba' ? idx - 1 : idx + 1;
-        [nuevas[idx], nuevas[target]] = [nuevas[target], nuevas[idx]];
-        for (let i = 0; i < nuevas.length; i++) {
-            try { await axios.patch(`${API}/preguntas/${nuevas[i]._id}`, { orden: i }, { headers: hdrs() }); } catch (e) { console.error(e); }
+    // ── Drag-and-drop: mueve la pregunta arrastrada a la posición destino.
+    //    Reordena localmente al instante y persiste en el backend solo las
+    //    preguntas cuyo orden efectivamente cambió.
+    const manejarDrop = async (targetId) => {
+        const srcId = draggingId;
+        setDraggingId(null);
+        setDragOverId(null);
+        if (!srcId || srcId === targetId) return;
+
+        const idxSrc = preguntas.findIndex((p) => p._id === srcId);
+        const idxDst = preguntas.findIndex((p) => p._id === targetId);
+        if (idxSrc === -1 || idxDst === -1) return;
+
+        // Reordenar localmente: sacar el arrastrado e insertarlo en destino
+        const nuevas = preguntas.slice();
+        const [movido] = nuevas.splice(idxSrc, 1);
+        nuevas.splice(idxDst, 0, movido);
+
+        // Calcular qué preguntas cambiaron de orden (para PATCHear solo esas)
+        const cambios = [];
+        const conOrden = nuevas.map((p, i) => {
+            if (preguntas[i] && preguntas[i]._id !== p._id) {
+                cambios.push({ id: p._id, orden: i });
+            }
+            return { ...p, orden: i };
+        });
+
+        // UI inmediata
+        setPreguntas(conOrden);
+
+        // Persistir en background (solo las que cambiaron)
+        try {
+            await Promise.all(
+                cambios.map((c) =>
+                    axios.patch(`${API}/preguntas/${c.id}`, { orden: c.orden }, { headers: hdrs() })
+                )
+            );
+        } catch (e) {
+            console.error('[Drop] Error:', e.response?.data?.msg || e.message);
+            // Revertir
+            setPreguntas(preguntas);
+            alert('No se pudo guardar el nuevo orden. Intenta de nuevo.');
         }
-        setPreguntas(nuevas);
     };
 
     const manejarEliminar = async () => {
@@ -882,15 +975,50 @@ const ModalPreguntas = ({ visible, encuestaId, onCerrar }) => {
                     <button onClick={onCerrar} style={{ background: 'none', border: 'none', fontSize: '1.3rem', cursor: 'pointer', color: '#adb5bd' }}>×</button>
                 </div>
                 <div style={{ padding: '16px 20px' }}>
-                    <button onClick={() => setModalForm({ visible: true, pregunta: null })} style={{ width: '100%', padding: '10px', marginBottom: 12, background: 'var(--color-espoch-rojo)', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontWeight: '600', fontSize: '0.85rem' }}>+ Agregar pregunta</button>
+                    <button onClick={() => setModalForm({ visible: true, pregunta: null })} style={{ width: '100%', padding: '10px', marginBottom: 8, background: 'var(--color-espoch-rojo)', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontWeight: '600', fontSize: '0.85rem' }}>+ Agregar pregunta</button>
+                    {preguntas.length > 1 && (
+                        <p style={{ margin: '0 0 12px', fontSize: '0.7rem', color: '#6c757d', textAlign: 'center', fontStyle: 'italic' }}>
+                            <span style={{ color: '#adb5bd', fontWeight: 700, marginRight: 4 }}>⋮⋮</span>
+                            Arrastra desde el icono para reordenar las preguntas
+                        </p>
+                    )}
                     {loading ? <p style={{ textAlign: 'center', color: '#adb5bd' }}>Cargando...</p>
                         : preguntas.length === 0 ? <p style={{ textAlign: 'center', color: '#adb5bd', padding: '15px' }}>Sin preguntas</p>
                             : (
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                                     {preguntas.map((preg, idx) => (
-                                        <div key={preg._id}>
-                                            <div style={{ border: `1px solid ${preg.esMatriz ? '#c5cae9' : '#dee2e6'}`, borderRadius: 8, padding: 10, background: preg.esMatriz ? '#f8f9ff' : '#f8f9fa' }}>
+                                        <div
+                                            key={preg._id}
+                                            draggable
+                                            onDragStart={() => setDraggingId(preg._id)}
+                                            onDragEnd={() => { setDraggingId(null); setDragOverId(null); }}
+                                            onDragOver={(e) => { e.preventDefault(); if (draggingId && draggingId !== preg._id) setDragOverId(preg._id); }}
+                                            onDragLeave={() => { if (dragOverId === preg._id) setDragOverId(null); }}
+                                            onDrop={(e) => { e.preventDefault(); manejarDrop(preg._id); }}
+                                            style={{
+                                                opacity: draggingId === preg._id ? 0.45 : 1,
+                                                transition: 'opacity 0.12s, transform 0.12s',
+                                                transform: dragOverId === preg._id && draggingId !== preg._id ? 'translateY(2px)' : 'none',
+                                            }}
+                                        >
+                                            <div style={{
+                                                border: `1px solid ${dragOverId === preg._id && draggingId !== preg._id ? 'var(--color-espoch-rojo)' : (preg.esMatriz ? '#c5cae9' : '#dee2e6')}`,
+                                                borderTop: dragOverId === preg._id && draggingId !== preg._id ? '3px solid var(--color-espoch-rojo)' : (preg.esMatriz ? '1px solid #c5cae9' : '1px solid #dee2e6'),
+                                                borderRadius: 8,
+                                                padding: 10,
+                                                background: preg.esMatriz ? '#f8f9ff' : '#f8f9fa',
+                                                boxShadow: dragOverId === preg._id && draggingId !== preg._id ? '0 2px 8px rgba(190, 30, 45, 0.18)' : 'none',
+                                            }}>
                                                 <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
+                                                    <div
+                                                        title="Arrastra para reordenar"
+                                                        style={{
+                                                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                            width: 22, alignSelf: 'stretch', cursor: 'grab',
+                                                            color: '#adb5bd', fontSize: '1.05rem', userSelect: 'none',
+                                                            flexShrink: 0, fontWeight: 700, letterSpacing: -2,
+                                                        }}
+                                                    >⋮⋮</div>
                                                     <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'var(--color-espoch-rojo)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: '700', flexShrink: 0 }}>{idx + 1}</div>
                                                     <div style={{ flex: 1 }}>
                                                         <p style={{ margin: '0 0 3px', fontSize: '0.8rem', fontWeight: '700', color: '#2c3e50' }}>{preg.texto}</p>
@@ -909,9 +1037,11 @@ const ModalPreguntas = ({ visible, encuestaId, onCerrar }) => {
                                                             </div>
                                                         )}
                                                     </div>
-                                                    <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                                                        <button onClick={() => manejarMover(preg._id, 'arriba')} disabled={idx === 0} style={{ width: 26, height: 26, borderRadius: 4, border: '1px solid #dee2e6', background: 'white', cursor: 'pointer', fontSize: '0.65rem', opacity: idx === 0 ? 0.4 : 1 }}>↑</button>
-                                                        <button onClick={() => manejarMover(preg._id, 'abajo')} disabled={idx === preguntas.length - 1} style={{ width: 26, height: 26, borderRadius: 4, border: '1px solid #dee2e6', background: 'white', cursor: 'pointer', fontSize: '0.65rem', opacity: idx === preguntas.length - 1 ? 0.4 : 1 }}>↓</button>
+                                                    <div
+                                                        style={{ display: 'flex', flexDirection: 'column', gap: 2 }}
+                                                        draggable={false}
+                                                        onDragStart={(e) => e.stopPropagation()}
+                                                    >
                                                         <button onClick={() => setModalForm({ visible: true, pregunta: preg })} style={{ width: 26, height: 26, borderRadius: 4, border: '1px solid #bbdefb', background: '#e3f2fd', cursor: 'pointer', color: '#1565c0', fontSize: '0.65rem' }}>✏️</button>
                                                         <button onClick={() => setConfirmarElim({ visible: true, pregId: preg._id })} style={{ width: 26, height: 26, borderRadius: 4, border: '1px solid #ffcdd2', background: '#ffebee', cursor: 'pointer', color: '#c62828', fontSize: '0.65rem' }}>🗑</button>
                                                     </div>
@@ -957,18 +1087,43 @@ const ModalPreguntas = ({ visible, encuestaId, onCerrar }) => {
 const ModalEncuesta = ({ visible, encuesta, tipoActivo, onGuardar, onCerrar }) => {
     const consentimientoDefault = tipoActivo === 'empleadores' ? CONSENTIMIENTO_EMPLEADORES_DEFAULT : CONSENTIMIENTO_DEFAULT;
 
-    const [form, setForm] = useState({ titulo: '', descripcion: '', consentimientoInformado: consentimientoDefault, fechaInicio: '', fechaCierre: '', estado: 'borrador' });
+    const [form, setForm] = useState({ titulo: '', descripcion: '', consentimientoInformado: consentimientoDefault, fechaInicio: '', fechaCierre: '', estado: 'borrador', aniosDirigidos: [] });
     const [error, setError] = useState('');
+    const [aniosDisponibles, setAniosDisponibles] = useState([]);
+
+    // Cargar años con graduados verificados (solo cuando es encuesta de graduados)
+    useEffect(() => {
+        if (!visible || tipoActivo !== 'graduados') return;
+        axios.get(`${API}/encuestas-meta/anios-graduacion`, { headers: hdrs() })
+            .then(r => setAniosDisponibles(r.data?.anios || []))
+            .catch(e => console.error('[Años] Error:', e));
+    }, [visible, tipoActivo]);
 
     useEffect(() => {
         if (encuesta) {
             const fmt = (d) => d ? new Date(d).toISOString().split('T')[0] : '';
-            setForm({ titulo: encuesta.titulo, descripcion: encuesta.descripcion || '', consentimientoInformado: encuesta.consentimientoInformado || consentimientoDefault, fechaInicio: fmt(encuesta.fechaInicio), fechaCierre: fmt(encuesta.fechaCierre), estado: encuesta.estado });
+            setForm({
+                titulo: encuesta.titulo,
+                descripcion: encuesta.descripcion || '',
+                consentimientoInformado: encuesta.consentimientoInformado || consentimientoDefault,
+                fechaInicio: fmt(encuesta.fechaInicio),
+                fechaCierre: fmt(encuesta.fechaCierre),
+                estado: encuesta.estado,
+                aniosDirigidos: Array.isArray(encuesta.aniosDirigidos) ? encuesta.aniosDirigidos.map(Number) : [],
+            });
         } else {
-            setForm({ titulo: '', descripcion: '', consentimientoInformado: consentimientoDefault, fechaInicio: '', fechaCierre: '', estado: 'borrador' });
+            setForm({ titulo: '', descripcion: '', consentimientoInformado: consentimientoDefault, fechaInicio: '', fechaCierre: '', estado: 'borrador', aniosDirigidos: [] });
         }
         setError('');
     }, [encuesta, visible, tipoActivo]);
+
+    const toggleAnio = (anio) => {
+        setForm(prev => {
+            const set = new Set(prev.aniosDirigidos || []);
+            if (set.has(anio)) set.delete(anio); else set.add(anio);
+            return { ...prev, aniosDirigidos: Array.from(set).sort((a, b) => b - a) };
+        });
+    };
 
     const manejarGuardar = () => {
         setError('');
@@ -1023,6 +1178,51 @@ const ModalEncuesta = ({ visible, encuesta, tipoActivo, onGuardar, onCerrar }) =
                             <option value="cerrada">Cerrada</option>
                         </select>
                     </div>
+
+                    {/* AUDIENCIA — años de graduación destinatarios (solo encuestas de graduados) */}
+                    {tipoActivo === 'graduados' && (
+                        <div style={{ marginBottom: 12, padding: 12, background: '#f0f7ff', border: '1px solid #bee3f8', borderRadius: 6 }}>
+                            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '700', marginBottom: 4, color: '#1565c0' }}>
+                                Dirigida a — Años de graduación
+                            </label>
+                            <p style={{ margin: '0 0 8px', fontSize: '0.7rem', color: '#4a6fa5', lineHeight: 1.45 }}>
+                                Marca los años de graduación que deben ver esta encuesta. Si <strong>NO marcas ninguno</strong>, la encuesta se mostrará a <strong>TODOS</strong> los graduados verificados.
+                            </p>
+                            {aniosDisponibles.length === 0 ? (
+                                <p style={{ margin: 0, fontSize: '0.72rem', color: '#7f8c8d', fontStyle: 'italic' }}>
+                                    Aún no hay graduados con tesis verificada y año registrado.
+                                </p>
+                            ) : (
+                                <>
+                                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                                        {aniosDisponibles.map(anio => {
+                                            const sel = form.aniosDirigidos?.includes(anio);
+                                            return (
+                                                <label key={anio} style={{
+                                                    display: 'inline-flex', alignItems: 'center', gap: 5,
+                                                    padding: '5px 10px', borderRadius: 6, cursor: 'pointer',
+                                                    background: sel ? '#1565c0' : 'white',
+                                                    color: sel ? 'white' : '#1565c0',
+                                                    border: `1px solid ${sel ? '#1565c0' : '#bee3f8'}`,
+                                                    fontSize: '0.75rem', fontWeight: 700,
+                                                    transition: 'all 0.12s',
+                                                }}>
+                                                    <input type="checkbox" checked={!!sel} onChange={() => toggleAnio(anio)} style={{ accentColor: '#1565c0' }} />
+                                                    {anio}
+                                                </label>
+                                            );
+                                        })}
+                                    </div>
+                                    <p style={{ margin: '8px 0 0', fontSize: '0.7rem', color: form.aniosDirigidos?.length > 0 ? '#1565c0' : '#7f8c8d', fontStyle: 'italic', fontWeight: 600 }}>
+                                        {form.aniosDirigidos?.length > 0
+                                            ? `Solo verán esta encuesta los graduados de: ${form.aniosDirigidos.join(', ')}`
+                                            : 'Esta encuesta se mostrará a TODOS los graduados verificados (todos los años).'}
+                                    </p>
+                                </>
+                            )}
+                        </div>
+                    )}
+
                     {error && <div style={{ padding: '10px', background: '#ffebee', color: '#c62828', border: '1px solid #ffcdd2', borderRadius: 6, fontSize: '0.75rem', marginBottom: 10 }}>⚠️ {error}</div>}
                     <div style={{ display: 'flex', gap: 8 }}>
                         <button onClick={onCerrar} style={{ flex: 1, padding: '8px', background: '#f0f0f0', border: 'none', borderRadius: 6, cursor: 'pointer', fontWeight: '600', fontSize: '0.8rem' }}>Cancelar</button>

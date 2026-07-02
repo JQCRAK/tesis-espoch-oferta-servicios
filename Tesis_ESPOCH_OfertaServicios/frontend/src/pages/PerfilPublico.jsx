@@ -9,6 +9,7 @@ import {
     FaTimes, FaCheckCircle, FaExclamationTriangle, FaArrowLeft,
     FaHandshake, FaChartBar, FaImage, FaShieldAlt, FaMedal,
     FaGlobe, FaLock, FaBell, FaChevronLeft, FaChevronRight,
+    FaUniversity, FaBuilding,
 } from 'react-icons/fa';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
@@ -22,8 +23,21 @@ const urlMedia = (ruta) => {
 };
 
 const DISP = {
-    disponible:    { bg: '#dcfce7', color: '#15803d', border: '#86efac', dot: '#22c55e', label: 'Disponible' },
+    disponible:    { bg: '#dcfce7', color: '#15803d', border: '#86efac', dot: '#22c55e', label: 'Buscando empleo' },
+    trabajando:    { bg: '#dbeafe', color: '#1d4ed8', border: '#93c5fd', dot: '#3b82f6', label: 'Trabajando' },
+    estudiando:    { bg: '#f3e8ff', color: '#7c3aed', border: '#ddd6fe', dot: '#a855f7', label: 'Estudiando' },
     no_disponible: { bg: '#fef9c3', color: '#a16207', border: '#fde047', dot: '#eab308', label: 'No disponible' },
+};
+
+// Formateador de rango de fechas para experiencias laborales
+const fmtRangoExp = (ini, fin, actual) => {
+    if (!ini) return '';
+    const opts = { year: 'numeric', month: 'short' };
+    const d1 = new Date(ini).toLocaleDateString('es-EC', opts);
+    if (actual) return `${d1} — actualidad`;
+    if (!fin) return d1;
+    const d2 = new Date(fin).toLocaleDateString('es-EC', opts);
+    return `${d1} — ${d2}`;
 };
 
 const nivelAfinidad = (pct) => {
@@ -511,6 +525,15 @@ const PerfilPublico = () => {
     const anioGrad = graduado.anioGraduacion
         || (tesis?.fechaPublicacion ? new Date(tesis.fechaPublicacion).getUTCFullYear() : null);
 
+    // ─── Listas ordenadas para los carruseles bajo Certificados ─────
+    const experienciasOrdenadas = (graduado.experienciasLaborales || [])
+        .slice()
+        .sort((a, b) => new Date(b.fechaInicio) - new Date(a.fechaInicio));
+
+    const educacionOrdenada = (graduado.educacionFormal || [])
+        .slice()
+        .sort((a, b) => (b.anioFin || 0) - (a.anioFin || 0));
+
     const renderProy = (proy) => (
         <div style={s.slideCard} className="slide-card" onClick={() => setModalProy(proy)}>
             {proy.imagen ? (
@@ -561,6 +584,90 @@ const PerfilPublico = () => {
         </div>
     );
 
+    // ─── Estilo de card profesional tipo CV (sin imagen) ─────────────
+    const cvCard = (acentoColor) => ({
+        position: 'relative',
+        background: 'white',
+        border: '1px solid #e2e8f0',
+        borderLeft: `4px solid ${acentoColor}`,
+        borderRadius: 10,
+        padding: '14px 16px 13px',
+        height: '100%',
+        boxSizing: 'border-box',
+        boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 6,
+    });
+
+    const renderExperiencia = (exp) => (
+        <div style={cvCard('#be1e2d')}>
+            {/* Header: cargo + rango de fechas a la derecha */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}>
+                <h4 style={{ margin: 0, fontSize: '0.84rem', fontWeight: 700, color: '#0f172a', lineHeight: 1.3, fontFamily: FONT, flex: 1 }}>
+                    {exp.cargo}
+                </h4>
+                <span style={{
+                    fontSize: '0.62rem', fontWeight: 600, color: '#64748b', fontFamily: FONT,
+                    display: 'inline-flex', alignItems: 'center', gap: 4, flexShrink: 0,
+                    background: '#f8fafc', padding: '3px 8px', borderRadius: 6, border: '1px solid #e2e8f0',
+                }}>
+                    <FaCalendarAlt style={{ fontSize: '0.6rem' }} />
+                    {fmtRangoExp(exp.fechaInicio, exp.fechaFin, exp.actual)}
+                </span>
+            </div>
+
+            {/* Empresa */}
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: '0.73rem', color: '#be1e2d', fontWeight: 600, fontFamily: FONT }}>
+                <FaBuilding style={{ fontSize: '0.7rem' }} />{exp.empresa}
+            </div>
+
+            {/* Descripción (si hay) */}
+            {exp.descripcion && (
+                <p style={{
+                    margin: '2px 0 0', fontSize: '0.7rem', color: '#475569', lineHeight: 1.55,
+                    display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden',
+                    fontFamily: FONT,
+                }}>
+                    {exp.descripcion}
+                </p>
+            )}
+        </div>
+    );
+
+    const renderEducacion = (edu) => (
+        <div style={cvCard('#7c3aed')}>
+            {/* Header: título + nivel a la derecha */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}>
+                <h4 style={{ margin: 0, fontSize: '0.84rem', fontWeight: 700, color: '#0f172a', lineHeight: 1.3, fontFamily: FONT, flex: 1 }}>
+                    {edu.titulo}
+                </h4>
+                <span style={{
+                    fontSize: '0.6rem', fontWeight: 700, color: '#7c3aed', fontFamily: FONT,
+                    background: '#f3e8ff', padding: '3px 9px', borderRadius: 10, border: '1px solid #ddd6fe',
+                    flexShrink: 0, whiteSpace: 'nowrap', textTransform: 'uppercase', letterSpacing: 0.3,
+                }}>
+                    {edu.nivel}
+                </span>
+            </div>
+
+            {/* Institución */}
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: '0.73rem', color: '#7c3aed', fontWeight: 600, fontFamily: FONT }}>
+                <FaUniversity style={{ fontSize: '0.7rem' }} />{edu.institucion}
+            </div>
+
+            {/* Año de graduación (si hay) */}
+            {edu.anioFin && (
+                <div style={{
+                    marginTop: 2, fontSize: '0.68rem', color: '#64748b', fontFamily: FONT,
+                    display: 'inline-flex', alignItems: 'center', gap: 4,
+                }}>
+                    <FaCalendarAlt style={{ fontSize: '0.6rem' }} />Graduado en {edu.anioFin}
+                </div>
+            )}
+        </div>
+    );
+
     const renderCert = (cert) => (
         <div style={s.slideCard} className="slide-card" onClick={() => setModalCert(cert)}>
             {cert.archivo && cert.tipoArchivo === 'imagen' ? (
@@ -601,8 +708,8 @@ const PerfilPublico = () => {
     const gridLayout = isMobile
         ? { display: 'flex', flexDirection: 'column', gap: 10 }
         : isTablet
-            ? { display: 'grid', gridTemplateColumns: '200px 1fr', gap: 12, alignItems: 'start' }
-            : { display: 'grid', gridTemplateColumns: '220px 1fr 224px', gap: 12, alignItems: 'start' };
+            ? { display: 'grid', gridTemplateColumns: '260px 1fr', gap: 14, alignItems: 'start' }
+            : { display: 'grid', gridTemplateColumns: '280px 1fr 280px', gap: 14, alignItems: 'start' };
 
     return (
         <>
@@ -666,9 +773,6 @@ const PerfilPublico = () => {
                                 <p style={{ ...s.cargoTxt, fontFamily: FONT }}>Ingeniería en Software · ESPOCH</p>
 
                                 <div style={s.badgesStack}>
-                                    <span style={{ ...s.badgeEspoch, fontFamily: FONT }}>
-                                        <FaGraduationCap style={{ fontSize: '0.55rem', marginRight: 4 }} />ESPOCH Verificado
-                                    </span>
                                     <span style={{ ...s.badgeDisp, backgroundColor: disp.bg, color: disp.color, border: `1px solid ${disp.border}`, fontFamily: FONT }}>
                                         <span style={{ width: 5, height: 5, borderRadius: '50%', backgroundColor: disp.dot, display: 'inline-block', marginRight: 4 }} />
                                         {disp.label}
@@ -761,7 +865,7 @@ const PerfilPublico = () => {
                                 {graduado.tecnologias?.length > 0 && (
                                     <div style={{ ...s.card, flex: 1, minWidth: 0 }}>
                                         <p style={{ ...s.secTit, fontFamily: FONT }}>
-                                            <FaCode style={s.secIco} />Tecnologías Core
+                                            <FaCode style={s.secIco} />Tecnologías
                                         </p>
                                         <div style={s.tagsWrap}>
                                             {graduado.tecnologias.map((t, i) => (
@@ -817,6 +921,34 @@ const PerfilPublico = () => {
                             />
                         </div>
 
+                        {/* ── Experiencia laboral (carrusel) ── */}
+                        {experienciasOrdenadas.length > 0 && (
+                            <div style={s.card}>
+                                <Carrusel
+                                    items={experienciasOrdenadas}
+                                    renderItem={renderExperiencia}
+                                    titulo="Experiencia laboral"
+                                    icono={FaBriefcase}
+                                    autoMs={5000}
+                                    vacio={null}
+                                />
+                            </div>
+                        )}
+
+                        {/* ── Educación formal (carrusel) ── */}
+                        {educacionOrdenada.length > 0 && (
+                            <div style={s.card}>
+                                <Carrusel
+                                    items={educacionOrdenada}
+                                    renderItem={renderEducacion}
+                                    titulo="Educación formal"
+                                    icono={FaUniversity}
+                                    autoMs={5000}
+                                    vacio={null}
+                                />
+                            </div>
+                        )}
+
                         {/* En móvil: especialidades y tesis van aquí (debajo de certificados) */}
                         {isMobile && (
                             <>
@@ -852,9 +984,6 @@ const PerfilPublico = () => {
                                             <FaGraduationCap style={s.secIco} />Tesis de Grado
                                         </p>
                                         <p style={{ ...s.tesisTitulo, fontFamily: FONT }}>{tesis.tituloEncontrado || tesis.titulo}</p>
-                                        {tesis.autoresEncontrados?.length > 0 && (
-                                            <p style={{ ...s.tesisAutor, fontFamily: FONT }}>{tesis.autoresEncontrados.join(', ')}</p>
-                                        )}
                                         {tesis.resumen && (
                                             <p style={{ ...s.tesisResumen, fontFamily: FONT }}>{tesis.resumen}</p>
                                         )}
@@ -907,9 +1036,6 @@ const PerfilPublico = () => {
                                         <FaGraduationCap style={s.secIco} />Tesis de Grado
                                     </p>
                                     <p style={{ ...s.tesisTitulo, fontFamily: FONT }}>{tesis.tituloEncontrado || tesis.titulo}</p>
-                                    {tesis.autoresEncontrados?.length > 0 && (
-                                        <p style={{ ...s.tesisAutor, fontFamily: FONT }}>{tesis.autoresEncontrados.join(', ')}</p>
-                                    )}
                                     {tesis.resumen && (
                                         <p style={{ ...s.tesisResumen, fontFamily: FONT }}>{tesis.resumen}</p>
                                     )}
@@ -967,10 +1093,10 @@ const s = {
     spinner:     { width: 32, height: 32, borderRadius: '50%', border: '3px solid #f1f5f9', borderTopColor: '#be1e2d', animation: 'spin 0.8s linear infinite' },
     notFoundBox: { width: 56, height: 56, borderRadius: '50%', backgroundColor: '#f8fafc', border: '2px solid #e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 10 },
     navBar:      { backgroundColor: 'white', borderBottom: '1px solid #e9ecef', padding: '0', position: 'sticky', top: 0, zIndex: 100, boxShadow: '0 1px 4px rgba(0,0,0,0.05)' },
-    navInner:    { maxWidth: 1160, margin: '0 auto', height: 44, display: 'flex', alignItems: 'center', gap: 10 },
+    navInner:    { maxWidth: 1400, margin: '0 auto', height: 44, display: 'flex', alignItems: 'center', gap: 10 },
     btnVolver:   { display: 'inline-flex', alignItems: 'center', padding: '4px 10px', backgroundColor: 'white', border: '1px solid #e2e8f0', borderRadius: 6, cursor: 'pointer', fontSize: '0.72rem', fontWeight: 600, color: '#475569', transition: 'background-color 0.15s' },
     navLogo:     { flex: 1 },
-    page:        { maxWidth: 1160, margin: '0 auto' },
+    page:        { maxWidth: 1400, margin: '0 auto' },
     colLeft:     { display: 'flex', flexDirection: 'column', gap: 10 },
     colMid:      { display: 'flex', flexDirection: 'column', gap: 10 },
     colRight:    { display: 'flex', flexDirection: 'column', gap: 10 },

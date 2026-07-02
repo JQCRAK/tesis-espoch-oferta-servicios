@@ -611,11 +611,27 @@ exports.cargaMasivaGraduados = async (req, res) => {
         const muestraTexto = contenidoCSV.substring(0, 500);
         const delimitador = (muestraTexto.match(/;/g) || []).length >= (muestraTexto.match(/,/g) || []).length ? ';' : ',';
 
+        // Detectar dinamicamente en que linea esta la cabecera (busca "nombres" y "cedula")
+        // Esto permite que la plantilla evolucione (mas o menos filas de instrucciones)
+        // sin tener que cambiar el parser cada vez.
+        const lineasArchivo = contenidoCSV.split(/\r?\n/);
+        let lineaCabecera = -1;
+        for (let i = 0; i < Math.min(lineasArchivo.length, 15); i++) {
+            const l = lineasArchivo[i].toLowerCase();
+            if (l.includes('nombres') && l.includes('cedula') && l.includes('apellidos')) {
+                lineaCabecera = i + 1; // 1-indexed para csv-parse
+                break;
+            }
+        }
+        if (lineaCabecera === -1) {
+            return res.status(400).json({ msg: 'No se encontro la fila de cabecera. Usa la plantilla oficial.' });
+        }
+
         let filas;
         try {
             filas = csv.parse(contenidoCSV, {
                 columns: true, skip_empty_lines: true, trim: true,
-                delimiter: delimitador, from_line: 2,
+                delimiter: delimitador, from_line: lineaCabecera,
             });
         } catch (parseErr) {
             return res.status(400).json({ msg: 'El archivo CSV no tiene un formato válido.' });
@@ -630,7 +646,8 @@ exports.cargaMasivaGraduados = async (req, res) => {
         const emailsEnCSV = new Set();
 
         for (let i = 0; i < filas.length; i++) {
-            const filaNum = i + 3;
+            // filaNum = numero real de fila en Excel (cabecera + 1 + indice)
+            const filaNum = lineaCabecera + 1 + i;
             const datos = normalizarFila(filas[i]);
 
             if (datos.nombres && (
@@ -793,11 +810,21 @@ exports.cargaMasivaGraduados = async (req, res) => {
 // PLANTILLA CSV GRADUADOS
 // ═══════════════════════════════════════════════════════════
 exports.plantillaCSVGraduados = (req, res) => {
-    const instrucciones = 'Complete desde FILA 5. Si cedula o telefono comienzan en 0, se completaran automaticamente. NO modifique filas 1 a 4.;;;;;;;\n';
+    // Instrucciones (3 lineas, ocupan toda la fila con ";;;;;;;")
+    const inst1 = 'INSTRUCCIONES: Complete sus datos desde la FILA 8 en adelante. NO modifique las filas 1 a 7. Las filas con [Ejemplo] son solo referencia, no las edite ni las borre.;;;;;;;\n';
+    const inst2 = 'VALORES VALIDOS -> genero: Masculino / Femenino / LGBTI  |  discapacidad: No / Si - Visual / Si - Auditiva / Si - Fisica/Motriz / Si - Intelectual / Si - Psicosocial / Si - Otra;;;;;;;\n';
+    const inst3 = 'FORMATO -> fecha nacimiento en formato AAAA-MM-DD  |  cedula: 10 digitos (si comienza con 0 se completa automatico)  |  telefono: 10 digitos (si comienza con 0 se completa automatico);;;;;;;\n';
+
+    // Cabecera
     const cab = 'nombres;apellidos;cedula;email personal;telefono;genero;fecha nacimiento;discapacidad\n';
+
+    // 4 ejemplos que cubren TODOS los generos y varias discapacidades
     const ej1 = '[Ejemplo] Juan Carlos;Perez Lopez;0601234567;juanperez@gmail.com;0991234567;Masculino;1995-06-15;No\n';
     const ej2 = '[Ejemplo] Maria Elena;Guaman Torres;0602345678;mariaguaman@hotmail.com;0982345678;Femenino;1997-03-22;Si - Visual\n';
-    const contenido = instrucciones + cab + ej1 + ej2;
+    const ej3 = '[Ejemplo] Alex Andres;Chimbo Yupanqui;0603456789;alexchimbo@outlook.com;0973456789;LGBTI;1998-11-08;Si - Auditiva\n';
+    const ej4 = '[Ejemplo] Sofia Alejandra;Cepeda Naranjo;0604567890;sofiacepeda@gmail.com;0964567890;Femenino;1996-04-30;Si - Fisica/Motriz\n';
+
+    const contenido = inst1 + inst2 + inst3 + cab + ej1 + ej2 + ej3 + ej4;
     res.setHeader('Content-Type', 'text/csv; charset=windows-1252');
     res.setHeader('Content-Disposition', 'attachment; filename="plantilla_graduados_espoch.csv"');
     res.send(Buffer.from(contenido, 'latin1'));

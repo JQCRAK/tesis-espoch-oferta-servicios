@@ -1,6 +1,6 @@
 // backend/src/services/emailVerificacionService.js
 const { Resend } = require('resend');
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 const FROM = process.env.EMAIL_FROM || 'Portal Graduados ESPOCH <onboarding@resend.dev>';
 
 const enviarCodigoVerificacion = async ({ emailInstitucional, codigo, nombres }) => {
@@ -39,6 +39,10 @@ const enviarCodigoVerificacion = async ({ emailInstitucional, codigo, nombres })
     </td></tr>
   </table>
 </body></html>`;
+
+  if (!resend) {
+    throw new Error('RESEND_API_KEY no está configurado en el .env — no se puede enviar el código de verificación.');
+  }
 
   try {
     const { data, error } = await resend.emails.send({

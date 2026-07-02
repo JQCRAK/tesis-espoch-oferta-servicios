@@ -529,7 +529,12 @@ const ColDerecha = ({ filtros, porProvincia, graduadosFiltrados, total, offset }
 };
 
 // ── Filtros inline ────────────────────────────────────────────
-const DISP_LABELS = { 'disponible': 'Disponible', 'no_disponible': 'No disponible' };
+const DISP_LABELS = {
+    'disponible':    'Buscando empleo',
+    'trabajando':    'Trabajando',
+    'estudiando':    'Estudiando',
+    'no_disponible': 'No disponible',
+};
 
 const FiltrosInline = ({ datos, filtros, onChange, onLimpiar }) => {
     if (!datos?.graduadosRaw) return null;
@@ -834,6 +839,7 @@ const MapaGraduados = ({ porProvincia, porCanton, filtros, geoData }) => {
 const TabIndicadoresGraduados = ({ df, datos, filtros, cambiarFiltro, limpiar, geoData, geoError }) => {
     const {
         totalGraduados = 0, totalPublicos = 0, totalDisponibles = 0,
+        disponibilidadCounts = {},
         totalProyectos = 0, totalCertificados = 0, promedioProyectos = 0, promedioCertificados = 0,
         tasaEmpleabilidad, tasaVisibilidad,
         porGenero = [], porAnio = [], porProvincia = [], porCanton = [],
@@ -960,19 +966,39 @@ const TabIndicadoresGraduados = ({ df, datos, filtros, cambiarFiltro, limpiar, g
                 </Panel>
 
                 <Panel titulo="Disponibilidad" sub="Estado laboral" icon={FaBriefcase} color={VERDE} delay={160}>
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
-                        <Donut segs={[{ v: totalDisponibles, c: NARANJA }, { v: totalEmpleados, c: VERDE }]} r={38} g={11} sz={96} label={`${tasaEmp}%`} sublabel="empleados" />
-                        <div style={{ width: '100%' }}>
-                            {[[VERDE, 'Empleados', totalEmpleados], [NARANJA, 'Disponibles', totalDisponibles]].map(([c, l, v]) => (
-                                <div key={l} style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 5 }}>
-                                    <div style={{ width: 8, height: 8, borderRadius: '50%', background: c, flexShrink: 0 }} />
-                                    <span style={{ fontSize: '0.72rem', color: '#374151', flex: 1, fontFamily: FONT }}>{l}</span>
-                                    <span style={{ fontSize: '0.72rem', fontWeight: 700, color: c, fontFamily: FONT }}>{v}</span>
-                                    <span style={{ fontSize: '0.62rem', color: '#9ca3af', fontFamily: FONT }}>({pct(v, totalGraduados)}%)</span>
+                    {(() => {
+                        // 4 estados de disponibilidad (con fallback a totalDisponibles si no llegó el objeto)
+                        const dc = disponibilidadCounts && Object.keys(disponibilidadCounts).length > 0
+                            ? disponibilidadCounts
+                            : { disponible: totalDisponibles, trabajando: 0, estudiando: 0, no_disponible: Math.max(totalGraduados - totalDisponibles, 0) };
+                        const filas = [
+                            { key: 'disponible',    label: 'Buscando empleo', color: NARANJA, v: dc.disponible    || 0 },
+                            { key: 'trabajando',    label: 'Trabajando',      color: VERDE,   v: dc.trabajando    || 0 },
+                            { key: 'estudiando',    label: 'Estudiando',      color: MORADO,  v: dc.estudiando    || 0 },
+                            { key: 'no_disponible', label: 'No disponible',   color: GRIS,    v: dc.no_disponible || 0 },
+                        ];
+                        const totalEstados = filas.reduce((s, f) => s + f.v, 0);
+                        const segs = filas.filter(f => f.v > 0).map(f => ({ v: f.v, c: f.color }));
+                        return (
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
+                                <Donut
+                                    segs={segs.length > 0 ? segs : [{ v: 1, c: '#e5e7eb' }]}
+                                    r={38} g={11} sz={96}
+                                    label={`${tasaEmp}%`} sublabel="empleados"
+                                />
+                                <div style={{ width: '100%' }}>
+                                    {filas.map(f => (
+                                        <div key={f.key} style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 5 }}>
+                                            <div style={{ width: 8, height: 8, borderRadius: '50%', background: f.color, flexShrink: 0 }} />
+                                            <span style={{ fontSize: '0.72rem', color: '#374151', flex: 1, fontFamily: FONT }}>{f.label}</span>
+                                            <span style={{ fontSize: '0.72rem', fontWeight: 700, color: f.color, fontFamily: FONT }}>{f.v}</span>
+                                            <span style={{ fontSize: '0.62rem', color: '#9ca3af', fontFamily: FONT }}>({pct(f.v, totalEstados || totalGraduados)}%)</span>
+                                        </div>
+                                    ))}
                                 </div>
-                            ))}
-                        </div>
-                    </div>
+                            </div>
+                        );
+                    })()}
                 </Panel>
 
                 <Panel titulo="Graduados por año" sub="Tendencia histórica de egresados" icon={FaCalendarAlt} color={MORADO} delay={200}>

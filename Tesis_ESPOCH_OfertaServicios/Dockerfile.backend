@@ -1,10 +1,36 @@
+# ─── Etapa 1: builder con herramientas nativas ───────────────
+# (necesarias para compilar el modulo "canvas" que usa chartjs-node-canvas)
+FROM node:18-alpine AS builder
+
+WORKDIR /app
+
+RUN apk add --no-cache \
+    python3 make g++ pkgconfig \
+    cairo-dev pango-dev jpeg-dev giflib-dev librsvg-dev pixman-dev
+
+COPY backend/package*.json ./
+RUN npm install --omit=dev
+
+# ─── Etapa 2: imagen final (sin compiladores, mas liviana) ───
 FROM node:18-alpine
 
 WORKDIR /app
 
-COPY backend/package*.json ./
-RUN npm install --production
+# Solo las librerias en runtime que necesita "canvas" en Alpine
+RUN apk add --no-cache cairo pango jpeg giflib librsvg pixman
 
+# Fuentes para que canvas pueda renderizar texto en las graficas del
+# Anexo 19 (sin esto los textos salen como cuadraditos vacios).
+RUN apk add --no-cache \
+    ttf-dejavu \
+    ttf-liberation \
+    fontconfig \
+    && fc-cache -f
+
+# wget se usa en el healthcheck del docker-compose
+RUN apk add --no-cache wget
+
+COPY --from=builder /app/node_modules ./node_modules
 COPY backend/ .
 
 EXPOSE 4000

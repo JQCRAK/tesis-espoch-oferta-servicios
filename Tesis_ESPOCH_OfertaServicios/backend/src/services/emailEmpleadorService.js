@@ -1,6 +1,6 @@
 // backend/src/services/emailEmpleadorService.js
 const { Resend } = require('resend');
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 const FROM = process.env.EMAIL_FROM || 'Portal Graduados ESPOCH <onboarding@resend.dev>';
 
 const enviarNotificacionEmpleador = async ({ emailOrganizacion, nombreEmpresa, tituloEncuesta, fechaCierre, linkEncuesta }) => {

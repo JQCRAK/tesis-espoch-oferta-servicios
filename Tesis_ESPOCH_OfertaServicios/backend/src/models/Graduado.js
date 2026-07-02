@@ -72,13 +72,48 @@ const GraduadoSchema = new mongoose.Schema({
     // ── PERFIL PROFESIONAL ───────────────────────────────────────
     bio:             { type: String, default: '', maxlength: 500 },
     fotoPerfil:      { type: String, default: '' },
-    disponibilidad:  { type: String, enum: ['disponible', 'no_disponible'], default: 'disponible' },
+    disponibilidad: {
+        type: String,
+        enum: ['disponible', 'trabajando', 'estudiando', 'no_disponible'],
+        default: 'disponible',
+    },
     github:          { type: String, default: '', trim: true },
     linkedin:        { type: String, default: '', trim: true },
 
     tecnologias:        { type: [String], default: [] },
     afinidades:         { type: [mongoose.Schema.Types.Mixed], default: [] },
     habilidadesBlandas: { type: [String], default: [] },
+
+    // ── EXPERIENCIA LABORAL (auto-declarada; el admin la verifica con la hoja de vida fisica) ──
+    experienciasLaborales: {
+        type: [{
+            cargo:        { type: String, required: true, trim: true, maxlength: 120 },
+            empresa:      { type: String, required: true, trim: true, maxlength: 150 },
+            fechaInicio:  { type: Date,   required: true },
+            fechaFin:     { type: Date,   default: null },
+            actual:       { type: Boolean, default: false },
+            descripcion:  { type: String, default: '', maxlength: 500 },
+            verificadoPorAdmin: { type: Boolean, default: false },
+        }],
+        default: [],
+    },
+
+    // ── EDUCACION FORMAL (titulos academicos previos / paralelos) ──
+    educacionFormal: {
+        type: [{
+            institucion:  { type: String, required: true, trim: true, maxlength: 150 },
+            titulo:       { type: String, required: true, trim: true, maxlength: 150 },
+            nivel: {
+                type: String,
+                enum: ['Secundaria', 'Tercer Nivel', 'Cuarto Nivel', 'PhD', 'Otro'],
+                default: 'Tercer Nivel',
+            },
+            anioInicio:   { type: Number, default: null },
+            anioFin:      { type: Number, default: null },
+            verificadoPorAdmin: { type: Boolean, default: false },
+        }],
+        default: [],
+    },
 
     // ── VERIFICACIÓN DE GRADUACIÓN ────────────────────────────────
     tesisVerificada:   { type: Boolean, default: false },

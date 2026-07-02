@@ -58,6 +58,25 @@ async function crearAdmin() {
         console.log(`✅ Admin creado/actualizado: ${resultado.nombre} ${resultado.apellidos} <${resultado.email}> — ${resultado.cargo}`);
     }
 
+    // ═══════════════════════════════════════════════════════════════
+    // Inicialización de la TENDENCIA SEMANAL actual
+    // Se usa la función rotarTendencia() del controlador — así no
+    // duplicamos lógica ni el catálogo de categorías. Crea la tendencia
+    // de la semana en curso; el cron semanal se encargará de las
+    // siguientes rotaciones automáticamente.
+    // ═══════════════════════════════════════════════════════════════
+    try {
+        const { rotarTendencia } = require('../controllers/tendenciaController');
+        const tendencia = await rotarTendencia();
+        if (tendencia) {
+            console.log(`✅ Tendencia semanal inicializada: S${tendencia.semana}/${tendencia.anio} → "${tendencia.categoria}"`);
+        } else {
+            console.log('⚠️  rotarTendencia() no devolvió un documento (revisar logs del controller).');
+        }
+    } catch (err) {
+        console.log('⚠️  No se pudo inicializar la tendencia semanal:', err.message);
+    }
+
     await mongoose.disconnect();
     console.log('✔️  Desconectado. Proceso finalizado.');
 }
