@@ -536,7 +536,7 @@ const _cargarDatosHojaVida = async (graduadoId) => {
     try { cedulaPlain   = graduado.cedula   ? desencriptar(graduado.cedula)   : ''; } catch (e) {}
     try { telefonoPlain = graduado.telefono ? desencriptar(graduado.telefono) : ''; } catch (e) {}
 
-    // Cargar foto del graduado (puede ser URL Cloudinary)
+    // Cargar foto del graduado (ruta local o URL absoluta)
     const { cargarFotoBuffer } = require('../services/hojaVidaService');
     const fotoBuffer = graduado.fotoPerfil ? await cargarFotoBuffer(graduado.fotoPerfil) : null;
 

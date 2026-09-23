@@ -1,14 +1,9 @@
 // backend/src/middleware/upload.js
-const cloudinary = require('cloudinary').v2;
-const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const fs = require('fs');
+const path = require('path');
+const crypto = require('crypto');
 const multer = require('multer');
 const Graduado = require('../models/Graduado');
-
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key:    process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
 
 /* ── Filtro de archivos (compartido) ────────────────────── */
 const filtroArchivos = (req, file, cb) => {
@@ -23,48 +18,54 @@ const filtroArchivos = (req, file, cb) => {
   return ok ? cb(null, true) : cb(new Error('Solo imagenes JPG, PNG o WEBP'), false);
 };
 
-/* ── Storage para graduados (carpeta dinámica por ID) ───── */
-const storageGraduados = new CloudinaryStorage({
-  cloudinary,
-  params: async (req, file) => {
-    console.log('CLOUDINARY CONFIG:', {
-      cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-      api_key: process.env.CLOUDINARY_API_KEY ? '[OK]' : '[VACÍA]',
-      api_secret: process.env.CLOUDINARY_API_SECRET ? '[OK]' : '[VACÍA]',
-    });
-    console.log('FILE INFO:', file?.mimetype, file?.originalname);
-    const graduadoId = req.usuario?.id || 'sin_id';
+/* ── Motor de almacenamiento local (reemplaza Cloudinary) ──
+   Guarda el archivo en backend/src/uploads/<carpeta>[/<graduadoId>]
+   y deja en req.file.path una ruta RELATIVA (ej. "uploads/graduados/
+   <id>/perfil_169....jpg"), que es el formato que ya usa el resto
+   del backend (borrado de archivos, hoja de vida) y el frontend
+   (prefijo VITE_BASE_URL) para resolver las imágenes.          ── */
+const crearStorageLocal = (carpeta, { porGraduado = false } = {}) => ({
+  _handleFile(req, file, cb) {
+    const graduadoId = porGraduado ? (req.usuario?.id || 'sin_id') : null;
+    const dirRelativo = path.posix.join('uploads', carpeta, ...(graduadoId ? [graduadoId] : []));
+    const dirAbsoluto = path.join(__dirname, '..', dirRelativo);
+
+    try {
+      fs.mkdirSync(dirAbsoluto, { recursive: true });
+    } catch (err) {
+      return cb(err);
+    }
+
     const tipo = req.query.tipo || 'general';
-    return {
-      folder: `portal-graduados/graduados/${graduadoId}`,
-      allowed_formats: ['jpg', 'jpeg', 'png', 'webp'],
-      public_id: `${tipo}_${Date.now()}`,
-      transformation: tipo === 'perfil'
-        ? [{ width: 500, height: 500, crop: 'fill' }]
-        : [],
-    };
+    const ext = path.extname(file.originalname).toLowerCase();
+    const nombreArchivo = `${tipo}_${Date.now()}_${crypto.randomBytes(4).toString('hex')}${ext}`;
+    const rutaAbsoluta = path.join(dirAbsoluto, nombreArchivo);
+    const rutaRelativa = path.posix.join(dirRelativo, nombreArchivo);
+
+    const writeStream = fs.createWriteStream(rutaAbsoluta);
+    file.stream.pipe(writeStream);
+    writeStream.on('error', cb);
+    writeStream.on('finish', () => {
+      cb(null, {
+        path: rutaRelativa,
+        filename: nombreArchivo,
+        size: writeStream.bytesWritten,
+      });
+    });
+  },
+  _removeFile(req, file, cb) {
+    fs.unlink(path.join(__dirname, '..', file.path), () => cb());
   },
 });
 
+/* ── Storage para graduados (carpeta dinámica por ID) ───── */
+const storageGraduados = crearStorageLocal('graduados', { porGraduado: true });
+
 /* ── Storage para eventos ───────────────────────────────── */
-const storageEventos = new CloudinaryStorage({
-  cloudinary,
-  params: async (req, file) => ({
-    folder: 'portal-graduados/eventos',
-    allowed_formats: ['jpg', 'jpeg', 'png', 'webp'],
-    public_id: `evento_${Date.now()}`,
-  }),
-});
+const storageEventos = crearStorageLocal('eventos');
 
 /* ── Storage para noticias ──────────────────────────────── */
-const storageNoticias = new CloudinaryStorage({
-  cloudinary,
-  params: async (req, file) => ({
-    folder: 'portal-graduados/noticias',
-    allowed_formats: ['jpg', 'jpeg', 'png', 'webp'],
-    public_id: `noticia_${Date.now()}`,
-  }),
-});
+const storageNoticias = crearStorageLocal('noticias');
 
 /* ── Upload principal para graduados ────────────────────── */
 const upload = multer({

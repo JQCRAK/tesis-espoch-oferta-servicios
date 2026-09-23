@@ -1,5 +1,23 @@
 services:
 
+  # ── BASE DE DATOS (MongoDB local) ────────────────────
+  # Solo accesible dentro de la red de Docker (portal_net).
+  # No se publica ningún puerto al host por seguridad —
+  # el backend se conecta usando el nombre del servicio "mongo".
+  mongo:
+    image: mongo:7
+    container_name: portal_graduados_mongo
+    restart: unless-stopped
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - portal_net
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   # ── BACKEND (Node.js / Express) ──────────────────────
   backend:
     build:
@@ -8,26 +26,28 @@ services:
     container_name: portal_graduados_backend
     restart: unless-stopped
     ports:
-      - "4000:4000"
+      - "8351:8351"
     # Carga TODAS las variables del .env al contenedor automáticamente.
-    # Así, cualquier variable que agregues al .env (ej. MONGO_URI_ORIGEN,
-    # RESEND_API_KEY, etc.) llega al backend sin tener que listar aquí
-    # una por una — evita el error "variable no definida" cuando el .env
-    # crece con nuevas integraciones.
+    # Así, cualquier variable que agregues al .env llega al backend
+    # sin tener que listar aquí una por una.
     env_file:
       - .env
     environment:
       NODE_ENV: production
-      PORT: 4000
+      PORT: 8351
     volumes:
-      # Persisten los archivos subidos y los respaldos automáticos,
-      # para que NO se borren al recrear el contenedor.
+      # Persisten las imágenes subidas (graduados/eventos/noticias) y
+      # los respaldos automáticos, para que NO se borren al recrear
+      # el contenedor.
       - backend_uploads:/app/src/uploads
       - backend_backups:/app/uploads
+    depends_on:
+      mongo:
+        condition: service_healthy
     networks:
       - portal_net
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:4000/api/health"]
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8351/api/health"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -43,7 +63,7 @@ services:
     container_name: portal_graduados_frontend
     restart: unless-stopped
     ports:
-      - "80:80"
+      - "8350:80"
     depends_on:
       - backend
     networks:
@@ -56,3 +76,4 @@ networks:
 volumes:
   backend_uploads:
   backend_backups:
+  mongo_data:

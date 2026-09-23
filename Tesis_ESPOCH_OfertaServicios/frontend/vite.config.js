@@ -11,7 +11,7 @@ export default defineConfig({
         server.middlewares.use((req, res, next) => {
           res.setHeader('X-Content-Type-Options', 'nosniff')
           res.setHeader('X-Frame-Options', 'DENY')
-          res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: http://localhost:4000; connect-src 'self' http://localhost:4000; frame-ancestors 'none'")
+          res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: http://localhost:8351; connect-src 'self' http://localhost:8351; frame-ancestors 'none'")
           next()
         })
       }

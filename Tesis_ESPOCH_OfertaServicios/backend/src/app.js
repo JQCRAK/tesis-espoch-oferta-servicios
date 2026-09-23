@@ -484,7 +484,7 @@ cron.schedule('0 3 1 1,7 *', async () => {
 }, { timezone: 'America/Guayaquil' });
 
 
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 8351;
 app.use((err, req, res, next) => {
     console.error('ERROR GLOBAL:', err?.message || String(err));
     console.error('STACK:', err?.stack);
@@ -495,7 +495,7 @@ app.use((err, req, res, next) => {
 });
 app.listen(PORT, () => {
     console.log(`\n🚀 Servidor corriendo en modo ${process.env.NODE_ENV} en el puerto ${PORT}`);
-    console.log(`🔗 Url local: http://localhost:4000`);
+    console.log(`🔗 Url local: http://localhost:${PORT}`);
     console.log(`⏰ Crons activos:`);
     console.log(`   • Eventos/Encuestas  — cada hora`);
     console.log(`   • Backup BD             — 1 ene y 1 jul 03:00 [retención 6 años / alerta si -15%]`);

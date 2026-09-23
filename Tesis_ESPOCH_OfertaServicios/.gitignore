@@ -3,7 +3,8 @@
 backend/.env
 frontend/.env
 
-# Uploads locales (se usará Cloudinary en producción)
+# Uploads locales (imágenes de graduados/eventos/noticias, persisten
+# en el volumen de Docker, no se versionan)
 backend/src/uploads/
 
 # Node modules
