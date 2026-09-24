@@ -1,201 +1,95 @@
-# Portal de Graduados ESPOCH — Guía de Despliegue con Docker
+# Portal de Graduados — Carrera de Software, ESPOCH
 
-Sistema web para la gestión y seguimiento de graduados de la Carrera de Software
-de la ESPOCH. Este documento describe cómo desplegar el proyecto **completamente
-contenerizado con Docker** en el servidor institucional de la FIE.
+Plataforma web para el **seguimiento y la vinculación de los graduados** de la Carrera
+de Software de la Escuela Superior Politécnica de Chimborazo (ESPOCH). Permite a los
+graduados construir un perfil profesional verificable, y a la carrera y a los
+empleadores conocer su trayectoria, especialidades y disponibilidad.
+
+Proyecto de titulación de **Jhostin Quispe**.
 
 ---
 
-## 📦 Arquitectura
+## ✨ Funcionalidades
 
-El sistema corre en **3 contenedores** orquestados con Docker Compose, todos
-locales (nada en la nube salvo el envío de correos):
+**Graduados**
+- Registro con verificación de correo por código y validación de datos.
+- Verificación de la tesis en el repositorio institucional de la ESPOCH, requisito
+  para publicar el perfil.
+- Perfil profesional: descripción, ubicación, disponibilidad laboral, redes,
+  proyectos, certificados, experiencia laboral y educación formal.
+- Detección automática de **especialidades, tecnologías y habilidades blandas** a
+  partir de los proyectos y certificados.
+- Hoja de vida generada en **PDF y Word**.
+- Encuestas, noticias y eventos de la carrera.
 
-| Contenedor | Descripción | Puerto |
-|---|---|---|
-| `portal_graduados_backend` | API Node.js/Express + `chartjs-node-canvas` + `pdfkit` | `8351` |
-| `portal_graduados_frontend` | React (Vite) compilado y servido por Nginx | `8350` |
-| `portal_graduados_mongo` | MongoDB — base de datos local (sin puerto expuesto al host) | interno |
+**Administración**
+- Gestión de graduados y empleadores, con carga masiva desde CSV.
+- Gestión de encuestas, eventos y noticias, con notificaciones por correo.
+- Estadísticas e indicadores (incluye mapas), reportes e informes institucionales
+  (Anexo 19).
+- Tendencia tecnológica semanal y notificaciones al administrador.
 
-| Servicio | Uso |
+**Público y empleadores**
+- Directorio de perfiles profesionales, proyectos y noticias.
+- Contacto de empleadores con graduados.
+
+**Automatizaciones:** actualización de eventos y encuestas, tendencias semanales,
+limpieza de cuentas sin tesis verificada y respaldos semestrales de la base de datos.
+
+---
+
+## 🧰 Tecnologías
+
+| Capa | Tecnología |
 |---|---|
-| **Resend** | Único servicio en la nube — envío de correos transaccionales |
+| Frontend | React + Vite, servido con Nginx |
+| Backend | Node.js + Express |
+| Base de datos | MongoDB (local, en contenedor) |
+| Correo | Resend (único servicio externo) |
+| Despliegue | Docker y Docker Compose |
+
+Todo corre **de forma local** en el servidor. Las imágenes subidas y la base de datos
+se guardan en volúmenes de Docker.
 
 ---
 
-## ✅ Requisitos del servidor
+## 🚀 Despliegue rápido
 
-- **Docker** ≥ 24.0
-- **Docker Compose** ≥ 2.0
-- **Puertos disponibles:** 8350 (frontend) y 8351 (API)
-- **Recursos recomendados:** 4 GB RAM o más, 5 GB disco
-- **Salida a internet:** para Resend (envío de correos) y para cargar los mapas base (`basemaps.cartocdn.com`) de las estadísticas del panel admin
-
----
-
-## 🚀 Despliegue paso a paso
-
-### 1. Copiar el proyecto al servidor
-
-Vía `git clone` o descomprimiendo el ZIP entregado:
+Requiere Docker y Docker Compose. Desde la carpeta `Tesis_ESPOCH_OfertaServicios`:
 
 ```bash
-cd /opt   # o el directorio de despliegue elegido
-git clone https://github.com/JQCRAK/tesis-espoch-oferta-servicios.git portal-graduados
-cd portal-graduados/Tesis_ESPOCH_OfertaServicios
+cp .env.example .env        # completar JWT_SECRET, CRYPTO_SECRET, RESEND_API_KEY, URLs
+docker compose up -d --build
+docker compose exec backend node src/scripts/crearAdmin.js   # solo la primera vez
 ```
 
-Si el proyecto se recibió como **ZIP**, descomprimirlo y entrar a la carpeta
-`Tesis_ESPOCH_OfertaServicios` (allí están `docker-compose.yml` y `.env.example`).
-Todos los comandos siguientes se ejecutan desde esa carpeta.
-
-### 2. Configurar las variables de entorno
-
-```bash
-cp .env.example .env
-nano .env
-```
-
-**Variables críticas a completar:**
-
-| Variable | Descripción |
+| Servicio | Puerto |
 |---|---|
-| `MONGO_URI` | Ya viene lista para el Mongo local del docker-compose (`mongodb://mongo:27017/...`). No requiere cambios salvo que se use otro nombre de base. |
-| `JWT_SECRET` | Clave larga aleatoria (32+ caracteres) |
-| `CRYPTO_SECRET` | Clave hex de EXACTAMENTE 32 caracteres |
-| `FRONTEND_URL` | URL pública del sistema (ej. `http://<IP-servidor>:8350`) |
-| `EMAIL_FROM` | Remitente (dominio verificado en Resend) |
-| `RESEND_API_KEY` | API Key de Resend |
-| `VITE_API_URL` / `VITE_BASE_URL` | URL pública del backend (ej. `http://<IP-servidor>:8351/api`) |
+| Portal (frontend) | `8350` |
+| API (backend) | `8351` |
 
-> ⚠️ Las claves reales se entregan por **canal privado**, NO están en el repositorio.
+📖 **Guía completa** (configuración, respaldos, actualización y solución de
+problemas): [`Tesis_ESPOCH_OfertaServicios/README-DESPLIEGUE.md`](Tesis_ESPOCH_OfertaServicios/README-DESPLIEGUE.md)
 
-### 3. Construir y levantar los contenedores
-
-```bash
-docker compose up -d --build
-```
-
-Docker Compose construirá las 3 imágenes (Mongo, backend con dependencias
-nativas de `canvas` y fuentes DejaVu para gráficos, y frontend con Vite+Nginx)
-y las iniciará en segundo plano. La base de datos MongoDB vive enteramente
-dentro de Docker — no requiere ninguna cuenta ni conexión externa.
-
-### 4. Inicializar administradores y tendencia semanal
-
-Solo la **primera vez**, ejecuta el script de inicialización:
-
-```bash
-docker compose exec backend node src/scripts/crearAdmin.js
-```
-
-Esto crea:
-- 2 administradores predefinidos (Cristian Guerra y Julio Guallo)
-- La tendencia semanal actual (rotará automáticamente cada lunes vía cron)
-
-### 5. Verificar
-
-```bash
-docker compose ps
-docker compose logs backend --tail 20
-```
-
-Debe aparecer en los logs:
-```
-✅ MongoDB Conectado: mongo
-🚀 Servidor corriendo en modo production en el puerto 8351
-```
-
-Accede al sistema:
-- **Frontend:** `http://<IP-servidor>:8350/`
-- **API health:** `http://<IP-servidor>:8351/api/health`
+> Las credenciales reales (`.env`) no están en el repositorio; se entregan por canal privado.
 
 ---
 
-## 🛠️ Comandos operativos
-
-```bash
-# Ver estado de los contenedores
-docker compose ps
-
-# Ver logs en vivo
-docker compose logs -f backend
-
-# Reiniciar solo un servicio
-docker compose restart backend
-
-# Detener todo
-docker compose down
-
-# Reconstruir tras cambios en el código
-docker compose up -d --build
-
-# Backup manual de MongoDB (si aplica)
-docker compose exec backend node src/scripts/backup.js
-```
-
----
-
-## 🕐 Tareas programadas (cron internos)
-
-El backend ejecuta 4 crons automáticos:
-
-| Cron | Frecuencia | Función |
-|---|---|---|
-| Eventos/Encuestas | Cada hora | Actualiza estados de eventos programados |
-| Tendencias | Lunes 00:05 | Rota la tendencia tecnológica semanal |
-| Limpieza sin tesis | Diario 01:00 | Envía advertencias / elimina cuentas sin tesis verificada |
-| Backup BD | 1 ene y 1 jul, 03:00 | Respaldo semestral de las colecciones |
-
----
-
-## 🔐 Seguridad
-
-- **Todas las credenciales** están en `.env` (nunca en el código).
-- **`.env` está en `.gitignore`** — NO se sube al repositorio.
-- **MongoDB no expone ningún puerto al host** — solo es accesible desde
-  dentro de la red interna de Docker (`portal_net`), reduciendo la
-  superficie de ataque del servidor.
-- **Cédula y teléfono** de graduados se encriptan en base de datos (`CRYPTO_SECRET`).
-- **Contraseñas de admin/graduado** se hashean con bcrypt.
-- **JWT** para autenticación de sesiones.
-
----
-
-## 📁 Estructura del proyecto
+## 📁 Organización del repositorio
 
 ```
 .
-├── backend/                    # API Node.js/Express
-│   ├── src/
-│   │   ├── controllers/        # Lógica de rutas
-│   │   ├── models/             # Modelos Mongoose
-│   │   ├── routes/             # Definición de endpoints
-│   │   ├── services/           # Servicios (email, PDF, reportes)
-│   │   ├── scripts/            # Scripts de inicialización
-│   │   ├── uploads/            # Imágenes subidas (persiste en volumen Docker)
-│   │   ├── assets/             # Logos institucionales
-│   │   └── app.js              # Punto de entrada
-│   └── package.json
-├── frontend/                   # React + Vite
-│   ├── src/
-│   │   ├── pages/              # Páginas
-│   │   ├── components/         # Componentes reutilizables
-│   │   └── utils/              # Utilidades
-│   └── package.json
-├── Dockerfile.backend
-├── Dockerfile.frontend
-├── docker-compose.yml           # backend + frontend + mongo
-├── nginx.conf
-├── .env.example                # Plantilla de variables
-└── README-DESPLIEGUE.md        # Este documento
+└── Tesis_ESPOCH_OfertaServicios/
+    ├── backend/                 # API Node.js/Express
+    ├── frontend/                # Aplicación React
+    ├── docker-compose.yml       # frontend + backend + mongo
+    ├── .env.example             # Plantilla de variables de entorno
+    └── README-DESPLIEGUE.md     # Guía de despliegue
 ```
 
 ---
 
 ## 📞 Contacto
 
-**Autor:** Jhostin Quispe
-**Correo:** jhostin.quispe@espoch.edu.ec
+**Autor:** Jhostin Quispe — jhostin.quispe@espoch.edu.ec
 **Director de tesis:** Ing. Cristian García — BI-Data, ESPOCH
-**Repositorio:** https://github.com/JQCRAK/tesis-espoch-oferta-servicios
