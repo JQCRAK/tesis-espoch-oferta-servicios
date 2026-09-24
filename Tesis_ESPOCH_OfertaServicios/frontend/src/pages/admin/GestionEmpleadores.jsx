@@ -9,7 +9,7 @@ import {
     FaExclamationTriangle, FaPhone, FaMapMarkerAlt,
 } from 'react-icons/fa';
 import { leerSesion } from '../../utils/storageSeguro';
-const API = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
+const API = import.meta.env.VITE_API_URL || 'http://localhost:8351/api';
 const hdrs = () => {
     const usuario = leerSesion('usuario');
     const t = usuario ? usuario.token : '';
@@ -55,7 +55,7 @@ const sf = {
     grid2: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 },
     campo: { display: 'flex', flexDirection: 'column', gap: 5, marginBottom: 10 },
     lbl:   { fontSize: '0.75rem', fontWeight: '600', color: '#2c3e50', display: 'flex', alignItems: 'center' },
-    inp:   { padding: '8px 11px', border: '1px solid #e9ecef', borderRadius: 7, fontSize: '0.8rem', color: '#2c3e50', outline: 'none', fontFamily: "'Segoe UI',Roboto,sans-serif", backgroundColor: '#f8f9fa', width: '100%', boxSizing: 'border-box' },
+    inp:   { padding: '8px 11px', border: '1px solid #e9ecef', borderRadius: 7, fontSize: '0.8rem', color: '#2c3e50', outline: 'none', fontFamily: "'Rotis', 'Segoe UI',Roboto,sans-serif", backgroundColor: '#f8f9fa', width: '100%', boxSizing: 'border-box' },
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -623,7 +623,7 @@ const GestionEmpleadores = () => {
                                 <p style={{ margin: '0 0 6px', fontSize: '0.71rem', fontWeight: '700', color: '#adb5bd', letterSpacing: '0.5px' }}>COLUMNAS DEL CSV (todas obligatorias)</p>
                                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
                                     {['nombre empresa', 'nombre gerente', 'email organizacion', 'telefono organizacion', 'provincia', 'ciudad', 'tipo capital', 'tipo actividad'].map(c => (
-                                        <span key={c} style={{ fontSize: '0.65rem', padding: '2px 7px', borderRadius: 4, background: '#fff8e1', color: '#e65100', border: '1px solid #ffe082', fontWeight: '600', fontFamily: 'monospace' }}>{c}</span>
+                                        <span key={c} style={{ fontSize: '0.65rem', padding: '2px 7px', borderRadius: 4, background: '#fff8e1', color: '#e65100', border: '1px solid #ffe082', fontWeight: '600', fontFamily: "'Rotis', 'Segoe UI', sans-serif" }}>{c}</span>
                                     ))}
                                 </div>
                                 <p style={{ margin: '6px 0 0', fontSize: '0.68rem', color: '#adb5bd' }}>Capital: <strong>Pública / Privada / Mixto</strong> · Actividad: <strong>Industrial / Comercial / Servicios</strong></p>
@@ -736,7 +736,7 @@ const GestionEmpleadores = () => {
 };
 
 const s = {
-    page: { maxWidth: 1280, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 16, fontFamily: "'Segoe UI',Roboto,sans-serif" },
+    page: { maxWidth: 1280, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 16, fontFamily: "'Rotis', 'Segoe UI',Roboto,sans-serif" },
     gridMet: { display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 14 },
     metCard: { backgroundColor: 'white', borderRadius: 10, padding: '14px 16px', border: '1px solid #e9ecef', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' },
     metRow: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 },
@@ -756,9 +756,9 @@ const s = {
     dropDivider: { height: 1, backgroundColor: '#f0f0f0', margin: '0 12px' },
     filtrosRow: { display: 'flex', gap: 10, marginBottom: 14, flexWrap: 'wrap' },
     busqWrap: { display: 'flex', alignItems: 'center', gap: 7, flex: 1, minWidth: 180, background: '#f8f9fa', border: '1px solid #e9ecef', borderRadius: 8, padding: '9px 12px' },
-    busqInp: { border: 'none', background: 'transparent', outline: 'none', fontSize: '0.77rem', color: '#2c3e50', width: '100%', fontFamily: "'Segoe UI',Roboto,sans-serif" },
+    busqInp: { border: 'none', background: 'transparent', outline: 'none', fontSize: '0.77rem', color: '#2c3e50', width: '100%', fontFamily: "'Rotis', 'Segoe UI',Roboto,sans-serif" },
     selectWrap: { display: 'flex', alignItems: 'center', gap: 7, background: '#f8f9fa', border: '1px solid #e9ecef', borderRadius: 8, padding: '9px 12px', flexShrink: 0 },
-    selectEl: { border: 'none', background: 'transparent', outline: 'none', fontSize: '0.76rem', color: '#6c757d', cursor: 'pointer', fontFamily: "'Segoe UI',Roboto,sans-serif" },
+    selectEl: { border: 'none', background: 'transparent', outline: 'none', fontSize: '0.76rem', color: '#6c757d', cursor: 'pointer', fontFamily: "'Rotis', 'Segoe UI',Roboto,sans-serif" },
     tabla: { width: '100%', borderCollapse: 'collapse' },
     trHead: { borderBottom: '2px solid #f0f0f0' },
     th: { padding: '8px 10px', textAlign: 'left', fontSize: '0.61rem', fontWeight: '700', color: '#adb5bd', letterSpacing: '0.7px', whiteSpace: 'nowrap' },

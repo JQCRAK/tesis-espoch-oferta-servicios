@@ -9,7 +9,7 @@ import {
     FaGraduationCap,
 } from 'react-icons/fa';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8351/api';
 const NIVELES = ['Secundaria', 'Tercer Nivel', 'Cuarto Nivel', 'PhD', 'Otro'];
 const ANIO_ACTUAL = new Date().getFullYear();
 

@@ -18,7 +18,7 @@ const filtroArchivos = (req, file, cb) => {
   return ok ? cb(null, true) : cb(new Error('Solo imagenes JPG, PNG o WEBP'), false);
 };
 
-/* ── Motor de almacenamiento local (reemplaza Cloudinary) ──
+/* ── Motor de almacenamiento local en disco ──
    Guarda el archivo en backend/src/uploads/<carpeta>[/<graduadoId>]
    y deja en req.file.path una ruta RELATIVA (ej. "uploads/graduados/
    <id>/perfil_169....jpg"), que es el formato que ya usa el resto

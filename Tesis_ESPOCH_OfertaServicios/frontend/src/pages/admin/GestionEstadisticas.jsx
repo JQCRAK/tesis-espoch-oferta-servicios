@@ -12,8 +12,8 @@ import TabEEmpleadores         from './TabEEmpleadores';
 import { leerSesion } from '../../utils/storageSeguro';
 
 // ── Config ────────────────────────────────────────────────────
-const API  = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
-const FONT = "'Segoe UI', system-ui, -apple-system, sans-serif";
+const API  = import.meta.env.VITE_API_URL || 'http://localhost:8351/api';
+const FONT = "'Rotis', 'Segoe UI', system-ui, -apple-system, sans-serif";
 const ROJO = '#BE1E2D';
 
 const hdrs = () => {

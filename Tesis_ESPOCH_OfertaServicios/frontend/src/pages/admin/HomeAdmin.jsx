@@ -7,8 +7,8 @@ import {
     FaFileExport, FaArrowRight,
 } from 'react-icons/fa';
 
-const API = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
-const FONT = "'Segoe UI', Roboto, 'Helvetica Neue', sans-serif";
+const API = import.meta.env.VITE_API_URL || 'http://localhost:8351/api';
+const FONT = "'Rotis', 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif";
 
 import { leerSesion } from '../../utils/storageSeguro';
 

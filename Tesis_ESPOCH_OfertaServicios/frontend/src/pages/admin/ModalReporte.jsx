@@ -12,7 +12,7 @@ import {
     CartesianGrid, Tooltip, Legend, ResponsiveContainer,
 } from 'recharts';
 
-const API = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
+const API = import.meta.env.VITE_API_URL || 'http://localhost:8351/api';
 import { leerSesion } from '../../utils/storageSeguro';
 
 const hdrs = () => {
@@ -888,7 +888,7 @@ const s = {
     campo: { display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 16 },
     lbl: { fontSize: '0.78rem', fontWeight: '600', color: '#2c3e50', display: 'flex', alignItems: 'center' },
     req: { color: '#BE1E2D', marginLeft: 3 },
-    sel: { padding: '8px 11px', border: '1px solid #e9ecef', borderRadius: 7, fontSize: '0.8rem', color: '#2c3e50', outline: 'none', background: '#f8f9fa', cursor: 'pointer', fontFamily: "'Segoe UI',Roboto,sans-serif" },
+    sel: { padding: '8px 11px', border: '1px solid #e9ecef', borderRadius: 7, fontSize: '0.8rem', color: '#2c3e50', outline: 'none', background: '#f8f9fa', cursor: 'pointer', fontFamily: "'Rotis', 'Segoe UI',Roboto,sans-serif" },
     hint: { fontSize: '0.69rem', color: '#f57f17' },
     resumenBox: { background: '#f0f7ff', border: '1px solid #bbdefb', borderRadius: 8, padding: '12px 16px', marginTop: 8 },
     resumenLin: { margin: '0 0 4px', fontSize: '0.76rem', color: '#2c3e50' },

@@ -8,8 +8,8 @@ import {
     FaTimes, FaFilePdf, FaFileWord, FaSpinner, FaExclamationTriangle,
 } from 'react-icons/fa';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
-const BASE_URL = import.meta.env.VITE_BASE_URL || 'http://localhost:4000';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8351/api';
+const BASE_URL = import.meta.env.VITE_BASE_URL || 'http://localhost:8351';
 
 const ROJO = '#BE1E2D';
 const VERDE = '#1B5E20';

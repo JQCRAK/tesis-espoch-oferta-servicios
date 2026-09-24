@@ -12,9 +12,9 @@ import {
     FaUniversity, FaBuilding,
 } from 'react-icons/fa';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
-const BASE    = import.meta.env.VITE_BASE_URL || 'http://localhost:4000';
-const FONT    = "'Segoe UI', system-ui, -apple-system, sans-serif";
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8351/api';
+const BASE    = import.meta.env.VITE_BASE_URL || 'http://localhost:8351';
+const FONT    = "'Rotis', 'Segoe UI', system-ui, -apple-system, sans-serif";
 
 const urlMedia = (ruta) => {
     if (!ruta) return null;

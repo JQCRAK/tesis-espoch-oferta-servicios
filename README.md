@@ -8,20 +8,18 @@ contenerizado con Docker** en el servidor institucional de la FIE.
 
 ## 📦 Arquitectura
 
-El sistema corre en **2 contenedores** orquestados con Docker Compose:
+El sistema corre en **3 contenedores** orquestados con Docker Compose, todos
+locales (nada en la nube salvo el envío de correos):
 
 | Contenedor | Descripción | Puerto |
 |---|---|---|
-| `portal_graduados_backend` | API Node.js/Express + `chartjs-node-canvas` + `pdfkit` | `4000` |
-| `portal_graduados_frontend` | React (Vite) compilado y servido por Nginx | `80` |
-
-Los contenedores usan servicios en la nube:
+| `portal_graduados_backend` | API Node.js/Express + `chartjs-node-canvas` + `pdfkit` | `8351` |
+| `portal_graduados_frontend` | React (Vite) compilado y servido por Nginx | `8350` |
+| `portal_graduados_mongo` | MongoDB — base de datos local (sin puerto expuesto al host) | interno |
 
 | Servicio | Uso |
 |---|---|
-| **MongoDB Atlas** | Base de datos NoSQL |
-| **Cloudinary** | Almacenamiento y CDN de imágenes |
-| **Resend** | Envío de correos transaccionales |
+| **Resend** | Único servicio en la nube — envío de correos transaccionales |
 
 ---
 
@@ -29,9 +27,9 @@ Los contenedores usan servicios en la nube:
 
 - **Docker** ≥ 24.0
 - **Docker Compose** ≥ 2.0
-- **Puertos disponibles:** 80 (HTTP público) y 4000 (API)
-- **Recursos mínimos:** 2 GB RAM, 5 GB disco
-- **Salida a internet** (para conectar a Atlas, Cloudinary y Resend)
+- **Puertos disponibles:** 8350 (frontend) y 8351 (API)
+- **Recursos recomendados:** 4 GB RAM o más, 5 GB disco
+- **Salida a internet:** para Resend (envío de correos) y para cargar los mapas base (`basemaps.cartocdn.com`) de las estadísticas del panel admin
 
 ---
 
@@ -44,8 +42,12 @@ Vía `git clone` o descomprimiendo el ZIP entregado:
 ```bash
 cd /opt   # o el directorio de despliegue elegido
 git clone https://github.com/JQCRAK/tesis-espoch-oferta-servicios.git portal-graduados
-cd portal-graduados
+cd portal-graduados/Tesis_ESPOCH_OfertaServicios
 ```
+
+Si el proyecto se recibió como **ZIP**, descomprimirlo y entrar a la carpeta
+`Tesis_ESPOCH_OfertaServicios` (allí están `docker-compose.yml` y `.env.example`).
+Todos los comandos siguientes se ejecutan desde esa carpeta.
 
 ### 2. Configurar las variables de entorno
 
@@ -58,14 +60,13 @@ nano .env
 
 | Variable | Descripción |
 |---|---|
-| `MONGO_URI` | Connection string del cluster Atlas |
+| `MONGO_URI` | Ya viene lista para el Mongo local del docker-compose (`mongodb://mongo:27017/...`). No requiere cambios salvo que se use otro nombre de base. |
 | `JWT_SECRET` | Clave larga aleatoria (32+ caracteres) |
 | `CRYPTO_SECRET` | Clave hex de EXACTAMENTE 32 caracteres |
-| `FRONTEND_URL` | URL pública del sistema (ej. `http://<IP-servidor>`) |
+| `FRONTEND_URL` | URL pública del sistema (ej. `http://<IP-servidor>:8350`) |
 | `EMAIL_FROM` | Remitente (dominio verificado en Resend) |
 | `RESEND_API_KEY` | API Key de Resend |
-| `CLOUDINARY_CLOUD_NAME`, `_API_KEY`, `_API_SECRET` | Credenciales Cloudinary |
-| `VITE_API_URL` / `VITE_BASE_URL` | URL pública del backend (ej. `http://<IP-servidor>:4000/api`) |
+| `VITE_API_URL` / `VITE_BASE_URL` | URL pública del backend (ej. `http://<IP-servidor>:8351/api`) |
 
 > ⚠️ Las claves reales se entregan por **canal privado**, NO están en el repositorio.
 
@@ -75,9 +76,10 @@ nano .env
 docker compose up -d --build
 ```
 
-Docker Compose construirá ambas imágenes (backend con dependencias nativas de
-`canvas`, fuentes DejaVu para gráficos, y frontend con Vite+Nginx) y las
-iniciará en segundo plano.
+Docker Compose construirá las 3 imágenes (Mongo, backend con dependencias
+nativas de `canvas` y fuentes DejaVu para gráficos, y frontend con Vite+Nginx)
+y las iniciará en segundo plano. La base de datos MongoDB vive enteramente
+dentro de Docker — no requiere ninguna cuenta ni conexión externa.
 
 ### 4. Inicializar administradores y tendencia semanal
 
@@ -100,13 +102,13 @@ docker compose logs backend --tail 20
 
 Debe aparecer en los logs:
 ```
-✅ MongoDB Conectado: cluster-shard-XX.mongodb.net
-🚀 Servidor corriendo en modo production en el puerto 4000
+✅ MongoDB Conectado: mongo
+🚀 Servidor corriendo en modo production en el puerto 8351
 ```
 
 Accede al sistema:
-- **Frontend:** `http://<IP-servidor>/`
-- **API health:** `http://<IP-servidor>:4000/api/health`
+- **Frontend:** `http://<IP-servidor>:8350/`
+- **API health:** `http://<IP-servidor>:8351/api/health`
 
 ---
 
@@ -151,6 +153,9 @@ El backend ejecuta 4 crons automáticos:
 
 - **Todas las credenciales** están en `.env` (nunca en el código).
 - **`.env` está en `.gitignore`** — NO se sube al repositorio.
+- **MongoDB no expone ningún puerto al host** — solo es accesible desde
+  dentro de la red interna de Docker (`portal_net`), reduciendo la
+  superficie de ataque del servidor.
 - **Cédula y teléfono** de graduados se encriptan en base de datos (`CRYPTO_SECRET`).
 - **Contraseñas de admin/graduado** se hashean con bcrypt.
 - **JWT** para autenticación de sesiones.
@@ -168,6 +173,7 @@ El backend ejecuta 4 crons automáticos:
 │   │   ├── routes/             # Definición de endpoints
 │   │   ├── services/           # Servicios (email, PDF, reportes)
 │   │   ├── scripts/            # Scripts de inicialización
+│   │   ├── uploads/            # Imágenes subidas (persiste en volumen Docker)
 │   │   ├── assets/             # Logos institucionales
 │   │   └── app.js              # Punto de entrada
 │   └── package.json
@@ -179,7 +185,7 @@ El backend ejecuta 4 crons automáticos:
 │   └── package.json
 ├── Dockerfile.backend
 ├── Dockerfile.frontend
-├── docker-compose.yml
+├── docker-compose.yml           # backend + frontend + mongo
 ├── nginx.conf
 ├── .env.example                # Plantilla de variables
 └── README-DESPLIEGUE.md        # Este documento

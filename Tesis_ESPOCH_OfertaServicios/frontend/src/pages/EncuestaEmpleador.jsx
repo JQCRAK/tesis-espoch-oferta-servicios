@@ -2,10 +2,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const API = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
+const API = import.meta.env.VITE_API_URL || 'http://localhost:8351/api';
 
-const FONT      = "'Segoe UI', Roboto, 'Helvetica Neue', sans-serif";
-const FONT_SANS = "'Segoe UI', Roboto, 'Helvetica Neue', sans-serif";
+const FONT      = "'Rotis', 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif";
+const FONT_SANS = "'Rotis', 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif";
 const ROJO      = '#BE1E2D';
 const ROJO_OSCURO = '#8B1421';
 const ROJO_CLARO  = '#F9E8EA';

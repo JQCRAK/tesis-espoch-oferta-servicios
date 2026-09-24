@@ -12,8 +12,8 @@ import {
     FaEnvelope, FaCalendarAlt, FaAward, FaMedal,
 } from 'react-icons/fa';
 
-const API  = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
-const FONT = "'Segoe UI', system-ui, -apple-system, sans-serif";
+const API  = import.meta.env.VITE_API_URL || 'http://localhost:8351/api';
+const FONT = "'Rotis', 'Segoe UI', system-ui, -apple-system, sans-serif";
 const ROJO='#BE1E2D',AZUL='#1565C0',VERDE='#2E7D32',NARANJA='#E65100',MORADO='#4527A0',CIAN='#00695C',GRIS='#37474F',DORADO='#F57F17';
 const PALETA=[ROJO,AZUL,VERDE,NARANJA,MORADO,CIAN,GRIS,DORADO,'#AD1457','#00838F','#558B2F','#4E342E'];
 const PALETA_LIGHT=['#f7c5c9','#b3c9f0','#b2dfb4','#f9cba8','#c5bce8','#a8d5cc','#b0bec5','#fde68a','#f4b8d1','#a8d8db','#c8dba6','#c8b5b0'];
@@ -38,13 +38,13 @@ if(typeof document!=='undefined'&&!document.getElementById('tee5-kf')){
         @keyframes t5in{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
         .t5a{animation:t5in 0.28s ease both;}
         .t5r:hover{background:#f8fafc !important;}
-        .t5sel{padding:5px 8px;border-radius:6px;border:1px solid #e5e7eb;font-size:0.73rem;font-family:'Segoe UI',system-ui,sans-serif;color:#374151;background:white;outline:none;cursor:pointer;}
+        .t5sel{padding:5px 8px;border-radius:6px;border:1px solid #e5e7eb;font-size:0.73rem;font-family:'Rotis', 'Segoe UI',system-ui,sans-serif;color:#374151;background:white;outline:none;cursor:pointer;}
         .t5sel:focus,.t5sel.on{border-color:#BE1E2D !important;}
         .t5pag:hover:not(:disabled){background:#BE1E2D !important;color:white !important;border-color:#BE1E2D !important;}
         .t5tab:hover{background:#f1f5f9 !important;}
         .t5gh:hover{background:#f8fafc !important;cursor:pointer;}
-        .leaflet-container{font-family:'Segoe UI',system-ui,sans-serif !important;}
-        .leaflet-tooltip{font-family:'Segoe UI',system-ui,sans-serif !important;border-radius:6px !important;border:1px solid #e2e8f0 !important;box-shadow:0 4px 12px rgba(0,0,0,.15) !important;padding:8px 12px !important;font-size:.78rem !important;color:#0f172a !important;background:white !important;}
+        .leaflet-container{font-family:'Rotis', 'Segoe UI',system-ui,sans-serif !important;}
+        .leaflet-tooltip{font-family:'Rotis', 'Segoe UI',system-ui,sans-serif !important;border-radius:6px !important;border:1px solid #e2e8f0 !important;box-shadow:0 4px 12px rgba(0,0,0,.15) !important;padding:8px 12px !important;font-size:.78rem !important;color:#0f172a !important;background:white !important;}
         .leaflet-tooltip::before{display:none !important;}
         .leaflet-control-zoom{border:1px solid #e2e8f0 !important;border-radius:8px !important;overflow:hidden !important;}
         .leaflet-control-zoom a{color:#374151 !important;width:32px !important;height:32px !important;line-height:32px !important;background:white !important;}

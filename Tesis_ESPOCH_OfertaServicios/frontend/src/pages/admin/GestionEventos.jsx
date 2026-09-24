@@ -10,8 +10,8 @@ import {
 } from 'react-icons/fa';
 import { leerSesion } from '../../utils/storageSeguro';
 
-const API = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
-const BASE = import.meta.env.VITE_BASE_URL || 'http://localhost:4000';
+const API = import.meta.env.VITE_API_URL || 'http://localhost:8351/api';
+const BASE = import.meta.env.VITE_BASE_URL || 'http://localhost:8351';
 const hdrs = () => {
     const usuario = leerSesion('usuario');
     const t = usuario ? usuario.token : '';
@@ -1056,7 +1056,7 @@ const GestionEventos = () => {
    ESTILOS
 ═══════════════════════════════════════════════════════════ */
 const s = {
-    page: { maxWidth: 1280, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 22, fontFamily: "'Segoe UI',Roboto,sans-serif" },
+    page: { maxWidth: 1280, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 22, fontFamily: "'Rotis', 'Segoe UI',Roboto,sans-serif" },
     header: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 16, flexWrap: 'wrap' },
     headerTit: { margin: '0 0 4px', fontSize: '1.25rem', fontWeight: '800', color: '#2c3e50' },
     btnNuevo: { display: 'inline-flex', alignItems: 'center', gap: 7, padding: '9px 16px', backgroundColor: 'var(--color-espoch-rojo)', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: '0.8rem', fontWeight: '700', flexShrink: 0, whiteSpace: 'nowrap' },
@@ -1107,7 +1107,7 @@ const s = {
     accsRow: { display: 'flex', gap: 6, justifyContent: 'center' },
     btnAcc: { width: 28, height: 28, borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8f9fa', border: '1px solid #e9ecef', cursor: 'pointer', color: '#6c757d', flexShrink: 0 },
     selectWrap: { display: 'flex', alignItems: 'center', gap: 7, background: '#f8f9fa', border: '1px solid #e9ecef', borderRadius: 7, padding: '7px 10px' },
-    selectEl: { border: 'none', background: 'transparent', outline: 'none', fontSize: '0.75rem', color: '#6c757d', cursor: 'pointer', fontFamily: "'Segoe UI',Roboto,sans-serif" },
+    selectEl: { border: 'none', background: 'transparent', outline: 'none', fontSize: '0.75rem', color: '#6c757d', cursor: 'pointer', fontFamily: "'Rotis', 'Segoe UI',Roboto,sans-serif" },
     footTabla: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '11px 14px', borderTop: '1px solid #f0f0f0', flexWrap: 'wrap', gap: 8 },
     contadorTxt: { margin: 0, fontSize: '0.7rem', color: '#adb5bd' },
     pagRow: { display: 'flex', gap: 4, alignItems: 'center' },
@@ -1126,7 +1126,7 @@ const s = {
     grid2: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 4 },
     campo: { display: 'flex', flexDirection: 'column', gap: 5, marginBottom: 10 },
     lbl: { fontSize: '0.75rem', fontWeight: '600', color: '#2c3e50' },
-    inp: { padding: '8px 11px', border: '1px solid #e9ecef', borderRadius: 7, fontSize: '0.8rem', color: '#2c3e50', outline: 'none', fontFamily: "'Segoe UI',Roboto,sans-serif", backgroundColor: '#f8f9fa' },
+    inp: { padding: '8px 11px', border: '1px solid #e9ecef', borderRadius: 7, fontSize: '0.8rem', color: '#2c3e50', outline: 'none', fontFamily: "'Rotis', 'Segoe UI',Roboto,sans-serif", backgroundColor: '#f8f9fa' },
     btnCancelar: { padding: '8px 16px', background: 'transparent', border: '1px solid #e9ecef', borderRadius: 7, cursor: 'pointer', fontSize: '0.8rem', fontWeight: '600', color: '#6c757d' },
     btnGuardar: { display: 'inline-flex', alignItems: 'center', padding: '8px 18px', backgroundColor: 'var(--color-espoch-rojo)', color: 'white', border: 'none', borderRadius: 7, cursor: 'pointer', fontSize: '0.8rem', fontWeight: '700' },
     hibridaBox: { background: '#f0f7ff', border: '1px solid #bbdefb', borderRadius: 8, padding: '12px 14px', marginBottom: 10 },

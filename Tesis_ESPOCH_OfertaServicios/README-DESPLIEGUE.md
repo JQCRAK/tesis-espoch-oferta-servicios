@@ -28,8 +28,8 @@ locales (nada en la nube salvo el envío de correos):
 - **Docker** ≥ 24.0
 - **Docker Compose** ≥ 2.0
 - **Puertos disponibles:** 8350 (frontend) y 8351 (API)
-- **Recursos mínimos:** 2 GB RAM, 5 GB disco
-- **Salida a internet** solo para conectar con Resend (correos)
+- **Recursos recomendados:** 4 GB RAM o más, 5 GB disco
+- **Salida a internet:** para Resend (envío de correos) y para cargar los mapas base (`basemaps.cartocdn.com`) de las estadísticas del panel admin
 
 ---
 
@@ -42,8 +42,12 @@ Vía `git clone` o descomprimiendo el ZIP entregado:
 ```bash
 cd /opt   # o el directorio de despliegue elegido
 git clone https://github.com/JQCRAK/tesis-espoch-oferta-servicios.git portal-graduados
-cd portal-graduados
+cd portal-graduados/Tesis_ESPOCH_OfertaServicios
 ```
+
+Si el proyecto se recibió como **ZIP**, descomprimirlo y entrar a la carpeta
+`Tesis_ESPOCH_OfertaServicios` (allí están `docker-compose.yml` y `.env.example`).
+Todos los comandos siguientes se ejecutan desde esa carpeta.
 
 ### 2. Configurar las variables de entorno
 

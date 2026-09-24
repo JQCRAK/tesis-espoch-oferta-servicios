@@ -8,7 +8,7 @@ import {
 import axios from 'axios';
 import { leerSesion } from '../utils/storageSeguro';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8351/api';
 
 const ModalBienvenida = ({ onCerrar }) => {
     const [segundos, setSegundos] = useState(10);
@@ -38,7 +38,7 @@ const ModalBienvenida = ({ onCerrar }) => {
                 {/* ── Encabezado ── */}
                 <div style={s.header}>
                     <img
-                        src="../img/ESPOCH_LOGO.png"
+                        src="/img/ESPOCH_LOGO.png"
                         alt="ESPOCH"
                         style={s.logo}
                         onError={e => e.target.style.display = 'none'}

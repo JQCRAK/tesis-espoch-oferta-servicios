@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { FaClipboardList, FaClock, FaCheckCircle, FaLock, FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 
-const API = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
+const API = import.meta.env.VITE_API_URL || 'http://localhost:8351/api';
 import { leerSesion } from '../../utils/storageSeguro';
 const hdrs = () => {
     const usuario = leerSesion('usuario');
@@ -11,9 +11,9 @@ const hdrs = () => {
     return { Authorization: `Bearer ${t}` };
 };
 
-const FONT = "'Segoe UI', Roboto, 'Helvetica Neue', sans-serif";
-const FONT_FORM = "'Segoe UI', Roboto, 'Helvetica Neue', sans-serif";
-const FONT_SANS = "'Segoe UI', Roboto, 'Helvetica Neue', sans-serif";
+const FONT = "'Rotis', 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif";
+const FONT_FORM = "'Rotis', 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif";
+const FONT_SANS = "'Rotis', 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif";
 
 // ── Colores del formulario (igual que EncuestaEmpleador) ──
 const ROJO = '#BE1E2D';

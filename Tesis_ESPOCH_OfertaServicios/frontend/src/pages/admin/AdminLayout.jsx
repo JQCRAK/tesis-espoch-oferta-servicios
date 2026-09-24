@@ -12,7 +12,7 @@ import { leerSesion, eliminarSesion } from '../../utils/storageSeguro';
 import useInactivityTimeout from '../../utils/useInactivityTimeout';
 import SessionWarningModal from '../../utils/SessionWarningModal';
 
-const API = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
+const API = import.meta.env.VITE_API_URL || 'http://localhost:8351/api';
 const POLL_INTERVAL = 60_000;
 
 const hdrs = () => {
@@ -20,7 +20,7 @@ const hdrs = () => {
     const t = usuario ? usuario.token : '';
     return { Authorization: `Bearer ${t}` };
 };
-const BASE = import.meta.env.VITE_BASE_URL || 'http://localhost:4000';
+const BASE = import.meta.env.VITE_BASE_URL || 'http://localhost:8351';
 const urlFoto = (ruta) =>
     ruta ? `${BASE}/${ruta}` : null;
 
@@ -481,7 +481,7 @@ const AdminLayout = () => {
 // ESTILOS LAYOUT
 // ══════════════════════════════════════════════
 const s = {
-    root: { display: 'flex', minHeight: '100vh', backgroundColor: '#f0f2f5', fontFamily: "'Segoe UI', Roboto, sans-serif" },
+    root: { display: 'flex', minHeight: '100vh', backgroundColor: '#f0f2f5', fontFamily: "'Rotis', 'Segoe UI', Roboto, sans-serif" },
     sidebar: { position: 'fixed', top: 0, left: 0, bottom: 0, backgroundColor: 'white', borderRight: '1px solid #e9ecef', display: 'flex', flexDirection: 'column', transition: 'width 0.2s ease', overflow: 'hidden', zIndex: 100, boxShadow: '2px 0 8px rgba(0,0,0,0.05)' },
     sbHead: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 10px', minHeight: 60, flexShrink: 0, gap: 8 },
     logoRow: { display: 'flex', alignItems: 'center', gap: 8, overflow: 'hidden', flex: 1 },

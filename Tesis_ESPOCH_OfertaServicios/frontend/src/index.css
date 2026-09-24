@@ -1,4 +1,62 @@
+/* =========================================
+   TIPOGRAFÍA INSTITUCIONAL — Rotis (ESPOCH)
+   Archivos en /public/fonts. Familia "Rotis" = texto y subtítulos;
+   familia "Rotis Titulo" = títulos (ExtraBold).
+   ========================================= */
+@font-face {
+  font-family: 'Rotis';
+  src: url('/fonts/RotisIISansPro-Light.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Rotis';
+  src: url('/fonts/RotisIISansPro-Regular.otf') format('opentype');
+  font-weight: 400 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Rotis';
+  src: url('/fonts/RotisIISansPro-SemiBold.otf') format('opentype');
+  font-weight: 600 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Rotis';
+  src: url('/fonts/RotisSansSerifStd-ExtraBold.otf') format('opentype');
+  font-weight: 800 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Rotis';
+  src: url('/fonts/RotisIISansPro-Italic.otf') format('opentype');
+  font-weight: 300 500;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Rotis';
+  src: url('/fonts/RotisIISansPro-BoldIt.otf') format('opentype');
+  font-weight: 600 900;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Rotis Titulo';
+  src: url('/fonts/RotisSansSerifStd-ExtraBold.otf') format('opentype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
+  --fuente-base: 'Rotis', 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  --fuente-titulo: 'Rotis Titulo', 'Rotis', 'Segoe UI', Roboto, sans-serif;
+
   /* =========================================
      1. IDENTIDAD INSTITUCIONAL (Obligatorio)
      ========================================= */
@@ -47,10 +105,25 @@
 /* Configuraciones Globales */
 body {
   margin: 0;
-  font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  font-family: var(--fuente-base);
   background-color: var(--color-fondo-web);
   color: var(--color-texto-principal);
   -webkit-font-smoothing: antialiased;
+}
+
+/* Los controles de formulario no heredan la fuente por defecto */
+button, input, select, textarea {
+  font-family: inherit;
+}
+
+/* Títulos (h1, h2): Rotis ExtraBold. Subtítulos (h3, h4): Rotis SemiBold.
+   Solo cambia la familia; los tamaños siguen definidos en cada componente. */
+h1, h2 {
+  font-family: var(--fuente-titulo) !important;
+}
+h3, h4 {
+  font-family: var(--fuente-base) !important;
+  font-weight: 600;
 }
 
 /* --- CLASES DE UTILIDAD (Para usar rápido en tus componentes) --- */

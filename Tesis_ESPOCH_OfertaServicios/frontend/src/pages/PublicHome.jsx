@@ -8,9 +8,9 @@ import {
     FaChevronLeft, FaChevronRight, FaSlidersH, FaFilter,
 } from 'react-icons/fa';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
-const BASE    = import.meta.env.VITE_BASE_URL || 'http://localhost:4000';
-const FONT    = "'Segoe UI', Roboto, 'Helvetica Neue', sans-serif";
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8351/api';
+const BASE    = import.meta.env.VITE_BASE_URL || 'http://localhost:8351';
+const FONT    = "'Rotis', 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif";
 
 const urlFoto = (ruta) => {
     if (!ruta) return null;

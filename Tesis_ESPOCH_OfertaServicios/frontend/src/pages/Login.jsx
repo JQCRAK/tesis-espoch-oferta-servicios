@@ -13,7 +13,7 @@ import {
 import '../index.css';
 import { guardarSesion } from '../utils/storageSeguro';
 
-const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:4000/api') + '/auth';
+const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:8351/api') + '/auth';
 
 const ofuscar = (obj) => btoa(unescape(encodeURIComponent(JSON.stringify(obj))));
 const desofuscar = (str) => JSON.parse(decodeURIComponent(escape(atob(str))));
@@ -602,7 +602,7 @@ const Login = () => {
             flexDirection: 'column',
             minHeight: '100vh',
             width: '100%',
-            fontFamily: "'Segoe UI', Roboto, 'Helvetica Neue', sans-serif",
+            fontFamily: "'Rotis', 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif",
             backgroundColor: '#ffffff',
         }
         : {
@@ -1299,7 +1299,7 @@ const s = {
         height: '100vh',
         width: '100vw',
         overflow: 'hidden',
-        fontFamily: "'Segoe UI', Roboto, 'Helvetica Neue', sans-serif",
+        fontFamily: "'Rotis', 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif",
     },
     inputGroupIconFull: {
         display: 'flex',
@@ -1417,7 +1417,7 @@ const s = {
     inp: {
         border: 'none', backgroundColor: 'transparent',
         width: '100%', outline: 'none', fontSize: '0.87rem',
-        color: '#111827', fontFamily: "'Segoe UI', Roboto, 'Helvetica Neue', sans-serif",
+        color: '#111827', fontFamily: "'Rotis', 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif",
     },
     ojito: {
         background: 'none', border: 'none', cursor: 'pointer',
@@ -1433,7 +1433,7 @@ const s = {
     inpCodigo: {
         fontSize: '1.8rem', textAlign: 'center', letterSpacing: '8px',
         fontWeight: 900, border: 'none', backgroundColor: 'transparent',
-        borderRadius: 6, padding: '4px', width: '100%', fontFamily: 'monospace',
+        borderRadius: 6, padding: '4px', width: '100%', fontFamily: "'Rotis', 'Segoe UI', sans-serif",
         color: '#1d4ed8', outline: 'none', boxSizing: 'border-box',
     },
     checklistPass: {

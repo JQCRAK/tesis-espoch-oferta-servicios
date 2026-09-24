@@ -12,7 +12,7 @@ import { leerSesion, eliminarSesion } from '../../utils/storageSeguro';
 import useInactivityTimeout from '../../utils/useInactivityTimeout';
 import SessionWarningModal from '../../utils/SessionWarningModal';
 
-const API = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
+const API = import.meta.env.VITE_API_URL || 'http://localhost:8351/api';
 const POLL_INTERVAL = 60_000;
 
 const hdrs = () => {

@@ -14,7 +14,7 @@ import {
 } from 'react-icons/fa';
 
 // ── Constantes ────────────────────────────────────────────────
-const BASE_URL = (import.meta.env.VITE_API_URL || 'http://localhost:4000/api').replace('/api', '');
+const BASE_URL = (import.meta.env.VITE_API_URL || 'http://localhost:8351/api').replace('/api', '');
 
 const ROJO    = '#BE1E2D';
 const AZUL    = '#1565C0';
@@ -23,7 +23,7 @@ const NARANJA = '#E65100';
 const MORADO  = '#4527A0';
 const CIAN    = '#00695C';
 const GRIS    = '#37474F';
-const FONT    = "'Segoe UI', system-ui, -apple-system, sans-serif";
+const FONT    = "'Rotis', 'Segoe UI', system-ui, -apple-system, sans-serif";
 const PALETA  = [ROJO, AZUL, VERDE, NARANJA, MORADO, CIAN, GRIS,
     '#AD1457', '#00838F', '#558B2F', '#4E342E', '#0277BD'];
 const PALETA_LIGHT = [
@@ -57,9 +57,9 @@ if (typeof document !== 'undefined' && !document.getElementById('tab-ind-kf')) {
         @keyframes est-spin   { to { transform: rotate(360deg); } }
         @keyframes est-fadein { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
         .est-anim { animation: est-fadein 0.28s ease both; }
-        .leaflet-container { font-family: 'Segoe UI', system-ui, sans-serif !important; }
+        .leaflet-container { font-family: 'Rotis', 'Segoe UI', system-ui, sans-serif !important; }
         .leaflet-tooltip {
-            font-family: 'Segoe UI', system-ui, sans-serif !important;
+            font-family: 'Rotis', 'Segoe UI', system-ui, sans-serif !important;
             border-radius: 6px !important; border: 1px solid #e2e8f0 !important;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
             padding: 8px 12px !important; font-size: 0.78rem !important;
@@ -73,7 +73,7 @@ if (typeof document !== 'undefined' && !document.getElementById('tab-ind-kf')) {
         .leaflet-bar { border: none !important; }
         .fil-select {
             padding: 5px 8px; border-radius: 6px; border: 1px solid #e5e7eb;
-            font-size: 0.73rem; font-family: 'Segoe UI', system-ui, sans-serif;
+            font-size: 0.73rem; font-family: 'Rotis', 'Segoe UI', system-ui, sans-serif;
             color: #374151; background: white; outline: none; cursor: pointer;
             transition: border-color 0.15s, box-shadow 0.15s;
         }

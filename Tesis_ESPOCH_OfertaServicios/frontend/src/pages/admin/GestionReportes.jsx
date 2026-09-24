@@ -13,7 +13,7 @@ import {
 } from 'react-icons/fa';
 import ModalReporte from './ModalReporte';
 
-const API = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
+const API = import.meta.env.VITE_API_URL || 'http://localhost:8351/api';
 import { leerSesion } from '../../utils/storageSeguro';
 
 const hdrs = () => {
@@ -743,7 +743,7 @@ const GestionReportes = () => {
    ESTILOS PÁGINA
 ═══════════════════════════════════════════════════════════ */
 const s = {
-    page: { maxWidth: 1280, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 16, fontFamily: "'Segoe UI',Roboto,sans-serif" },
+    page: { maxWidth: 1280, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 16, fontFamily: "'Rotis', 'Segoe UI',Roboto,sans-serif" },
     gridMet: { display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 14 },
     metCard: { backgroundColor: 'white', borderRadius: 10, padding: '14px 16px', border: '1px solid #e9ecef', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' },
     metRow: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 },
@@ -790,7 +790,7 @@ const ms = {
     td: { padding: '8px 10px', verticalAlign: 'middle' },
     tdVacio: { padding: '20px 10px', textAlign: 'center', color: '#adb5bd', fontSize: '0.76rem', fontStyle: 'italic' },
     celTxt: { fontSize: '0.76rem', fontWeight: '500', color: '#2c3e50' },
-    celMono: { fontSize: '0.71rem', fontFamily: 'monospace', color: '#495057', background: '#f8f9fa', padding: '1px 5px', borderRadius: 3, border: '1px solid #e9ecef' },
+    celMono: { fontSize: '0.71rem', fontFamily: "'Rotis', 'Segoe UI', sans-serif", color: '#495057', background: '#f8f9fa', padding: '1px 5px', borderRadius: 3, border: '1px solid #e9ecef' },
     foot: { display: 'flex', alignItems: 'center', gap: 8, padding: '12px 20px', borderTop: '1px solid #e9ecef', backgroundColor: '#f8f9fa', borderRadius: '0 0 12px 12px', flexShrink: 0 },
     btnDesc: { display: 'inline-flex', alignItems: 'center', gap: 6, padding: '7px 14px', borderRadius: 7, cursor: 'pointer', fontSize: '0.76rem', fontWeight: '700', flexShrink: 0 },
     btnCerrar: { padding: '7px 14px', background: 'transparent', border: '1px solid #e9ecef', borderRadius: 7, cursor: 'pointer', fontSize: '0.76rem', fontWeight: '600', color: '#6c757d' },

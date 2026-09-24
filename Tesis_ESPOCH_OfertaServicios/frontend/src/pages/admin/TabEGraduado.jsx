@@ -8,8 +8,8 @@ import {
     FaTag, FaCommentDots, FaCalendarAlt, FaInfoCircle, FaCodeBranch,
 } from 'react-icons/fa';
 
-const API  = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
-const FONT = "'Segoe UI', system-ui, -apple-system, sans-serif";
+const API  = import.meta.env.VITE_API_URL || 'http://localhost:8351/api';
+const FONT = "'Rotis', 'Segoe UI', system-ui, -apple-system, sans-serif";
 const ROJO='#BE1E2D', AZUL='#1565C0', VERDE='#2E7D32', NARANJA='#E65100';
 const MORADO='#4527A0', CIAN='#00695C', GRIS='#37474F', DORADO='#F57F17';
 const PALETA=[ROJO,AZUL,VERDE,NARANJA,MORADO,CIAN,GRIS,DORADO,'#AD1457','#00838F','#558B2F','#4E342E'];
@@ -42,7 +42,7 @@ if(typeof document!=='undefined'&&!document.getElementById('teg-kf')){
         @keyframes teg-in{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
         .teg-a{animation:teg-in 0.28s ease both;}
         .teg-sel{padding:5px 8px;border-radius:6px;border:1px solid #e5e7eb;font-size:0.73rem;
-            font-family:'Segoe UI',system-ui,sans-serif;color:#374151;background:white;outline:none;cursor:pointer;}
+            font-family:'Rotis', 'Segoe UI',system-ui,sans-serif;color:#374151;background:white;outline:none;cursor:pointer;}
         .teg-sel:focus,.teg-sel.on{border-color:#BE1E2D !important;}
         .teg-pag:hover:not(:disabled){background:#BE1E2D !important;color:white !important;border-color:#BE1E2D !important;}
         .teg-gh:hover{background:#f8fafc !important;cursor:pointer;}

@@ -19,7 +19,7 @@ import ModalBienvenida from '../../components/ModalBienvenida';
 import SeccionHojaVida from './SeccionHojaVida';
 import PreviewHojaVida from './PreviewHojaVida';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8351/api';
 
 const LIMITE_PROYECTOS = 5;
 const LIMITE_CERTIFICADOS = 5;
@@ -89,7 +89,7 @@ const urlFoto = (ruta) => {
     if (ruta.startsWith('http://') || ruta.startsWith('https://')) {
         return `${ruta}?t=${Date.now()}`;
     }
-    const BASE = import.meta.env.VITE_BASE_URL || 'http://localhost:4000';
+    const BASE = import.meta.env.VITE_BASE_URL || 'http://localhost:8351';
     return `${BASE}/${ruta}?t=${Date.now()}`;
 };
 

@@ -7,7 +7,7 @@ import {
     FaFacebook, FaChevronDown, FaChevronUp, FaTimes,
 } from 'react-icons/fa';
 
-const FONT = "'Segoe UI', Roboto, 'Helvetica Neue', sans-serif";
+const FONT = "'Rotis', 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif";
 
 // ── Hook responsive ──────────────────────────────────────────────────────────
 const useWindowWidth = () => {
