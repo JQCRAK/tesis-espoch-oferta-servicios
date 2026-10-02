@@ -16,7 +16,7 @@ const FONT_FORM = "'Rotis', 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif";
 const FONT_SANS = "'Rotis', 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif";
 
 // ── Colores del formulario (igual que EncuestaEmpleador) ──
-const ROJO = '#BE1E2D';
+const ROJO = '#BC0613';
 const ROJO_OSC = '#8B1421';
 const ROJO_CLARO = '#F9E8EA';
 const GRIS_LN = '#E8E8E8';
@@ -100,14 +100,14 @@ const Toast = ({ mensaje, visible, onOcultar }) => {
         }}>
             <div style={{ width: 6, height: 6, borderRadius: '50%', background: ROJO, flexShrink: 0, marginTop: 6 }} />
             <div style={{ flex: 1 }}>
-                <p style={{ margin: '0 0 2px', fontSize: '0.72rem', fontWeight: '700', color: ROJO, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                <p style={{ margin: '0 0 2px', fontSize: '0.9rem', fontWeight: '700', color: ROJO, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                     Campos incompletos
                 </p>
-                <p style={{ margin: 0, fontSize: '0.82rem', fontWeight: '400', lineHeight: 1.55, color: 'rgba(255,255,255,0.88)' }}>
+                <p style={{ margin: 0, fontSize: '1rem', fontWeight: '400', lineHeight: 1.55, color: 'rgba(255,255,255,0.88)' }}>
                     {mensaje}
                 </p>
             </div>
-            <button onClick={onOcultar} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.45)', cursor: 'pointer', fontSize: '1.1rem', padding: 0, flexShrink: 0, lineHeight: 1, marginTop: 1 }}>×</button>
+            <button onClick={onOcultar} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.45)', cursor: 'pointer', fontSize: '1.2rem', padding: 0, flexShrink: 0, lineHeight: 1, marginTop: 1 }}>×</button>
         </div>
     );
 };
@@ -127,17 +127,17 @@ const CabeceraModal = ({ titulo, onCerrar }) => (
             <div style={{ position: 'absolute', bottom: -60, right: -20, width: 140, height: 140, border: '30px solid white', borderRadius: '50%' }} />
         </div>
         <div style={{ minWidth: 0, flex: 1 }}>
-            <p style={{ margin: '0 0 5px', fontSize: '0.6rem', fontWeight: '700', color: 'rgba(255,255,255,0.65)', letterSpacing: '2px', textTransform: 'uppercase', fontFamily: FONT_SANS }}>
+            <p style={{ margin: '0 0 5px', fontSize: '0.8rem', fontWeight: '700', color: 'rgba(255,255,255,0.65)', letterSpacing: '2px', textTransform: 'uppercase', fontFamily: FONT_SANS }}>
                 Encuesta de Graduados · ESPOCH
             </p>
-            <h2 style={{ margin: 0, fontSize: '1rem', fontWeight: '600', color: 'white', fontFamily: FONT_FORM, lineHeight: 1.3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', paddingRight: 8 }}>
+            <h2 style={{ margin: 0, fontSize: '1.1rem', fontWeight: '600', color: 'white', fontFamily: FONT_FORM, lineHeight: 1.3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', paddingRight: 8 }}>
                 {titulo}
             </h2>
         </div>
         <button onClick={onCerrar} style={{
             background: 'rgba(255,255,255,0.18)', border: 'none',
             borderRadius: 6, color: 'white', width: 32, height: 32, cursor: 'pointer',
-            fontSize: '1.1rem', fontWeight: '700', display: 'flex', alignItems: 'center',
+            fontSize: '1.2rem', fontWeight: '700', display: 'flex', alignItems: 'center',
             justifyContent: 'center', flexShrink: 0, marginLeft: 14, transition: 'background 0.15s',
         }}>×</button>
     </div>
@@ -169,14 +169,14 @@ const BarraPasos = ({ paso, isMobile }) => {
                                 alignItems: 'center', justifyContent: 'center',
                                 background: comp ? ROJO : actv ? ROJO : 'transparent',
                                 border: `2px solid ${comp || actv ? ROJO : GRIS_LN}`,
-                                fontSize: '0.7rem', fontWeight: '700',
+                                fontSize: '0.9rem', fontWeight: '700',
                                 color: comp || actv ? 'white' : TEXTO_S,
                                 transition: 'all 0.2s',
                             }}>
                                 {comp ? '✓' : i + 1}
                             </div>
                             <span style={{
-                                fontSize: isMobile ? '0.6rem' : '0.65rem', fontWeight: actv ? '700' : '400',
+                                fontSize: isMobile ? '0.8rem' : '0.8rem', fontWeight: actv ? '700' : '400',
                                 color: actv ? ROJO : comp ? TEXTO : TEXTO_S,
                                 letterSpacing: '0.3px', textAlign: 'center', lineHeight: 1.2,
                             }}>{p.label}</span>
@@ -196,12 +196,12 @@ const BarraPasos = ({ paso, isMobile }) => {
 // ══════════════════════════════════════════════════════════════
 const TablaMatriz = ({ items, columnas, respuestas, onRespuesta, pregId, esOpcionMultiple }) => (
     <div style={{ overflowX: 'auto', marginTop: 8, WebkitOverflowScrolling: 'touch' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.78rem', fontFamily: FONT_SANS, minWidth: 320 }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem', fontFamily: FONT_SANS, minWidth: 320 }}>
             <thead>
                 <tr>
-                    <th style={{ padding: '8px 12px', textAlign: 'left', width: '40%', color: TEXTO_S, fontWeight: '600', borderBottom: `2px solid ${GRIS_LN}`, fontSize: '0.7rem', letterSpacing: '0.3px' }}></th>
+                    <th style={{ padding: '8px 12px', textAlign: 'left', width: '40%', color: TEXTO_S, fontWeight: '600', borderBottom: `2px solid ${GRIS_LN}`, fontSize: '0.9rem', letterSpacing: '0.3px' }}></th>
                     {columnas.map((col, i) => (
-                        <th key={i} style={{ padding: '8px 6px', textAlign: 'center', color: TEXTO_S, fontWeight: '700', minWidth: 48, borderBottom: `2px solid ${GRIS_LN}`, fontSize: '0.7rem' }}>{col}</th>
+                        <th key={i} style={{ padding: '8px 6px', textAlign: 'center', color: TEXTO_S, fontWeight: '700', minWidth: 48, borderBottom: `2px solid ${GRIS_LN}`, fontSize: '0.9rem' }}>{col}</th>
                     ))}
                 </tr>
             </thead>
@@ -210,7 +210,7 @@ const TablaMatriz = ({ items, columnas, respuestas, onRespuesta, pregId, esOpcio
                     const itemId = `${pregId}_item_${rowIdx}`;
                     return (
                         <tr key={rowIdx} style={{ borderBottom: `1px solid ${rowIdx % 2 === 0 ? GRIS_LN : 'transparent'}`, background: rowIdx % 2 !== 0 ? '#FAFAFA' : 'white' }}>
-                            <td style={{ padding: '11px 12px', fontSize: '0.79rem', color: TEXTO, lineHeight: 1.45, fontWeight: '500' }}>{item}</td>
+                            <td style={{ padding: '11px 12px', fontSize: '0.9rem', color: TEXTO, lineHeight: 1.45, fontWeight: '500' }}>{item}</td>
                             {columnas.map((col, colIdx) => {
                                 const val = esOpcionMultiple ? col : colIdx + 1;
                                 const sel = respuestas[itemId] === val;
@@ -236,8 +236,8 @@ const TablaMatriz = ({ items, columnas, respuestas, onRespuesta, pregId, esOpcio
 // ══════════════════════════════════════════════════════════════
 const Campo = ({ label, val }) => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-        <label style={{ fontSize: '0.65rem', fontWeight: '700', color: TEXTO_S, textTransform: 'uppercase', letterSpacing: '0.8px', fontFamily: FONT_SANS }}>{label}</label>
-        <div style={{ padding: '9px 12px', background: '#F8F9FA', border: `1px solid ${GRIS_LN}`, borderRadius: 6, fontSize: '0.83rem', color: TEXTO, fontFamily: FONT_SANS, minHeight: 36 }}>{val || '—'}</div>
+        <label style={{ fontSize: '0.8rem', fontWeight: '700', color: TEXTO_S, textTransform: 'uppercase', letterSpacing: '0.8px', fontFamily: FONT_SANS }}>{label}</label>
+        <div style={{ padding: '9px 12px', background: '#F8F9FA', border: `1px solid ${GRIS_LN}`, borderRadius: 6, fontSize: '1rem', color: TEXTO, fontFamily: FONT_SANS, minHeight: 36 }}>{val || '—'}</div>
     </div>
 );
 
@@ -245,13 +245,13 @@ const Campo = ({ label, val }) => (
 // AUXILIARES DEL FORMULARIO
 // ══════════════════════════════════════════════════════════════
 const SeccionLabel = ({ children }) => (
-    <p style={{ margin: '0 0 10px', fontSize: '0.65rem', fontWeight: '700', color: TEXTO_S, textTransform: 'uppercase', letterSpacing: '1.2px', fontFamily: FONT_SANS, paddingBottom: 6, borderBottom: `1px solid ${GRIS_LN}` }}>
+    <p style={{ margin: '0 0 10px', fontSize: '0.8rem', fontWeight: '700', color: TEXTO_S, textTransform: 'uppercase', letterSpacing: '1.2px', fontFamily: FONT_SANS, paddingBottom: 6, borderBottom: `1px solid ${GRIS_LN}` }}>
         {children}
     </p>
 );
 const CampoForm = ({ label, children }) => (
     <div style={{ marginBottom: 14 }}>
-        <label style={{ display: 'block', fontSize: '0.73rem', fontWeight: '600', marginBottom: 5, color: TEXTO, fontFamily: FONT_SANS }}>{label}</label>
+        <label style={{ display: 'block', fontSize: '0.9rem', fontWeight: '600', marginBottom: 5, color: TEXTO, fontFamily: FONT_SANS }}>{label}</label>
         {children}
     </div>
 );
@@ -259,7 +259,7 @@ const CampoForm = ({ label, children }) => (
 const inputBase = {
     width: '100%', padding: '9px 12px',
     border: `1px solid ${GRIS_LN}`, borderRadius: 5,
-    fontSize: '0.83rem', outline: 'none',
+    fontSize: '1rem', outline: 'none',
     boxSizing: 'border-box', fontFamily: FONT_SANS,
     color: TEXTO, background: 'white',
     transition: 'border-color 0.15s, box-shadow 0.15s',
@@ -271,10 +271,10 @@ const inputBase = {
 const PasoConsentimiento = ({ encuesta, onAceptar, onRechazar, isMobile }) => (
     <div style={{ padding: isMobile ? '0 16px 24px' : '0 28px 28px' }}>
         <div style={{ marginBottom: 8 }}>
-            <h3 style={{ margin: '0 0 3px', fontSize: '0.95rem', fontWeight: '600', color: TEXTO, fontFamily: FONT_FORM }}>
+            <h3 style={{ margin: '0 0 3px', fontSize: '1.1rem', fontWeight: '600', color: TEXTO, fontFamily: FONT_FORM }}>
                 Consentimiento Informado
             </h3>
-            <p style={{ margin: '0 0 14px', fontSize: '0.72rem', color: TEXTO_S, fontFamily: FONT_SANS }}>
+            <p style={{ margin: '0 0 14px', fontSize: '0.9rem', color: TEXTO_S, fontFamily: FONT_SANS }}>
                 Lea detenidamente el siguiente texto antes de continuar
             </p>
             <div style={{
@@ -283,27 +283,27 @@ const PasoConsentimiento = ({ encuesta, onAceptar, onRechazar, isMobile }) => (
                 padding: '18px 20px', marginBottom: 22,
                 maxHeight: isMobile ? 200 : 250, overflowY: 'auto', lineHeight: 1.75,
             }}>
-                <p style={{ margin: 0, fontSize: '0.83rem', color: '#3A3A3A', fontFamily: FONT_SANS, textAlign: 'justify' }}>
+                <p style={{ margin: 0, fontSize: '1rem', color: '#3A3A3A', fontFamily: FONT_SANS, textAlign: 'justify' }}>
                     {encuesta.consentimientoInformado ||
                         'Estimados graduados de la ESPOCH, el propósito de esta encuesta es recopilar información sobre su situación laboral, competencias y formación académica. Toda la información será tratada de manera confidencial. Su participación es completamente voluntaria.'}
                 </p>
             </div>
         </div>
 
-        <p style={{ margin: '0 0 14px', fontSize: '0.82rem', fontWeight: '600', color: TEXTO, textAlign: 'center', fontFamily: FONT_SANS }}>
+        <p style={{ margin: '0 0 14px', fontSize: '1rem', fontWeight: '600', color: TEXTO, textAlign: 'center', fontFamily: FONT_SANS }}>
             ¿Acepta participar en esta investigación?
         </p>
         <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 10 }}>
             <button onClick={onAceptar} style={{
                 padding: '13px', background: '#F0FAF2',
                 border: '1.5px solid #2e7d32', borderRadius: 6,
-                cursor: 'pointer', fontWeight: '700', fontSize: '0.85rem',
+                cursor: 'pointer', fontWeight: '700', fontSize: '1rem',
                 color: '#2e7d32', fontFamily: FONT_SANS, transition: 'all 0.15s',
             }}>Sí, acepto participar</button>
             <button onClick={onRechazar} style={{
                 padding: '13px', background: ROJO_CLARO,
                 border: `1.5px solid ${ROJO}`, borderRadius: 6,
-                cursor: 'pointer', fontWeight: '700', fontSize: '0.85rem',
+                cursor: 'pointer', fontWeight: '700', fontSize: '1rem',
                 color: ROJO, fontFamily: FONT_SANS, transition: 'all 0.15s',
             }}>No acepto</button>
         </div>
@@ -366,7 +366,7 @@ const PasoInfoGeneral = ({ onSiguiente, onAtras, isMobile }) => {
         <div style={{ padding: isMobile ? '0 16px 24px' : '0 28px 28px' }}>
             <div style={{ textAlign: 'center', padding: '50px 0' }}>
                 <div style={frmCss.spinner} />
-                <p style={{ margin: '14px 0 0', fontSize: '0.82rem', color: TEXTO_S, fontFamily: FONT_SANS }}>Cargando tus datos...</p>
+                <p style={{ margin: '14px 0 0', fontSize: '1rem', color: TEXTO_S, fontFamily: FONT_SANS }}>Cargando tus datos...</p>
             </div>
         </div>
     );
@@ -380,8 +380,8 @@ const PasoInfoGeneral = ({ onSiguiente, onAtras, isMobile }) => {
         <div style={{ padding: isMobile ? '0 16px 24px' : '0 28px 28px' }}>
             {/* Aviso */}
             <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, background: '#EFF6FF', border: '1px solid #BFDBFE', borderRadius: 6, padding: '10px 14px', marginBottom: 20 }}>
-                <span style={{ flexShrink: 0, fontSize: '0.9rem' }}>ℹ️</span>
-                <p style={{ margin: 0, fontSize: '0.78rem', color: '#1D4ED8', lineHeight: 1.55, fontFamily: FONT_SANS }}>
+                <span style={{ flexShrink: 0, fontSize: '1.1rem' }}>ℹ️</span>
+                <p style={{ margin: 0, fontSize: '0.9rem', color: '#1D4ED8', lineHeight: 1.55, fontFamily: FONT_SANS }}>
                     Los campos con <strong>✏️</strong> son editables. Al hacer clic en <strong>Guardar y continuar</strong> se actualizarán tus datos.
                 </p>
             </div>
@@ -412,7 +412,7 @@ const PasoInfoGeneral = ({ onSiguiente, onAtras, isMobile }) => {
                         onChange={ev => setTelefono(ev.target.value.replace(/\D/g, '').slice(0, 10))}
                         placeholder="10 dígitos" maxLength={10} inputMode="numeric"
                         className="eg-inp" style={inputBase} />
-                    <span style={{ fontSize: '0.68rem', color: telefono.length === 10 ? '#2e7d32' : TEXTO_S, marginTop: 3, display: 'block', fontFamily: FONT_SANS }}>
+                    <span style={{ fontSize: '0.8rem', color: telefono.length === 10 ? '#2e7d32' : TEXTO_S, marginTop: 3, display: 'block', fontFamily: FONT_SANS }}>
                         {telefono.length}/10 dígitos
                     </span>
                 </CampoForm>
@@ -423,7 +423,7 @@ const PasoInfoGeneral = ({ onSiguiente, onAtras, isMobile }) => {
                         placeholder={`Ej: ${new Date().getFullYear() - 2}`}
                         min={1990} max={new Date().getFullYear()}
                         className="eg-inp" style={inputBase} />
-                    <span style={{ fontSize: '0.68rem', color: TEXTO_S, marginTop: 3, display: 'block', fontFamily: FONT_SANS }}>
+                    <span style={{ fontSize: '0.8rem', color: TEXTO_S, marginTop: 3, display: 'block', fontFamily: FONT_SANS }}>
                         Corrígelo si hubo retraso en la tesis
                     </span>
                 </CampoForm>
@@ -440,7 +440,7 @@ const PasoInfoGeneral = ({ onSiguiente, onAtras, isMobile }) => {
                             justifyContent: isMobile ? 'center' : 'flex-start',
                             border: `1.5px solid ${ciudadania === op ? ROJO : GRIS_LN}`,
                             background: ciudadania === op ? ROJO_CLARO : 'white',
-                            fontSize: '0.83rem', fontFamily: FONT_SANS,
+                            fontSize: '1rem', fontFamily: FONT_SANS,
                             fontWeight: ciudadania === op ? '700' : '400',
                             color: ciudadania === op ? ROJO : TEXTO,
                             transition: 'all 0.15s',
@@ -454,12 +454,12 @@ const PasoInfoGeneral = ({ onSiguiente, onAtras, isMobile }) => {
             </CampoForm>
 
             {error && (
-                <div style={{ padding: '10px 14px', background: ROJO_CLARO, color: ROJO, border: `1px solid #F5C6CB`, borderRadius: 6, fontSize: '0.8rem', marginBottom: 12, fontFamily: FONT_SANS }}>
+                <div style={{ padding: '10px 14px', background: ROJO_CLARO, color: ROJO, border: `1px solid #F5C6CB`, borderRadius: 6, fontSize: '1rem', marginBottom: 12, fontFamily: FONT_SANS }}>
                     {error}
                 </div>
             )}
             {exito && (
-                <div style={{ padding: '10px 14px', background: '#E8F5E9', color: '#2e7d32', border: '1px solid #C8E6C9', borderRadius: 6, fontSize: '0.8rem', marginBottom: 12, fontFamily: FONT_SANS }}>
+                <div style={{ padding: '10px 14px', background: '#E8F5E9', color: '#2e7d32', border: '1px solid #C8E6C9', borderRadius: 6, fontSize: '1rem', marginBottom: 12, fontFamily: FONT_SANS }}>
                     {exito}
                 </div>
             )}
@@ -469,18 +469,18 @@ const PasoInfoGeneral = ({ onSiguiente, onAtras, isMobile }) => {
                 <button className="eg-btn-atras" onClick={onAtras} disabled={guardando} style={{
                     display: 'flex', alignItems: 'center', padding: isMobile ? '11px 16px' : '10px 20px',
                     background: '#F0F0F0', border: 'none', borderRadius: 6,
-                    cursor: 'pointer', fontWeight: '600', fontSize: '0.84rem',
+                    cursor: 'pointer', fontWeight: '600', fontSize: '1rem',
                     color: TEXTO_S, fontFamily: FONT_SANS, transition: 'background 0.15s',
                 }}>
-                    <FaArrowLeft style={{ marginRight: 6, fontSize: '0.72rem' }} /> Atrás
+                    <FaArrowLeft style={{ marginRight: 6, fontSize: '0.9rem' }} /> Atrás
                 </button>
                 <button className="eg-btn-sig" onClick={validarYSiguiente} disabled={guardando} style={{
                     display: 'flex', alignItems: 'center', padding: isMobile ? '11px 20px' : '10px 24px',
                     background: ROJO, color: 'white', border: 'none', borderRadius: 6,
-                    cursor: 'pointer', fontWeight: '700', fontSize: '0.84rem',
+                    cursor: 'pointer', fontWeight: '700', fontSize: '1rem',
                     fontFamily: FONT_SANS, boxShadow: `0 4px 14px rgba(190,30,45,0.25)`,
                 }}>
-                    {guardando ? 'Guardando...' : <><span>Guardar y continuar</span><FaArrowRight style={{ marginLeft: 6, fontSize: '0.72rem' }} /></>}
+                    {guardando ? 'Guardando...' : <><span>Guardar y continuar</span><FaArrowRight style={{ marginLeft: 6, fontSize: '0.9rem' }} /></>}
                 </button>
             </div>
         </div>
@@ -602,14 +602,14 @@ const PasoPreguntas = ({ encuesta, onAtras, onEnviar, isMobile }) => {
                 border: `1px solid ${esSi ? '#C8E6C9' : '#FFE0B2'}`,
                 borderRadius: 5,
             }}>
-                <p style={{ margin: '0 0 8px', fontSize: '0.78rem', fontWeight: '600', color: TEXTO, fontFamily: FONT_SANS }}>{texto}</p>
+                <p style={{ margin: '0 0 8px', fontSize: '0.9rem', fontWeight: '600', color: TEXTO, fontFamily: FONT_SANS }}>{texto}</p>
                 {tipo === 'texto_libre' && (
                     <textarea value={resp[subId] || ''} onChange={ev => setR(subId, ev.target.value, tipo)}
                         placeholder="Escribe tu respuesta..." className="eg-inp"
-                        style={{ width: '100%', padding: '7px 10px', border: `1px solid ${GRIS_LN}`, borderRadius: 4, fontSize: '0.78rem', minHeight: 48, outline: 'none', resize: 'vertical', fontFamily: FONT_SANS, boxSizing: 'border-box' }} />
+                        style={{ width: '100%', padding: '7px 10px', border: `1px solid ${GRIS_LN}`, borderRadius: 4, fontSize: '0.9rem', minHeight: 48, outline: 'none', resize: 'vertical', fontFamily: FONT_SANS, boxSizing: 'border-box' }} />
                 )}
                 {tipo === 'opcion_multiple' && (opciones || []).map((op, k) => (
-                    <label key={k} className="eg-opcion" style={{ display: 'flex', alignItems: 'center', gap: 7, cursor: 'pointer', fontSize: '0.78rem', marginBottom: 4, padding: '5px 8px', borderRadius: 4, border: `1px solid ${resp[subId] === op ? ROJO : 'transparent'}`, background: resp[subId] === op ? ROJO_CLARO : 'transparent', fontFamily: FONT_SANS }}>
+                    <label key={k} className="eg-opcion" style={{ display: 'flex', alignItems: 'center', gap: 7, cursor: 'pointer', fontSize: '0.9rem', marginBottom: 4, padding: '5px 8px', borderRadius: 4, border: `1px solid ${resp[subId] === op ? ROJO : 'transparent'}`, background: resp[subId] === op ? ROJO_CLARO : 'transparent', fontFamily: FONT_SANS }}>
                         <input type="radio" name={subId} value={op} checked={resp[subId] === op} onChange={() => setR(subId, op, tipo)} style={{ accentColor: ROJO }} />{op}
                     </label>
                 ))}
@@ -624,7 +624,7 @@ const PasoPreguntas = ({ encuesta, onAtras, onEnviar, isMobile }) => {
                                     background: limAlcanzado ? '#ffebee' : '#fff8e1',
                                     border: `1px solid ${limAlcanzado ? '#ffcdd2' : '#ffe082'}`,
                                     color: limAlcanzado ? '#c62828' : '#6d4c00',
-                                    padding: '5px 9px', borderRadius: 4, fontSize: '0.7rem', fontWeight: 600,
+                                    padding: '5px 9px', borderRadius: 4, fontSize: '0.9rem', fontWeight: 600,
                                     marginBottom: 5, fontFamily: FONT_SANS,
                                 }}>
                                     {limAlcanzado
@@ -636,7 +636,7 @@ const PasoPreguntas = ({ encuesta, onAtras, onEnviar, isMobile }) => {
                                 const sel = (resp[subId] || []).includes(op);
                                 const bloq = !sel && limAlcanzado;
                                 return (
-                                    <label key={k} className="eg-opcion" style={{ display: 'flex', alignItems: 'center', gap: 7, cursor: bloq ? 'not-allowed' : 'pointer', fontSize: '0.78rem', marginBottom: 4, padding: '5px 8px', borderRadius: 4, border: `1px solid ${sel ? ROJO : 'transparent'}`, background: sel ? ROJO_CLARO : 'transparent', fontFamily: FONT_SANS, opacity: bloq ? 0.55 : 1 }}>
+                                    <label key={k} className="eg-opcion" style={{ display: 'flex', alignItems: 'center', gap: 7, cursor: bloq ? 'not-allowed' : 'pointer', fontSize: '0.9rem', marginBottom: 4, padding: '5px 8px', borderRadius: 4, border: `1px solid ${sel ? ROJO : 'transparent'}`, background: sel ? ROJO_CLARO : 'transparent', fontFamily: FONT_SANS, opacity: bloq ? 0.55 : 1 }}>
                                         <input type="checkbox" checked={sel} disabled={bloq} onChange={() => {
                                             const a = resp[subId] || [];
                                             if (a.includes(op)) setR(subId, a.filter(x => x !== op), tipo);
@@ -651,7 +651,7 @@ const PasoPreguntas = ({ encuesta, onAtras, onEnviar, isMobile }) => {
                 {tipo === 'escala' && (
                     <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
                         {[1, 2, 3, 4, 5].map(n => (
-                            <button key={n} className="eg-btn-escala" onClick={() => setR(subId, n, tipo)} style={{ width: 30, height: 30, borderRadius: '50%', border: `2px solid ${resp[subId] === n ? ROJO : GRIS_LN}`, background: resp[subId] === n ? ROJO : 'white', color: resp[subId] === n ? 'white' : TEXTO_S, cursor: 'pointer', fontWeight: '700', fontSize: '0.72rem', transition: 'all 0.15s' }}>{n}</button>
+                            <button key={n} className="eg-btn-escala" onClick={() => setR(subId, n, tipo)} style={{ width: 30, height: 30, borderRadius: '50%', border: `2px solid ${resp[subId] === n ? ROJO : GRIS_LN}`, background: resp[subId] === n ? ROJO : 'white', color: resp[subId] === n ? 'white' : TEXTO_S, cursor: 'pointer', fontWeight: '700', fontSize: '0.9rem', transition: 'all 0.15s' }}>{n}</button>
                         ))}
                     </div>
                 )}
@@ -673,7 +673,7 @@ const PasoPreguntas = ({ encuesta, onAtras, onEnviar, isMobile }) => {
                             padding: '7px 10px',
                             border: `1px solid ${GRIS_LN}`,
                             borderRadius: 4,
-                            fontSize: '0.78rem',
+                            fontSize: '0.9rem',
                             outline: 'none',
                             fontFamily: FONT_SANS,
                             boxSizing: 'border-box',
@@ -690,7 +690,7 @@ const PasoPreguntas = ({ encuesta, onAtras, onEnviar, isMobile }) => {
         if (preg.tipo === 'titulo') {
             return (
                 <div key={preg._id} style={{ margin: '22px 0 10px', padding: '12px 16px', borderLeft: `3px solid ${ROJO}`, background: '#FAFAFA', borderRadius: '0 4px 4px 0' }}>
-                    <p style={{ margin: 0, fontSize: '0.88rem', fontWeight: '700', color: TEXTO, fontFamily: FONT_FORM, letterSpacing: '0.2px' }}>{preg.texto}</p>
+                    <p style={{ margin: 0, fontSize: '1rem', fontWeight: '700', color: TEXTO, fontFamily: FONT_FORM, letterSpacing: '0.2px' }}>{preg.texto}</p>
                 </div>
             );
         }
@@ -702,15 +702,15 @@ const PasoPreguntas = ({ encuesta, onAtras, onEnviar, isMobile }) => {
             const cols = preg.tipo === 'escala' ? [1, 2, 3, 4, 5] : (preg.opciones || []);
             return (
                 <div key={preg._id} className="eg-tarjeta-preg" style={base}>
-                    <p style={{ margin: '0 0 4px', fontSize: '0.87rem', fontWeight: '600', color: TEXTO, fontFamily: FONT_SANS, lineHeight: 1.4 }}>
+                    <p style={{ margin: '0 0 4px', fontSize: '1rem', fontWeight: '600', color: TEXTO, fontFamily: FONT_SANS, lineHeight: 1.4 }}>
                         <span style={{ color: ROJO, fontWeight: '700', marginRight: 6 }}>{num}.</span>
                         {preg.texto}{preg.obligatoria && <span style={{ color: ROJO, marginLeft: 3 }}>*</span>}
                     </p>
-                    {preg.descripcionMatriz && <p style={{ margin: '0 0 8px', fontSize: '0.74rem', color: TEXTO_S, fontFamily: FONT_SANS }}>{preg.descripcionMatriz}</p>}
+                    {preg.descripcionMatriz && <p style={{ margin: '0 0 8px', fontSize: '0.9rem', color: TEXTO_S, fontFamily: FONT_SANS }}>{preg.descripcionMatriz}</p>}
                     {preg.tipo === 'escala' && (
                         <div style={{ display: 'flex', gap: 14, marginBottom: 6, flexWrap: 'wrap' }}>
-                            {preg.etiquetaMin && <span style={{ fontSize: '0.68rem', color: TEXTO_S, fontFamily: FONT_SANS }}>1 = {preg.etiquetaMin}</span>}
-                            {preg.etiquetaMax && <span style={{ fontSize: '0.68rem', color: TEXTO_S, fontFamily: FONT_SANS }}>5 = {preg.etiquetaMax}</span>}
+                            {preg.etiquetaMin && <span style={{ fontSize: '0.8rem', color: TEXTO_S, fontFamily: FONT_SANS }}>1 = {preg.etiquetaMin}</span>}
+                            {preg.etiquetaMax && <span style={{ fontSize: '0.8rem', color: TEXTO_S, fontFamily: FONT_SANS }}>5 = {preg.etiquetaMax}</span>}
                         </div>
                     )}
                     <TablaMatriz items={preg.items} columnas={cols} respuestas={resp}
@@ -723,11 +723,11 @@ const PasoPreguntas = ({ encuesta, onAtras, onEnviar, isMobile }) => {
         // Pregunta estándar
         return (
             <div key={preg._id} className="eg-tarjeta-preg" style={base}>
-                <p style={{ margin: '0 0 12px', fontSize: isMobile ? '0.85rem' : '0.87rem', fontWeight: '600', color: TEXTO, fontFamily: FONT_SANS, lineHeight: 1.45 }}>
+                <p style={{ margin: '0 0 12px', fontSize: isMobile ? '1rem' : '1rem', fontWeight: '600', color: TEXTO, fontFamily: FONT_SANS, lineHeight: 1.45 }}>
                     <span style={{ color: ROJO, fontWeight: '700', marginRight: 6 }}>{num}.</span>
                     {preg.texto}{preg.obligatoria && <span style={{ color: ROJO, marginLeft: 3 }}>*</span>}
                     {preg.tipo === 'checkboxes' && Number(preg.limiteSeleccion) > 0 && (
-                        <span style={{ marginLeft: 8, fontSize: '0.74rem', fontWeight: 700, color: '#6d4c00', background: '#fff8e1', padding: '2px 8px', borderRadius: 10, border: '1px solid #ffe082' }}>
+                        <span style={{ marginLeft: 8, fontSize: '0.9rem', fontWeight: 700, color: '#6d4c00', background: '#fff8e1', padding: '2px 8px', borderRadius: 10, border: '1px solid #ffe082' }}>
                             Marca máximo {preg.limiteSeleccion} {preg.limiteSeleccion === 1 ? 'opción' : 'opciones'}
                         </span>
                     )}
@@ -736,7 +736,7 @@ const PasoPreguntas = ({ encuesta, onAtras, onEnviar, isMobile }) => {
                 {preg.tipo === 'texto_libre' && (
                     <textarea value={resp[preg._id] || ''} onChange={ev => setR(preg._id, ev.target.value, preg.tipo)}
                         placeholder="Escribe tu respuesta aquí..." className="eg-inp"
-                        style={{ width: '100%', padding: '9px 12px', border: `1px solid ${GRIS_LN}`, borderRadius: 5, fontSize: '0.82rem', minHeight: 68, outline: 'none', resize: 'vertical', fontFamily: FONT_SANS, boxSizing: 'border-box' }} />
+                        style={{ width: '100%', padding: '9px 12px', border: `1px solid ${GRIS_LN}`, borderRadius: 5, fontSize: '1rem', minHeight: 68, outline: 'none', resize: 'vertical', fontFamily: FONT_SANS, boxSizing: 'border-box' }} />
                 )}
 
                 {preg.tipo === 'numero' && (
@@ -751,7 +751,7 @@ const PasoPreguntas = ({ encuesta, onAtras, onEnviar, isMobile }) => {
                         {(preg.opciones || []).map((op, i) => (
                             <label key={i} className="eg-opcion" style={{
                                 display: 'flex', alignItems: 'center', gap: 9, cursor: 'pointer',
-                                padding: isMobile ? '10px 12px' : '9px 12px', borderRadius: 5, fontSize: '0.83rem', fontFamily: FONT_SANS,
+                                padding: isMobile ? '10px 12px' : '9px 12px', borderRadius: 5, fontSize: '1rem', fontFamily: FONT_SANS,
                                 background: resp[preg._id] === op ? ROJO_CLARO : '#FAFAFA',
                                 border: `1.5px solid ${resp[preg._id] === op ? ROJO : GRIS_LN}`,
                                 color: resp[preg._id] === op ? ROJO_OSC : TEXTO,
@@ -777,7 +777,7 @@ const PasoPreguntas = ({ encuesta, onAtras, onEnviar, isMobile }) => {
                                     background: limAlcanzado ? '#ffebee' : '#fff8e1',
                                     border: `1px solid ${limAlcanzado ? '#ffcdd2' : '#ffe082'}`,
                                     color: limAlcanzado ? '#c62828' : '#6d4c00',
-                                    padding: '6px 10px', borderRadius: 4, fontSize: '0.72rem', fontWeight: 600,
+                                    padding: '6px 10px', borderRadius: 4, fontSize: '0.9rem', fontWeight: 600,
                                     marginBottom: 4, fontFamily: FONT_SANS,
                                 }}>
                                     {limAlcanzado
@@ -792,7 +792,7 @@ const PasoPreguntas = ({ encuesta, onAtras, onEnviar, isMobile }) => {
                                     <label key={i} className="eg-opcion" style={{
                                         display: 'flex', alignItems: 'center', gap: 9,
                                         cursor: bloq ? 'not-allowed' : 'pointer',
-                                        padding: isMobile ? '10px 12px' : '9px 12px', borderRadius: 5, fontSize: '0.83rem', fontFamily: FONT_SANS,
+                                        padding: isMobile ? '10px 12px' : '9px 12px', borderRadius: 5, fontSize: '1rem', fontFamily: FONT_SANS,
                                         background: sel ? ROJO_CLARO : (bloq ? '#f5f5f5' : '#FAFAFA'),
                                         border: `1.5px solid ${sel ? ROJO : GRIS_LN}`,
                                         color: sel ? ROJO_OSC : (bloq ? '#adb5bd' : TEXTO),
@@ -823,13 +823,13 @@ const PasoPreguntas = ({ encuesta, onAtras, onEnviar, isMobile }) => {
                                     border: `2px solid ${resp[preg._id] === n ? ROJO : GRIS_LN}`,
                                     background: resp[preg._id] === n ? ROJO : 'white',
                                     color: resp[preg._id] === n ? 'white' : TEXTO_S,
-                                    cursor: 'pointer', fontWeight: '700', fontSize: '0.88rem',
+                                    cursor: 'pointer', fontWeight: '700', fontSize: '1rem',
                                     fontFamily: FONT_SANS, transition: 'all 0.15s',
                                     animation: resp[preg._id] === n ? 'pulseRojo 0.4s ease' : 'none',
                                 }}>{n}</button>
                             ))}
                         </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.68rem', color: TEXTO_S, fontFamily: FONT_SANS }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: TEXTO_S, fontFamily: FONT_SANS }}>
                             <span>{preg.etiquetaMin || 'Muy malo'}</span>
                             <span>{preg.etiquetaMax || 'Excelente'}</span>
                         </div>
@@ -845,20 +845,20 @@ const PasoPreguntas = ({ encuesta, onAtras, onEnviar, isMobile }) => {
                                     border: `2px solid ${resp[preg._id] === op ? (op === 'Sí' ? '#2e7d32' : ROJO) : GRIS_LN}`,
                                     background: resp[preg._id] === op ? (op === 'Sí' ? '#F0FAF2' : ROJO_CLARO) : 'white',
                                     color: resp[preg._id] === op ? (op === 'Sí' ? '#2e7d32' : ROJO) : TEXTO_S,
-                                    cursor: 'pointer', fontWeight: '700', fontSize: isMobile ? '0.9rem' : '0.87rem',
+                                    cursor: 'pointer', fontWeight: '700', fontSize: isMobile ? '1.1rem' : '1rem',
                                     fontFamily: FONT_SANS, transition: 'all 0.15s',
                                 }}>{op}</button>
                             ))}
                         </div>
                         {conds[preg._id] === 'Sí' && preg.tieneCondicional && preg.preguntasCondicionalSi?.length > 0 && (
                             <div style={{ marginTop: 12, paddingLeft: 12, borderLeft: '3px solid #2e7d32' }}>
-                                <p style={{ margin: '0 0 8px', fontSize: '0.7rem', fontWeight: '700', color: '#2e7d32', fontFamily: FONT_SANS, letterSpacing: '0.3px' }}>PREGUNTAS ADICIONALES</p>
+                                <p style={{ margin: '0 0 8px', fontSize: '0.9rem', fontWeight: '700', color: '#2e7d32', fontFamily: FONT_SANS, letterSpacing: '0.3px' }}>PREGUNTAS ADICIONALES</p>
                                 {preg.preguntasCondicionalSi.map((t, j) => renderSub(preg._id, 'si', j, t, preg.tiposCondicionalSi?.[j], preg.opcionesCondicionalSi?.[j]))}
                             </div>
                         )}
                         {conds[preg._id] === 'No' && preg.tieneCondicional && preg.preguntasCondicionalNo?.length > 0 && (
                             <div style={{ marginTop: 12, paddingLeft: 12, borderLeft: `3px solid ${ROJO}` }}>
-                                <p style={{ margin: '0 0 8px', fontSize: '0.7rem', fontWeight: '700', color: ROJO, fontFamily: FONT_SANS, letterSpacing: '0.3px' }}>PREGUNTAS ADICIONALES</p>
+                                <p style={{ margin: '0 0 8px', fontSize: '0.9rem', fontWeight: '700', color: ROJO, fontFamily: FONT_SANS, letterSpacing: '0.3px' }}>PREGUNTAS ADICIONALES</p>
                                 {preg.preguntasCondicionalNo.map((t, j) => renderSub(preg._id, 'no', j, t, preg.tiposCondicionalNo?.[j], preg.opcionesCondicionalNo?.[j]))}
                             </div>
                         )}
@@ -872,7 +872,7 @@ const PasoPreguntas = ({ encuesta, onAtras, onEnviar, isMobile }) => {
         <div style={{ padding: isMobile ? '0 16px 24px' : '0 28px 28px' }}>
             <div style={{ textAlign: 'center', padding: '50px 0' }}>
                 <div style={frmCss.spinner} />
-                <p style={{ margin: '14px 0 0', fontSize: '0.82rem', color: TEXTO_S, fontFamily: FONT_SANS }}>Cargando preguntas...</p>
+                <p style={{ margin: '14px 0 0', fontSize: '1rem', color: TEXTO_S, fontFamily: FONT_SANS }}>Cargando preguntas...</p>
             </div>
         </div>
     );
@@ -888,13 +888,13 @@ const PasoPreguntas = ({ encuesta, onAtras, onEnviar, isMobile }) => {
             <Toast mensaje={toastMsg} visible={toastVisible} onOcultar={() => setToastVisible(false)} />
 
             {preguntas.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: 40, color: TEXTO_S, fontSize: '0.85rem', fontFamily: FONT_SANS }}>
+                <div style={{ textAlign: 'center', padding: 40, color: TEXTO_S, fontSize: '1rem', fontFamily: FONT_SANS }}>
                     Esta encuesta aún no tiene preguntas configuradas.
                 </div>
             ) : (
                 <>
                     <div style={{ marginBottom: 14, display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                        <p style={{ margin: 0, fontSize: '0.72rem', color: TEXTO_S, fontFamily: FONT_SANS }}>
+                        <p style={{ margin: 0, fontSize: '0.9rem', color: TEXTO_S, fontFamily: FONT_SANS }}>
                             {totalPregs} preguntas · Los campos con <span style={{ color: ROJO, fontWeight: '700' }}>*</span> son obligatorios
                         </p>
                     </div>
@@ -909,15 +909,15 @@ const PasoPreguntas = ({ encuesta, onAtras, onEnviar, isMobile }) => {
                         <button className="eg-btn-atras" onClick={onAtras} disabled={enviando} style={{
                             display: 'flex', alignItems: 'center', padding: isMobile ? '11px 16px' : '10px 20px',
                             background: '#F0F0F0', border: 'none', borderRadius: 6,
-                            cursor: 'pointer', fontWeight: '600', fontSize: '0.84rem',
+                            cursor: 'pointer', fontWeight: '600', fontSize: '1rem',
                             color: TEXTO_S, fontFamily: FONT_SANS, transition: 'background 0.15s',
                         }}>
-                            <FaArrowLeft style={{ marginRight: 6, fontSize: '0.72rem' }} /> Atrás
+                            <FaArrowLeft style={{ marginRight: 6, fontSize: '0.9rem' }} /> Atrás
                         </button>
                         <button className="eg-btn-enviar" onClick={enviar} disabled={enviando} style={{
                             padding: isMobile ? '12px 22px' : '11px 28px', background: ROJO, color: 'white',
                             border: 'none', borderRadius: 6, cursor: 'pointer',
-                            fontWeight: '700', fontSize: isMobile ? '0.9rem' : '0.88rem', fontFamily: FONT_SANS,
+                            fontWeight: '700', fontSize: isMobile ? '1.1rem' : '1rem', fontFamily: FONT_SANS,
                             letterSpacing: '0.3px', boxShadow: `0 4px 16px rgba(190,30,45,0.25)`,
                         }}>
                             {enviando ? 'Enviando...' : 'Enviar respuestas'}
@@ -1000,37 +1000,37 @@ const ModalResponder = ({ encuesta, onCerrar, onCompletada }) => {
 
                         {paso === 'enviado' && (
                             <div style={{ textAlign: 'center', padding: isMobile ? '44px 20px' : '56px 28px' }}>
-                                <div style={{ width: 56, height: 56, borderRadius: '50%', background: '#F0FAF2', border: '2px solid #2e7d32', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', fontSize: '1.5rem' }}>✓</div>
-                                <h3 style={{ margin: '0 0 10px', fontSize: '1.1rem', fontWeight: '600', color: '#2e7d32', fontFamily: FONT_FORM }}>
+                                <div style={{ width: 56, height: 56, borderRadius: '50%', background: '#F0FAF2', border: '2px solid #2e7d32', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', fontSize: '1.62rem' }}>✓</div>
+                                <h3 style={{ margin: '0 0 10px', fontSize: '1.2rem', fontWeight: '600', color: '#2e7d32', fontFamily: FONT_FORM }}>
                                     ¡Gracias por tu participación!
                                 </h3>
-                                <p style={{ margin: '0 0 28px', fontSize: '0.85rem', color: TEXTO_S, lineHeight: 1.7, maxWidth: 380, marginLeft: 'auto', marginRight: 'auto', fontFamily: FONT_SANS }}>
+                                <p style={{ margin: '0 0 28px', fontSize: '1rem', color: TEXTO_S, lineHeight: 1.7, maxWidth: 380, marginLeft: 'auto', marginRight: 'auto', fontFamily: FONT_SANS }}>
                                     Tus respuestas han sido registradas correctamente. Tu colaboración contribuye a la mejora continua de la ESPOCH.
                                 </p>
                                 <div style={{ height: 1, width: 60, background: GRIS_LN, margin: '0 auto 18px' }} />
                                 <button onClick={onCerrar} style={{
                                     padding: '11px 32px', background: ROJO, color: 'white',
                                     border: 'none', borderRadius: 6, cursor: 'pointer',
-                                    fontWeight: '700', fontSize: '0.88rem', fontFamily: FONT_SANS,
+                                    fontWeight: '700', fontSize: '1rem', fontFamily: FONT_SANS,
                                     boxShadow: `0 4px 14px rgba(190,30,45,0.25)`,
                                 }}>Cerrar</button>
-                                <p style={{ color: '#B0B0B0', fontSize: '0.7rem', marginTop: 18, fontFamily: FONT_SANS, letterSpacing: '0.5px' }}>ESPOCH · Carrera de Software</p>
+                                <p style={{ color: '#B0B0B0', fontSize: '0.9rem', marginTop: 18, fontFamily: FONT_SANS, letterSpacing: '0.5px' }}>ESPOCH · Carrera de Software</p>
                             </div>
                         )}
 
                         {paso === 'rechazado' && (
                             <div style={{ textAlign: 'center', padding: isMobile ? '44px 20px' : '56px 28px' }}>
-                                <div style={{ width: 52, height: 52, borderRadius: '50%', background: ROJO_CLARO, border: `2px solid ${ROJO}`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', fontSize: '1.3rem' }}>✗</div>
-                                <h3 style={{ margin: '0 0 10px', fontSize: '1rem', fontWeight: '600', color: ROJO, fontFamily: FONT_FORM }}>
+                                <div style={{ width: 52, height: 52, borderRadius: '50%', background: ROJO_CLARO, border: `2px solid ${ROJO}`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', fontSize: '1.4rem' }}>✗</div>
+                                <h3 style={{ margin: '0 0 10px', fontSize: '1.1rem', fontWeight: '600', color: ROJO, fontFamily: FONT_FORM }}>
                                     Participación no consentida
                                 </h3>
-                                <p style={{ margin: '0 0 28px', fontSize: '0.85rem', color: TEXTO_S, lineHeight: 1.7, fontFamily: FONT_SANS }}>
+                                <p style={{ margin: '0 0 28px', fontSize: '1rem', color: TEXTO_S, lineHeight: 1.7, fontFamily: FONT_SANS }}>
                                     Tu decisión ha sido registrada. No se recopilarán tus respuestas.
                                 </p>
                                 <button onClick={onCerrar} style={{
                                     padding: '11px 32px', background: '#F0F0F0', color: '#555',
                                     border: 'none', borderRadius: 6, cursor: 'pointer',
-                                    fontWeight: '600', fontSize: '0.88rem', fontFamily: FONT_SANS,
+                                    fontWeight: '600', fontSize: '1rem', fontFamily: FONT_SANS,
                                 }}>Cerrar</button>
                             </div>
                         )}
@@ -1100,8 +1100,8 @@ const EncuestasGraduado = () => {
                 maxWidth: isMobile ? '100%' : 860,
             }}>
                 <div style={s.encabezado}>
-                    <h1 style={{ ...s.tituloPag, fontSize: isMobile ? '0.95rem' : '1.15rem' }}>
-                        <FaClipboardList style={{ color: 'var(--color-espoch-rojo)', fontSize: '1rem' }} />
+                    <h1 style={{ ...s.tituloPag, fontSize: isMobile ? '1.1rem' : '1.2rem' }}>
+                        <FaClipboardList style={{ color: '#BC0613', fontSize: '1.1rem' }} />
                         {isMobile
                             ? 'Encuestas asignadas'
                             : 'Completa las encuestas asignadas y contribuye al seguimiento de graduados'
@@ -1118,16 +1118,16 @@ const EncuestasGraduado = () => {
                         marginBottom: isMobile ? 14 : 20,
                     }}>
                         <div style={{ ...s.resumenCard, borderTop: '3px solid #f57f17', padding: isMobile ? '10px 12px' : '14px 18px' }}>
-                            <span style={{ ...s.resumenNum, color: '#f57f17', fontSize: isMobile ? '1.3rem' : '1.6rem' }}>{pendientes}</span>
-                            <span style={{ ...s.resumenLbl, fontSize: isMobile ? '0.62rem' : '0.73rem' }}>Pendientes</span>
+                            <span style={{ ...s.resumenNum, color: '#f57f17', fontSize: isMobile ? '1.4rem' : '1.73rem' }}>{pendientes}</span>
+                            <span style={{ ...s.resumenLbl, fontSize: isMobile ? '0.8rem' : '0.9rem' }}>Pendientes</span>
                         </div>
                         <div style={{ ...s.resumenCard, borderTop: '3px solid #2e7d32', padding: isMobile ? '10px 12px' : '14px 18px' }}>
-                            <span style={{ ...s.resumenNum, color: '#2e7d32', fontSize: isMobile ? '1.3rem' : '1.6rem' }}>{completadas}</span>
-                            <span style={{ ...s.resumenLbl, fontSize: isMobile ? '0.62rem' : '0.73rem' }}>Completadas</span>
+                            <span style={{ ...s.resumenNum, color: '#2e7d32', fontSize: isMobile ? '1.4rem' : '1.73rem' }}>{completadas}</span>
+                            <span style={{ ...s.resumenLbl, fontSize: isMobile ? '0.8rem' : '0.9rem' }}>Completadas</span>
                         </div>
-                        <div style={{ ...s.resumenCard, borderTop: '3px solid var(--color-espoch-rojo)', padding: isMobile ? '10px 12px' : '14px 18px' }}>
-                            <span style={{ ...s.resumenNum, color: 'var(--color-espoch-rojo)', fontSize: isMobile ? '1.3rem' : '1.6rem' }}>{encuestas.length}</span>
-                            <span style={{ ...s.resumenLbl, fontSize: isMobile ? '0.62rem' : '0.73rem' }}>Total</span>
+                        <div style={{ ...s.resumenCard, borderTop: '3px solid #BC0613', padding: isMobile ? '10px 12px' : '14px 18px' }}>
+                            <span style={{ ...s.resumenNum, color: '#BC0613', fontSize: isMobile ? '1.4rem' : '1.73rem' }}>{encuestas.length}</span>
+                            <span style={{ ...s.resumenLbl, fontSize: isMobile ? '0.8rem' : '0.9rem' }}>Total</span>
                         </div>
                     </div>
                 )}
@@ -1138,12 +1138,12 @@ const EncuestasGraduado = () => {
                         {['todas', 'pendiente', 'completada'].map(f => (
                             <button key={f} onClick={() => setFiltro(f)} style={{
                                 ...s.filtroBtn,
-                                background: filtro === f ? 'var(--color-espoch-rojo)' : 'white',
+                                background: filtro === f ? '#BC0613' : 'white',
                                 color: filtro === f ? 'white' : '#6c757d',
-                                border: filtro === f ? '1px solid var(--color-espoch-rojo)' : '1px solid #e9ecef',
+                                border: filtro === f ? '1px solid #BC0613' : '1px solid #e9ecef',
                                 fontWeight: filtro === f ? '700' : '500',
                                 padding: isMobile ? '5px 12px' : '6px 16px',
-                                fontSize: isMobile ? '0.75rem' : '0.78rem',
+                                fontSize: isMobile ? '0.9rem' : '0.9rem',
                             }}>{{ todas: 'Todas', pendiente: 'Pendientes', completada: 'Completadas' }[f]}</button>
                         ))}
                     </div>
@@ -1152,24 +1152,24 @@ const EncuestasGraduado = () => {
                 {loading && (
                     <div style={s.estadoBox}>
                         <div style={s.spinner} />
-                        <p style={{ margin: '12px 0 0', fontSize: '0.8rem', color: '#adb5bd' }}>Cargando encuestas...</p>
+                        <p style={{ margin: '12px 0 0', fontSize: '1rem', color: '#adb5bd' }}>Cargando encuestas...</p>
                     </div>
                 )}
 
                 {!loading && error && (
                     <div style={{ ...s.estadoBox, background: '#ffebee', border: '1px solid #ffcdd2' }}>
-                        <p style={{ margin: 0, fontSize: '0.85rem', color: '#c62828', fontWeight: '600' }}>{error}</p>
+                        <p style={{ margin: 0, fontSize: '1rem', color: '#c62828', fontWeight: '600' }}>{error}</p>
                     </div>
                 )}
 
                 {!loading && !error && sinTesis && (
                     <div style={{ background: 'white', borderRadius: 10, border: '1px solid #e8eaed', padding: isMobile ? '32px 18px' : '44px 24px', textAlign: 'center', boxShadow: '0 1px 5px rgba(0,0,0,0.06)' }}>
-                        <div style={{ fontSize: '3.5rem', marginBottom: 14 }}>🎓</div>
-                        <h3 style={{ margin: '0 0 10px', fontSize: '1rem', fontWeight: '700', color: '#2c3e50', fontFamily: FONT }}>Graduación no verificada</h3>
-                        <p style={{ margin: '0 0 8px', fontSize: '0.82rem', color: '#6c757d', lineHeight: 1.65, maxWidth: 440, marginLeft: 'auto', marginRight: 'auto', fontFamily: FONT }}>
+                        <div style={{ fontSize: '3rem', marginBottom: 14 }}>🎓</div>
+                        <h3 style={{ margin: '0 0 10px', fontSize: '1.1rem', fontWeight: '700', color: '#2c3e50', fontFamily: FONT }}>Graduación no verificada</h3>
+                        <p style={{ margin: '0 0 8px', fontSize: '1rem', color: '#6c757d', lineHeight: 1.65, maxWidth: 440, marginLeft: 'auto', marginRight: 'auto', fontFamily: FONT }}>
                             Las encuestas están disponibles únicamente para graduados con <strong>tesis verificada</strong> por el administrador de la Carrera de Software.
                         </p>
-                        <p style={{ margin: 0, fontSize: '0.76rem', color: '#adb5bd', fontFamily: FONT }}>
+                        <p style={{ margin: 0, fontSize: '0.9rem', color: '#adb5bd', fontFamily: FONT }}>
                             Una vez que tu graduación sea verificada, las encuestas aparecerán aquí automáticamente.
                         </p>
                     </div>
@@ -1179,7 +1179,7 @@ const EncuestasGraduado = () => {
                     <div style={s.lista}>
                         {lista.length === 0 ? (
                             <div style={s.emptyBox}>
-                                <FaClipboardList style={{ fontSize: '2.5rem', color: '#dee2e6', marginBottom: 10 }} />
+                                <FaClipboardList style={{ fontSize: '2.9rem', color: '#dee2e6', marginBottom: 10 }} />
                                 <p style={s.emptyTit}>{filtro === 'todas' ? 'No tienes encuestas asignadas aún' : `Sin encuestas en "${filtro}"`}</p>
                                 <p style={s.emptySub}>Cuando el administrador active una encuesta aparecerá aquí.</p>
                             </div>
@@ -1195,13 +1195,13 @@ const EncuestasGraduado = () => {
                                     gap: isMobile ? 12 : 16,
                                 }}>
                                     <div style={s.cardLeft}>
-                                        <h3 style={{ ...s.cardTit, fontSize: isMobile ? '0.9rem' : '0.95rem' }}>{enc.titulo}</h3>
+                                        <h3 style={{ ...s.cardTit, fontSize: isMobile ? '1.1rem' : '1.1rem' }}>{enc.titulo}</h3>
                                         {enc.descripcion && <p style={s.cardDesc}>{enc.descripcion}</p>}
                                         <div style={{ ...s.cardMeta, flexWrap: 'wrap' }}>
                                             {enc.totalPreguntas > 0 && (
-                                                <span style={s.metaItem}><FaClipboardList style={{ fontSize: '0.6rem' }} />{enc.totalPreguntas} preguntas</span>
+                                                <span style={s.metaItem}><FaClipboardList style={{ fontSize: '0.8rem' }} />{enc.totalPreguntas} preguntas</span>
                                             )}
-                                            <span style={s.metaItem}><FaClock style={{ fontSize: '0.6rem' }} />Límite: {fmtFecha(enc.fechaCierre)}</span>
+                                            <span style={s.metaItem}><FaClock style={{ fontSize: '0.8rem' }} />Límite: {fmtFecha(enc.fechaCierre)}</span>
                                         </div>
                                     </div>
                                     <div style={{ ...s.cardRight, width: isMobile ? '100%' : 'auto' }}>
@@ -1210,13 +1210,13 @@ const EncuestasGraduado = () => {
                                                 ...s.btnResponder,
                                                 width: isMobile ? '100%' : 'auto',
                                                 padding: isMobile ? '11px 22px' : '9px 22px',
-                                                fontSize: isMobile ? '0.88rem' : '0.83rem',
+                                                fontSize: isMobile ? '1rem' : '1rem',
                                               }}>Responder</button>
                                             : <span style={{
                                                 padding: '9px 22px',
                                                 background: '#e8f5e9', color: '#2e7d32',
                                                 border: '1px solid #c8e6c9', borderRadius: 7,
-                                                fontSize: '0.83rem', fontWeight: '700', fontFamily: FONT,
+                                                fontSize: '1rem', fontWeight: '700', fontFamily: FONT,
                                                 display: 'inline-flex', alignItems: 'center', gap: 6,
                                                 width: isMobile ? '100%' : 'auto',
                                                 justifyContent: isMobile ? 'center' : 'flex-start',
@@ -1249,28 +1249,28 @@ const s = {
     wrap:         { minHeight: '100%', background: 'var(--color-fondo-web, #f4f5f7)', fontFamily: FONT },
     cuerpo:       { maxWidth: 860, margin: '0 auto', padding: '22px 20px 50px' },
     encabezado:   { marginBottom: 20 },
-    tituloPag:    { margin: '0 0 4px', fontSize: '1.15rem', fontWeight: '800', color: '#1a1a2e', display: 'flex', alignItems: 'center', gap: 9, fontFamily: FONT },
-    subtituloPag: { margin: 0, fontSize: '0.78rem', color: '#6c757d', fontFamily: FONT },
+    tituloPag:    { margin: '0 0 4px', fontSize: '1.2rem', fontWeight: '800', color: '#1a1a2e', display: 'flex', alignItems: 'center', gap: 9, fontFamily: FONT },
+    subtituloPag: { margin: 0, fontSize: '0.9rem', color: '#6c757d', fontFamily: FONT },
     resumenGrid:  { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginBottom: 20 },
     resumenCard:  { background: 'white', borderRadius: 9, border: '1px solid #e8eaed', padding: '14px 18px', display: 'flex', flexDirection: 'column', gap: 2, boxShadow: '0 1px 4px rgba(0,0,0,0.05)' },
-    resumenNum:   { fontSize: '1.6rem', fontWeight: '800', lineHeight: 1, fontFamily: FONT },
-    resumenLbl:   { fontSize: '0.73rem', color: '#6c757d', fontFamily: FONT },
+    resumenNum:   { fontSize: '1.73rem', fontWeight: '800', lineHeight: 1, fontFamily: FONT },
+    resumenLbl:   { fontSize: '0.9rem', color: '#6c757d', fontFamily: FONT },
     filtros:      { display: 'flex', gap: 7, marginBottom: 16, flexWrap: 'wrap' },
-    filtroBtn:    { padding: '6px 16px', borderRadius: 20, cursor: 'pointer', fontSize: '0.78rem', fontFamily: FONT, transition: 'all 0.15s' },
+    filtroBtn:    { padding: '6px 16px', borderRadius: 20, cursor: 'pointer', fontSize: '0.9rem', fontFamily: FONT, transition: 'all 0.15s' },
     estadoBox:    { display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '44px 20px', background: 'white', borderRadius: 10, border: '1px solid #e8eaed', textAlign: 'center' },
-    spinner:      { width: 32, height: 32, border: '3px solid #f0f0f0', borderTop: '3px solid var(--color-espoch-rojo)', borderRadius: '50%', animation: 'spin 0.8s linear infinite' },
+    spinner:      { width: 32, height: 32, border: '3px solid #f0f0f0', borderTop: '3px solid #BC0613', borderRadius: '50%', animation: 'spin 0.8s linear infinite' },
     lista:        { display: 'flex', flexDirection: 'column', gap: 12 },
     card:         { background: 'white', borderRadius: 10, border: '1px solid #e8eaed', padding: '16px 18px', display: 'flex', alignItems: 'center', gap: 16, boxShadow: '0 1px 5px rgba(0,0,0,0.06)' },
     cardLeft:     { flex: 1, minWidth: 0 },
     cardRight:    { flexShrink: 0 },
-    cardTit:      { margin: '0 0 5px', fontSize: '0.95rem', fontWeight: '700', color: '#1a1a2e', fontFamily: FONT },
-    cardDesc:     { margin: '0 0 9px', fontSize: '0.78rem', color: '#6c757d', lineHeight: 1.55, fontFamily: FONT },
+    cardTit:      { margin: '0 0 5px', fontSize: '1.1rem', fontWeight: '700', color: '#1a1a2e', fontFamily: FONT },
+    cardDesc:     { margin: '0 0 9px', fontSize: '0.9rem', color: '#6c757d', lineHeight: 1.55, fontFamily: FONT },
     cardMeta:     { display: 'flex', gap: 14, flexWrap: 'wrap' },
-    metaItem:     { display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.7rem', color: '#adb5bd', fontFamily: FONT },
-    btnResponder: { padding: '9px 22px', background: 'var(--color-espoch-rojo)', color: 'white', border: 'none', borderRadius: 7, fontSize: '0.83rem', fontWeight: '700', cursor: 'pointer', fontFamily: FONT },
+    metaItem:     { display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.9rem', color: '#adb5bd', fontFamily: FONT },
+    btnResponder: { padding: '9px 22px', background: '#BC0613', color: 'white', border: 'none', borderRadius: 7, fontSize: '1rem', fontWeight: '700', cursor: 'pointer', fontFamily: FONT },
     emptyBox:     { display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '44px 20px', background: 'white', borderRadius: 10, border: '1px dashed #dee2e6', textAlign: 'center' },
-    emptyTit:     { margin: '0 0 4px', fontWeight: '700', color: '#2c3e50', fontSize: '0.9rem', fontFamily: FONT },
-    emptySub:     { margin: 0, fontSize: '0.75rem', color: '#adb5bd', fontFamily: FONT },
+    emptyTit:     { margin: '0 0 4px', fontWeight: '700', color: '#2c3e50', fontSize: '1.1rem', fontFamily: FONT },
+    emptySub:     { margin: 0, fontSize: '0.9rem', color: '#adb5bd', fontFamily: FONT },
 };
 
 if (typeof document !== 'undefined' && !document.getElementById('EncuestasGraduado-styles')) {

@@ -48,62 +48,62 @@ const useWindowSize = () => {
 // ════════════════════════════════════════════════════════════════════
 const s = {
     card: { backgroundColor: 'white', borderRadius: 10, padding: '14px 16px', border: '1px solid #e9ecef', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' },
-    cardH: { margin: '0 0 3px', fontSize: '0.9rem', fontWeight: '700', color: 'var(--color-texto-principal)', display: 'flex', alignItems: 'center', gap: 6 },
-    cardIco: { color: 'var(--color-espoch-rojo)', fontSize: '0.85rem' },
-    cardSub: { margin: '0 0 10px', fontSize: '0.72rem', color: 'var(--color-texto-secundario)' },
+    cardH: { margin: '0 0 3px', fontSize: '1.1rem', fontWeight: '700', color: 'var(--color-texto-principal)', display: 'flex', alignItems: 'center', gap: 6 },
+    cardIco: { color: '#BC0613', fontSize: '1rem' },
+    cardSub: { margin: '0 0 10px', fontSize: '0.9rem', color: 'var(--color-texto-secundario)' },
 
     secHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 10, marginBottom: 12 },
-    btnAddSec: { display: 'inline-flex', alignItems: 'center', padding: '6px 12px', backgroundColor: 'var(--color-espoch-rojo)', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontSize: '0.77rem', fontWeight: '600', whiteSpace: 'nowrap', flexShrink: 0 },
-    btnCancelSec: { display: 'inline-flex', alignItems: 'center', padding: '6px 12px', backgroundColor: 'transparent', border: '1px solid #dee2e6', borderRadius: 6, cursor: 'pointer', fontSize: '0.77rem', fontWeight: '600', color: 'var(--color-texto-secundario)', whiteSpace: 'nowrap', flexShrink: 0 },
+    btnAddSec: { display: 'inline-flex', alignItems: 'center', padding: '6px 12px', backgroundColor: '#BC0613', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontSize: '0.9rem', fontWeight: '600', whiteSpace: 'nowrap', flexShrink: 0 },
+    btnCancelSec: { display: 'inline-flex', alignItems: 'center', padding: '6px 12px', backgroundColor: 'transparent', border: '1px solid #dee2e6', borderRadius: 6, cursor: 'pointer', fontSize: '0.9rem', fontWeight: '600', color: 'var(--color-texto-secundario)', whiteSpace: 'nowrap', flexShrink: 0 },
 
     formCard: { backgroundColor: 'var(--color-fondo-web)', border: '1px solid #e9ecef', borderRadius: 8, padding: '14px', marginBottom: 14 },
-    formH: { margin: '0 0 12px', fontSize: '0.84rem', fontWeight: '700', color: 'var(--color-texto-principal)' },
+    formH: { margin: '0 0 12px', fontSize: '1rem', fontWeight: '700', color: 'var(--color-texto-principal)' },
     grid2: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 },
     campo: { display: 'flex', flexDirection: 'column', gap: 4, marginBottom: 10 },
-    lbl: { fontSize: '0.76rem', fontWeight: '600', color: 'var(--color-texto-principal)' },
-    select: { padding: '8px 10px', borderRadius: 6, border: '1px solid #e9ecef', fontSize: '0.83rem', backgroundColor: 'var(--color-fondo-web)', color: 'var(--color-texto-principal)', outline: 'none' },
+    lbl: { fontSize: '0.9rem', fontWeight: '600', color: 'var(--color-texto-principal)' },
+    select: { padding: '8px 10px', borderRadius: 6, border: '1px solid #e9ecef', fontSize: '1rem', backgroundColor: 'var(--color-fondo-web)', color: 'var(--color-texto-principal)', outline: 'none' },
     inputWrap: { display: 'flex', alignItems: 'center', backgroundColor: 'white', border: '1px solid #e9ecef', borderRadius: 6, padding: '7px 11px', gap: 8 },
-    inp: { flex: 1, border: 'none', background: 'transparent', outline: 'none', fontSize: '0.83rem', color: 'var(--color-texto-principal)', fontFamily: 'inherit' },
-    icoInp: { fontSize: '0.82rem', color: '#adb5bd', flexShrink: 0 },
+    inp: { flex: 1, border: 'none', background: 'transparent', outline: 'none', fontSize: '1rem', color: 'var(--color-texto-principal)', fontFamily: 'inherit' },
+    icoInp: { fontSize: '1rem', color: '#adb5bd', flexShrink: 0 },
 
     formFooter: { display: 'flex', justifyContent: 'flex-end', gap: 8, marginTop: 6 },
-    btnCancelForm: { padding: '7px 14px', backgroundColor: 'transparent', border: '1px solid #dee2e6', borderRadius: 6, cursor: 'pointer', fontSize: '0.81rem', fontWeight: '600', color: 'var(--color-texto-secundario)' },
-    btnSaveForm: { display: 'inline-flex', alignItems: 'center', padding: '7px 16px', backgroundColor: 'var(--color-espoch-rojo)', color: 'white', border: 'none', fontSize: '0.83rem', fontWeight: '600', borderRadius: 6, cursor: 'pointer' },
+    btnCancelForm: { padding: '7px 14px', backgroundColor: 'transparent', border: '1px solid #dee2e6', borderRadius: 6, cursor: 'pointer', fontSize: '1rem', fontWeight: '600', color: 'var(--color-texto-secundario)' },
+    btnSaveForm: { display: 'inline-flex', alignItems: 'center', padding: '7px 16px', backgroundColor: '#BC0613', color: 'white', border: 'none', fontSize: '1rem', fontWeight: '600', borderRadius: 6, cursor: 'pointer' },
 
-    iconBtn: { background: 'none', border: 'none', cursor: 'pointer', padding: '3px 4px', color: 'var(--color-texto-secundario)', display: 'flex', alignItems: 'center', borderRadius: 4, fontSize: '0.78rem' },
+    iconBtn: { background: 'none', border: 'none', cursor: 'pointer', padding: '3px 4px', color: 'var(--color-texto-secundario)', display: 'flex', alignItems: 'center', borderRadius: 4, fontSize: '0.9rem' },
 
     // Item del listado — mismo lenguaje visual que proyectos/certificados
     item:       { border: '1px solid #e9ecef', borderRadius: 8, padding: '10px 12px', marginTop: 8, backgroundColor: 'white' },
     itemHead:   { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 6 },
-    itemTitulo: { margin: 0, fontSize: '0.84rem', fontWeight: '700', color: 'var(--color-texto-principal)', flex: 1 },
-    itemSub:    { margin: '1px 0 0', fontSize: '0.72rem', color: 'var(--color-texto-secundario)' },
-    itemDesc:   { margin: '4px 0 0', fontSize: '0.73rem', color: 'var(--color-texto-principal)', lineHeight: 1.5, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' },
-    itemFecha:  { display: 'inline-flex', alignItems: 'center', margin: 0, fontSize: '0.68rem', color: 'var(--color-texto-secundario)', marginTop: 4, gap: 4 },
+    itemTitulo: { margin: 0, fontSize: '1rem', fontWeight: '700', color: 'var(--color-texto-principal)', flex: 1 },
+    itemSub:    { margin: '1px 0 0', fontSize: '0.9rem', color: 'var(--color-texto-secundario)' },
+    itemDesc:   { margin: '4px 0 0', fontSize: '0.9rem', color: 'var(--color-texto-principal)', lineHeight: 1.5, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' },
+    itemFecha:  { display: 'inline-flex', alignItems: 'center', margin: 0, fontSize: '0.8rem', color: 'var(--color-texto-secundario)', marginTop: 4, gap: 4 },
     itemFooter: { display: 'flex', alignItems: 'center', gap: 10, marginTop: 6, paddingTop: 6, borderTop: '1px solid #f5f5f5' },
 
     emptyState: { textAlign: 'center', padding: '20px 16px' },
-    emptyIco:   { fontSize: '2rem', color: '#dee2e6', marginBottom: 8 },
-    emptyH:     { margin: '0 0 5px', fontSize: '0.9rem', fontWeight: '700', color: 'var(--color-texto-principal)' },
-    emptySub:   { margin: '0 0 12px', fontSize: '0.76rem', color: 'var(--color-texto-secundario)' },
-    emptyBtn:   { display: 'inline-flex', alignItems: 'center', padding: '7px 14px', backgroundColor: 'var(--color-espoch-rojo)', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontSize: '0.79rem', fontWeight: '600' },
+    emptyIco:   { fontSize: '2.4rem', color: '#dee2e6', marginBottom: 8 },
+    emptyH:     { margin: '0 0 5px', fontSize: '1.1rem', fontWeight: '700', color: 'var(--color-texto-principal)' },
+    emptySub:   { margin: '0 0 12px', fontSize: '0.9rem', color: 'var(--color-texto-secundario)' },
+    emptyBtn:   { display: 'inline-flex', alignItems: 'center', padding: '7px 14px', backgroundColor: '#BC0613', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontSize: '0.9rem', fontWeight: '600' },
 
     // Aviso superior — mismo estilo que el "banner" del padre
     aviso: { display: 'flex', alignItems: 'flex-start', gap: 12, backgroundColor: '#fff8e1', border: '1px solid #ffe082', borderLeft: '4px solid #f57f17', borderRadius: 8, padding: '12px 16px', marginBottom: 12 },
-    avisoIco: { color: '#f57f17', fontSize: '1.05rem', flexShrink: 0, marginTop: 2 },
-    avisoTit: { margin: 0, fontWeight: '700', fontSize: '0.84rem', color: 'var(--color-texto-principal)' },
-    avisoTxt: { margin: '3px 0 0', fontSize: '0.76rem', color: 'var(--color-texto-secundario)', lineHeight: 1.55 },
+    avisoIco: { color: '#f57f17', fontSize: '1.1rem', flexShrink: 0, marginTop: 2 },
+    avisoTit: { margin: 0, fontWeight: '700', fontSize: '1rem', color: 'var(--color-texto-principal)' },
+    avisoTxt: { margin: '3px 0 0', fontSize: '0.9rem', color: 'var(--color-texto-secundario)', lineHeight: 1.55 },
 
-    checkboxRow: { display: 'inline-flex', alignItems: 'center', gap: 6, cursor: 'pointer', fontSize: '0.78rem', fontWeight: '600', color: 'var(--color-texto-principal)', marginBottom: 10 },
+    checkboxRow: { display: 'inline-flex', alignItems: 'center', gap: 6, cursor: 'pointer', fontSize: '0.9rem', fontWeight: '600', color: 'var(--color-texto-principal)', marginBottom: 10 },
 
     // ── Modal confirmar eliminación (mismo estilo que Proyectos/Certificados) ──
     overlay:        { position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.55)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1200, padding: 16, backdropFilter: 'blur(2px)' },
     modalConfirm:   { backgroundColor: 'white', borderRadius: 14, width: '100%', maxWidth: 390, padding: '32px 28px 24px', textAlign: 'center', boxShadow: '0 16px 48px rgba(0,0,0,0.22)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 },
     modalConfirmIco:{ width: 60, height: 60, borderRadius: '50%', backgroundColor: '#ffebee', border: '2px solid #ffcdd2', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 4 },
-    modalConfirmH:  { margin: '0 0 4px', fontSize: '1.05rem', fontWeight: '700', color: 'var(--color-texto-principal)' },
-    modalConfirmSub:{ margin: '0 0 20px', fontSize: '0.83rem', color: 'var(--color-texto-secundario)', lineHeight: 1.6, maxWidth: 300 },
+    modalConfirmH:  { margin: '0 0 4px', fontSize: '1.1rem', fontWeight: '700', color: 'var(--color-texto-principal)' },
+    modalConfirmSub:{ margin: '0 0 20px', fontSize: '1rem', color: 'var(--color-texto-secundario)', lineHeight: 1.6, maxWidth: 300 },
     modalConfirmBtns:{ display: 'flex', gap: 10, justifyContent: 'center', width: '100%' },
-    btnCancelConfirm:{ padding: '8px 18px', backgroundColor: 'transparent', border: '1px solid #dee2e6', borderRadius: 7, cursor: 'pointer', fontSize: '0.84rem', fontWeight: '600', color: 'var(--color-texto-secundario)' },
-    btnEliminarConfirm:{ display: 'inline-flex', alignItems: 'center', padding: '8px 22px', backgroundColor: 'var(--estado-error)', color: 'white', border: 'none', borderRadius: 7, cursor: 'pointer', fontSize: '0.84rem', fontWeight: '700' },
+    btnCancelConfirm:{ padding: '8px 18px', backgroundColor: 'transparent', border: '1px solid #dee2e6', borderRadius: 7, cursor: 'pointer', fontSize: '1rem', fontWeight: '600', color: 'var(--color-texto-secundario)' },
+    btnEliminarConfirm:{ display: 'inline-flex', alignItems: 'center', padding: '8px 22px', backgroundColor: 'var(--estado-error)', color: 'white', border: 'none', borderRadius: 7, cursor: 'pointer', fontSize: '1rem', fontWeight: '700' },
 };
 
 // ════════════════════════════════════════════════════════════════════
@@ -169,7 +169,7 @@ const FormExperiencia = ({ inicial, onGuardar, onCancelar, guardando }) => {
                               placeholder="¿Qué hiciste? ¿Qué tecnologías usaste? ¿Cuál fue el impacto?"
                               maxLength={500} style={{ ...s.inp, minHeight: 72, resize: 'vertical' }} />
                 </div>
-                <span style={{ fontSize: '0.69rem', color: 'var(--color-texto-secundario)', marginTop: 2 }}>
+                <span style={{ fontSize: '0.8rem', color: 'var(--color-texto-secundario)', marginTop: 2 }}>
                     {(f.descripcion || '').length}/500 caracteres
                 </span>
             </div>
@@ -513,7 +513,7 @@ const SeccionHojaVida = ({ token, experiencias = [], educacion = [], onOk, onErr
                 <div style={s.overlay} onClick={e => { if (e.target === e.currentTarget) cerrarModalConfirm(); }}>
                     <div style={s.modalConfirm}>
                         <div style={s.modalConfirmIco}>
-                            <FaTrash style={{ fontSize: '1.5rem', color: 'var(--estado-error)' }} />
+                            <FaTrash style={{ fontSize: '1.62rem', color: 'var(--estado-error)' }} />
                         </div>
                         <h3 style={s.modalConfirmH}>¿Eliminar {modalConfirm.tipo}?</h3>
                         <p style={s.modalConfirmSub}>
@@ -522,7 +522,7 @@ const SeccionHojaVida = ({ token, experiencias = [], educacion = [], onOk, onErr
                         <div style={s.modalConfirmBtns}>
                             <button style={s.btnCancelConfirm} onClick={cerrarModalConfirm}>Cancelar</button>
                             <button style={s.btnEliminarConfirm} onClick={() => modalConfirm.onConfirmar && modalConfirm.onConfirmar()}>
-                                <FaTrash style={{ marginRight: 6, fontSize: '0.8rem' }} />Sí, eliminar
+                                <FaTrash style={{ marginRight: 6, fontSize: '1rem' }} />Sí, eliminar
                             </button>
                         </div>
                     </div>

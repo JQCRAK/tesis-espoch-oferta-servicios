@@ -102,7 +102,7 @@ const ImgBlur = ({ url, grad, h = 200, radius = '10px 10px 0 0', children }) => 
                     background: grad, borderRadius: radius,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                   }}>
-                    <FaNewspaper style={{ fontSize: '2.2rem', color: 'rgba(255,255,255,0.25)' }} />
+                    <FaNewspaper style={{ fontSize: '2.6rem', color: 'rgba(255,255,255,0.25)' }} />
                   </div>
             }
         </div>
@@ -174,22 +174,22 @@ const Noticias = () => {
             <div style={{ display: 'flex', justifyContent: 'center', gap: 5, marginTop: 28, alignItems: 'center' }}>
                 <button style={{ ...s.pagBtn, opacity: pagina === 1 ? 0.4 : 1 }}
                     disabled={pagina === 1} onClick={() => irPag(pagina - 1)}>
-                    <FaChevronLeft style={{ fontSize: '0.6rem' }} />
+                    <FaChevronLeft style={{ fontSize: '0.8rem' }} />
                 </button>
                 {ini > 1 && <span style={s.pagPts}>···</span>}
                 {pags.map(pg => (
                     <button key={pg} onClick={() => irPag(pg)} style={{
                         ...s.pagBtn,
-                        background: pg === pagina ? 'var(--color-espoch-rojo)' : 'white',
+                        background: pg === pagina ? '#BC0613' : 'white',
                         color:      pg === pagina ? 'white' : '#6c757d',
-                        border:     pg === pagina ? '1px solid var(--color-espoch-rojo)' : '1px solid #e9ecef',
+                        border:     pg === pagina ? '1px solid #BC0613' : '1px solid #e9ecef',
                         fontWeight: pg === pagina ? '700' : '400',
                     }}>{pg}</button>
                 ))}
                 {fin < totalPags && <span style={s.pagPts}>···</span>}
                 <button style={{ ...s.pagBtn, opacity: pagina === totalPags ? 0.4 : 1 }}
                     disabled={pagina === totalPags} onClick={() => irPag(pagina + 1)}>
-                    <FaChevronRight style={{ fontSize: '0.6rem' }} />
+                    <FaChevronRight style={{ fontSize: '0.8rem' }} />
                 </button>
             </div>
         );
@@ -214,7 +214,7 @@ const Noticias = () => {
                 ))
                 : eventos.length === 0
                     ? <div style={{ ...s.emptyBox, gridColumn: '1/-1' }}>
-                        <FaCalendarAlt style={{ fontSize: '2.5rem', color: '#dee2e6', marginBottom: 10 }} />
+                        <FaCalendarAlt style={{ fontSize: '2.9rem', color: '#dee2e6', marginBottom: 10 }} />
                         <p style={s.emptyTit}>Sin eventos vigentes</p>
                         <p style={s.emptySub}>Los próximos eventos aparecerán aquí.</p>
                       </div>
@@ -255,8 +255,8 @@ const Noticias = () => {
                                     </div>
                                     {(ev.lugar || ev.urlAcceso) && (
                                         <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 6 }}>
-                                            <MIc style={{ fontSize: '0.6rem', color: '#adb5bd', flexShrink: 0 }} />
-                                            <span style={{ fontSize: '0.69rem', color: '#adb5bd' }}>
+                                            <MIc style={{ fontSize: '0.8rem', color: '#adb5bd', flexShrink: 0 }} />
+                                            <span style={{ fontSize: '0.8rem', color: '#adb5bd' }}>
                                                 {ev.modalidad === 'virtual' ? 'Virtual'
                                                     : ev.modalidad === 'hibrida' ? `${ev.lugar || ''} · Virtual`
                                                     : (ev.lugar || 'Presencial')}
@@ -305,23 +305,23 @@ const Noticias = () => {
                     </ImgBlur>
                     <div style={s.featBody}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
-                            <FaCalendarAlt style={{ fontSize: '0.68rem', color: '#adb5bd' }} />
+                            <FaCalendarAlt style={{ fontSize: '0.8rem', color: '#adb5bd' }} />
                             <span style={s.fechaTxt}>
                                 {fmtLarga(principal.fechaPublicacion || principal.createdAt)}
                             </span>
                         </div>
-                        <h2 style={{ ...s.featTit, fontSize: isMobile ? '1rem' : '1.18rem' }}>{principal.titulo}</h2>
+                        <h2 style={{ ...s.featTit, fontSize: isMobile ? '1.1rem' : '1.2rem' }}>{principal.titulo}</h2>
                         <p  style={s.featDesc}>
                             {truncar(principal.resumen || principal.contenido, isMobile ? 140 : 220)}
                         </p>
                         <span style={s.btnLeer}>
-                            Leer más <FaChevronRight style={{ fontSize: '0.6rem', marginLeft: 4 }} />
+                            Leer más <FaChevronRight style={{ fontSize: '0.8rem', marginLeft: 4 }} />
                         </span>
                     </div>
                 </div>
             ) : (
                 <div style={s.emptyBox}>
-                    <FaNewspaper style={{ fontSize: '2.5rem', color: '#dee2e6', marginBottom: 10 }} />
+                    <FaNewspaper style={{ fontSize: '2.9rem', color: '#dee2e6', marginBottom: 10 }} />
                     <p style={s.emptyTit}>Sin noticias publicadas aún</p>
                     <p style={s.emptySub}>Vuelve pronto para ver las novedades.</p>
                 </div>
@@ -353,15 +353,15 @@ const Noticias = () => {
                                 <ImgBlur url={imgUrl(n.imagen)} grad={GRADS[(i + 1) % GRADS.length]} h={isMobile ? 120 : 145} radius="9px 9px 0 0" />
                                 <div style={s.secBody}>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginBottom: 5 }}>
-                                        <FaCalendarAlt style={{ fontSize: '0.6rem', color: '#adb5bd' }} />
-                                        <span style={{ ...s.fechaTxt, fontSize: '0.7rem' }}>
+                                        <FaCalendarAlt style={{ fontSize: '0.8rem', color: '#adb5bd' }} />
+                                        <span style={{ ...s.fechaTxt, fontSize: '0.9rem' }}>
                                             {fmtCorta(n.fechaPublicacion || n.createdAt)}
                                         </span>
                                     </div>
                                     <h3 style={s.secTit}>{n.titulo}</h3>
                                     <p  style={s.secDesc}>{truncar(n.resumen || n.contenido, 100)}</p>
                                     <span style={s.btnLeerSm}>
-                                        Leer más <FaChevronRight style={{ fontSize: '0.55rem', marginLeft: 3 }} />
+                                        Leer más <FaChevronRight style={{ fontSize: '0.8rem', marginLeft: 3 }} />
                                     </span>
                                 </div>
                             </div>
@@ -397,12 +397,12 @@ const Noticias = () => {
                                 return (
                                     <button key={t.k} onClick={() => setVista(t.k)} style={{
                                         ...s.tab,
-                                        borderBottom: activo ? '2px solid var(--color-espoch-rojo)' : '2px solid transparent',
-                                        color:        activo ? 'var(--color-espoch-rojo)' : '#6c757d',
+                                        borderBottom: activo ? '2px solid #BC0613' : '2px solid transparent',
+                                        color:        activo ? '#BC0613' : '#6c757d',
                                         fontWeight:   activo ? '700' : '500',
                                         background:   activo ? 'white' : 'transparent',
                                     }}>
-                                        <Ico style={{ fontSize: '0.75rem' }} /> {t.l}
+                                        <Ico style={{ fontSize: '0.9rem' }} /> {t.l}
                                     </button>
                                 );
                             })}
@@ -415,7 +415,7 @@ const Noticias = () => {
                             <aside style={{ ...s.sidebar, position: 'static', marginTop: 20 }}>
                                 <div style={s.sideCard}>
                                     <h3 style={s.sideTit}>
-                                        <FaCalendarAlt style={{ color: 'var(--color-espoch-rojo)', fontSize: '0.82rem' }} />
+                                        <FaCalendarAlt style={{ color: '#BC0613', fontSize: '1rem' }} />
                                         Próximos Eventos
                                     </h3>
                                     {cargando
@@ -429,7 +429,7 @@ const Noticias = () => {
                                             </div>
                                         ))
                                         : eventos.length === 0
-                                            ? <p style={{ fontSize: '0.75rem', color: '#adb5bd', textAlign: 'center', padding: '8px 0', margin: 0 }}>
+                                            ? <p style={{ fontSize: '0.9rem', color: '#adb5bd', textAlign: 'center', padding: '8px 0', margin: 0 }}>
                                                 Sin eventos próximos.
                                               </p>
                                             : eventos.slice(0, 5).map(ev => {
@@ -490,7 +490,7 @@ const Noticias = () => {
                         <aside style={s.sidebar}>
                             <div style={s.sideCard}>
                                 <h3 style={s.sideTit}>
-                                    <FaCalendarAlt style={{ color: 'var(--color-espoch-rojo)', fontSize: '0.82rem' }} />
+                                    <FaCalendarAlt style={{ color: '#BC0613', fontSize: '1rem' }} />
                                     Próximos Eventos
                                 </h3>
                                 {cargando
@@ -504,7 +504,7 @@ const Noticias = () => {
                                         </div>
                                     ))
                                     : eventos.length === 0
-                                        ? <p style={{ fontSize: '0.75rem', color: '#adb5bd', textAlign: 'center', padding: '8px 0', margin: 0 }}>
+                                        ? <p style={{ fontSize: '0.9rem', color: '#adb5bd', textAlign: 'center', padding: '8px 0', margin: 0 }}>
                                             Sin eventos próximos.
                                           </p>
                                         : eventos.slice(0, 5).map(ev => {
@@ -591,7 +591,7 @@ const Noticias = () => {
                                       </span>
                                 }
                                 <button style={s.modalClose} onClick={() => setModal(null)} aria-label="Cerrar">
-                                    <FaTimes style={{ fontSize: '0.8rem' }} />
+                                    <FaTimes style={{ fontSize: '1rem' }} />
                                 </button>
                                 <div style={{
                                     position: 'absolute', bottom: 0, left: 0, right: 0,
@@ -600,8 +600,8 @@ const Noticias = () => {
                                 }}>
                                     <h2 style={s.modalImgTit}>{item.titulo}</h2>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-                                        <FaCalendarAlt style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.7)' }} />
-                                        <span style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.85)', fontFamily: FONT }}>
+                                        <FaCalendarAlt style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.7)' }} />
+                                        <span style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.85)', fontFamily: FONT }}>
                                             {tipo === 'noticia'
                                                 ? fmtLarga(item.fechaPublicacion || item.createdAt)
                                                 : `${fmtLarga(item.fechaInicio)} → ${fmtLarga(item.fechaFin)}`}
@@ -624,13 +624,13 @@ const Noticias = () => {
                                             </span>
                                         </div>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 8 }}>
-                                            <FaClock style={{ fontSize: '0.75rem', color: 'var(--color-espoch-rojo)', flexShrink: 0 }} />
+                                            <FaClock style={{ fontSize: '0.9rem', color: '#BC0613', flexShrink: 0 }} />
                                             <div>
-                                                <span style={{ fontSize: '0.8rem', color: '#2c3e50', fontWeight: '600' }}>
+                                                <span style={{ fontSize: '1rem', color: '#2c3e50', fontWeight: '600' }}>
                                                     {fmtLarga(item.fechaInicio)} {fmtHora(item.fechaInicio) && `· ${fmtHora(item.fechaInicio)}`}
                                                 </span>
                                                 {item.fechaFin && (
-                                                    <span style={{ fontSize: '0.78rem', color: '#6c757d', display: 'block' }}>
+                                                    <span style={{ fontSize: '0.9rem', color: '#6c757d', display: 'block' }}>
                                                         hasta {fmtLarga(item.fechaFin)} {fmtHora(item.fechaFin) && `· ${fmtHora(item.fechaFin)}`}
                                                     </span>
                                                 )}
@@ -638,8 +638,8 @@ const Noticias = () => {
                                         </div>
                                         {(item.lugar || item.urlAcceso) && (
                                             <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 7 }}>
-                                                <MIc style={{ fontSize: '0.75rem', color: 'var(--color-espoch-rojo)', flexShrink: 0 }} />
-                                                <span style={{ fontSize: '0.81rem', color: '#2c3e50' }}>
+                                                <MIc style={{ fontSize: '0.9rem', color: '#BC0613', flexShrink: 0 }} />
+                                                <span style={{ fontSize: '1rem', color: '#2c3e50' }}>
                                                     {item.modalidad === 'virtual' ? (item.urlAcceso || 'Virtual')
                                                         : item.modalidad === 'hibrida' ? `${item.lugar || ''} · ${item.urlAcceso || ''}`
                                                         : (item.lugar || 'Presencial')}
@@ -647,7 +647,7 @@ const Noticias = () => {
                                             </div>
                                         )}
                                         {item.capacidadMaxima > 0 && (
-                                            <p style={{ margin: '6px 0 0', fontSize: '0.77rem', color: '#6c757d' }}>
+                                            <p style={{ margin: '6px 0 0', fontSize: '0.9rem', color: '#6c757d' }}>
                                                 {item.inscritos || 0} / {item.capacidadMaxima} inscritos
                                             </p>
                                         )}
@@ -668,7 +668,7 @@ const Noticias = () => {
                             </div>
 
                             <div style={s.modalFoot}>
-                                <span style={{ fontSize: '0.69rem', color: '#adb5bd', fontFamily: FONT }}>
+                                <span style={{ fontSize: '0.8rem', color: '#adb5bd', fontFamily: FONT }}>
                                     Carrera de Software — ESPOCH
                                 </span>
                                 <button style={s.btnCerrar} onClick={() => setModal(null)}>Cerrar</button>
@@ -690,61 +690,61 @@ const s = {
     layout:      { display: 'grid', alignItems: 'start' },
     colMain:     { display: 'flex', flexDirection: 'column', gap: 18 },
     tabs:        { display: 'flex', gap: 0, borderBottom: '2px solid #e9ecef', marginBottom: 4 },
-    tab:         { display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 18px', background: 'none', border: 'none', borderBottom: '2px solid transparent', cursor: 'pointer', fontSize: '0.84rem', fontFamily: FONT, transition: 'all 0.15s', marginBottom: -2 },
+    tab:         { display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 18px', background: 'none', border: 'none', borderBottom: '2px solid transparent', cursor: 'pointer', fontSize: '1rem', fontFamily: FONT, transition: 'all 0.15s', marginBottom: -2 },
     featCard:    { backgroundColor: 'white', borderRadius: 10, border: '1px solid #e8eaed', boxShadow: '0 1px 8px rgba(0,0,0,0.07)', overflow: 'hidden', cursor: 'pointer', outline: 'none' },
     featBody:    { padding: '16px 20px 18px' },
-    fechaTxt:    { fontSize: '0.73rem', color: '#adb5bd', fontFamily: FONT },
+    fechaTxt:    { fontSize: '0.9rem', color: '#adb5bd', fontFamily: FONT },
     featTit:     { margin: '0 0 8px', fontWeight: '800', color: '#1a1a2e', lineHeight: 1.35, fontFamily: FONT },
-    featDesc:    { margin: '0 0 12px', fontSize: '0.83rem', color: '#6c757d', lineHeight: 1.68, fontFamily: FONT },
-    btnLeer:     { display: 'inline-flex', alignItems: 'center', color: 'var(--color-espoch-rojo)', fontWeight: '700', fontSize: '0.82rem', cursor: 'pointer', fontFamily: FONT },
-    badge:       { fontSize: '0.62rem', fontWeight: '700', padding: '3px 9px', borderRadius: 20, letterSpacing: '0.3px', display: 'inline-block' },
+    featDesc:    { margin: '0 0 12px', fontSize: '1rem', color: '#6c757d', lineHeight: 1.68, fontFamily: FONT },
+    btnLeer:     { display: 'inline-flex', alignItems: 'center', color: '#BC0613', fontWeight: '700', fontSize: '1rem', cursor: 'pointer', fontFamily: FONT },
+    badge:       { fontSize: '0.8rem', fontWeight: '700', padding: '3px 9px', borderRadius: 20, letterSpacing: '0.3px', display: 'inline-block' },
     grid2:       { display: 'grid', gap: 14 },
     secCard:     { backgroundColor: 'white', borderRadius: 9, border: '1px solid #e8eaed', overflow: 'hidden', cursor: 'pointer', display: 'flex', flexDirection: 'column', boxShadow: '0 1px 5px rgba(0,0,0,0.06)', outline: 'none' },
     secBody:     { padding: '11px 13px 14px', flex: 1, display: 'flex', flexDirection: 'column' },
-    secTit:      { margin: '0 0 4px', fontSize: '0.87rem', fontWeight: '700', color: '#1a1a2e', lineHeight: 1.38, fontFamily: FONT, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' },
-    secDesc:     { margin: '0 0 7px', fontSize: '0.75rem', color: '#6c757d', lineHeight: 1.57, flex: 1, display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden', fontFamily: FONT },
-    btnLeerSm:   { display: 'inline-flex', alignItems: 'center', color: 'var(--color-espoch-rojo)', fontWeight: '700', fontSize: '0.75rem', cursor: 'pointer', marginTop: 'auto', fontFamily: FONT },
+    secTit:      { margin: '0 0 4px', fontSize: '1rem', fontWeight: '700', color: '#1a1a2e', lineHeight: 1.38, fontFamily: FONT, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' },
+    secDesc:     { margin: '0 0 7px', fontSize: '0.9rem', color: '#6c757d', lineHeight: 1.57, flex: 1, display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden', fontFamily: FONT },
+    btnLeerSm:   { display: 'inline-flex', alignItems: 'center', color: '#BC0613', fontWeight: '700', fontSize: '0.9rem', cursor: 'pointer', marginTop: 'auto', fontFamily: FONT },
     gridEventos: { display: 'grid', gap: 14 },
     evCard:      { backgroundColor: 'white', borderRadius: 9, border: '1px solid #e8eaed', overflow: 'hidden', cursor: 'pointer', display: 'flex', flexDirection: 'column', boxShadow: '0 1px 5px rgba(0,0,0,0.06)', outline: 'none' },
     evBody:      { padding: '10px 12px 13px', flex: 1 },
-    evTit:       { margin: '0 0 8px', fontSize: '0.83rem', fontWeight: '700', color: '#1a1a2e', lineHeight: 1.35, fontFamily: FONT, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' },
+    evTit:       { margin: '0 0 8px', fontSize: '1rem', fontWeight: '700', color: '#1a1a2e', lineHeight: 1.35, fontFamily: FONT, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' },
     evFechasBox: { display: 'flex', alignItems: 'center', gap: 6, background: '#f8f9fa', border: '1px solid #f0f0f0', borderRadius: 6, padding: '6px 9px' },
     evFechaItem: { display: 'flex', flexDirection: 'column', gap: 1, flex: 1 },
-    evFechaLabel:{ fontSize: '0.58rem', fontWeight: '700', color: '#adb5bd', textTransform: 'uppercase', letterSpacing: '0.4px' },
-    evFechaVal:  { fontSize: '0.68rem', color: '#2c3e50', fontWeight: '600', fontFamily: FONT },
-    evFechaSep:  { fontSize: '0.75rem', color: '#adb5bd', fontWeight: '700', flexShrink: 0 },
+    evFechaLabel:{ fontSize: '0.8rem', fontWeight: '700', color: '#adb5bd', textTransform: 'uppercase', letterSpacing: '0.4px' },
+    evFechaVal:  { fontSize: '0.8rem', color: '#2c3e50', fontWeight: '600', fontFamily: FONT },
+    evFechaSep:  { fontSize: '0.9rem', color: '#adb5bd', fontWeight: '700', flexShrink: 0 },
     emptyBox:    { display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '44px 20px', background: 'white', borderRadius: 10, border: '1px dashed #dee2e6', textAlign: 'center' },
-    emptyTit:    { margin: '0 0 4px', fontWeight: '700', color: '#2c3e50', fontSize: '0.9rem', fontFamily: FONT },
-    emptySub:    { margin: 0, fontSize: '0.75rem', color: '#adb5bd', fontFamily: FONT },
-    pagBtn:      { minWidth: 34, height: 34, borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: '0.79rem', fontFamily: FONT, border: '1px solid #e9ecef', background: 'white', color: '#6c757d', padding: '0 8px' },
-    pagPts:      { fontSize: '0.8rem', color: '#adb5bd', padding: '0 3px' },
+    emptyTit:    { margin: '0 0 4px', fontWeight: '700', color: '#2c3e50', fontSize: '1.1rem', fontFamily: FONT },
+    emptySub:    { margin: 0, fontSize: '0.9rem', color: '#adb5bd', fontFamily: FONT },
+    pagBtn:      { minWidth: 34, height: 34, borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: '0.9rem', fontFamily: FONT, border: '1px solid #e9ecef', background: 'white', color: '#6c757d', padding: '0 8px' },
+    pagPts:      { fontSize: '1rem', color: '#adb5bd', padding: '0 3px' },
     sidebar:     { display: 'flex', flexDirection: 'column', gap: 14, position: 'sticky', top: 16 },
     sideCard:    { backgroundColor: 'white', borderRadius: 9, border: '1px solid #e8eaed', padding: '14px 16px', boxShadow: '0 1px 5px rgba(0,0,0,0.05)' },
-    sideTit:     { margin: '0 0 13px', fontSize: '0.88rem', fontWeight: '700', color: '#1a1a2e', display: 'flex', alignItems: 'center', gap: 7, fontFamily: FONT },
+    sideTit:     { margin: '0 0 13px', fontSize: '1rem', fontWeight: '700', color: '#1a1a2e', display: 'flex', alignItems: 'center', gap: 7, fontFamily: FONT },
     evSide:      { display: 'flex', alignItems: 'flex-start', gap: 9, marginBottom: 11, paddingBottom: 11, borderBottom: '1px solid #f0f0f0', cursor: 'pointer', outline: 'none' },
     evBlk:       { width: 36, minWidth: 36, borderRadius: 7, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '4px 2px' },
-    evMes:       { fontSize: '0.54rem', fontWeight: '700', letterSpacing: '0.5px', lineHeight: 1 },
-    evDia:       { fontSize: '1.05rem', fontWeight: '800', lineHeight: 1.1 },
-    evSideNom:   { margin: '0 0 2px', fontSize: '0.75rem', fontWeight: '600', color: '#1a1a2e', lineHeight: 1.38, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', fontFamily: FONT },
-    evSideMeta:  { fontSize: '0.65rem', color: '#adb5bd', fontFamily: FONT },
-    btnVerTodos: { width: '100%', padding: '7px', background: '#f8f9fa', border: '1px solid #e9ecef', borderRadius: 7, cursor: 'pointer', fontSize: '0.74rem', fontWeight: '600', color: 'var(--color-espoch-rojo)', marginTop: 4, fontFamily: FONT },
+    evMes:       { fontSize: '0.8rem', fontWeight: '700', letterSpacing: '0.5px', lineHeight: 1 },
+    evDia:       { fontSize: '1.1rem', fontWeight: '800', lineHeight: 1.1 },
+    evSideNom:   { margin: '0 0 2px', fontSize: '0.9rem', fontWeight: '600', color: '#1a1a2e', lineHeight: 1.38, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', fontFamily: FONT },
+    evSideMeta:  { fontSize: '0.8rem', color: '#adb5bd', fontFamily: FONT },
+    btnVerTodos: { width: '100%', padding: '7px', background: '#f8f9fa', border: '1px solid #e9ecef', borderRadius: 7, cursor: 'pointer', fontSize: '0.9rem', fontWeight: '600', color: '#BC0613', marginTop: 4, fontFamily: FONT },
     banner:      { backgroundColor: 'white', borderRadius: 9, border: '1px solid #e8eaed', overflow: 'hidden', boxShadow: '0 1px 5px rgba(0,0,0,0.05)' },
-    bannerStripe:{ height: 5, background: 'linear-gradient(90deg,var(--color-espoch-rojo) 0%,#1565c0 100%)' },
+    bannerStripe:{ height: 5, background: 'linear-gradient(90deg,#BC0613 0%,#1565c0 100%)' },
     bannerBody:  { padding: '14px 16px 16px' },
-    bannerTit:   { margin: '0 0 5px', fontSize: '0.86rem', fontWeight: '700', color: '#1a1a2e', fontFamily: FONT },
-    bannerSub:   { margin: '0 0 12px', fontSize: '0.74rem', color: '#6c757d', lineHeight: 1.58, fontFamily: FONT },
-    bannerBtn:   { display: 'block', textAlign: 'center', padding: '8px', backgroundColor: 'var(--color-espoch-rojo)', color: 'white', borderRadius: 7, fontSize: '0.76rem', fontWeight: '700', textDecoration: 'none', fontFamily: FONT },
+    bannerTit:   { margin: '0 0 5px', fontSize: '1rem', fontWeight: '700', color: '#1a1a2e', fontFamily: FONT },
+    bannerSub:   { margin: '0 0 12px', fontSize: '0.9rem', color: '#6c757d', lineHeight: 1.58, fontFamily: FONT },
+    bannerBtn:   { display: 'block', textAlign: 'center', padding: '8px', backgroundColor: '#BC0613', color: 'white', borderRadius: 7, fontSize: '0.9rem', fontWeight: '700', textDecoration: 'none', fontFamily: FONT },
     overlay:     { position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2000, padding: 16, backdropFilter: 'blur(4px)' },
     modalBox:    { backgroundColor: 'white', width: '100%', display: 'flex', flexDirection: 'column', boxShadow: '0 20px 60px rgba(0,0,0,0.28)', overflow: 'hidden' },
-    modalImgTit: { margin: '0 0 4px', fontSize: '1.1rem', fontWeight: '800', color: 'white', lineHeight: 1.3, textShadow: '0 1px 6px rgba(0,0,0,0.5)', fontFamily: FONT },
+    modalImgTit: { margin: '0 0 4px', fontSize: '1.2rem', fontWeight: '800', color: 'white', lineHeight: 1.3, textShadow: '0 1px 6px rgba(0,0,0,0.5)', fontFamily: FONT },
     modalClose:  { position: 'absolute', top: 10, right: 10, width: 30, height: 30, borderRadius: '50%', background: 'rgba(0,0,0,0.42)', border: 'none', cursor: 'pointer', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' },
     modalBody:   { flex: 1, overflowY: 'auto', padding: '16px 22px' },
     evInfoBox:   { background: '#f8f9fa', border: '1px solid #e9ecef', borderRadius: 8, padding: '11px 14px', marginBottom: 14 },
-    modalResBox: { background: '#f8f9fa', borderLeft: '4px solid var(--color-espoch-rojo)', borderRadius: '0 6px 6px 0', padding: '10px 14px', marginBottom: 14 },
-    modalRes:    { margin: 0, fontSize: '0.84rem', color: '#495057', lineHeight: 1.7, fontStyle: 'italic', fontFamily: FONT },
-    modalP:      { margin: '0 0 12px', fontSize: '0.85rem', color: '#2c3e50', lineHeight: 1.72, fontFamily: FONT },
+    modalResBox: { background: '#f8f9fa', borderLeft: '4px solid #BC0613', borderRadius: '0 6px 6px 0', padding: '10px 14px', marginBottom: 14 },
+    modalRes:    { margin: 0, fontSize: '1rem', color: '#495057', lineHeight: 1.7, fontStyle: 'italic', fontFamily: FONT },
+    modalP:      { margin: '0 0 12px', fontSize: '1rem', color: '#2c3e50', lineHeight: 1.72, fontFamily: FONT },
     modalFoot:   { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 22px', borderTop: '1px solid #e9ecef', background: '#f8f9fa', flexShrink: 0 },
-    btnCerrar:   { padding: '6px 16px', background: 'transparent', border: '1px solid #dee2e6', borderRadius: 7, cursor: 'pointer', fontSize: '0.78rem', fontWeight: '600', color: '#6c757d', fontFamily: FONT },
+    btnCerrar:   { padding: '6px 16px', background: 'transparent', border: '1px solid #dee2e6', borderRadius: 7, cursor: 'pointer', fontSize: '0.9rem', fontWeight: '600', color: '#6c757d', fontFamily: FONT },
 };
 
 export default Noticias;

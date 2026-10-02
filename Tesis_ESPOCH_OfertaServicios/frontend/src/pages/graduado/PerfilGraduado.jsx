@@ -79,7 +79,7 @@ const COLORES_DISPO = {
 };
 
 const nivelAfinidad = (pct) => {
-    if (pct >= 60) return { label: 'Experto', color: 'var(--color-espoch-rojo)', bg: '#ffebee' };
+    if (pct >= 60) return { label: 'Experto', color: '#BC0613', bg: '#ffebee' };
     if (pct >= 35) return { label: 'Avanzado', color: '#f57f17', bg: '#fff8e1' };
     return { label: 'Intermedio', color: 'var(--color-tech-azul)', bg: 'var(--color-tech-azul-claro)' };
 };
@@ -128,7 +128,7 @@ const PanelConsejos = ({ onPublicar, tesisVerificada }) => {
             texto: 'Prioriza proyectos para clientes, tesis o productos reales. Demuestran que puedes trabajar bajo presión.'
         },
         {
-            icon: FaCertificate, color: 'var(--color-espoch-rojo)', bg: '#ffebee', border: '#ffcdd2',
+            icon: FaCertificate, color: '#BC0613', bg: '#ffebee', border: '#ffcdd2',
             titulo: 'Certifícate en lo que practicas',
             texto: 'Sube certificados de tecnologías que realmente usas. La coherencia genera más confianza.'
         },
@@ -159,7 +159,7 @@ const PanelConsejos = ({ onPublicar, tesisVerificada }) => {
         <div style={sc.panel}>
             <div style={sc.panelHeader}>
                 <div style={sc.panelIconWrap}>
-                    <FaLightbulb style={{ color: '#f57f17', fontSize: '1rem' }} />
+                    <FaLightbulb style={{ color: '#f57f17', fontSize: '1.1rem' }} />
                 </div>
                 <div>
                     <h3 style={sc.panelTitulo}>Consejos para destacar</h3>
@@ -172,7 +172,7 @@ const PanelConsejos = ({ onPublicar, tesisVerificada }) => {
                     return (
                         <div style={{ ...sc.consejoItem, borderColor: c.border, backgroundColor: c.bg, opacity: visible ? 1 : 0, transition: 'opacity 0.35s ease' }}>
                             <div style={{ ...sc.consejoIcoWrap, backgroundColor: c.bg, border: `1px solid ${c.border}` }}>
-                                <Icon style={{ color: c.color, fontSize: '0.85rem' }} />
+                                <Icon style={{ color: c.color, fontSize: '1rem' }} />
                             </div>
                             <div style={sc.consejoTexto}>
                                 <p style={{ ...sc.consejoTitulo, color: c.color }}>{c.titulo}</p>
@@ -195,12 +195,12 @@ const PanelConsejos = ({ onPublicar, tesisVerificada }) => {
             {/* ── Botón publicar perfil ── */}
             {!tesisVerificada && (
                 <div style={sc.panelPublicar}>
-                    <FaGraduationCap style={{ color: '#6a1b9a', fontSize: '1.1rem', flexShrink: 0 }} />
+                    <FaGraduationCap style={{ color: '#6a1b9a', fontSize: '1.2rem', flexShrink: 0 }} />
                     <div style={{ flex: 1 }}>
-                        <p style={{ margin: '0 0 2px', fontWeight: 700, fontSize: '0.78rem', color: 'var(--color-texto-principal)' }}>
+                        <p style={{ margin: '0 0 2px', fontWeight: 700, fontSize: '0.9rem', color: 'var(--color-texto-principal)' }}>
                             ¿Listo para publicar tu perfil?
                         </p>
-                        <p style={{ margin: 0, fontSize: '0.68rem', color: 'var(--color-texto-secundario)', lineHeight: 1.4 }}>
+                        <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--color-texto-secundario)', lineHeight: 1.4 }}>
                             Verifica tu tesis en el repositorio ESPOCH para activar tu perfil público.
                         </p>
                     </div>
@@ -821,7 +821,7 @@ const PerfilGraduado = () => {
                             ...s.banner,
                             flexWrap: isMobile ? 'wrap' : 'nowrap',
                         }}>
-                            <FaExclamationTriangle style={{ color: '#f57f17', fontSize: '1rem', flexShrink: 0, marginTop: 1 }} />
+                            <FaExclamationTriangle style={{ color: '#f57f17', fontSize: '1.1rem', flexShrink: 0, marginTop: 1 }} />
                             <div style={{ flex: 1, minWidth: isMobile ? '100%' : 0 }}>
                                 <p style={s.bannerTitulo}>Perfil incompleto — {progreso}% completado</p>
                                 <p style={s.bannerSub}>Te falta: <strong>{faltante.join(', ')}</strong></p>
@@ -848,8 +848,8 @@ const PerfilGraduado = () => {
                                 }
                                 <div style={s.fotoOverlay}>
                                     {subiendoFoto
-                                        ? <FaSpinner className="spin" style={{ color: 'white', fontSize: '0.85rem' }} />
-                                        : <FaCamera style={{ color: 'white', fontSize: '0.85rem' }} />
+                                        ? <FaSpinner className="spin" style={{ color: 'white', fontSize: '1rem' }} />
+                                        : <FaCamera style={{ color: 'white', fontSize: '1rem' }} />
                                     }
                                 </div>
                             </div>
@@ -858,7 +858,7 @@ const PerfilGraduado = () => {
                             <div style={nombreInfoStyle}>
                                 <h1 style={{
                                     ...s.nombre,
-                                    fontSize: isMobile ? '1rem' : '1.15rem',
+                                    fontSize: isMobile ? '1.1rem' : '1.2rem',
                                 }}>{perfil?.nombres} {perfil?.apellidos}</h1>
                                 <p style={s.tituloProf}>Ingeniero/a de Software · ESPOCH</p>
                                 <div style={badgesRowStyle}>
@@ -882,8 +882,8 @@ const PerfilGraduado = () => {
                                         border: `1px solid ${perfil?.perfilPublico ? '#bee3f8' : '#e0e0e0'}`
                                     }}>
                                         {perfil?.perfilPublico
-                                            ? <><FaGlobe style={{ fontSize: '0.65rem', marginRight: 4 }} />Público</>
-                                            : <><FaLock style={{ fontSize: '0.65rem', marginRight: 4 }} />Privado</>
+                                            ? <><FaGlobe style={{ fontSize: '0.8rem', marginRight: 4 }} />Público</>
+                                            : <><FaLock style={{ fontSize: '0.8rem', marginRight: 4 }} />Privado</>
                                         }
                                     </span>
                                     {perfil?.tesisVerificada && (
@@ -892,7 +892,7 @@ const PerfilGraduado = () => {
                                             backgroundColor: '#f3e8ff', color: '#6a1b9a',
                                             border: '1px solid #ddd6fe'
                                         }}>
-                                            <FaGraduationCap style={{ fontSize: '0.65rem', marginRight: 4 }} />Graduado verificado
+                                            <FaGraduationCap style={{ fontSize: '0.8rem', marginRight: 4 }} />Graduado verificado
                                         </span>
                                     )}
                                 </div>
@@ -908,9 +908,9 @@ const PerfilGraduado = () => {
                                 <button
                                     style={{
                                         ...btnEditarCabStyle,
-                                        backgroundColor: 'var(--color-espoch-rojo)',
+                                        backgroundColor: '#BC0613',
                                         color: 'white',
-                                        border: '1px solid var(--color-espoch-rojo)',
+                                        border: '1px solid #BC0613',
                                     }}
                                     onClick={() => setMostrarHojaVida(true)}
                                     title="Descargar tu Hoja de Vida en PDF o Word"
@@ -930,10 +930,10 @@ const PerfilGraduado = () => {
                         <div style={s.progresoArea}>
                             <div style={s.progresoHeader}>
                                 <span style={s.progresoLbl}>Perfil completado</span>
-                                <span style={{ ...s.progresoLbl, fontWeight: '700', color: 'var(--color-espoch-rojo)' }}>{progreso}%</span>
+                                <span style={{ ...s.progresoLbl, fontWeight: '700', color: '#BC0613' }}>{progreso}%</span>
                             </div>
                             <div style={s.progresoTrack}>
-                                <div style={{ ...s.progresoFill, width: `${progreso}%`, backgroundColor: 'var(--color-espoch-rojo)' }} />
+                                <div style={{ ...s.progresoFill, width: `${progreso}%`, backgroundColor: '#BC0613' }} />
                             </div>
                         </div>
                     )}
@@ -959,7 +959,7 @@ const PerfilGraduado = () => {
                             </div>
                         ) : (
                             <div style={{ ...s.card, border: '1px dashed #dee2e6', backgroundColor: '#fafafa' }}>
-                                <p style={{ margin: 0, fontSize: '0.78rem', color: 'var(--color-texto-secundario)', textAlign: 'center' }}>
+                                <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--color-texto-secundario)', textAlign: 'center' }}>
                                     Sin descripción — <button onClick={() => setModalAbierto(true)} style={s.linkBtn}>agregar</button>
                                 </p>
                             </div>
@@ -986,7 +986,7 @@ const PerfilGraduado = () => {
                                 })
                             ) : (
                                 <div style={s.emptySmall}>
-                                    <FaMedal style={{ fontSize: '1.6rem', color: '#dee2e6', marginBottom: 6 }} />
+                                    <FaMedal style={{ fontSize: '1.73rem', color: '#dee2e6', marginBottom: 6 }} />
                                     <p style={s.emptySmallTxt}>Sube proyectos o certificados para detectar especialidades</p>
                                 </div>
                             )}
@@ -1027,7 +1027,7 @@ const PerfilGraduado = () => {
                                                 <input name="titulo" value={fp.titulo} onChange={cambiarFp}
                                                     placeholder="Ej: Sistema de gestión académica ESPOCH" style={s.inp} />
                                             </div>
-                                            <span style={{ fontSize: '0.69rem', color: fp.titulo.trim().split(/\s+/).filter(Boolean).length > 10 ? 'var(--estado-error)' : 'var(--color-texto-secundario)', marginTop: 2 }}>
+                                            <span style={{ fontSize: '0.8rem', color: fp.titulo.trim().split(/\s+/).filter(Boolean).length > 10 ? 'var(--estado-error)' : 'var(--color-texto-secundario)', marginTop: 2 }}>
                                                 {fp.titulo.trim() === '' ? 0 : fp.titulo.trim().split(/\s+/).filter(Boolean).length}/10 palabras · mín 3
                                             </span>
                                         </div>
@@ -1046,7 +1046,7 @@ const PerfilGraduado = () => {
                                                 placeholder="Ej: Desarrollé un sistema usando React y Node.js..."
                                                 style={{ ...s.inp, minHeight: 100, resize: 'vertical' }} />
                                         </div>
-                                        <span style={{ fontSize: '0.7rem', color: contarPalabras(fp.descripcion) > LIMITE_PALABRAS_DESC - 25 ? 'var(--estado-alerta)' : 'var(--color-texto-secundario)', marginTop: 3 }}>
+                                        <span style={{ fontSize: '0.9rem', color: contarPalabras(fp.descripcion) > LIMITE_PALABRAS_DESC - 25 ? 'var(--estado-alerta)' : 'var(--color-texto-secundario)', marginTop: 3 }}>
                                             {contarPalabras(fp.descripcion)}/{LIMITE_PALABRAS_DESC} palabras
                                         </span>
                                         <div style={s.guiaBox}>
@@ -1077,10 +1077,10 @@ const PerfilGraduado = () => {
                                                 ? <div style={{ position: 'relative' }}>
                                                     <img src={previewProy} alt="preview" style={{ width: '100%', maxHeight: 130, objectFit: 'cover', borderRadius: 6 }} />
                                                     <button type="button" onClick={e => { e.stopPropagation(); setPreviewProy(null); setFp(p => ({ ...p, imagen: null })); if (proyFotoRef.current) proyFotoRef.current.value = ''; }} style={s.btnQuitarImg}>
-                                                        <FaTimes style={{ fontSize: '0.65rem' }} /> Quitar
+                                                        <FaTimes style={{ fontSize: '0.8rem' }} /> Quitar
                                                     </button>
                                                 </div>
-                                                : <><FaImage style={{ fontSize: '1.6rem', color: '#adb5bd', marginBottom: 5 }} />
+                                                : <><FaImage style={{ fontSize: '1.73rem', color: '#adb5bd', marginBottom: 5 }} />
                                                     <p style={s.uploadTxt}>Haz clic para subir imagen</p>
                                                     <p style={s.uploadHint}>Solo JPG, PNG o WEBP · Máx 5MB</p></>
                                             }
@@ -1098,7 +1098,7 @@ const PerfilGraduado = () => {
 
                             {proyectos.length === 0 && !verFormProy ? (
                                 <div style={s.emptyState}>
-                                    <FaBriefcase style={{ fontSize: '2rem', color: '#dee2e6', marginBottom: 8 }} />
+                                    <FaBriefcase style={{ fontSize: '2.4rem', color: '#dee2e6', marginBottom: 8 }} />
                                     <p style={s.emptyH}>Aún no tienes proyectos</p>
                                     <p style={s.emptySub}>Agrega hasta {LIMITE_PROYECTOS} proyectos para mostrar tu experiencia</p>
                                     <button style={s.emptyBtn} onClick={() => setVerFormProy(true)}>
@@ -1111,7 +1111,7 @@ const PerfilGraduado = () => {
                                         <div key={proy._id} style={s.proyCard}>
                                             {proy.imagen
                                                 ? <img src={urlFoto(proy.imagen)} alt={proy.titulo} style={s.proyImg} />
-                                                : <div style={s.proyImgPlaceholder}><FaImage style={{ fontSize: '1.4rem', color: '#dee2e6' }} /></div>
+                                                : <div style={s.proyImgPlaceholder}><FaImage style={{ fontSize: '1.51rem', color: '#dee2e6' }} /></div>
                                             }
                                             <div style={s.proyBody}>
                                                 <div style={s.proyTop}>
@@ -1170,7 +1170,7 @@ const PerfilGraduado = () => {
                                                 <input name="titulo" value={fc.titulo} onChange={cambiarFc}
                                                     placeholder="Ej: Taller de React Avanzado con Hooks" style={s.inp} />
                                             </div>
-                                            <span style={{ fontSize: '0.69rem', color: fc.titulo.trim().split(/\s+/).filter(Boolean).length > 10 ? 'var(--estado-error)' : 'var(--color-texto-secundario)', marginTop: 2 }}>
+                                            <span style={{ fontSize: '0.8rem', color: fc.titulo.trim().split(/\s+/).filter(Boolean).length > 10 ? 'var(--estado-error)' : 'var(--color-texto-secundario)', marginTop: 2 }}>
                                                 {fc.titulo.trim() === '' ? 0 : fc.titulo.trim().split(/\s+/).filter(Boolean).length}/10 palabras · mín 3
                                             </span>
                                         </div>
@@ -1203,7 +1203,7 @@ const PerfilGraduado = () => {
                                                 placeholder="Ej: Completé un curso de 40 horas sobre Node.js..."
                                                 style={{ ...s.inp, minHeight: 90, resize: 'vertical' }} />
                                         </div>
-                                        <span style={{ fontSize: '0.7rem', color: contarPalabras(fc.descripcion) > LIMITE_PALABRAS_DESC - 25 ? 'var(--estado-alerta)' : 'var(--color-texto-secundario)', marginTop: 3 }}>
+                                        <span style={{ fontSize: '0.9rem', color: contarPalabras(fc.descripcion) > LIMITE_PALABRAS_DESC - 25 ? 'var(--estado-alerta)' : 'var(--color-texto-secundario)', marginTop: 3 }}>
                                             {contarPalabras(fc.descripcion)}/{LIMITE_PALABRAS_DESC} palabras
                                         </span>
                                     </div>
@@ -1214,10 +1214,10 @@ const PerfilGraduado = () => {
                                                 ? <div style={{ position: 'relative' }}>
                                                     <img src={previewCert} alt="cert" style={{ width: '100%', maxHeight: 120, objectFit: 'contain', borderRadius: 6 }} />
                                                     <button type="button" onClick={e => { e.stopPropagation(); setPreviewCert(null); setFc(p => ({ ...p, archivo: null })); if (certFileRef.current) certFileRef.current.value = ''; }} style={s.btnQuitarImg}>
-                                                        <FaTimes style={{ fontSize: '0.65rem' }} /> Quitar
+                                                        <FaTimes style={{ fontSize: '0.8rem' }} /> Quitar
                                                     </button>
                                                 </div>
-                                                : <><FaImage style={{ fontSize: '1.6rem', color: '#adb5bd', marginBottom: 5 }} />
+                                                : <><FaImage style={{ fontSize: '1.73rem', color: '#adb5bd', marginBottom: 5 }} />
                                                     <p style={s.uploadTxt}>Subir imagen del certificado</p>
                                                     <p style={s.uploadHint}>JPG, PNG o WEBP · Máx 5MB</p></>
                                             }
@@ -1235,7 +1235,7 @@ const PerfilGraduado = () => {
 
                             {certificados.length === 0 && !verFormCert ? (
                                 <div style={s.emptyState}>
-                                    <FaCertificate style={{ fontSize: '2rem', color: '#dee2e6', marginBottom: 8 }} />
+                                    <FaCertificate style={{ fontSize: '2.4rem', color: '#dee2e6', marginBottom: 8 }} />
                                     <p style={s.emptyH}>Aún no tienes certificados</p>
                                     <p style={s.emptySub}>Agrega hasta {LIMITE_CERTIFICADOS} talleres y certificaciones</p>
                                     <button style={s.emptyBtn} onClick={() => setVerFormCert(true)}>
@@ -1248,7 +1248,7 @@ const PerfilGraduado = () => {
                                         <div key={cert._id} style={s.certCard}>
                                             {cert.archivo
                                                 ? <img src={urlFoto(cert.archivo)} alt={cert.titulo} style={s.certImg} />
-                                                : <div style={s.certImgPlaceholder}><FaCertificate style={{ fontSize: '1.6rem', color: '#dee2e6' }} /></div>
+                                                : <div style={s.certImgPlaceholder}><FaCertificate style={{ fontSize: '1.73rem', color: '#dee2e6' }} /></div>
                                             }
                                             <div style={s.certBody}>
                                                 <div style={s.certInfo}>
@@ -1262,7 +1262,7 @@ const PerfilGraduado = () => {
                                                         </p>
                                                         {cert.url && (
                                                             <a href={cert.url} target="_blank" rel="noopener noreferrer" style={s.certUrl}>
-                                                                <FaExternalLinkAlt style={{ marginRight: 3, fontSize: '0.6rem' }} />Ver certificado
+                                                                <FaExternalLinkAlt style={{ marginRight: 3, fontSize: '0.8rem' }} />Ver certificado
                                                             </a>
                                                         )}
                                                     </div>
@@ -1321,7 +1321,7 @@ const PerfilGraduado = () => {
                                         </div>
                                     ) : (
                                         <div style={s.emptySmall}>
-                                            <FaHandshake style={{ fontSize: '1.6rem', color: '#dee2e6', marginBottom: 6 }} />
+                                            <FaHandshake style={{ fontSize: '1.73rem', color: '#dee2e6', marginBottom: 6 }} />
                                             <p style={s.emptySmallTxt}>Agrega proyectos o certificados para detectar habilidades blandas</p>
                                         </div>
                                     )}
@@ -1335,7 +1335,7 @@ const PerfilGraduado = () => {
                                         </div>
                                     ) : (
                                         <div style={s.emptySmall}>
-                                            <FaCode style={{ fontSize: '1.6rem', color: '#dee2e6', marginBottom: 6 }} />
+                                            <FaCode style={{ fontSize: '1.73rem', color: '#dee2e6', marginBottom: 6 }} />
                                             <p style={s.emptySmallTxt}>Agrega certificados para detectar tecnologías</p>
                                         </div>
                                     )}
@@ -1371,7 +1371,7 @@ const PerfilGraduado = () => {
                         <div style={st.pasosBar}>
                             <div style={{ ...st.paso, ...(pasoTesis >= 1 ? st.pasoActivo : {}) }}>
                                 <div style={{ ...st.pasoCirculo, ...(pasoTesis >= 1 ? st.pasoCirculoActivo : {}) }}>
-                                    {pasoTesis > 1 ? <FaCheckCircle style={{ fontSize: '0.85rem' }} /> : '1'}
+                                    {pasoTesis > 1 ? <FaCheckCircle style={{ fontSize: '1rem' }} /> : '1'}
                                 </div>
                                 <span style={st.pasoLabel}>Verificar tesis</span>
                             </div>
@@ -1386,12 +1386,12 @@ const PerfilGraduado = () => {
                             {pasoTesis === 1 && (
                                 <>
                                     <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, backgroundColor: '#f3e8ff', border: '1px solid #ddd6fe', borderRadius: 8, padding: '10px 14px', marginBottom: 16 }}>
-                                        <FaGraduationCap style={{ color: '#6a1b9a', flexShrink: 0, fontSize: '1rem', marginTop: 1 }} />
+                                        <FaGraduationCap style={{ color: '#6a1b9a', flexShrink: 0, fontSize: '1.1rem', marginTop: 1 }} />
                                         <div>
-                                            <p style={{ margin: 0, fontWeight: 700, fontSize: '0.81rem', color: '#4a0080' }}>
+                                            <p style={{ margin: 0, fontWeight: 700, fontSize: '1rem', color: '#4a0080' }}>
                                                 Solo para graduados de la Carrera de Software
                                             </p>
-                                            <p style={{ margin: '2px 0 0', fontSize: '0.72rem', color: 'var(--color-texto-secundario)', lineHeight: 1.5 }}>
+                                            <p style={{ margin: '2px 0 0', fontSize: '0.9rem', color: 'var(--color-texto-secundario)', lineHeight: 1.5 }}>
                                                 El sistema verificará tu tesis en <strong>dspace.espoch.edu.ec</strong> y confirmará que perteneces a la Carrera de Ingeniería de Software.
                                             </p>
                                         </div>
@@ -1407,7 +1407,7 @@ const PerfilGraduado = () => {
                                                 style={s.inp}
                                             />
                                         </div>
-                                        <span style={{ fontSize: '0.69rem', color: 'var(--color-texto-secundario)', marginTop: 2 }}>
+                                        <span style={{ fontSize: '0.8rem', color: 'var(--color-texto-secundario)', marginTop: 2 }}>
                                             Ve a <a href="https://dspace.espoch.edu.ec" target="_blank" rel="noopener noreferrer" style={{ color: '#6a1b9a', fontWeight: 600 }}>dspace.espoch.edu.ec</a>, busca tu tesis y copia la URL completa
                                         </span>
                                     </div>
@@ -1440,7 +1440,7 @@ const PerfilGraduado = () => {
                                     </div>
                                     <div style={st.consentimientoAviso}>
                                         <FaShieldAlt style={{ color: '#6a1b9a', flexShrink: 0 }} />
-                                        <p style={{ margin: 0, fontSize: '0.72rem', color: '#4a0080', lineHeight: 1.5 }}>
+                                        <p style={{ margin: 0, fontSize: '0.9rem', color: '#4a0080', lineHeight: 1.5 }}>
                                             Al hacer clic en <strong>"Aceptar y publicar"</strong>, declaras haber leído y aceptado los términos del tratamiento de datos conforme a la normativa institucional de la ESPOCH. Tu perfil pasará a ser <strong>público automáticamente</strong>.
                                         </p>
                                     </div>
@@ -1530,7 +1530,7 @@ const PerfilGraduado = () => {
                                                 inputMode="numeric"
                                             />
                                         </div>
-                                        <span style={{ fontSize: '0.69rem', color: 'var(--color-texto-secundario)', marginTop: 2 }}>
+                                        <span style={{ fontSize: '0.8rem', color: 'var(--color-texto-secundario)', marginTop: 2 }}>
                                             Solo dígitos · 10 caracteres exactos
                                         </span>
                                     </div>
@@ -1548,7 +1548,7 @@ const PerfilGraduado = () => {
                                                 style={s.inp}
                                             />
                                         </div>
-                                        <span style={{ fontSize: '0.69rem', color: 'var(--color-texto-secundario)', marginTop: 2 }}>
+                                        <span style={{ fontSize: '0.8rem', color: 'var(--color-texto-secundario)', marginTop: 2 }}>
                                             No puede ser un correo @espoch.edu.ec
                                         </span>
                                     </div>
@@ -1588,7 +1588,7 @@ const PerfilGraduado = () => {
                                         style={{ ...s.inp, minHeight: 85, resize: 'vertical' }} maxLength={500} />
                                 </div>
                                 <div style={{ textAlign: 'right', marginTop: 3 }}>
-                                    <span style={{ fontSize: '0.7rem', color: mf.bio.length > 450 ? 'var(--estado-alerta)' : 'var(--color-texto-secundario)' }}>
+                                    <span style={{ fontSize: '0.9rem', color: mf.bio.length > 450 ? 'var(--estado-alerta)' : 'var(--color-texto-secundario)' }}>
                                         {mf.bio.length}/500
                                     </span>
                                 </div>
@@ -1596,7 +1596,7 @@ const PerfilGraduado = () => {
 
                             <div style={s.modalSec}>
                                 <h3 style={s.modalSecH}>Ubicación actual</h3>
-                                <p style={{ margin: '0 0 10px', fontSize: '0.73rem', color: 'var(--color-texto-secundario)', lineHeight: 1.5 }}>
+                                <p style={{ margin: '0 0 10px', fontSize: '0.9rem', color: 'var(--color-texto-secundario)', lineHeight: 1.5 }}>
                                     Indica dónde te encuentras actualmente. Esta información es necesaria para publicar tu perfil.
                                 </p>
 
@@ -1616,7 +1616,7 @@ const PerfilGraduado = () => {
                                             ))}
                                         </select>
                                         {!mf.provinciaActual && (
-                                            <span style={{ fontSize: '0.68rem', color: '#f57f17', marginTop: 2 }}>
+                                            <span style={{ fontSize: '0.8rem', color: '#f57f17', marginTop: 2 }}>
                                                 ⚠ Obligatorio para publicar tu perfil
                                             </span>
                                         )}
@@ -1639,7 +1639,7 @@ const PerfilGraduado = () => {
                                             ))}
                                         </select>
                                         {!mf.cantonActual && (
-                                            <span style={{ fontSize: '0.68rem', color: '#f57f17', marginTop: 2 }}>
+                                            <span style={{ fontSize: '0.8rem', color: '#f57f17', marginTop: 2 }}>
                                                 ⚠ Obligatorio para publicar tu perfil
                                             </span>
                                         )}
@@ -1670,10 +1670,10 @@ const PerfilGraduado = () => {
                                     <h3 style={s.modalSecH}>Visibilidad del perfil</h3>
                                     <div style={s.visRow}>
                                         <div>
-                                            <p style={{ margin: 0, fontWeight: '600', fontSize: '0.85rem', color: 'var(--color-texto-principal)' }}>
+                                            <p style={{ margin: 0, fontWeight: '600', fontSize: '1rem', color: 'var(--color-texto-principal)' }}>
                                                 {mf.perfilPublico ? 'Perfil Público' : 'Perfil Privado'}
                                             </p>
-                                            <p style={{ margin: '2px 0 0', fontSize: '0.76rem', color: 'var(--color-texto-secundario)' }}>
+                                            <p style={{ margin: '2px 0 0', fontSize: '0.9rem', color: 'var(--color-texto-secundario)' }}>
                                                 {mf.perfilPublico ? 'Los clientes pueden encontrarte en el buscador' : 'Solo tú y el administrador pueden verte'}
                                             </p>
                                         </div>
@@ -1693,12 +1693,12 @@ const PerfilGraduado = () => {
                                     <div style={st.visPrivadoAviso}>
                                         <FaLock style={{ color: '#6a1b9a', flexShrink: 0 }} />
                                         <div>
-                                            <p style={{ margin: 0, fontWeight: 600, fontSize: '0.82rem', color: '#4a0080' }}>
+                                            <p style={{ margin: 0, fontWeight: 600, fontSize: '1rem', color: '#4a0080' }}>
                                                 Tu perfil está en modo privado
                                             </p>
-                                            <p style={{ margin: '3px 0 0', fontSize: '0.72rem', color: 'var(--color-texto-secundario)', lineHeight: 1.5 }}>
+                                            <p style={{ margin: '3px 0 0', fontSize: '0.9rem', color: 'var(--color-texto-secundario)', lineHeight: 1.5 }}>
                                                 Para publicarlo, primero verifica tu tesis en el repositorio ESPOCH.
-                                                <button onClick={() => { setModalAbierto(false); abrirModalTesis(); }} style={{ background: 'none', border: 'none', color: '#6a1b9a', fontWeight: 700, cursor: 'pointer', padding: '0 4px', textDecoration: 'underline', fontSize: '0.72rem' }}>
+                                                <button onClick={() => { setModalAbierto(false); abrirModalTesis(); }} style={{ background: 'none', border: 'none', color: '#6a1b9a', fontWeight: 700, cursor: 'pointer', padding: '0 4px', textDecoration: 'underline', fontSize: '0.9rem' }}>
                                                     Verificar ahora →
                                                 </button>
                                             </p>
@@ -1728,7 +1728,7 @@ const PerfilGraduado = () => {
                         width: isMobile ? 'calc(100% - 32px)' : undefined,
                     }}>
                         <div style={s.modalConfirmIco}>
-                            <FaTrash style={{ fontSize: '1.5rem', color: 'var(--estado-error)' }} />
+                            <FaTrash style={{ fontSize: '1.62rem', color: 'var(--estado-error)' }} />
                         </div>
                         <h3 style={s.modalConfirmH}>¿Eliminar {modalConfirm.tipo}?</h3>
                         <p style={s.modalConfirmSub}>
@@ -1737,7 +1737,7 @@ const PerfilGraduado = () => {
                         <div style={s.modalConfirmBtns}>
                             <button style={s.btnCancelForm} onClick={cerrarModalConfirm}>Cancelar</button>
                             <button style={s.btnEliminarConfirm} onClick={confirmarEliminar}>
-                                <FaTrash style={{ marginRight: 6, fontSize: '0.8rem' }} />Sí, eliminar
+                                <FaTrash style={{ marginRight: 6, fontSize: '1rem' }} />Sí, eliminar
                             </button>
                         </div>
                     </div>
@@ -1766,12 +1766,12 @@ const PerfilGraduado = () => {
                         borderLeft: `4px solid ${t.tipo === 'exito' ? 'var(--estado-exito)' : 'var(--estado-error)'}`,
                     }}>
                         {t.tipo === 'exito'
-                            ? <FaCheckCircle style={{ fontSize: '1rem', flexShrink: 0, marginTop: 2 }} />
-                            : <FaExclamationTriangle style={{ fontSize: '1rem', flexShrink: 0, marginTop: 2 }} />
+                            ? <FaCheckCircle style={{ fontSize: '1.1rem', flexShrink: 0, marginTop: 2 }} />
+                            : <FaExclamationTriangle style={{ fontSize: '1.1rem', flexShrink: 0, marginTop: 2 }} />
                         }
                         <span style={{ flex: 1 }}>{t.msg}</span>
                         <button onClick={() => setToasts(prev => prev.filter(x => x.id !== t.id))} style={s.toastClose}>
-                            <FaTimes style={{ fontSize: '0.7rem' }} />
+                            <FaTimes style={{ fontSize: '0.9rem' }} />
                         </button>
                     </div>
                 ))}
@@ -1785,36 +1785,36 @@ const PerfilGraduado = () => {
 // ═══════════════════════════════════════════════════════
 const s = {
     cargando: { display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', backgroundColor: 'var(--color-fondo-web)' },
-    spinner: { width: 36, height: 36, border: '4px solid #f0f0f0', borderTop: '4px solid var(--color-espoch-rojo)', borderRadius: '50%', animation: 'spin 0.8s linear infinite' },
+    spinner: { width: 36, height: 36, border: '4px solid #f0f0f0', borderTop: '4px solid #BC0613', borderRadius: '50%', animation: 'spin 0.8s linear infinite' },
     page: { minHeight: '100%', backgroundColor: 'var(--color-fondo-web)', paddingBottom: 48 },
     container: { maxWidth: 1280, margin: '0 auto', padding: '16px 20px 0' },
 
     banner: { display: 'flex', alignItems: 'center', gap: 12, backgroundColor: '#fff8e1', border: '1px solid #ffe082', borderLeft: '4px solid #f57f17', borderRadius: 8, padding: '12px 16px', marginBottom: 12 },
-    bannerTitulo: { margin: 0, fontWeight: '700', fontSize: '0.87rem', color: 'var(--color-texto-principal)' },
-    bannerSub: { margin: '2px 0 0', fontSize: '0.76rem', color: 'var(--color-texto-secundario)' },
-    bannerBtn: { padding: '7px 16px', backgroundColor: 'var(--color-espoch-rojo)', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontSize: '0.82rem', fontWeight: '700', whiteSpace: 'nowrap', flexShrink: 0 },
+    bannerTitulo: { margin: 0, fontWeight: '700', fontSize: '1rem', color: 'var(--color-texto-principal)' },
+    bannerSub: { margin: '2px 0 0', fontSize: '0.9rem', color: 'var(--color-texto-secundario)' },
+    bannerBtn: { padding: '7px 16px', backgroundColor: '#BC0613', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontSize: '1rem', fontWeight: '700', whiteSpace: 'nowrap', flexShrink: 0 },
 
-    cabecera: { backgroundColor: 'white', borderTop: '3px solid var(--color-espoch-rojo)', padding: '18px 22px 14px', borderRadius: 10, border: '1px solid #e9ecef', boxShadow: '0 2px 8px rgba(0,0,0,0.06)', marginBottom: 14 },
+    cabecera: { backgroundColor: 'white', borderTop: '3px solid #BC0613', padding: '18px 22px 14px', borderRadius: 10, border: '1px solid #e9ecef', boxShadow: '0 2px 8px rgba(0,0,0,0.06)', marginBottom: 14 },
     cabeceraTop: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 14, marginBottom: 14 },
     fotoYNombre: { display: 'flex', gap: 14, alignItems: 'flex-start', flex: 1, minWidth: 0 },
-    fotoWrap: { position: 'relative', cursor: 'pointer', width: 80, height: 80, borderRadius: '50%', overflow: 'hidden', border: '3px solid var(--color-espoch-rojo)', flexShrink: 0 },
+    fotoWrap: { position: 'relative', cursor: 'pointer', width: 80, height: 80, borderRadius: '50%', overflow: 'hidden', border: '3px solid #BC0613', flexShrink: 0 },
     fotoImg: { width: '100%', height: '100%', objectFit: 'cover' },
     fotoIcono: { fontSize: 80, color: '#dee2e6', display: 'block' },
     fotoOverlay: { position: 'absolute', bottom: 0, left: 0, right: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', height: 26 },
     nombreInfo: { flex: 1, minWidth: 0 },
-    nombre: { margin: '0 0 2px', fontSize: '1.15rem', fontWeight: '700', color: 'var(--color-texto-principal)' },
-    tituloProf: { margin: '0 0 7px', fontSize: '0.78rem', color: 'var(--color-espoch-rojo)', fontWeight: '600' },
+    nombre: { margin: '0 0 2px', fontSize: '1.2rem', fontWeight: '700', color: 'var(--color-texto-principal)' },
+    tituloProf: { margin: '0 0 7px', fontSize: '0.9rem', color: '#BC0613', fontWeight: '600' },
     badgesRow: { display: 'flex', gap: 6, flexWrap: 'wrap' },
-    badge: { padding: '3px 9px', borderRadius: 20, fontSize: '0.72rem', fontWeight: '600', display: 'inline-flex', alignItems: 'center' },
-    btnEditarCab: { display: 'inline-flex', alignItems: 'center', padding: '7px 14px', backgroundColor: 'transparent', border: '1px solid #dee2e6', borderRadius: 6, color: 'var(--color-texto-secundario)', cursor: 'pointer', fontSize: '0.78rem', fontWeight: '600', whiteSpace: 'nowrap' },
-    btnPublicarCab: { display: 'inline-flex', alignItems: 'center', padding: '7px 14px', backgroundColor: '#f3e8ff', border: '1px solid #ddd6fe', borderRadius: 6, color: '#6a1b9a', cursor: 'pointer', fontSize: '0.78rem', fontWeight: '700', whiteSpace: 'nowrap' },
+    badge: { padding: '3px 9px', borderRadius: 20, fontSize: '0.9rem', fontWeight: '600', display: 'inline-flex', alignItems: 'center' },
+    btnEditarCab: { display: 'inline-flex', alignItems: 'center', padding: '7px 14px', backgroundColor: 'transparent', border: '1px solid #dee2e6', borderRadius: 6, color: 'var(--color-texto-secundario)', cursor: 'pointer', fontSize: '0.9rem', fontWeight: '600', whiteSpace: 'nowrap' },
+    btnPublicarCab: { display: 'inline-flex', alignItems: 'center', padding: '7px 14px', backgroundColor: '#f3e8ff', border: '1px solid #ddd6fe', borderRadius: 6, color: '#6a1b9a', cursor: 'pointer', fontSize: '0.9rem', fontWeight: '700', whiteSpace: 'nowrap' },
     progresoArea: { marginBottom: 10 },
     progresoHeader: { display: 'flex', justifyContent: 'space-between', marginBottom: 4 },
-    progresoLbl: { fontSize: '0.72rem', color: 'var(--color-texto-secundario)', fontWeight: '500' },
+    progresoLbl: { fontSize: '0.9rem', color: 'var(--color-texto-secundario)', fontWeight: '500' },
     progresoTrack: { height: 5, backgroundColor: '#e9ecef', borderRadius: 10, overflow: 'hidden' },
     progresoFill: { height: '100%', borderRadius: 10, transition: 'width 0.4s ease' },
     extras: { display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' },
-    redLink: { display: 'inline-flex', alignItems: 'center', fontSize: '0.74rem', color: 'var(--color-tech-azul)', textDecoration: 'none', fontWeight: '600' },
+    redLink: { display: 'inline-flex', alignItems: 'center', fontSize: '0.9rem', color: 'var(--color-tech-azul)', textDecoration: 'none', fontWeight: '600' },
 
     body: { display: 'grid', gridTemplateColumns: '240px 1fr 230px', gap: 14, alignItems: 'start' },
     colIzq: { display: 'flex', flexDirection: 'column', gap: 12 },
@@ -1823,62 +1823,62 @@ const s = {
     consejosSticky: { position: 'sticky', top: 16 },
 
     card: { backgroundColor: 'white', borderRadius: 10, padding: '14px 16px', border: '1px solid #e9ecef', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' },
-    cardH: { margin: '0 0 3px', fontSize: '0.9rem', fontWeight: '700', color: 'var(--color-texto-principal)', display: 'flex', alignItems: 'center', gap: 6 },
-    cardIco: { color: 'var(--color-espoch-rojo)', fontSize: '0.85rem' },
-    cardSub: { margin: '0 0 10px', fontSize: '0.72rem', color: 'var(--color-texto-secundario)' },
-    bioTxt: { margin: 0, fontSize: '0.82rem', color: 'var(--color-texto-principal)', lineHeight: 1.65 },
-    linkBtn: { background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-espoch-rojo)', fontWeight: '600', fontSize: '0.78rem', padding: 0, textDecoration: 'underline' },
+    cardH: { margin: '0 0 3px', fontSize: '1.1rem', fontWeight: '700', color: 'var(--color-texto-principal)', display: 'flex', alignItems: 'center', gap: 6 },
+    cardIco: { color: '#BC0613', fontSize: '1rem' },
+    cardSub: { margin: '0 0 10px', fontSize: '0.9rem', color: 'var(--color-texto-secundario)' },
+    bioTxt: { margin: 0, fontSize: '1rem', color: 'var(--color-texto-principal)', lineHeight: 1.65 },
+    linkBtn: { background: 'none', border: 'none', cursor: 'pointer', color: '#BC0613', fontWeight: '600', fontSize: '0.9rem', padding: 0, textDecoration: 'underline' },
 
     tagsWrap: { display: 'flex', flexWrap: 'wrap', gap: 5, marginTop: 4 },
-    tagTec: { display: 'inline-flex', alignItems: 'center', gap: 4, backgroundColor: 'var(--color-tech-azul-claro)', color: 'var(--color-tech-azul)', padding: '3px 8px', borderRadius: 20, fontSize: '0.72rem', fontWeight: '500', border: '1px solid #bee3f8' },
-    tagTecSm: { backgroundColor: 'var(--color-tech-azul-claro)', color: 'var(--color-tech-azul)', padding: '2px 6px', borderRadius: 20, fontSize: '0.67rem', fontWeight: '500', border: '1px solid #bee3f8' },
-    tagBlanda: { display: 'inline-flex', alignItems: 'center', backgroundColor: '#f3e8ff', color: '#7c3aed', padding: '3px 8px', borderRadius: 20, fontSize: '0.72rem', fontWeight: '500', border: '1px solid #ddd6fe' },
+    tagTec: { display: 'inline-flex', alignItems: 'center', gap: 4, backgroundColor: 'var(--color-tech-azul-claro)', color: 'var(--color-tech-azul)', padding: '3px 8px', borderRadius: 20, fontSize: '0.9rem', fontWeight: '500', border: '1px solid #bee3f8' },
+    tagTecSm: { backgroundColor: 'var(--color-tech-azul-claro)', color: 'var(--color-tech-azul)', padding: '2px 6px', borderRadius: 20, fontSize: '0.8rem', fontWeight: '500', border: '1px solid #bee3f8' },
+    tagBlanda: { display: 'inline-flex', alignItems: 'center', backgroundColor: '#f3e8ff', color: '#7c3aed', padding: '3px 8px', borderRadius: 20, fontSize: '0.9rem', fontWeight: '500', border: '1px solid #ddd6fe' },
     emptySmall: { textAlign: 'center', padding: '8px 0' },
-    emptySmallTxt: { margin: 0, fontSize: '0.74rem', color: 'var(--color-texto-secundario)', lineHeight: 1.5 },
+    emptySmallTxt: { margin: 0, fontSize: '0.9rem', color: 'var(--color-texto-secundario)', lineHeight: 1.5 },
 
     afRow: { display: 'flex', alignItems: 'center', gap: 7, marginBottom: 9 },
     afInfo: { display: 'flex', flexDirection: 'column', gap: 1, minWidth: 85 },
-    afNombre: { fontSize: '0.74rem', fontWeight: '600', color: 'var(--color-texto-principal)' },
-    afBadge: { fontSize: '0.62rem', fontWeight: '700', padding: '1px 5px', borderRadius: 10, display: 'inline-block' },
+    afNombre: { fontSize: '0.9rem', fontWeight: '600', color: 'var(--color-texto-principal)' },
+    afBadge: { fontSize: '0.8rem', fontWeight: '700', padding: '1px 5px', borderRadius: 10, display: 'inline-block' },
     afTrack: { flex: 1, height: 5, backgroundColor: '#e9ecef', borderRadius: 10, overflow: 'hidden' },
     afFill: { height: '100%', borderRadius: 10, transition: 'width 0.4s' },
-    afPct: { fontSize: '0.68rem', fontWeight: '700', color: 'var(--color-texto-secundario)', minWidth: 28, textAlign: 'right' },
+    afPct: { fontSize: '0.8rem', fontWeight: '700', color: 'var(--color-texto-secundario)', minWidth: 28, textAlign: 'right' },
 
     secHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 10, marginBottom: 12 },
-    btnAddSec: { display: 'inline-flex', alignItems: 'center', padding: '6px 12px', backgroundColor: 'var(--color-espoch-rojo)', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontSize: '0.77rem', fontWeight: '600', whiteSpace: 'nowrap', flexShrink: 0 },
-    btnAddSecDisabled: { display: 'inline-flex', alignItems: 'center', padding: '6px 12px', backgroundColor: '#e9ecef', color: '#adb5bd', border: 'none', borderRadius: 6, cursor: 'not-allowed', fontSize: '0.77rem', fontWeight: '600', whiteSpace: 'nowrap', flexShrink: 0 },
-    btnCancelSec: { display: 'inline-flex', alignItems: 'center', padding: '6px 12px', backgroundColor: 'transparent', border: '1px solid #dee2e6', borderRadius: 6, cursor: 'pointer', fontSize: '0.77rem', fontWeight: '600', color: 'var(--color-texto-secundario)', whiteSpace: 'nowrap', flexShrink: 0 },
-    limiteAlerta: { display: 'flex', alignItems: 'center', gap: 8, backgroundColor: '#fff8e1', border: '1px solid #ffe082', borderRadius: 7, padding: '9px 13px', fontSize: '0.78rem', color: '#6d4c00', marginBottom: 12 },
+    btnAddSec: { display: 'inline-flex', alignItems: 'center', padding: '6px 12px', backgroundColor: '#BC0613', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontSize: '0.9rem', fontWeight: '600', whiteSpace: 'nowrap', flexShrink: 0 },
+    btnAddSecDisabled: { display: 'inline-flex', alignItems: 'center', padding: '6px 12px', backgroundColor: '#e9ecef', color: '#adb5bd', border: 'none', borderRadius: 6, cursor: 'not-allowed', fontSize: '0.9rem', fontWeight: '600', whiteSpace: 'nowrap', flexShrink: 0 },
+    btnCancelSec: { display: 'inline-flex', alignItems: 'center', padding: '6px 12px', backgroundColor: 'transparent', border: '1px solid #dee2e6', borderRadius: 6, cursor: 'pointer', fontSize: '0.9rem', fontWeight: '600', color: 'var(--color-texto-secundario)', whiteSpace: 'nowrap', flexShrink: 0 },
+    limiteAlerta: { display: 'flex', alignItems: 'center', gap: 8, backgroundColor: '#fff8e1', border: '1px solid #ffe082', borderRadius: 7, padding: '9px 13px', fontSize: '0.9rem', color: '#6d4c00', marginBottom: 12 },
 
     formCard: { backgroundColor: 'var(--color-fondo-web)', border: '1px solid #e9ecef', borderRadius: 8, padding: '14px', marginBottom: 14 },
-    formH: { margin: '0 0 12px', fontSize: '0.84rem', fontWeight: '700', color: 'var(--color-texto-principal)' },
+    formH: { margin: '0 0 12px', fontSize: '1rem', fontWeight: '700', color: 'var(--color-texto-principal)' },
     grid2: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 },
     campo: { display: 'flex', flexDirection: 'column', gap: 4, marginBottom: 10 },
-    lbl: { fontSize: '0.76rem', fontWeight: '600', color: 'var(--color-texto-principal)' },
-    select: { padding: '8px 10px', borderRadius: 6, border: '1px solid #e9ecef', fontSize: '0.83rem', backgroundColor: 'var(--color-fondo-web)', color: 'var(--color-texto-principal)', outline: 'none' },
+    lbl: { fontSize: '0.9rem', fontWeight: '600', color: 'var(--color-texto-principal)' },
+    select: { padding: '8px 10px', borderRadius: 6, border: '1px solid #e9ecef', fontSize: '1rem', backgroundColor: 'var(--color-fondo-web)', color: 'var(--color-texto-principal)', outline: 'none' },
     inputWrap: { display: 'flex', alignItems: 'center', backgroundColor: 'white', border: '1px solid #e9ecef', borderRadius: 6, padding: '7px 11px', gap: 8 },
-    inp: { flex: 1, border: 'none', background: 'transparent', outline: 'none', fontSize: '0.83rem', color: 'var(--color-texto-principal)', fontFamily: 'inherit' },
-    icoInp: { fontSize: '0.82rem', color: '#adb5bd', flexShrink: 0 },
+    inp: { flex: 1, border: 'none', background: 'transparent', outline: 'none', fontSize: '1rem', color: 'var(--color-texto-principal)', fontFamily: 'inherit' },
+    icoInp: { fontSize: '1rem', color: '#adb5bd', flexShrink: 0 },
     uploadZone: { border: '2px dashed #dee2e6', borderRadius: 8, padding: '16px 12px', textAlign: 'center', cursor: 'pointer', backgroundColor: 'white' },
-    uploadTxt: { margin: 0, fontSize: '0.78rem', color: 'var(--color-texto-secundario)', fontWeight: '500' },
-    uploadHint: { margin: '2px 0 0', fontSize: '0.68rem', color: '#adb5bd' },
+    uploadTxt: { margin: 0, fontSize: '0.9rem', color: 'var(--color-texto-secundario)', fontWeight: '500' },
+    uploadHint: { margin: '2px 0 0', fontSize: '0.8rem', color: '#adb5bd' },
     formFooter: { display: 'flex', justifyContent: 'flex-end', gap: 8, marginTop: 6 },
-    btnCancelForm: { padding: '7px 14px', backgroundColor: 'transparent', border: '1px solid #dee2e6', borderRadius: 6, cursor: 'pointer', fontSize: '0.81rem', fontWeight: '600', color: 'var(--color-texto-secundario)' },
-    btnSaveForm: { display: 'inline-flex', alignItems: 'center', padding: '7px 16px', backgroundColor: 'var(--color-espoch-rojo)', color: 'white', border: 'none', fontSize: '0.83rem', fontWeight: '600', borderRadius: 6, cursor: 'pointer' },
-    btnQuitarImg: { position: 'absolute', top: 6, right: 6, display: 'inline-flex', alignItems: 'center', gap: 4, padding: '3px 8px', backgroundColor: 'rgba(0,0,0,0.6)', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer', fontSize: '0.7rem', fontWeight: '600' },
+    btnCancelForm: { padding: '7px 14px', backgroundColor: 'transparent', border: '1px solid #dee2e6', borderRadius: 6, cursor: 'pointer', fontSize: '1rem', fontWeight: '600', color: 'var(--color-texto-secundario)' },
+    btnSaveForm: { display: 'inline-flex', alignItems: 'center', padding: '7px 16px', backgroundColor: '#BC0613', color: 'white', border: 'none', fontSize: '1rem', fontWeight: '600', borderRadius: 6, cursor: 'pointer' },
+    btnQuitarImg: { position: 'absolute', top: 6, right: 6, display: 'inline-flex', alignItems: 'center', gap: 4, padding: '3px 8px', backgroundColor: 'rgba(0,0,0,0.6)', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer', fontSize: '0.9rem', fontWeight: '600' },
     guiaBox: { marginTop: 8, backgroundColor: '#f0f7ff', border: '1px solid #bee3f8', borderRadius: 7, padding: '9px 12px' },
-    guiaTitulo: { margin: '0 0 6px', fontSize: '0.72rem', fontWeight: '700', color: 'var(--color-tech-azul)' },
+    guiaTitulo: { margin: '0 0 6px', fontSize: '0.9rem', fontWeight: '700', color: 'var(--color-tech-azul)' },
     guiaGrid: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px 10px' },
-    guiaItem: { fontSize: '0.7rem', color: '#4a6fa5', lineHeight: 1.45 },
+    guiaItem: { fontSize: '0.9rem', color: '#4a6fa5', lineHeight: 1.45 },
 
     visRow: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'var(--color-fondo-web)', padding: 12, borderRadius: 8 },
     swTrack: { width: 46, height: 26, borderRadius: 13, position: 'relative', transition: 'background-color 0.25s' },
     swThumb: { position: 'absolute', top: 3, width: 20, height: 20, borderRadius: '50%', backgroundColor: 'white', boxShadow: '0 1px 3px rgba(0,0,0,0.2)', transition: 'transform 0.25s' },
 
     emptyState: { textAlign: 'center', padding: '20px 16px' },
-    emptyH: { margin: '0 0 5px', fontSize: '0.9rem', fontWeight: '700', color: 'var(--color-texto-principal)' },
-    emptySub: { margin: '0 0 12px', fontSize: '0.76rem', color: 'var(--color-texto-secundario)' },
-    emptyBtn: { display: 'inline-flex', alignItems: 'center', padding: '7px 14px', backgroundColor: 'var(--color-espoch-rojo)', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontSize: '0.79rem', fontWeight: '600' },
+    emptyH: { margin: '0 0 5px', fontSize: '1.1rem', fontWeight: '700', color: 'var(--color-texto-principal)' },
+    emptySub: { margin: '0 0 12px', fontSize: '0.9rem', color: 'var(--color-texto-secundario)' },
+    emptyBtn: { display: 'inline-flex', alignItems: 'center', padding: '7px 14px', backgroundColor: '#BC0613', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontSize: '0.9rem', fontWeight: '600' },
 
     proyGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(210px, 1fr))', gap: 10, marginTop: 4 },
     proyCard: { border: '1px solid #e9ecef', borderRadius: 8, overflow: 'hidden', backgroundColor: 'white' },
@@ -1886,45 +1886,45 @@ const s = {
     proyImgPlaceholder: { width: '100%', height: 70, display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--color-fondo-web)', borderBottom: '1px solid #f0f0f0' },
     proyBody: { padding: '10px 12px' },
     proyTop: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 6, marginBottom: 4 },
-    proyTitulo: { margin: 0, fontSize: '0.84rem', fontWeight: '700', color: 'var(--color-texto-principal)', flex: 1 },
-    proyDesc: { margin: '0 0 4px', fontSize: '0.74rem', color: 'var(--color-texto-secundario)', lineHeight: 1.5, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' },
+    proyTitulo: { margin: 0, fontSize: '1rem', fontWeight: '700', color: 'var(--color-texto-principal)', flex: 1 },
+    proyDesc: { margin: '0 0 4px', fontSize: '0.9rem', color: 'var(--color-texto-secundario)', lineHeight: 1.5, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' },
     proyFooter: { display: 'flex', alignItems: 'center', gap: 10, marginTop: 6, paddingTop: 6, borderTop: '1px solid #f5f5f5' },
-    proyMeta: { display: 'inline-flex', alignItems: 'center', fontSize: '0.68rem', color: 'var(--color-texto-secundario)' },
-    proyLink: { display: 'inline-flex', alignItems: 'center', fontSize: '0.68rem', color: 'var(--color-tech-azul)', textDecoration: 'none', fontWeight: '600' },
-    iconBtn: { background: 'none', border: 'none', cursor: 'pointer', padding: '3px 4px', color: 'var(--color-texto-secundario)', display: 'flex', alignItems: 'center', borderRadius: 4, fontSize: '0.78rem' },
+    proyMeta: { display: 'inline-flex', alignItems: 'center', fontSize: '0.8rem', color: 'var(--color-texto-secundario)' },
+    proyLink: { display: 'inline-flex', alignItems: 'center', fontSize: '0.8rem', color: 'var(--color-tech-azul)', textDecoration: 'none', fontWeight: '600' },
+    iconBtn: { background: 'none', border: 'none', cursor: 'pointer', padding: '3px 4px', color: 'var(--color-texto-secundario)', display: 'flex', alignItems: 'center', borderRadius: 4, fontSize: '0.9rem' },
 
     certGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(210px, 1fr))', gap: 10, marginTop: 4 },
     certCard: { display: 'flex', flexDirection: 'column', border: '1px solid #e9ecef', borderRadius: 8, overflow: 'hidden', backgroundColor: 'white' },
     certIconWrap: { width: 36, height: 36, borderRadius: 8, backgroundColor: '#ffebee', border: '1px solid #ffcdd2', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 2 },
     certInfo: { flex: 1, minWidth: 0 },
-    certTitulo: { margin: 0, fontSize: '0.82rem', fontWeight: '700', color: 'var(--color-texto-principal)' },
-    certInst: { margin: '1px 0 0', fontSize: '0.72rem', color: 'var(--color-texto-secundario)' },
-    certDesc: { margin: '4px 0 0', fontSize: '0.73rem', color: 'var(--color-texto-principal)', lineHeight: 1.5, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' },
-    certFecha: { display: 'inline-flex', alignItems: 'center', margin: 0, fontSize: '0.68rem', color: 'var(--color-texto-secundario)' },
-    certUrl: { display: 'inline-flex', alignItems: 'center', fontSize: '0.68rem', color: 'var(--color-tech-azul)', textDecoration: 'none', fontWeight: '600' },
+    certTitulo: { margin: 0, fontSize: '1rem', fontWeight: '700', color: 'var(--color-texto-principal)' },
+    certInst: { margin: '1px 0 0', fontSize: '0.9rem', color: 'var(--color-texto-secundario)' },
+    certDesc: { margin: '4px 0 0', fontSize: '0.9rem', color: 'var(--color-texto-principal)', lineHeight: 1.5, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' },
+    certFecha: { display: 'inline-flex', alignItems: 'center', margin: 0, fontSize: '0.8rem', color: 'var(--color-texto-secundario)' },
+    certUrl: { display: 'inline-flex', alignItems: 'center', fontSize: '0.8rem', color: 'var(--color-tech-azul)', textDecoration: 'none', fontWeight: '600' },
     certImg: { width: '100%', height: 105, objectFit: 'cover' },
     certImgPlaceholder: { width: '100%', height: 70, display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--color-fondo-web)', borderBottom: '1px solid #f0f0f0' },
     certBody: { padding: '10px 12px', display: 'flex', flexDirection: 'column', flex: 1 },
 
     overlay: { position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.55)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 16, backdropFilter: 'blur(2px)' },
     modal: { backgroundColor: 'white', borderRadius: 12, width: '100%', maxWidth: 500, maxHeight: '90vh', display: 'flex', flexDirection: 'column', boxShadow: '0 8px 32px rgba(0,0,0,0.18)' },
-    modalHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', padding: '16px 20px 13px', borderBottom: '2px solid var(--color-espoch-rojo)', flexShrink: 0 },
-    modalTitulo: { margin: 0, fontSize: '0.97rem', fontWeight: '700', color: 'var(--color-texto-principal)' },
-    modalSub: { margin: '2px 0 0', fontSize: '0.74rem', color: 'var(--color-texto-secundario)' },
-    modalClose: { background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-texto-secundario)', fontSize: '0.97rem', padding: 4, display: 'flex', alignItems: 'center' },
+    modalHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', padding: '16px 20px 13px', borderBottom: '2px solid #BC0613', flexShrink: 0 },
+    modalTitulo: { margin: 0, fontSize: '1.1rem', fontWeight: '700', color: 'var(--color-texto-principal)' },
+    modalSub: { margin: '2px 0 0', fontSize: '0.9rem', color: 'var(--color-texto-secundario)' },
+    modalClose: { background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-texto-secundario)', fontSize: '1.1rem', padding: 4, display: 'flex', alignItems: 'center' },
     modalBody: { flex: 1, overflowY: 'auto', padding: '14px 20px' },
     modalSec: { marginBottom: 16, paddingBottom: 16, borderBottom: '1px solid #f0f0f0' },
-    modalSecH: { margin: '0 0 10px', fontSize: '0.84rem', fontWeight: '700', color: 'var(--color-texto-principal)' },
+    modalSecH: { margin: '0 0 10px', fontSize: '1rem', fontWeight: '700', color: 'var(--color-texto-principal)' },
     modalFooter: { display: 'flex', justifyContent: 'flex-end', gap: 8, padding: '11px 20px', borderTop: '1px solid #e9ecef', flexShrink: 0, backgroundColor: 'var(--color-fondo-web)', borderRadius: '0 0 12px 12px' },
     modalConfirm: { backgroundColor: 'white', borderRadius: 14, width: '100%', maxWidth: 390, padding: '32px 28px 24px', textAlign: 'center', boxShadow: '0 16px 48px rgba(0,0,0,0.22)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 },
     modalConfirmIco: { width: 60, height: 60, borderRadius: '50%', backgroundColor: '#ffebee', border: '2px solid #ffcdd2', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 4 },
-    modalConfirmH: { margin: '0 0 4px', fontSize: '1.05rem', fontWeight: '700', color: 'var(--color-texto-principal)', textTransform: 'capitalize' },
-    modalConfirmSub: { margin: '0 0 20px', fontSize: '0.83rem', color: 'var(--color-texto-secundario)', lineHeight: 1.6, maxWidth: 300 },
+    modalConfirmH: { margin: '0 0 4px', fontSize: '1.1rem', fontWeight: '700', color: 'var(--color-texto-principal)', textTransform: 'capitalize' },
+    modalConfirmSub: { margin: '0 0 20px', fontSize: '1rem', color: 'var(--color-texto-secundario)', lineHeight: 1.6, maxWidth: 300 },
     modalConfirmBtns: { display: 'flex', gap: 10, justifyContent: 'center', width: '100%' },
-    btnEliminarConfirm: { display: 'inline-flex', alignItems: 'center', padding: '8px 22px', backgroundColor: 'var(--estado-error)', color: 'white', border: 'none', borderRadius: 7, cursor: 'pointer', fontSize: '0.84rem', fontWeight: '700' },
+    btnEliminarConfirm: { display: 'inline-flex', alignItems: 'center', padding: '8px 22px', backgroundColor: 'var(--estado-error)', color: 'white', border: 'none', borderRadius: 7, cursor: 'pointer', fontSize: '1rem', fontWeight: '700' },
 
     toastContainer: { position: 'fixed', bottom: 24, right: 24, zIndex: 9999, display: 'flex', flexDirection: 'column', gap: 10, maxWidth: 370, pointerEvents: 'none' },
-    toastItem: { display: 'flex', alignItems: 'flex-start', gap: 10, padding: '12px 14px', borderRadius: 10, boxShadow: '0 4px 18px rgba(0,0,0,0.13)', fontSize: '0.82rem', fontWeight: '500', lineHeight: 1.5, pointerEvents: 'auto' },
+    toastItem: { display: 'flex', alignItems: 'flex-start', gap: 10, padding: '12px 14px', borderRadius: 10, boxShadow: '0 4px 18px rgba(0,0,0,0.13)', fontSize: '1rem', fontWeight: '500', lineHeight: 1.5, pointerEvents: 'auto' },
     toastClose: { background: 'none', border: 'none', cursor: 'pointer', padding: '0 0 0 4px', opacity: 0.6, display: 'flex', alignItems: 'center', flexShrink: 0, color: 'inherit' },
 };
 
@@ -1933,18 +1933,18 @@ const sc = {
     panel: { backgroundColor: 'white', borderRadius: 10, border: '1px solid #e9ecef', boxShadow: '0 1px 4px rgba(0,0,0,0.05)', overflow: 'hidden' },
     panelHeader: { display: 'flex', alignItems: 'center', gap: 10, padding: '13px 14px 11px', borderBottom: '1px solid #f0f0f0', backgroundColor: '#fffbf0' },
     panelIconWrap: { width: 32, height: 32, borderRadius: 8, backgroundColor: '#fff8e1', border: '1px solid #ffe082', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
-    panelTitulo: { margin: 0, fontSize: '0.84rem', fontWeight: '700', color: 'var(--color-texto-principal)' },
-    panelSub: { margin: '1px 0 0', fontSize: '0.68rem', color: 'var(--color-texto-secundario)' },
+    panelTitulo: { margin: 0, fontSize: '1rem', fontWeight: '700', color: 'var(--color-texto-principal)' },
+    panelSub: { margin: '1px 0 0', fontSize: '0.8rem', color: 'var(--color-texto-secundario)' },
     consejosLista: { padding: '10px 14px', display: 'flex', flexDirection: 'column', gap: 8, minHeight: 150 },
     consejoItem: { display: 'flex', gap: 9, alignItems: 'flex-start', padding: '9px 10px', borderRadius: 8, border: '1px solid', minHeight: 110, boxSizing: 'border-box' },
     consejoIcoWrap: { width: 28, height: 28, borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
     consejoTexto: { flex: 1, minWidth: 0 },
-    consejoTitulo: { margin: '0 0 2px', fontSize: '0.72rem', fontWeight: '700' },
-    consejoDesc: { margin: 0, fontSize: '0.67rem', color: 'var(--color-texto-secundario)', lineHeight: 1.5 },
+    consejoTitulo: { margin: '0 0 2px', fontSize: '0.9rem', fontWeight: '700' },
+    consejoDesc: { margin: 0, fontSize: '0.8rem', color: 'var(--color-texto-secundario)', lineHeight: 1.5 },
     panelPublicar: { display: 'flex', alignItems: 'flex-start', gap: 8, padding: '10px 14px', backgroundColor: '#f3e8ff', borderTop: '1px solid #ddd6fe' },
-    btnPublicar: { padding: '5px 12px', backgroundColor: '#6a1b9a', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontSize: '0.74rem', fontWeight: '700', whiteSpace: 'nowrap', flexShrink: 0 },
+    btnPublicar: { padding: '5px 12px', backgroundColor: '#6a1b9a', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontSize: '0.9rem', fontWeight: '700', whiteSpace: 'nowrap', flexShrink: 0 },
     panelFooter: { display: 'flex', alignItems: 'center', gap: 8, padding: '10px 14px', backgroundColor: '#fff8e1', borderTop: '1px solid #ffe082' },
-    panelFooterTxt: { margin: 0, fontSize: '0.68rem', color: '#6d4c00', lineHeight: 1.4 },
+    panelFooterTxt: { margin: 0, fontSize: '0.8rem', color: '#6d4c00', lineHeight: 1.4 },
 };
 
 // Estilos exclusivos del modal tesis (sin cambios)
@@ -1952,18 +1952,18 @@ const st = {
     pasosBar: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, padding: '12px 20px', borderBottom: '1px solid #f0f0f0', backgroundColor: 'var(--color-fondo-web)', flexShrink: 0 },
     paso: { display: 'flex', alignItems: 'center', gap: 6, opacity: 0.45 },
     pasoActivo: { opacity: 1 },
-    pasoCirculo: { width: 26, height: 26, borderRadius: '50%', backgroundColor: '#e9ecef', color: 'var(--color-texto-secundario)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: 700 },
+    pasoCirculo: { width: 26, height: 26, borderRadius: '50%', backgroundColor: '#e9ecef', color: 'var(--color-texto-secundario)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.9rem', fontWeight: 700 },
     pasoCirculoActivo: { backgroundColor: '#6a1b9a', color: 'white' },
-    pasoLabel: { fontSize: '0.72rem', fontWeight: 600, color: 'var(--color-texto-principal)' },
+    pasoLabel: { fontSize: '0.9rem', fontWeight: 600, color: 'var(--color-texto-principal)' },
     pasoLinea: { width: 40, height: 2, backgroundColor: '#dee2e6' },
     infoBanner: { display: 'flex', alignItems: 'flex-start', gap: 10, backgroundColor: '#f3e8ff', border: '1px solid #ddd6fe', borderRadius: 8, padding: '10px 14px', marginBottom: 16 },
     verificadoBanner: { display: 'flex', alignItems: 'flex-start', gap: 12, backgroundColor: '#e8f5e9', border: '1px solid #c8e6c9', borderRadius: 8, padding: '12px 14px', marginBottom: 14 },
     terminosBox: { backgroundColor: 'var(--color-fondo-web)', border: '1px solid #e9ecef', borderRadius: 8, padding: '14px', marginBottom: 12, maxHeight: '38vh', overflowY: 'auto', scrollbarWidth: 'thin' },
-    terminosBadge: { display: 'inline-block', backgroundColor: '#6a1b9a', color: 'white', fontSize: '0.62rem', fontWeight: 700, padding: '2px 8px', borderRadius: 20, marginBottom: 6 },
-    terminosTitulo: { margin: '0 0 8px', fontSize: '0.85rem', fontWeight: 700, color: 'var(--color-texto-principal)' },
-    terminosP: { fontSize: '0.76rem', color: 'var(--color-texto-secundario)', lineHeight: 1.6, margin: '0 0 8px' },
-    terminosLista: { fontSize: '0.75rem', color: 'var(--color-texto-secundario)', lineHeight: 1.8, paddingLeft: 18, margin: '0 0 8px' },
-    terminosAlerta: { backgroundColor: '#fff8e1', border: '1px solid #ffe082', borderRadius: 6, padding: '8px 12px', fontSize: '0.74rem', color: 'var(--color-texto-principal)', lineHeight: 1.55, margin: '8px 0' },
+    terminosBadge: { display: 'inline-block', backgroundColor: '#6a1b9a', color: 'white', fontSize: '0.8rem', fontWeight: 700, padding: '2px 8px', borderRadius: 20, marginBottom: 6 },
+    terminosTitulo: { margin: '0 0 8px', fontSize: '1rem', fontWeight: 700, color: 'var(--color-texto-principal)' },
+    terminosP: { fontSize: '0.9rem', color: 'var(--color-texto-secundario)', lineHeight: 1.6, margin: '0 0 8px' },
+    terminosLista: { fontSize: '0.9rem', color: 'var(--color-texto-secundario)', lineHeight: 1.8, paddingLeft: 18, margin: '0 0 8px' },
+    terminosAlerta: { backgroundColor: '#fff8e1', border: '1px solid #ffe082', borderRadius: 6, padding: '8px 12px', fontSize: '0.9rem', color: 'var(--color-texto-principal)', lineHeight: 1.55, margin: '8px 0' },
     consentimientoAviso: { display: 'flex', alignItems: 'flex-start', gap: 8, backgroundColor: '#f3e8ff', border: '1px solid #ddd6fe', borderRadius: 8, padding: '10px 12px' },
     visPrivadoAviso: { display: 'flex', alignItems: 'flex-start', gap: 10, backgroundColor: '#f3e8ff', border: '1px solid #ddd6fe', borderRadius: 8, padding: '10px 12px' },
 };

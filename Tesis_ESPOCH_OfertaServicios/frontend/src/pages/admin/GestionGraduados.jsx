@@ -364,22 +364,22 @@ const GestionGraduados = () => {
             <div style={s.pagRow}>
                 <button style={{ ...s.pagBtn, opacity: pagina === 1 ? 0.4 : 1 }}
                     onClick={() => irPagina(pagina - 1)} disabled={pagina === 1}>
-                    <FaChevronLeft style={{ fontSize: '0.6rem' }} />
+                    <FaChevronLeft style={{ fontSize: '0.85rem' }} />
                 </button>
                 {ini > 1 && <span style={s.pagPuntos}>···</span>}
                 {pags.map(p => (
                     <button key={p} style={{
                         ...s.pagBtn,
-                        background: p === pagina ? 'var(--color-espoch-rojo)' : 'white',
+                        background: p === pagina ? '#BC0613' : 'white',
                         color: p === pagina ? 'white' : '#6c757d',
-                        border: p === pagina ? '1px solid var(--color-espoch-rojo)' : '1px solid #e9ecef',
+                        border: p === pagina ? '1px solid #BC0613' : '1px solid #e9ecef',
                         fontWeight: p === pagina ? '700' : '400',
                     }} onClick={() => irPagina(p)}>{p}</button>
                 ))}
                 {fin < paginas && <span style={s.pagPuntos}>···</span>}
                 <button style={{ ...s.pagBtn, opacity: pagina === paginas ? 0.4 : 1 }}
                     onClick={() => irPagina(pagina + 1)} disabled={pagina === paginas}>
-                    <FaChevronRight style={{ fontSize: '0.6rem' }} />
+                    <FaChevronRight style={{ fontSize: '0.85rem' }} />
                 </button>
             </div>
         );
@@ -412,7 +412,7 @@ const GestionGraduados = () => {
                                     </p>
                                 </div>
                                 <div style={{ ...s.metIco, background: m.bg, border: `1px solid ${m.border}` }}>
-                                    <Icon style={{ fontSize: '1rem', color: m.color }} />
+                                    <Icon style={{ fontSize: '1.1rem', color: m.color }} />
                                 </div>
                             </div>
                         </div>
@@ -433,15 +433,15 @@ const GestionGraduados = () => {
                     {/* ── Dropdown Nuevo Graduado ── */}
                     <div style={{ position: 'relative' }} ref={menuRef}>
                         <button style={s.btnNuevo} onClick={() => setMenuNuevo(v => !v)}>
-                            <FaUserPlus style={{ fontSize: '0.78rem' }} />
+                            <FaUserPlus style={{ fontSize: '0.95rem' }} />
                             Nuevo Graduado
-                            <FaChevronDown style={{ fontSize: '0.6rem', marginLeft: 2 }} />
+                            <FaChevronDown style={{ fontSize: '0.85rem', marginLeft: 2 }} />
                         </button>
                         {menuNuevo && (
                             <div style={s.dropdown}>
                                 <button style={s.dropItem} onClick={abrirInd}>
                                     <div style={{ ...s.dropIco, background: '#e3f2fd', border: '1px solid #bbdefb' }}>
-                                        <FaUser style={{ color: '#1565c0', fontSize: '0.75rem' }} />
+                                        <FaUser style={{ color: '#1565c0', fontSize: '0.95rem' }} />
                                     </div>
                                     <div>
                                         <p style={s.dropTit}>Individual</p>
@@ -451,7 +451,7 @@ const GestionGraduados = () => {
                                 <div style={s.dropDivider} />
                                 <button style={s.dropItem} onClick={abrirMasivo}>
                                     <div style={{ ...s.dropIco, background: '#e8f5e9', border: '1px solid #c8e6c9' }}>
-                                        <FaUsers style={{ color: '#2e7d32', fontSize: '0.75rem' }} />
+                                        <FaUsers style={{ color: '#2e7d32', fontSize: '0.95rem' }} />
                                     </div>
                                     <div>
                                         <p style={s.dropTit}>Carga masiva CSV</p>
@@ -466,19 +466,19 @@ const GestionGraduados = () => {
                 {/* Filtros */}
                 <div style={s.filtrosRow}>
                     <div style={s.busqWrap}>
-                        <FaSearch style={{ fontSize: '0.65rem', color: '#adb5bd', flexShrink: 0 }} />
+                        <FaSearch style={{ fontSize: '0.85rem', color: '#adb5bd', flexShrink: 0 }} />
                         <input type="text" placeholder="Buscar por nombre, cédula o tecnología..."
                             value={buscar} onChange={e => setBuscar(e.target.value)} style={s.busqInp} />
                     </div>
                     <div style={s.selectWrap}>
-                        <FaCalendarAlt style={{ fontSize: '0.62rem', color: '#adb5bd', flexShrink: 0 }} />
+                        <FaCalendarAlt style={{ fontSize: '0.85rem', color: '#adb5bd', flexShrink: 0 }} />
                         <select value={filtroAnio} onChange={e => setFiltroAnio(e.target.value)} style={s.selectEl}>
                             <option value="">Promoción</option>
                             {aniosDispo.map(a => <option key={a} value={a}>{a}</option>)}
                         </select>
                     </div>
                     <div style={s.selectWrap}>
-                        <FaFilter style={{ fontSize: '0.58rem', color: '#adb5bd', flexShrink: 0 }} />
+                        <FaFilter style={{ fontSize: '0.75rem', color: '#adb5bd', flexShrink: 0 }} />
                         <select value={filtroEst} onChange={e => setFiltroEst(e.target.value)} style={s.selectEl}>
                             <option value="">Estado: Todos</option>
                             <option value="verificado">Verificados</option>
@@ -562,11 +562,11 @@ const GestionGraduados = () => {
                                                     <td style={s.td}>
                                                         <div style={s.accsRow}>
                                                             <button style={s.btnAcc} onClick={() => abrirVer(g)} title="Ver perfil">
-                                                                <FaEye style={{ fontSize: '0.7rem' }} />
+                                                                <FaEye style={{ fontSize: '0.95rem' }} />
                                                             </button>
                                                             <button style={{ ...s.btnAcc, background: '#e3f2fd', border: '1px solid #bbdefb', color: '#1565c0' }}
                                                                 onClick={() => abrirVer(g, true)} title="Editar datos">
-                                                                <FaEdit style={{ fontSize: '0.7rem' }} />
+                                                                <FaEdit style={{ fontSize: '0.95rem' }} />
                                                             </button>
                                                             <button style={{
                                                                 ...s.btnAcc,
@@ -577,7 +577,7 @@ const GestionGraduados = () => {
                                                             }} onClick={() => !eliminandoEst && pedirEliminarEstudiante(g)}
                                                                 title="Eliminar estudiante permanentemente"
                                                                 disabled={eliminandoEst}>
-                                                                <FaTrash style={{ fontSize: '0.7rem' }} />
+                                                                <FaTrash style={{ fontSize: '0.95rem' }} />
                                                             </button>
                                                         </div>
                                                     </td>
@@ -606,11 +606,11 @@ const GestionGraduados = () => {
             {modalVer && gradSel && (
                 <div style={s.overlay} onClick={e => { if (e.target === e.currentTarget) setModalVer(false); }}>
                     <div style={{ ...s.modal, maxWidth: 700 }}>
-                        <div style={{ ...s.modalHead, borderColor: 'var(--color-espoch-rojo)' }}>
+                        <div style={{ ...s.modalHead, borderColor: '#BC0613' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                                 {(gradDetalle?.fotoPerfil || gradSel.fotoPerfil)
                                     ? <img src={(() => { const f = gradDetalle?.fotoPerfil || gradSel.fotoPerfil; return f?.startsWith('http') ? f : `${BASE}/${f}`; })()} alt=""
-                                        style={{ width: 46, height: 46, borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--color-espoch-rojo)' }} />
+                                        style={{ width: 46, height: 46, borderRadius: '50%', objectFit: 'cover', border: '2px solid #BC0613' }} />
                                     : <div style={s.avatarModal}>{iniciales(gradSel.nombres, gradSel.apellidos)}</div>
                                 }
                                 <div>
@@ -634,7 +634,7 @@ const GestionGraduados = () => {
 
                         <div style={s.modalBody}>
                             {cargandoVer
-                                ? <div style={{ textAlign: 'center', padding: 32 }}><FaSpinner style={{ fontSize: '1.5rem', color: '#adb5bd' }} /></div>
+                                ? <div style={{ textAlign: 'center', padding: 32 }}><FaSpinner style={{ fontSize: '1.62rem', color: '#adb5bd' }} /></div>
                                 : <>
                                     {tabVer === 'info' && gradDetalle && (
                                         <>
@@ -653,8 +653,8 @@ const GestionGraduados = () => {
                                             <div style={{ ...s.verSec, marginTop: 8, marginBottom: 14 }}>
                                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
                                                     <div>
-                                                        <p style={{ margin: '0 0 4px', fontSize: '0.8rem', fontWeight: '700', color: '#2c3e50' }}>Estado de la cuenta</p>
-                                                        <p style={{ margin: 0, fontSize: '0.72rem', color: '#adb5bd' }}>
+                                                        <p style={{ margin: '0 0 4px', fontSize: '1rem', fontWeight: '700', color: '#2c3e50' }}>Estado de la cuenta</p>
+                                                        <p style={{ margin: 0, fontSize: '0.95rem', color: '#adb5bd' }}>
                                                             {gradDetalle.cuentaBloqueada ? 'Cuenta bloqueada' : 'Cuenta activa'}
                                                         </p>
                                                     </div>
@@ -694,7 +694,7 @@ const GestionGraduados = () => {
                                                                 alignItems: 'center',
                                                                 justifyContent: 'center',
                                                                 color: 'white',
-                                                                fontSize: '0.65rem',
+                                                                fontSize: '0.85rem',
                                                                 fontWeight: '700',
                                                                 transition: 'all 0.3s',
                                                                 marginLeft: gradDetalle.cuentaBloqueada ? '2px' : '22px',
@@ -719,7 +719,7 @@ const GestionGraduados = () => {
                                                         { ico: FaCalendarAlt, label: 'Año graduación', val: gradDetalle.anioGraduacion || '—' },
                                                     ].map((d, i) => (
                                                         <div key={i} style={s.datoItem}>
-                                                            <span style={s.datoLabel}><d.ico style={{ marginRight: 4, fontSize: '0.7rem' }} />{d.label}</span>
+                                                            <span style={s.datoLabel}><d.ico style={{ marginRight: 4, fontSize: '0.95rem' }} />{d.label}</span>
                                                             <span style={s.datoVal}>{d.val}</span>
                                                         </div>
                                                     ))}
@@ -737,26 +737,26 @@ const GestionGraduados = () => {
                                                             });
                                                             setEditandoContacto(true); setErrContacto('');
                                                         }}>
-                                                            <FaEdit style={{ fontSize: '0.65rem' }} /> Editar
+                                                            <FaEdit style={{ fontSize: '0.85rem' }} /> Editar
                                                         </button>
                                                     )}
                                                 </div>
                                                 {errContacto && <p style={{ ...s.errMsg, marginBottom: 8 }}>{errContacto}</p>}
                                                 {editandoContacto ? (
                                                     <div style={s.editContactoCard}>
-                                                        <p style={{ margin: '0 0 10px', fontSize: '0.72rem', color: '#6c757d' }}>
+                                                        <p style={{ margin: '0 0 10px', fontSize: '0.95rem', color: '#6c757d' }}>
                                                             Solo se puede modificar el teléfono y el correo personal. Se almacenan encriptados automáticamente.
                                                         </p>
                                                         <div style={s.grid2}>
                                                             <div style={s.campo}>
-                                                                <label style={s.lbl}><FaPhone style={{ marginRight: 4, fontSize: '0.7rem' }} />Teléfono</label>
+                                                                <label style={s.lbl}><FaPhone style={{ marginRight: 4, fontSize: '0.95rem' }} />Teléfono</label>
                                                                 <input value={formContacto.telefono}
                                                                     onChange={e => setFormContacto(p => ({ ...p, telefono: e.target.value.replace(/\D/g, '') }))}
                                                                     style={s.inp} placeholder="10 dígitos" maxLength={10} inputMode="numeric" />
-                                                                <span style={{ fontSize: '0.65rem', color: '#adb5bd', marginTop: 2 }}>{formContacto.telefono.length}/10</span>
+                                                                <span style={{ fontSize: '0.85rem', color: '#adb5bd', marginTop: 2 }}>{formContacto.telefono.length}/10</span>
                                                             </div>
                                                             <div style={s.campo}>
-                                                                <label style={s.lbl}><FaEnvelope style={{ marginRight: 4, fontSize: '0.7rem' }} />Correo personal</label>
+                                                                <label style={s.lbl}><FaEnvelope style={{ marginRight: 4, fontSize: '0.95rem' }} />Correo personal</label>
                                                                 <input value={formContacto.emailPersonal}
                                                                     onChange={e => setFormContacto(p => ({ ...p, emailPersonal: e.target.value }))}
                                                                     style={s.inp} placeholder="correo@gmail.com" type="email" />
@@ -772,11 +772,11 @@ const GestionGraduados = () => {
                                                 ) : (
                                                     <div style={s.grid2}>
                                                         <div style={s.datoItem}>
-                                                            <span style={s.datoLabel}><FaPhone style={{ marginRight: 4, fontSize: '0.7rem' }} />Teléfono</span>
+                                                            <span style={s.datoLabel}><FaPhone style={{ marginRight: 4, fontSize: '0.95rem' }} />Teléfono</span>
                                                             <span style={s.datoVal}>{valorSeguro(gradDetalle.telefono)}</span>
                                                         </div>
                                                         <div style={s.datoItem}>
-                                                            <span style={s.datoLabel}><FaEnvelope style={{ marginRight: 4, fontSize: '0.7rem' }} />Correo personal</span>
+                                                            <span style={s.datoLabel}><FaEnvelope style={{ marginRight: 4, fontSize: '0.95rem' }} />Correo personal</span>
                                                             <span style={s.datoVal}>{valorSeguro(gradDetalle.emailPersonal)}</span>
                                                         </div>
                                                     </div>
@@ -793,8 +793,8 @@ const GestionGraduados = () => {
                                                 <div style={s.verSec}>
                                                     <p style={s.verSecTit}>Redes</p>
                                                     <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-                                                        {gradDetalle.github && <a href={gradDetalle.github} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: '0.76rem', color: '#2c3e50', fontWeight: '600', textDecoration: 'none' }}><FaGithub style={{ fontSize: '0.85rem' }} />GitHub</a>}
-                                                        {gradDetalle.linkedin && <a href={gradDetalle.linkedin} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: '0.76rem', color: '#1565c0', fontWeight: '600', textDecoration: 'none' }}><FaLinkedin style={{ fontSize: '0.85rem' }} />LinkedIn</a>}
+                                                        {gradDetalle.github && <a href={gradDetalle.github} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: '0.95rem', color: '#2c3e50', fontWeight: '600', textDecoration: 'none' }}><FaGithub style={{ fontSize: '1rem' }} />GitHub</a>}
+                                                        {gradDetalle.linkedin && <a href={gradDetalle.linkedin} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: '0.95rem', color: '#1565c0', fontWeight: '600', textDecoration: 'none' }}><FaLinkedin style={{ fontSize: '1rem' }} />LinkedIn</a>}
                                                     </div>
                                                 </div>
                                             )}
@@ -802,7 +802,7 @@ const GestionGraduados = () => {
                                                 <div style={s.verSec}>
                                                     <p style={s.verSecTit}><FaCode style={s.secIco} /> Tecnologías</p>
                                                     <div style={s.tagsWrap}>
-                                                        {gradDetalle.tecnologias.map((t, i) => { const c = tecColor(t); return <span key={i} style={{ fontSize: '0.7rem', padding: '3px 9px', borderRadius: 20, background: c.bg, color: c.color, border: `1px solid ${c.border}`, fontWeight: '600' }}>{t}</span>; })}
+                                                        {gradDetalle.tecnologias.map((t, i) => { const c = tecColor(t); return <span key={i} style={{ fontSize: '0.95rem', padding: '3px 9px', borderRadius: 20, background: c.bg, color: c.color, border: `1px solid ${c.border}`, fontWeight: '600' }}>{t}</span>; })}
                                                     </div>
                                                 </div>
                                             )}
@@ -810,7 +810,7 @@ const GestionGraduados = () => {
                                                 <div style={{ ...s.verSec, borderBottom: 'none', marginBottom: 0 }}>
                                                     <p style={s.verSecTit}><FaHandshake style={s.secIco} /> Habilidades Blandas</p>
                                                     <div style={s.tagsWrap}>
-                                                        {gradDetalle.habilidadesBlandas.map((h, i) => <span key={i} style={{ fontSize: '0.7rem', padding: '3px 9px', borderRadius: 20, background: '#f3e8ff', color: '#7c3aed', border: '1px solid #ddd6fe', fontWeight: '500' }}>{h}</span>)}
+                                                        {gradDetalle.habilidadesBlandas.map((h, i) => <span key={i} style={{ fontSize: '0.95rem', padding: '3px 9px', borderRadius: 20, background: '#f3e8ff', color: '#7c3aed', border: '1px solid #ddd6fe', fontWeight: '500' }}>{h}</span>)}
                                                     </div>
                                                 </div>
                                             )}
@@ -826,13 +826,13 @@ const GestionGraduados = () => {
                                                         <p style={s.verItemTit}>{p.titulo}</p>
                                                         <p style={s.verItemDesc}>{p.descripcion}</p>
                                                         <div style={{ display: 'flex', gap: 5, marginTop: 4, flexWrap: 'wrap' }}>
-                                                            {p.tecnologias?.slice(0, 3).map((t, i) => { const c = tecColor(t); return <span key={i} style={{ fontSize: '0.6rem', fontWeight: '700', padding: '1px 6px', borderRadius: 4, background: c.bg, color: c.color, border: `1px solid ${c.border}` }}>{t.toUpperCase()}</span>; })}
-                                                            <span style={{ fontSize: '0.64rem', color: '#adb5bd', marginLeft: 'auto' }}>{fmtFecha(p.fechaRealizacion)}</span>
+                                                            {p.tecnologias?.slice(0, 3).map((t, i) => { const c = tecColor(t); return <span key={i} style={{ fontSize: '0.85rem', fontWeight: '700', padding: '1px 6px', borderRadius: 4, background: c.bg, color: c.color, border: `1px solid ${c.border}` }}>{t.toUpperCase()}</span>; })}
+                                                            <span style={{ fontSize: '0.85rem', color: '#adb5bd', marginLeft: 'auto' }}>{fmtFecha(p.fechaRealizacion)}</span>
                                                         </div>
                                                     </div>
                                                     <div style={{ display: 'flex', flexDirection: 'column', gap: 4, flexShrink: 0 }}>
-                                                        {p.urlRepositorio && <a href={p.urlRepositorio} target="_blank" rel="noopener noreferrer" style={{ color: '#1565c0' }}><FaLink style={{ fontSize: '0.72rem' }} /></a>}
-                                                        <button style={s.btnTrash} onClick={() => pedirEliminar('proyecto', p._id, p.titulo)}><FaTrash style={{ fontSize: '0.65rem' }} /></button>
+                                                        {p.urlRepositorio && <a href={p.urlRepositorio} target="_blank" rel="noopener noreferrer" style={{ color: '#1565c0' }}><FaLink style={{ fontSize: '0.95rem' }} /></a>}
+                                                        <button style={s.btnTrash} onClick={() => pedirEliminar('proyecto', p._id, p.titulo)}><FaTrash style={{ fontSize: '0.85rem' }} /></button>
                                                     </div>
                                                 </div>
                                             ))
@@ -843,18 +843,18 @@ const GestionGraduados = () => {
                                             : certsSel.map(c => (
                                                 <div key={c._id} style={s.verItem}>
                                                     <div style={{ width: 36, height: 36, borderRadius: 8, background: '#ffebee', border: '1px solid #ffcdd2', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                                                        <FaCertificate style={{ color: 'var(--color-espoch-rojo)', fontSize: '0.9rem' }} />
+                                                        <FaCertificate style={{ color: '#BC0613', fontSize: '1.1rem' }} />
                                                     </div>
                                                     <div style={{ flex: 1, minWidth: 0 }}>
                                                         <p style={s.verItemTit}>{c.titulo}</p>
-                                                        {c.institucion && <p style={{ margin: '1px 0', fontSize: '0.7rem', color: '#6c757d' }}>{c.institucion}</p>}
+                                                        {c.institucion && <p style={{ margin: '1px 0', fontSize: '0.95rem', color: '#6c757d' }}>{c.institucion}</p>}
                                                         <p style={s.verItemDesc}>{c.descripcion}</p>
                                                         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 3 }}>
-                                                            <span style={{ fontSize: '0.64rem', color: '#adb5bd' }}>{fmtFecha(c.fechaFinalizacion)}</span>
-                                                            {c.url && <a href={c.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.64rem', color: '#1565c0', display: 'flex', alignItems: 'center', gap: 3 }}><FaExternalLinkAlt style={{ fontSize: '0.58rem' }} />Ver certificado</a>}
+                                                            <span style={{ fontSize: '0.85rem', color: '#adb5bd' }}>{fmtFecha(c.fechaFinalizacion)}</span>
+                                                            {c.url && <a href={c.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.85rem', color: '#1565c0', display: 'flex', alignItems: 'center', gap: 3 }}><FaExternalLinkAlt style={{ fontSize: '0.75rem' }} />Ver certificado</a>}
                                                         </div>
                                                     </div>
-                                                    <button style={s.btnTrash} onClick={() => pedirEliminar('certificado', c._id, c.titulo)}><FaTrash style={{ fontSize: '0.65rem' }} /></button>
+                                                    <button style={s.btnTrash} onClick={() => pedirEliminar('certificado', c._id, c.titulo)}><FaTrash style={{ fontSize: '0.85rem' }} /></button>
                                                 </div>
                                             ))
                                     )}
@@ -872,7 +872,7 @@ const GestionGraduados = () => {
             {confirmElim.abierto && (
                 <div style={{ ...s.overlay, zIndex: 1100 }}>
                     <div style={s.modalConfirm}>
-                        <div style={s.confirmIco}><FaExclamationTriangle style={{ fontSize: '1.5rem', color: '#f57f17' }} /></div>
+                        <div style={s.confirmIco}><FaExclamationTriangle style={{ fontSize: '1.62rem', color: '#f57f17' }} /></div>
                         <h3 style={s.confirmH}>¿Eliminar {confirmElim.tipo}?</h3>
                         <p style={s.confirmSub}>Se eliminará permanentemente <strong>"{confirmElim.titulo}"</strong>. Las tecnologías se recalcularán.</p>
                         <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
@@ -890,7 +890,7 @@ const GestionGraduados = () => {
                 <div style={{ ...s.overlay, zIndex: 1100 }}>
                     <div style={s.modalConfirm}>
                         <div style={s.confirmIco}>
-                            <FaExclamationTriangle style={{ fontSize: '1.8rem', color: '#c62828' }} />
+                            <FaExclamationTriangle style={{ fontSize: '1.94rem', color: '#c62828' }} />
                         </div>
                         <h3 style={s.confirmH}>¿Eliminar estudiante permanentemente?</h3>
                         <p style={s.confirmSub}>
@@ -922,7 +922,7 @@ const GestionGraduados = () => {
             {modalInd && (
                 <div style={s.overlay} onClick={e => { if (e.target === e.currentTarget) setModalInd(false); }}>
                     <div style={s.modal}>
-                        <div style={{ ...s.modalHead, borderColor: 'var(--color-espoch-rojo)' }}>
+                        <div style={{ ...s.modalHead, borderColor: '#BC0613' }}>
                             <div>
                                 <h2 style={s.modalTit}>Nuevo Graduado — Individual</h2>
                                 <p style={s.modalSub}>Se enviará la contraseña temporal al correo personal del graduado.</p>
@@ -934,8 +934,8 @@ const GestionGraduados = () => {
 
                             {/* Aviso contraseña */}
                             <div style={s.avisoPass}>
-                                <span style={{ fontSize: '0.8rem' }}>🔑</span>
-                                <p style={{ margin: 0, fontSize: '0.74rem', color: '#1b5e20', lineHeight: 1.5 }}>
+                                <span style={{ fontSize: '1rem' }}>🔑</span>
+                                <p style={{ margin: 0, fontSize: '0.95rem', color: '#1b5e20', lineHeight: 1.5 }}>
                                     La contraseña se generará automáticamente con el patrón: <strong>3 letras apellido + últimas 4 cédula + #</strong><br />
                                     Ej: apellido "Pérez", cédula "···4567" → <code style={{ background: '#c8e6c9', padding: '1px 5px', borderRadius: 3 }}>Per4567#</code><br />
                                     Se enviará al correo personal del graduado.
@@ -1008,7 +1008,7 @@ const GestionGraduados = () => {
                                         Ábrela con Excel o Google Sheets, llena los datos y guarda como CSV.
                                     </p>
                                     <button style={s.btnDescarga} onClick={descargarPlantilla}>
-                                        <FaDownload style={{ marginRight: 6, fontSize: '0.78rem' }} />
+                                        <FaDownload style={{ marginRight: 6, fontSize: '0.95rem' }} />
                                         Descargar plantilla_graduados_espoch.csv
                                     </button>
                                 </div>
@@ -1016,13 +1016,13 @@ const GestionGraduados = () => {
 
                             {/* Columnas requeridas */}
                             <div style={s.columnasBox}>
-                                <p style={{ margin: '0 0 6px', fontSize: '0.71rem', fontWeight: '700', color: '#adb5bd', letterSpacing: '0.5px' }}>COLUMNAS DEL CSV</p>
+                                <p style={{ margin: '0 0 6px', fontSize: '0.95rem', fontWeight: '700', color: '#adb5bd', letterSpacing: '0.5px' }}>COLUMNAS DEL CSV</p>
                                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
                                     {['nombres', 'apellidos', 'cedula', 'email personal', 'telefono', 'genero', 'fecha nacimiento', 'discapacidad'].map(c => (
-                                        <span key={c} style={{ fontSize: '0.65rem', padding: '2px 7px', borderRadius: 4, background: '#f0f7ff', color: '#1565c0', border: '1px solid #bbdefb', fontWeight: '600', fontFamily: "'Rotis', 'Segoe UI', sans-serif" }}>{c}</span>
+                                        <span key={c} style={{ fontSize: '0.85rem', padding: '2px 7px', borderRadius: 4, background: '#f0f7ff', color: '#1565c0', border: '1px solid #bbdefb', fontWeight: '600', fontFamily: "'Rotis', 'Segoe UI', sans-serif" }}>{c}</span>
                                     ))}
                                 </div>
-                                <p style={{ margin: '6px 0 0', fontSize: '0.68rem', color: '#adb5bd' }}>
+                                <p style={{ margin: '6px 0 0', fontSize: '0.85rem', color: '#adb5bd' }}>
                                     Fecha en formato <code>YYYY-MM-DD</code> · Género: Masculino / Femenino / No binario / Prefiero no decir
                                 </p>
                             </div>
@@ -1045,21 +1045,21 @@ const GestionGraduados = () => {
                                         }}>
                                         {archivoCsv ? (
                                             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                                                <FaFileAlt style={{ fontSize: '1.4rem', color: '#2e7d32', flexShrink: 0 }} />
+                                                <FaFileAlt style={{ fontSize: '1.51rem', color: '#2e7d32', flexShrink: 0 }} />
                                                 <div>
-                                                    <p style={{ margin: 0, fontSize: '0.82rem', fontWeight: '700', color: '#2e7d32' }}>{archivoCsv.name}</p>
-                                                    <p style={{ margin: 0, fontSize: '0.7rem', color: '#adb5bd' }}>{(archivoCsv.size / 1024).toFixed(1)} KB · Listo para procesar</p>
+                                                    <p style={{ margin: 0, fontSize: '1rem', fontWeight: '700', color: '#2e7d32' }}>{archivoCsv.name}</p>
+                                                    <p style={{ margin: 0, fontSize: '0.95rem', color: '#adb5bd' }}>{(archivoCsv.size / 1024).toFixed(1)} KB · Listo para procesar</p>
                                                 </div>
                                                 <button onClick={e => { e.stopPropagation(); setArchivoCsv(null); if (csvInputRef.current) csvInputRef.current.value = ''; }}
-                                                    style={{ marginLeft: 'auto', background: 'none', border: 'none', cursor: 'pointer', color: '#adb5bd', fontSize: '0.85rem' }}>
+                                                    style={{ marginLeft: 'auto', background: 'none', border: 'none', cursor: 'pointer', color: '#adb5bd', fontSize: '1rem' }}>
                                                     <FaTimes />
                                                 </button>
                                             </div>
                                         ) : (
                                             <>
-                                                <FaUpload style={{ fontSize: '1.8rem', color: '#adb5bd', marginBottom: 6 }} />
-                                                <p style={{ margin: 0, fontSize: '0.8rem', fontWeight: '600', color: '#6c757d' }}>Arrastra el CSV aquí o haz clic para seleccionar</p>
-                                                <p style={{ margin: '3px 0 0', fontSize: '0.7rem', color: '#adb5bd' }}>Solo archivos .csv · Máx. 5 MB</p>
+                                                <FaUpload style={{ fontSize: '1.94rem', color: '#adb5bd', marginBottom: 6 }} />
+                                                <p style={{ margin: 0, fontSize: '1rem', fontWeight: '600', color: '#6c757d' }}>Arrastra el CSV aquí o haz clic para seleccionar</p>
+                                                <p style={{ margin: '3px 0 0', fontSize: '0.95rem', color: '#adb5bd' }}>Solo archivos .csv · Máx. 5 MB</p>
                                             </>
                                         )}
                                     </div>
@@ -1071,8 +1071,8 @@ const GestionGraduados = () => {
 
                             {/* Aviso contraseña */}
                             <div style={s.avisoPass}>
-                                <span style={{ fontSize: '0.8rem' }}>🔑</span>
-                                <p style={{ margin: 0, fontSize: '0.73rem', color: '#1b5e20', lineHeight: 1.5 }}>
+                                <span style={{ fontSize: '1rem' }}>🔑</span>
+                                <p style={{ margin: 0, fontSize: '0.95rem', color: '#1b5e20', lineHeight: 1.5 }}>
                                     Contraseña temporal: <strong>3 letras apellido + últimas 4 cédula + #</strong><br />
                                     Ejemplo: "Pérez", cédula "···4567" → <code style={{ background: '#c8e6c9', padding: '1px 5px', borderRadius: 3 }}>Per4567#</code><br />
                                     Se envía automáticamente al correo personal de cada graduado.
@@ -1083,10 +1083,10 @@ const GestionGraduados = () => {
 
                             {cargandoMasivo && (
                                 <div style={s.cargandoMasivo}>
-                                    <FaSpinner style={{ fontSize: '1.4rem', color: 'var(--color-espoch-rojo)', animation: 'spin 1s linear infinite' }} />
+                                    <FaSpinner style={{ fontSize: '1.51rem', color: '#BC0613', animation: 'spin 1s linear infinite' }} />
                                     <div>
-                                        <p style={{ margin: 0, fontWeight: '700', fontSize: '0.85rem', color: 'var(--color-texto-principal)' }}>Procesando graduados...</p>
-                                        <p style={{ margin: '2px 0 0', fontSize: '0.72rem', color: '#6c757d' }}>Registrando y enviando correos. Por favor espera.</p>
+                                        <p style={{ margin: 0, fontWeight: '700', fontSize: '1rem', color: 'var(--color-texto-principal)' }}>Procesando graduados...</p>
+                                        <p style={{ margin: '2px 0 0', fontSize: '0.95rem', color: '#6c757d' }}>Registrando y enviando correos. Por favor espera.</p>
                                     </div>
                                 </div>
                             )}
@@ -1165,27 +1165,27 @@ const GestionGraduados = () => {
                                                 width: 24, height: 24, borderRadius: '50%', flexShrink: 0,
                                                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                                                 background: d.estado === 'exitoso' ? '#2e7d32' : '#c62828',
-                                                fontSize: '0.7rem', color: 'white', fontWeight: '700', marginTop: 1
+                                                fontSize: '0.95rem', color: 'white', fontWeight: '700', marginTop: 1
                                             }}>
                                                 {d.estado === 'exitoso' ? '✓' : '✕'}
                                             </div>
                                             <div style={{ flex: 1, minWidth: 0 }}>
                                                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 2 }}>
-                                                    <span style={{ fontSize: '0.82rem', fontWeight: '700', color: '#2c3e50' }}>
+                                                    <span style={{ fontSize: '1rem', fontWeight: '700', color: '#2c3e50' }}>
                                                         {d.nombres} {d.apellidos}
                                                     </span>
-                                                    <span style={{ fontSize: '0.65rem', color: '#adb5bd' }}>Fila {d.fila}</span>
+                                                    <span style={{ fontSize: '0.85rem', color: '#adb5bd' }}>Fila {d.fila}</span>
                                                     {d.estado === 'exitoso' && d.password && (
-                                                        <span style={{ fontSize: '0.65rem', background: '#c8e6c9', color: '#1b5e20', padding: '1px 6px', borderRadius: 4, fontFamily: 'monospace', fontWeight: '700' }}>
+                                                        <span style={{ fontSize: '0.85rem', background: '#c8e6c9', color: '#1b5e20', padding: '1px 6px', borderRadius: 4, fontFamily: 'monospace', fontWeight: '700' }}>
                                                             🔑 {d.password}
                                                         </span>
                                                     )}
                                                 </div>
-                                                <p style={{ margin: 0, fontSize: '0.72rem', color: '#6c757d' }}>
+                                                <p style={{ margin: 0, fontSize: '0.95rem', color: '#6c757d' }}>
                                                     {d.email} · {d.cedula}
                                                 </p>
                                                 <p style={{
-                                                    margin: '3px 0 0', fontSize: '0.72rem',
+                                                    margin: '3px 0 0', fontSize: '0.95rem',
                                                     color: d.estado === 'exitoso' ? '#2e7d32' : '#c62828',
                                                     fontWeight: d.estado === 'error' ? '600' : '400'
                                                 }}>
@@ -1200,7 +1200,7 @@ const GestionGraduados = () => {
 
                         <div style={s.modalFoot}>
                             {reporte.fallidos > 0 && (
-                                <p style={{ margin: 0, fontSize: '0.72rem', color: '#f57f17', flex: 1 }}>
+                                <p style={{ margin: 0, fontSize: '0.95rem', color: '#f57f17', flex: 1 }}>
                                     ⚠️ Los graduados con error no fueron registrados. Corrígelos en el CSV y vuelve a subirlos.
                                 </p>
                             )}
@@ -1218,115 +1218,115 @@ const GestionGraduados = () => {
 ═══════════════════════════════════════════════════════════ */
 const s = {
     page: { maxWidth: 1280, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 16, fontFamily: "'Rotis', 'Segoe UI',Roboto,sans-serif" },
-    gridMet: { display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 14 },
+    gridMet: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: 14 },
     metCard: { backgroundColor: 'white', borderRadius: 10, padding: '14px 16px', border: '1px solid #e9ecef', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' },
     metRow: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 },
-    metEtiq: { margin: '0 0 5px', fontSize: '0.58rem', fontWeight: '700', color: '#adb5bd', letterSpacing: '0.8px' },
-    metVal: { margin: 0, fontSize: '1.8rem', fontWeight: '800', color: '#2c3e50', lineHeight: 1 },
+    metEtiq: { margin: '0 0 5px', fontSize: '0.75rem', fontWeight: '700', color: '#adb5bd', letterSpacing: '0.8px' },
+    metVal: { margin: 0, fontSize: '1.94rem', fontWeight: '800', color: '#2c3e50', lineHeight: 1 },
     metIco: { width: 38, height: 38, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
     card: { backgroundColor: 'white', borderRadius: 10, padding: '16px 18px', border: '1px solid #e9ecef', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' },
     cardHead: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 14 },
-    cardTit: { margin: '0 0 2px', fontSize: '0.9rem', fontWeight: '700', color: '#2c3e50' },
-    cardSub: { margin: 0, fontSize: '0.7rem', color: '#adb5bd' },
-    btnNuevo: { display: 'inline-flex', alignItems: 'center', gap: 7, padding: '8px 16px', backgroundColor: 'var(--color-espoch-rojo)', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: '0.8rem', fontWeight: '700', flexShrink: 0 },
+    cardTit: { margin: '0 0 2px', fontSize: '1.1rem', fontWeight: '700', color: '#2c3e50' },
+    cardSub: { margin: 0, fontSize: '0.95rem', color: '#adb5bd' },
+    btnNuevo: { display: 'inline-flex', alignItems: 'center', gap: 7, padding: '8px 16px', backgroundColor: '#BC0613', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: '1rem', fontWeight: '700', flexShrink: 0 },
 
     /* Dropdown */
     dropdown: { position: 'absolute', top: 'calc(100% + 6px)', right: 0, backgroundColor: 'white', borderRadius: 10, border: '1px solid #e9ecef', boxShadow: '0 8px 24px rgba(0,0,0,0.12)', zIndex: 200, minWidth: 260, overflow: 'hidden' },
     dropItem: { display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', background: 'none', border: 'none', cursor: 'pointer', width: '100%', textAlign: 'left' },
     dropIco: { width: 32, height: 32, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
-    dropTit: { margin: 0, fontSize: '0.82rem', fontWeight: '700', color: '#2c3e50' },
-    dropSub: { margin: '2px 0 0', fontSize: '0.69rem', color: '#adb5bd' },
+    dropTit: { margin: 0, fontSize: '1rem', fontWeight: '700', color: '#2c3e50' },
+    dropSub: { margin: '2px 0 0', fontSize: '0.85rem', color: '#adb5bd' },
     dropDivider: { height: 1, backgroundColor: '#f0f0f0', margin: '0 12px' },
 
     filtrosRow: { display: 'flex', gap: 10, marginBottom: 14, flexWrap: 'wrap' },
     busqWrap: { display: 'flex', alignItems: 'center', gap: 7, flex: 1, minWidth: 180, background: '#f8f9fa', border: '1px solid #e9ecef', borderRadius: 8, padding: '9px 12px' },
-    busqInp: { border: 'none', background: 'transparent', outline: 'none', fontSize: '0.77rem', color: '#2c3e50', width: '100%', fontFamily: "'Rotis', 'Segoe UI',Roboto,sans-serif" },
+    busqInp: { border: 'none', background: 'transparent', outline: 'none', fontSize: '0.95rem', color: '#2c3e50', width: '100%', fontFamily: "'Rotis', 'Segoe UI',Roboto,sans-serif" },
     selectWrap: { display: 'flex', alignItems: 'center', gap: 7, background: '#f8f9fa', border: '1px solid #e9ecef', borderRadius: 8, padding: '9px 12px', flexShrink: 0 },
-    selectEl: { border: 'none', background: 'transparent', outline: 'none', fontSize: '0.76rem', color: '#6c757d', cursor: 'pointer', fontFamily: "'Rotis', 'Segoe UI',Roboto,sans-serif" },
+    selectEl: { border: 'none', background: 'transparent', outline: 'none', fontSize: '0.95rem', color: '#6c757d', cursor: 'pointer', fontFamily: "'Rotis', 'Segoe UI',Roboto,sans-serif" },
     tabla: { width: '100%', borderCollapse: 'collapse' },
     trHead: { borderBottom: '2px solid #f0f0f0' },
-    th: { padding: '8px 10px', textAlign: 'left', fontSize: '0.61rem', fontWeight: '700', color: '#adb5bd', letterSpacing: '0.7px', whiteSpace: 'nowrap' },
+    th: { padding: '8px 10px', textAlign: 'left', fontSize: '0.85rem', fontWeight: '700', color: '#adb5bd', letterSpacing: '0.7px', whiteSpace: 'nowrap' },
     trBody: { borderBottom: '1px solid #f8f9fa', transition: 'background 0.1s' },
     td: { padding: '10px 10px', verticalAlign: 'middle' },
-    tdVacio: { padding: '32px 10px', textAlign: 'center', color: '#adb5bd', fontSize: '0.8rem' },
+    tdVacio: { padding: '32px 10px', textAlign: 'center', color: '#adb5bd', fontSize: '1rem' },
     skBar: { height: 11, borderRadius: 5, background: '#f0f0f0' },
     nomCell: { display: 'flex', alignItems: 'center', gap: 9 },
     avatarImg: { width: 34, height: 34, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 },
-    avatarTbl: { width: 34, height: 34, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.65rem', fontWeight: '700', flexShrink: 0 },
-    nomTxt: { margin: 0, fontSize: '0.78rem', fontWeight: '600', color: '#2c3e50', whiteSpace: 'nowrap' },
-    nomSub: { margin: 0, fontSize: '0.66rem', color: '#adb5bd' },
-    emailTxt: { fontSize: '0.74rem', color: '#6c757d' },
-    badge: { display: 'inline-block', fontSize: '0.63rem', fontWeight: '600', padding: '3px 8px', borderRadius: 20, whiteSpace: 'nowrap' },
+    avatarTbl: { width: 34, height: 34, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.85rem', fontWeight: '700', flexShrink: 0 },
+    nomTxt: { margin: 0, fontSize: '0.95rem', fontWeight: '600', color: '#2c3e50', whiteSpace: 'nowrap' },
+    nomSub: { margin: 0, fontSize: '0.85rem', color: '#adb5bd' },
+    emailTxt: { fontSize: '0.95rem', color: '#6c757d' },
+    badge: { display: 'inline-block', fontSize: '0.85rem', fontWeight: '600', padding: '3px 8px', borderRadius: 20, whiteSpace: 'nowrap' },
     progresoWrap: { display: 'flex', alignItems: 'center', gap: 6 },
     progresoTrack: { flex: 1, height: 5, background: '#f0f0f0', borderRadius: 10, overflow: 'hidden', minWidth: 50 },
     progresoFill: { height: '100%', borderRadius: 10, transition: 'width 0.3s' },
-    progresoTxt: { fontSize: '0.65rem', fontWeight: '700', color: '#6c757d', minWidth: 28 },
+    progresoTxt: { fontSize: '0.85rem', fontWeight: '700', color: '#6c757d', minWidth: 28 },
     accsRow: { display: 'flex', gap: 5, alignItems: 'center' },
     btnAcc: { width: 28, height: 28, borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8f9fa', border: '1px solid #e9ecef', cursor: 'pointer', color: '#6c757d', flexShrink: 0 },
-    errMsg: { padding: '10px', background: '#ffebee', border: '1px solid #ffcdd2', borderRadius: 7, color: '#c62828', fontSize: '0.75rem', textAlign: 'center', margin: '0 0 10px' },
+    errMsg: { padding: '10px', background: '#ffebee', border: '1px solid #ffcdd2', borderRadius: 7, color: '#c62828', fontSize: '0.95rem', textAlign: 'center', margin: '0 0 10px' },
     footTabla: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 14, flexWrap: 'wrap', gap: 8 },
-    contadorTxt: { margin: 0, fontSize: '0.7rem', color: '#adb5bd' },
+    contadorTxt: { margin: 0, fontSize: '0.95rem', color: '#adb5bd' },
     pagRow: { display: 'flex', gap: 4, alignItems: 'center' },
-    pagBtn: { minWidth: 30, height: 30, borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #e9ecef', background: 'white', cursor: 'pointer', fontSize: '0.75rem', color: '#6c757d', padding: '0 8px' },
-    pagPuntos: { fontSize: '0.75rem', color: '#adb5bd', padding: '0 2px' },
+    pagBtn: { minWidth: 30, height: 30, borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #e9ecef', background: 'white', cursor: 'pointer', fontSize: '0.95rem', color: '#6c757d', padding: '0 8px' },
+    pagPuntos: { fontSize: '0.95rem', color: '#adb5bd', padding: '0 2px' },
 
     overlay: { position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 16, backdropFilter: 'blur(2px)' },
     modal: { backgroundColor: 'white', borderRadius: 12, width: '100%', maxWidth: 560, maxHeight: '90vh', display: 'flex', flexDirection: 'column', boxShadow: '0 8px 32px rgba(0,0,0,0.18)' },
     modalHead: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', padding: '16px 20px 13px', borderBottom: '2px solid', flexShrink: 0 },
-    modalTit: { margin: '0 0 2px', fontSize: '0.95rem', fontWeight: '700', color: '#2c3e50' },
-    modalSub: { margin: 0, fontSize: '0.71rem', color: '#adb5bd' },
-    modalClose: { background: 'none', border: 'none', cursor: 'pointer', color: '#adb5bd', fontSize: '0.9rem', padding: 4, display: 'flex', alignItems: 'center' },
+    modalTit: { margin: '0 0 2px', fontSize: '1.1rem', fontWeight: '700', color: '#2c3e50' },
+    modalSub: { margin: 0, fontSize: '0.95rem', color: '#adb5bd' },
+    modalClose: { background: 'none', border: 'none', cursor: 'pointer', color: '#adb5bd', fontSize: '1.1rem', padding: 4, display: 'flex', alignItems: 'center' },
     modalBody: { flex: 1, overflowY: 'auto', padding: '16px 20px' },
     modalFoot: { display: 'flex', justifyContent: 'flex-end', gap: 8, padding: '12px 20px', borderTop: '1px solid #e9ecef', backgroundColor: '#f8f9fa', borderRadius: '0 0 12px 12px', flexShrink: 0, alignItems: 'center' },
-    avatarModal: { width: 46, height: 46, borderRadius: '50%', backgroundColor: 'var(--color-espoch-rojo)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1rem', fontWeight: '700', flexShrink: 0 },
+    avatarModal: { width: 46, height: 46, borderRadius: '50%', backgroundColor: '#BC0613', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.1rem', fontWeight: '700', flexShrink: 0 },
 
     tabs: { display: 'flex', borderBottom: '2px solid #f0f0f0', padding: '0 20px', flexShrink: 0 },
-    tab: { padding: '10px 14px', border: 'none', background: 'none', cursor: 'pointer', fontSize: '0.78rem', fontWeight: '600', color: '#adb5bd', borderBottom: '2px solid transparent', marginBottom: -2 },
-    tabActivo: { color: 'var(--color-espoch-rojo)', borderBottomColor: 'var(--color-espoch-rojo)' },
+    tab: { padding: '10px 14px', border: 'none', background: 'none', cursor: 'pointer', fontSize: '0.95rem', fontWeight: '600', color: '#adb5bd', borderBottom: '2px solid transparent', marginBottom: -2 },
+    tabActivo: { color: '#BC0613', borderBottomColor: '#BC0613' },
 
     verSec: { marginBottom: 14, paddingBottom: 14, borderBottom: '1px solid #f0f0f0' },
-    verSecTit: { margin: '0 0 10px', fontSize: '0.8rem', fontWeight: '700', color: '#2c3e50', display: 'flex', alignItems: 'center', gap: 6 },
-    secIco: { color: 'var(--color-espoch-rojo)', fontSize: '0.78rem' },
-    verBio: { margin: 0, fontSize: '0.78rem', color: '#6c757d', lineHeight: 1.6 },
-    verVacio: { margin: 0, fontSize: '0.75rem', color: '#adb5bd', fontStyle: 'italic' },
+    verSecTit: { margin: '0 0 10px', fontSize: '1rem', fontWeight: '700', color: '#2c3e50', display: 'flex', alignItems: 'center', gap: 6 },
+    secIco: { color: '#BC0613', fontSize: '0.95rem' },
+    verBio: { margin: 0, fontSize: '0.95rem', color: '#6c757d', lineHeight: 1.6 },
+    verVacio: { margin: 0, fontSize: '0.95rem', color: '#adb5bd', fontStyle: 'italic' },
     verItem: { display: 'flex', alignItems: 'flex-start', gap: 10, padding: '9px 11px', background: '#f8f9fa', border: '1px solid #f0f0f0', borderRadius: 8, marginBottom: 7 },
-    verItemTit: { margin: '0 0 2px', fontSize: '0.78rem', fontWeight: '600', color: '#2c3e50' },
-    verItemDesc: { margin: 0, fontSize: '0.71rem', color: '#6c757d', lineHeight: 1.5, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' },
+    verItemTit: { margin: '0 0 2px', fontSize: '0.95rem', fontWeight: '600', color: '#2c3e50' },
+    verItemDesc: { margin: 0, fontSize: '0.95rem', color: '#6c757d', lineHeight: 1.5, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' },
     tagsWrap: { display: 'flex', flexWrap: 'wrap', gap: 5 },
-    grid3: { display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 8 },
+    grid3: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 8 },
     grid2: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 4 },
     datoItem: { display: 'flex', flexDirection: 'column', gap: 3, padding: '8px 10px', background: '#f8f9fa', border: '1px solid #f0f0f0', borderRadius: 7 },
-    datoLabel: { fontSize: '0.62rem', fontWeight: '700', color: '#adb5bd', letterSpacing: '0.4px', display: 'flex', alignItems: 'center' },
-    datoVal: { fontSize: '0.77rem', fontWeight: '600', color: '#2c3e50', wordBreak: 'break-all' },
-    btnEditInline: { display: 'inline-flex', alignItems: 'center', gap: 5, padding: '4px 10px', background: '#e3f2fd', border: '1px solid #bbdefb', borderRadius: 6, cursor: 'pointer', fontSize: '0.69rem', fontWeight: '600', color: '#1565c0' },
+    datoLabel: { fontSize: '0.85rem', fontWeight: '700', color: '#adb5bd', letterSpacing: '0.4px', display: 'flex', alignItems: 'center' },
+    datoVal: { fontSize: '0.95rem', fontWeight: '600', color: '#2c3e50', wordBreak: 'break-all' },
+    btnEditInline: { display: 'inline-flex', alignItems: 'center', gap: 5, padding: '4px 10px', background: '#e3f2fd', border: '1px solid #bbdefb', borderRadius: 6, cursor: 'pointer', fontSize: '0.85rem', fontWeight: '600', color: '#1565c0' },
     editContactoCard: { background: '#f0f7ff', border: '1px solid #bbdefb', borderRadius: 8, padding: '14px', marginTop: 6 },
     btnTrash: { width: 26, height: 26, borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#ffebee', border: '1px solid #ffcdd2', cursor: 'pointer', color: '#c62828', flexShrink: 0 },
     modalConfirm: { backgroundColor: 'white', borderRadius: 14, width: '100%', maxWidth: 380, padding: '28px 24px 22px', textAlign: 'center', boxShadow: '0 16px 48px rgba(0,0,0,0.22)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 },
     confirmIco: { width: 56, height: 56, borderRadius: '50%', backgroundColor: '#fff8e1', border: '2px solid #ffe082', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 4 },
-    confirmH: { margin: '0 0 4px', fontSize: '1rem', fontWeight: '700', color: '#2c3e50' },
-    confirmSub: { margin: '0 0 16px', fontSize: '0.79rem', color: '#6c757d', lineHeight: 1.6 },
+    confirmH: { margin: '0 0 4px', fontSize: '1.1rem', fontWeight: '700', color: '#2c3e50' },
+    confirmSub: { margin: '0 0 16px', fontSize: '0.95rem', color: '#6c757d', lineHeight: 1.6 },
     campo: { display: 'flex', flexDirection: 'column', gap: 5, marginBottom: 10 },
-    lbl: { fontSize: '0.75rem', fontWeight: '600', color: '#2c3e50', display: 'flex', alignItems: 'center' },
-    inp: { padding: '8px 11px', border: '1px solid #e9ecef', borderRadius: 7, fontSize: '0.8rem', color: '#2c3e50', outline: 'none', fontFamily: "'Rotis', 'Segoe UI',Roboto,sans-serif", backgroundColor: '#f8f9fa', width: '100%', boxSizing: 'border-box' },
-    btnCancelar: { padding: '8px 16px', background: 'transparent', border: '1px solid #e9ecef', borderRadius: 7, cursor: 'pointer', fontSize: '0.8rem', fontWeight: '600', color: '#6c757d' },
-    btnGuardar: { display: 'inline-flex', alignItems: 'center', padding: '8px 18px', backgroundColor: 'var(--color-espoch-rojo)', color: 'white', border: 'none', borderRadius: 7, cursor: 'pointer', fontSize: '0.8rem', fontWeight: '700' },
+    lbl: { fontSize: '0.95rem', fontWeight: '600', color: '#2c3e50', display: 'flex', alignItems: 'center' },
+    inp: { padding: '8px 11px', border: '1px solid #e9ecef', borderRadius: 7, fontSize: '1rem', color: '#2c3e50', outline: 'none', fontFamily: "'Rotis', 'Segoe UI',Roboto,sans-serif", backgroundColor: '#f8f9fa', width: '100%', boxSizing: 'border-box' },
+    btnCancelar: { padding: '8px 16px', background: 'transparent', border: '1px solid #e9ecef', borderRadius: 7, cursor: 'pointer', fontSize: '1rem', fontWeight: '600', color: '#6c757d' },
+    btnGuardar: { display: 'inline-flex', alignItems: 'center', padding: '8px 18px', backgroundColor: '#BC0613', color: 'white', border: 'none', borderRadius: 7, cursor: 'pointer', fontSize: '1rem', fontWeight: '700' },
 
     /* Masivo */
     pasoBox: { display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 16 },
-    pasoNum: { width: 28, height: 28, borderRadius: '50%', backgroundColor: 'var(--color-espoch-rojo)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.8rem', fontWeight: '800', flexShrink: 0, marginTop: 1 },
-    pasoTit: { margin: '0 0 3px', fontSize: '0.84rem', fontWeight: '700', color: '#2c3e50' },
-    pasoDesc: { margin: '0 0 8px', fontSize: '0.73rem', color: '#6c757d', lineHeight: 1.5 },
-    btnDescarga: { display: 'inline-flex', alignItems: 'center', padding: '7px 14px', backgroundColor: '#e3f2fd', color: '#1565c0', border: '1px solid #bbdefb', borderRadius: 7, cursor: 'pointer', fontSize: '0.76rem', fontWeight: '700' },
+    pasoNum: { width: 28, height: 28, borderRadius: '50%', backgroundColor: '#BC0613', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1rem', fontWeight: '800', flexShrink: 0, marginTop: 1 },
+    pasoTit: { margin: '0 0 3px', fontSize: '1rem', fontWeight: '700', color: '#2c3e50' },
+    pasoDesc: { margin: '0 0 8px', fontSize: '0.95rem', color: '#6c757d', lineHeight: 1.5 },
+    btnDescarga: { display: 'inline-flex', alignItems: 'center', padding: '7px 14px', backgroundColor: '#e3f2fd', color: '#1565c0', border: '1px solid #bbdefb', borderRadius: 7, cursor: 'pointer', fontSize: '0.95rem', fontWeight: '700' },
     columnasBox: { backgroundColor: '#f8f9fa', border: '1px solid #e9ecef', borderRadius: 8, padding: '10px 12px', marginBottom: 16 },
     dropZona: { border: '2px dashed #dee2e6', borderRadius: 8, padding: '20px 16px', textAlign: 'center', cursor: 'pointer', backgroundColor: 'white', transition: 'border-color 0.2s' },
     avisoPass: { display: 'flex', alignItems: 'flex-start', gap: 8, backgroundColor: '#e8f5e9', border: '1px solid #c8e6c9', borderRadius: 8, padding: '10px 12px', marginTop: 8 },
     cargandoMasivo: { display: 'flex', alignItems: 'center', gap: 12, backgroundColor: '#fff8e1', border: '1px solid #ffe082', borderRadius: 8, padding: '12px 16px', marginTop: 12 },
 
     /* Reporte */
-    reporteResumen: { display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 10, padding: '14px 20px', borderBottom: '1px solid #f0f0f0', flexShrink: 0 },
+    reporteResumen: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 10, padding: '14px 20px', borderBottom: '1px solid #f0f0f0', flexShrink: 0 },
     reporteStat: { display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '10px', borderRadius: 8, gap: 3 },
-    reporteStatNum: { fontSize: '1.6rem', fontWeight: '800', color: '#2c3e50', lineHeight: 1 },
-    reporteStatLbl: { fontSize: '0.58rem', fontWeight: '700', color: '#adb5bd', letterSpacing: '0.8px' },
+    reporteStatNum: { fontSize: '1.73rem', fontWeight: '800', color: '#2c3e50', lineHeight: 1 },
+    reporteStatLbl: { fontSize: '0.75rem', fontWeight: '700', color: '#adb5bd', letterSpacing: '0.8px' },
 };
 
 export default GestionGraduados;

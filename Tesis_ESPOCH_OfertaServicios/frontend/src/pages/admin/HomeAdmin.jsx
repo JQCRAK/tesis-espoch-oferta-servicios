@@ -105,7 +105,7 @@ const HomeAdmin = () => {
                                     </p>
                                 </div>
                                 <div style={{ ...s.metIco, background: m.bg, border: `1px solid ${m.border}` }}>
-                                    <Icon style={{ fontSize: '1.1rem', color: m.color }} />
+                                    <Icon style={{ fontSize: '1.2rem', color: m.color }} />
                                 </div>
                             </div>
                         </div>
@@ -207,10 +207,10 @@ const HomeAdmin = () => {
                             return (
                                 <button key={acc.label} style={s.accBtn} onClick={() => navigate(acc.path)}>
                                     <div style={{ ...s.accIco, background: acc.bg, border: `1px solid ${acc.border}` }}>
-                                        <Icon style={{ fontSize: '0.82rem', color: acc.color }} />
+                                        <Icon style={{ fontSize: '1rem', color: acc.color }} />
                                     </div>
                                     <span style={s.accLabel}>{acc.label}</span>
-                                    <FaArrowRight style={{ fontSize: '0.6rem', color: '#adb5bd', marginLeft: 'auto', flexShrink: 0 }} />
+                                    <FaArrowRight style={{ fontSize: '0.85rem', color: '#adb5bd', marginLeft: 'auto', flexShrink: 0 }} />
                                 </button>
                             );
                         })}
@@ -226,36 +226,36 @@ const HomeAdmin = () => {
 // ══════════════════════════════════════════════════════════
 const s = {
     page: { maxWidth: 1280, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 16, fontFamily: FONT },
-    gridMet: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14 },
+    gridMet: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: 14 },
     metCard: { backgroundColor: 'white', borderRadius: 10, padding: '16px 18px', border: '1px solid #e9ecef', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' },
     metRow: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 10 },
-    metEtiq: { margin: '0 0 6px', fontSize: '0.59rem', fontWeight: 700, color: '#adb5bd', letterSpacing: '0.9px' },
-    metVal: { margin: 0, fontSize: '2rem', fontWeight: 800, color: '#2c3e50', lineHeight: 1 },
+    metEtiq: { margin: '0 0 6px', fontSize: '0.75rem', fontWeight: 700, color: '#adb5bd', letterSpacing: '0.9px' },
+    metVal: { margin: 0, fontSize: '2.3rem', fontWeight: 800, color: '#2c3e50', lineHeight: 1 },
     metIco: { width: 42, height: 42, borderRadius: 9, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
     cuerpo: { display: 'grid', gridTemplateColumns: '1fr 230px', gap: 14, alignItems: 'start' },
     card: { backgroundColor: 'white', borderRadius: 10, padding: '16px 18px', border: '1px solid #e9ecef', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' },
     cardAcciones: { backgroundColor: 'white', borderRadius: 10, padding: '16px 18px', border: '1px solid #e9ecef', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' },
     cardHead: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 14 },
-    cardTit: { margin: '0 0 2px', fontSize: '0.9rem', fontWeight: 700, color: '#2c3e50' },
-    cardSub: { margin: 0, fontSize: '0.7rem', color: '#adb5bd' },
-    btnVerTodos: { background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.69rem', fontWeight: 700, color: '#be1e2d', letterSpacing: '0.4px', whiteSpace: 'nowrap', flexShrink: 0 },
+    cardTit: { margin: '0 0 2px', fontSize: '1.1rem', fontWeight: 700, color: '#2c3e50' },
+    cardSub: { margin: 0, fontSize: '0.95rem', color: '#adb5bd' },
+    btnVerTodos: { background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 700, color: '#BC0613', letterSpacing: '0.4px', whiteSpace: 'nowrap', flexShrink: 0 },
     tabla: { width: '100%', borderCollapse: 'collapse' },
     trHead: { borderBottom: '2px solid #f0f0f0' },
-    th: { padding: '7px 10px', textAlign: 'left', fontSize: '0.61rem', fontWeight: 700, color: '#adb5bd', letterSpacing: '0.7px', whiteSpace: 'nowrap' },
+    th: { padding: '7px 10px', textAlign: 'left', fontSize: '0.85rem', fontWeight: 700, color: '#adb5bd', letterSpacing: '0.7px', whiteSpace: 'nowrap' },
     trBody: { borderBottom: '1px solid #f8f9fa', transition: 'background 0.1s' },
     td: { padding: '10px 10px', verticalAlign: 'middle' },
-    tdVacio: { padding: '30px 10px', textAlign: 'center', color: '#adb5bd', fontSize: '0.8rem' },
+    tdVacio: { padding: '30px 10px', textAlign: 'center', color: '#adb5bd', fontSize: '1rem' },
     skBar: { height: 12, borderRadius: 6, background: '#f0f0f0' },
     nomCell: { display: 'flex', alignItems: 'center', gap: 9 },
-    avatarTbl: { width: 32, height: 32, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.65rem', fontWeight: 700, flexShrink: 0 },
-    nomTxt: { margin: 0, fontSize: '0.79rem', fontWeight: 600, color: '#2c3e50', whiteSpace: 'nowrap' },
-    nomSub: { margin: 0, fontSize: '0.65rem', color: '#adb5bd' },
-    emailTxt: { fontSize: '0.74rem', color: '#6c757d' },
-    badge: { display: 'inline-block', fontSize: '0.64rem', fontWeight: 600, padding: '3px 9px', borderRadius: 20, whiteSpace: 'nowrap' },
-    errMsg: { padding: '12px', background: '#ffebee', border: '1px solid #ffcdd2', borderRadius: 7, color: '#c62828', fontSize: '0.77rem', textAlign: 'center', margin: '0 0 12px' },
+    avatarTbl: { width: 32, height: 32, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.85rem', fontWeight: 700, flexShrink: 0 },
+    nomTxt: { margin: 0, fontSize: '0.95rem', fontWeight: 600, color: '#2c3e50', whiteSpace: 'nowrap' },
+    nomSub: { margin: 0, fontSize: '0.85rem', color: '#adb5bd' },
+    emailTxt: { fontSize: '0.95rem', color: '#6c757d' },
+    badge: { display: 'inline-block', fontSize: '0.85rem', fontWeight: 600, padding: '3px 9px', borderRadius: 20, whiteSpace: 'nowrap' },
+    errMsg: { padding: '12px', background: '#ffebee', border: '1px solid #ffcdd2', borderRadius: 7, color: '#c62828', fontSize: '0.95rem', textAlign: 'center', margin: '0 0 12px' },
     accBtn: { display: 'flex', alignItems: 'center', gap: 10, padding: '11px 12px', background: '#f8f9fa', border: '1px solid #e9ecef', borderRadius: 8, cursor: 'pointer', width: '100%', textAlign: 'left' },
     accIco: { width: 32, height: 32, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
-    accLabel: { fontSize: '0.79rem', fontWeight: 600, color: '#2c3e50' },
+    accLabel: { fontSize: '0.95rem', fontWeight: 600, color: '#2c3e50' },
 };
 
 export default HomeAdmin;

@@ -10,7 +10,7 @@ import {
 
 const API  = import.meta.env.VITE_API_URL || 'http://localhost:8351/api';
 const FONT = "'Rotis', 'Segoe UI', system-ui, -apple-system, sans-serif";
-const ROJO='#BE1E2D', AZUL='#1565C0', VERDE='#2E7D32', NARANJA='#E65100';
+const ROJO='#BC0613', AZUL='#1565C0', VERDE='#2E7D32', NARANJA='#E65100';
 const MORADO='#4527A0', CIAN='#00695C', GRIS='#37474F', DORADO='#F57F17';
 const PALETA=[ROJO,AZUL,VERDE,NARANJA,MORADO,CIAN,GRIS,DORADO,'#AD1457','#00838F','#558B2F','#4E342E'];
 
@@ -43,8 +43,8 @@ if(typeof document!=='undefined'&&!document.getElementById('teg-kf')){
         .teg-a{animation:teg-in 0.28s ease both;}
         .teg-sel{padding:5px 8px;border-radius:6px;border:1px solid #e5e7eb;font-size:0.73rem;
             font-family:'Rotis', 'Segoe UI',system-ui,sans-serif;color:#374151;background:white;outline:none;cursor:pointer;}
-        .teg-sel:focus,.teg-sel.on{border-color:#BE1E2D !important;}
-        .teg-pag:hover:not(:disabled){background:#BE1E2D !important;color:white !important;border-color:#BE1E2D !important;}
+        .teg-sel:focus,.teg-sel.on{border-color:#BC0613 !important;}
+        .teg-pag:hover:not(:disabled){background:#BC0613 !important;color:white !important;border-color:#BC0613 !important;}
         .teg-gh:hover{background:#f8fafc !important;cursor:pointer;}
     `;
     document.head.appendChild(st);
@@ -88,11 +88,11 @@ function analizarTexto(textos){
 // ═══════════════════════════════════════════════════════════
 const KPI=({icon:I,valor,label,sub,color,delay=0})=>(
     <div className="teg-a" style={{background:'white',borderRadius:10,padding:'10px 13px',border:'1px solid #e5e7eb',borderLeft:`4px solid ${color}`,boxShadow:'0 1px 3px rgba(0,0,0,.05)',display:'flex',alignItems:'center',gap:10,animationDelay:`${delay}ms`}}>
-        <div style={{width:32,height:32,borderRadius:8,background:`${color}14`,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}><I style={{color,fontSize:'0.84rem'}}/></div>
+        <div style={{width:32,height:32,borderRadius:8,background:`${color}14`,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}><I style={{color,fontSize:'1rem'}}/></div>
         <div>
-            <div style={{fontSize:'1.25rem',fontWeight:800,color:'#0f172a',lineHeight:1,fontFamily:FONT}}>{valor}</div>
-            <div style={{fontSize:'0.63rem',fontWeight:600,color:'#6b7280',fontFamily:FONT,marginTop:2}}>{label}</div>
-            {sub&&<div style={{fontSize:'0.57rem',color:'#9ca3af',fontFamily:FONT,marginTop:1}}>{sub}</div>}
+            <div style={{fontSize:'1.2rem',fontWeight:800,color:'#0f172a',lineHeight:1,fontFamily:FONT}}>{valor}</div>
+            <div style={{fontSize:'0.85rem',fontWeight:600,color:'#6b7280',fontFamily:FONT,marginTop:2}}>{label}</div>
+            {sub&&<div style={{fontSize:'0.75rem',color:'#9ca3af',fontFamily:FONT,marginTop:1}}>{sub}</div>}
         </div>
     </div>
 );
@@ -103,9 +103,9 @@ const Barra=({label,valor,total,color,compact=false})=>{
         <div style={{display:'flex',justifyContent:'space-between',marginBottom:2,alignItems:'baseline'}}>
             <div style={{display:'flex',alignItems:'center',gap:6,minWidth:0}}>
                 <div style={{width:7,height:7,borderRadius:'50%',backgroundColor:color,flexShrink:0}}/>
-                <span style={{fontSize:compact?'0.70rem':'0.73rem',color:'#374151',fontFamily:FONT,fontWeight:500,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{label}</span>
+                <span style={{fontSize:compact?'0.95rem':'0.95rem',color:'#374151',fontFamily:FONT,fontWeight:500,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{label}</span>
             </div>
-            <span style={{fontSize:'0.67rem',color:'#6b7280',fontFamily:FONT,whiteSpace:'nowrap',marginLeft:6}}><strong style={{color:'#111827'}}>{valor}</strong><span style={{color:'#d1d5db',margin:'0 2px'}}>·</span>{p}%</span>
+            <span style={{fontSize:'0.85rem',color:'#6b7280',fontFamily:FONT,whiteSpace:'nowrap',marginLeft:6}}><strong style={{color:'#111827'}}>{valor}</strong><span style={{color:'#d1d5db',margin:'0 2px'}}>·</span>{p}%</span>
         </div>
         <div style={{height:compact?4:6,backgroundColor:'#f1f5f9',borderRadius:99,overflow:'hidden'}}>
             <div style={{height:'100%',width:`${p}%`,backgroundColor:color,borderRadius:99,transition:'width .7s cubic-bezier(.4,0,.2,1)'}}/>
@@ -124,8 +124,8 @@ const Donut=({segs,r=40,g=11,sz=96,label,sublabel})=>{
             {segs.map((s,i)=>{const da=((s.v||0)/tot)*circ;const el=<circle key={i} cx={cx} cy={cy} r={r} fill="none" stroke={s.c} strokeWidth={g} strokeDasharray={`${da} ${circ}`} strokeDashoffset={-off} strokeLinecap="butt"/>;off+=da;return el;})}
         </svg>
         {label&&<div style={{position:'absolute',textAlign:'center',pointerEvents:'none'}}>
-            <div style={{fontSize:sz>100?'1.1rem':'0.85rem',fontWeight:800,color:'#111827',lineHeight:1,fontFamily:FONT}}>{label}</div>
-            {sublabel&&<div style={{fontSize:'0.54rem',color:'#9ca3af',fontFamily:FONT,marginTop:1}}>{sublabel}</div>}
+            <div style={{fontSize:sz>100?'1.2rem':'1rem',fontWeight:800,color:'#111827',lineHeight:1,fontFamily:FONT}}>{label}</div>
+            {sublabel&&<div style={{fontSize:'0.75rem',color:'#9ca3af',fontFamily:FONT,marginTop:1}}>{sublabel}</div>}
         </div>}
     </div>;
 };
@@ -139,11 +139,11 @@ const Insight=({tipo,titulo,detalle,delay=0})=>{
     }[tipo]||{I:FaLightbulb,color:AZUL,bg:'#eff6ff',bd:'#bfdbfe',lbl:'Info'};
     const{I}=cfg;
     return <div className="teg-a" style={{background:cfg.bg,border:`1px solid ${cfg.bd}`,borderLeft:`3px solid ${cfg.color}`,borderRadius:7,padding:'8px 11px',display:'flex',gap:8,alignItems:'flex-start',animationDelay:`${delay}ms`}}>
-        <I style={{color:cfg.color,fontSize:'0.82rem',flexShrink:0,marginTop:1}}/>
+        <I style={{color:cfg.color,fontSize:'1rem',flexShrink:0,marginTop:1}}/>
         <div>
-            <span style={{fontSize:'0.58rem',fontWeight:700,color:cfg.color,textTransform:'uppercase',letterSpacing:'0.5px',fontFamily:FONT}}>{cfg.lbl} · </span>
-            <span style={{fontSize:'0.76rem',fontWeight:600,color:'#0f172a',fontFamily:FONT}}>{titulo}</span>
-            {detalle&&<p style={{margin:'2px 0 0',fontSize:'0.68rem',color:'#6b7280',fontFamily:FONT,lineHeight:1.5}}>{detalle}</p>}
+            <span style={{fontSize:'0.75rem',fontWeight:700,color:cfg.color,textTransform:'uppercase',letterSpacing:'0.5px',fontFamily:FONT}}>{cfg.lbl} · </span>
+            <span style={{fontSize:'0.95rem',fontWeight:600,color:'#0f172a',fontFamily:FONT}}>{titulo}</span>
+            {detalle&&<p style={{margin:'2px 0 0',fontSize:'0.85rem',color:'#6b7280',fontFamily:FONT,lineHeight:1.5}}>{detalle}</p>}
         </div>
     </div>;
 };
@@ -153,7 +153,7 @@ const Insight=({tipo,titulo,detalle,delay=0})=>{
 // ═══════════════════════════════════════════════════════════
 const GEscala=({resps,min='',max=''})=>{
     const vals=resps.map(r=>Number(r.valor)).filter(v=>v>=1&&v<=5);
-    if(!vals.length) return <p style={{margin:0,fontSize:'0.70rem',color:'#9ca3af',fontFamily:FONT}}>Sin respuestas</p>;
+    if(!vals.length) return <p style={{margin:0,fontSize:'0.95rem',color:'#9ca3af',fontFamily:FONT}}>Sin respuestas</p>;
     const invertida = esEscalaInvertida(min, max);
     const c={1:0,2:0,3:0,4:0,5:0};
     vals.forEach(v=>c[v]++);
@@ -170,50 +170,50 @@ const GEscala=({resps,min='',max=''})=>{
         : (promReal>=4.5?'Muy alto':promReal>=3.5?'Alto':promReal>=2.5?'Moderado':promReal>=1.5?'Bajo':'Muy bajo');
     return <div>
         {invertida&&<div style={{display:'flex',alignItems:'center',gap:6,padding:'5px 9px',background:`${AZUL}08`,border:`1px solid ${AZUL}20`,borderRadius:6,marginBottom:10}}>
-            <FaInfoCircle style={{color:AZUL,fontSize:'0.68rem',flexShrink:0}}/>
-            <span style={{fontSize:'0.62rem',color:AZUL,fontFamily:FONT,fontWeight:500}}>Escala invertida — <strong>1 = Excelente</strong>, 5 = Insuficiente.</span>
+            <FaInfoCircle style={{color:AZUL,fontSize:'0.85rem',flexShrink:0}}/>
+            <span style={{fontSize:'0.85rem',color:AZUL,fontFamily:FONT,fontWeight:500}}>Escala invertida — <strong>1 = Excelente</strong>, 5 = Insuficiente.</span>
         </div>}
         <div style={{display:'flex',gap:6,alignItems:'flex-end',marginBottom:10}}>
             {[1,2,3,4,5].map(n=>{
                 const h=Math.max(4,Math.round((c[n]/mx)*64));
                 const etq = invertida ? ['Exc','Muy B','Bueno','Reg','Insuf'][n-1] : String(n);
                 return <div key={n} style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',gap:3}}>
-                    <span style={{fontSize:'0.60rem',fontWeight:700,color:'#374151',fontFamily:FONT}}>{c[n]}</span>
+                    <span style={{fontSize:'0.85rem',fontWeight:700,color:'#374151',fontFamily:FONT}}>{c[n]}</span>
                     <div style={{width:'100%',height:h,backgroundColor:col[n],borderRadius:'3px 3px 0 0'}}/>
-                    <span style={{fontSize:invertida?'0.52rem':'0.62rem',fontWeight:700,color:col[n],fontFamily:FONT,textAlign:'center',lineHeight:1.2}}>{etq}</span>
+                    <span style={{fontSize:invertida?'0.75rem':'0.85rem',fontWeight:700,color:col[n],fontFamily:FONT,textAlign:'center',lineHeight:1.2}}>{etq}</span>
                 </div>;
             })}
         </div>
         <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:6}}>
-            <span style={{fontSize:'0.60rem',color:'#94a3b8',fontFamily:FONT}}>{min||'1=Muy bajo'}</span>
+            <span style={{fontSize:'0.85rem',color:'#94a3b8',fontFamily:FONT}}>{min||'1=Muy bajo'}</span>
             <div style={{display:'flex',gap:6,alignItems:'center'}}>
                 <div style={{background:`${colorProm}10`,border:`1px solid ${colorProm}25`,borderRadius:6,padding:'3px 9px',display:'inline-flex',alignItems:'center',gap:5}}>
-                    <FaStar style={{color:DORADO,fontSize:'0.58rem'}}/>
-                    <span style={{fontSize:'0.68rem',fontWeight:700,color:colorProm,fontFamily:FONT}}>Promedio: {promMostrar}</span>
+                    <FaStar style={{color:DORADO,fontSize:'0.75rem'}}/>
+                    <span style={{fontSize:'0.85rem',fontWeight:700,color:colorProm,fontFamily:FONT}}>Promedio: {promMostrar}</span>
                 </div>
-                <span style={{fontSize:'0.62rem',fontWeight:600,color:colorProm,background:`${colorProm}10`,borderRadius:99,padding:'2px 7px',fontFamily:FONT,border:`1px solid ${colorProm}25`}}>{interpretacion}</span>
+                <span style={{fontSize:'0.85rem',fontWeight:600,color:colorProm,background:`${colorProm}10`,borderRadius:99,padding:'2px 7px',fontFamily:FONT,border:`1px solid ${colorProm}25`}}>{interpretacion}</span>
             </div>
-            <span style={{fontSize:'0.60rem',color:'#94a3b8',fontFamily:FONT}}>{max||'5=Excelente'}</span>
+            <span style={{fontSize:'0.85rem',color:'#94a3b8',fontFamily:FONT}}>{max||'5=Excelente'}</span>
         </div>
-        <div style={{marginTop:6,fontSize:'0.60rem',color:'#9ca3af',fontFamily:FONT}}>{vals.length} respuesta{vals.length!==1?'s':''}</div>
+        <div style={{marginTop:6,fontSize:'0.85rem',color:'#9ca3af',fontFamily:FONT}}>{vals.length} respuesta{vals.length!==1?'s':''}</div>
     </div>;
 };
 
 const GOpciones=({resps,tipo})=>{
     const total=resps.length;
-    if(!total) return <p style={{margin:0,fontSize:'0.70rem',color:'#9ca3af',fontFamily:FONT}}>Sin respuestas</p>;
+    if(!total) return <p style={{margin:0,fontSize:'0.95rem',color:'#9ca3af',fontFamily:FONT}}>Sin respuestas</p>;
     const c={};
     resps.forEach(r=>{const v=r.valor;if(Array.isArray(v))v.forEach(x=>{c[x]=(c[x]||0)+1;});else if(v)c[v]=(c[v]||0)+1;});
     const lista=Object.entries(c).sort((a,b)=>b[1]-a[1]);
     return <div>
         {lista.map(([op,cnt],i)=><Barra key={i} label={op} valor={cnt} total={total} color={PALETA[i%PALETA.length]} compact/>)}
-        <div style={{marginTop:6,fontSize:'0.60rem',color:'#9ca3af',fontFamily:FONT}}>{total} respuesta{total!==1?'s':''}{tipo==='checkboxes'?' (múltiple)':''}</div>
+        <div style={{marginTop:6,fontSize:'0.85rem',color:'#9ca3af',fontFamily:FONT}}>{total} respuesta{total!==1?'s':''}{tipo==='checkboxes'?' (múltiple)':''}</div>
     </div>;
 };
 
 const GSiNo=({resps})=>{
     const total=resps.length;
-    if(!total) return <p style={{margin:0,fontSize:'0.70rem',color:'#9ca3af',fontFamily:FONT}}>Sin respuestas</p>;
+    if(!total) return <p style={{margin:0,fontSize:'0.95rem',color:'#9ca3af',fontFamily:FONT}}>Sin respuestas</p>;
     const si=resps.filter(r=>r.valor==='Sí').length,no=resps.filter(r=>r.valor==='No').length;
     return <div style={{display:'flex',gap:12,alignItems:'center'}}>
         <Donut segs={[{v:si,c:VERDE},{v:no,c:ROJO}]} r={34} g={10} sz={84} label={`${pct(si,total)}%`} sublabel="Sí"/>
@@ -221,32 +221,32 @@ const GSiNo=({resps})=>{
             {[[VERDE,'Sí',si],[ROJO,'No',no]].map(([c,l,v])=>(
                 <div key={l} style={{display:'flex',alignItems:'center',gap:7,marginBottom:6}}>
                     <div style={{width:8,height:8,borderRadius:'50%',background:c,flexShrink:0}}/>
-                    <span style={{fontSize:'0.72rem',color:'#374151',flex:1,fontFamily:FONT}}>{l}</span>
-                    <span style={{fontSize:'0.72rem',fontWeight:700,color:c,fontFamily:FONT}}>{v}</span>
-                    <span style={{fontSize:'0.60rem',color:'#9ca3af',fontFamily:FONT}}>({pct(v,total)}%)</span>
+                    <span style={{fontSize:'0.95rem',color:'#374151',flex:1,fontFamily:FONT}}>{l}</span>
+                    <span style={{fontSize:'0.95rem',fontWeight:700,color:c,fontFamily:FONT}}>{v}</span>
+                    <span style={{fontSize:'0.85rem',color:'#9ca3af',fontFamily:FONT}}>({pct(v,total)}%)</span>
                 </div>
             ))}
-            <div style={{fontSize:'0.60rem',color:'#9ca3af',fontFamily:FONT,marginTop:4}}>{total} respuestas</div>
+            <div style={{fontSize:'0.85rem',color:'#9ca3af',fontFamily:FONT,marginTop:4}}>{total} respuestas</div>
         </div>
     </div>;
 };
 
 const GNumero=({resps})=>{
     const vals=resps.map(r=>Number(r.valor)).filter(v=>!isNaN(v)&&v>=0);
-    if(!vals.length) return <p style={{margin:0,fontSize:'0.70rem',color:'#9ca3af',fontFamily:FONT}}>Sin respuestas</p>;
+    if(!vals.length) return <p style={{margin:0,fontSize:'0.95rem',color:'#9ca3af',fontFamily:FONT}}>Sin respuestas</p>;
     const avg=(vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(1);
     return <div style={{display:'flex',gap:10}}>
         {[['Promedio',avg,AZUL],['Mínimo',Math.min(...vals),VERDE],['Máximo',Math.max(...vals),ROJO],['N',vals.length,GRIS]].map(([l,v,c])=>(
             <div key={l} style={{flex:1,textAlign:'center',padding:8,background:`${c}08`,border:`1px solid ${c}20`,borderRadius:8}}>
-                <div style={{fontSize:'1.1rem',fontWeight:800,color:c,fontFamily:FONT}}>{v}</div>
-                <div style={{fontSize:'0.60rem',color:'#6b7280',fontFamily:FONT}}>{l}</div>
+                <div style={{fontSize:'1.2rem',fontWeight:800,color:c,fontFamily:FONT}}>{v}</div>
+                <div style={{fontSize:'0.85rem',color:'#6b7280',fontFamily:FONT}}>{l}</div>
             </div>
         ))}
     </div>;
 };
 
 const GMatriz=({resps,items,tipo,min='',max=''})=>{
-    if(!resps.length||!items?.length) return <p style={{margin:0,fontSize:'0.70rem',color:'#9ca3af',fontFamily:FONT}}>Sin respuestas</p>;
+    if(!resps.length||!items?.length) return <p style={{margin:0,fontSize:'0.95rem',color:'#9ca3af',fontFamily:FONT}}>Sin respuestas</p>;
     const invertida = esEscalaInvertida(min, max);
     const pi={};items.forEach((_,idx)=>{pi[idx]={votos:{}};});
     resps.forEach(r=>{const arr=Array.isArray(r.valor)?r.valor:[];arr.forEach(({indice,valor})=>{if(pi[indice]!==undefined){const k=String(valor);pi[indice].votos[k]=(pi[indice].votos[k]||0)+1;}});});
@@ -256,18 +256,18 @@ const GMatriz=({resps,items,tipo,min='',max=''})=>{
         : {1:'#fee2e2',2:'#fef3c7',3:'#fef9c3',4:'#dcfce7',5:'#bbf7d0'};
     return <div style={{overflowX:'auto'}}>
         {invertida&&<div style={{display:'flex',alignItems:'center',gap:6,padding:'5px 9px',background:`${AZUL}08`,border:`1px solid ${AZUL}20`,borderRadius:6,marginBottom:8}}>
-            <FaInfoCircle style={{color:AZUL,fontSize:'0.68rem',flexShrink:0}}/>
-            <span style={{fontSize:'0.62rem',color:AZUL,fontFamily:FONT,fontWeight:500}}>Escala invertida — <strong>1 = {min||'Excelente'}</strong></span>
+            <FaInfoCircle style={{color:AZUL,fontSize:'0.85rem',flexShrink:0}}/>
+            <span style={{fontSize:'0.85rem',color:AZUL,fontFamily:FONT,fontWeight:500}}>Escala invertida — <strong>1 = {min||'Excelente'}</strong></span>
         </div>}
         {tipo==='escala'&&<div style={{display:'flex',justifyContent:'space-between',marginBottom:4}}>
-            <span style={{fontSize:'0.58rem',color:'#94a3b8',fontFamily:FONT}}>{min||'1=Bajo'}</span>
-            <span style={{fontSize:'0.58rem',color:'#94a3b8',fontFamily:FONT}}>{max||'5=Alto'}</span>
+            <span style={{fontSize:'0.75rem',color:'#94a3b8',fontFamily:FONT}}>{min||'1=Bajo'}</span>
+            <span style={{fontSize:'0.75rem',color:'#94a3b8',fontFamily:FONT}}>{max||'5=Alto'}</span>
         </div>}
-        <table style={{width:'100%',borderCollapse:'collapse',fontSize:'0.70rem',fontFamily:FONT}}>
+        <table style={{width:'100%',borderCollapse:'collapse',fontSize:'0.95rem',fontFamily:FONT}}>
             <thead><tr>
-                <th style={{textAlign:'left',padding:'4px 8px',color:'#94a3b8',fontWeight:700,fontSize:'0.60rem',borderBottom:'1px solid #e5e7eb',width:'40%'}}>Ítem</th>
-                {cols.map(c=><th key={c} style={{textAlign:'center',padding:'4px 4px',color:'#6b7280',fontWeight:700,fontSize:'0.60rem',borderBottom:'1px solid #e5e7eb',minWidth:36}}>{c}</th>)}
-                <th style={{textAlign:'center',padding:'4px 6px',color:'#94a3b8',fontWeight:700,fontSize:'0.60rem',borderBottom:'1px solid #e5e7eb'}}>Prom.</th>
+                <th style={{textAlign:'left',padding:'4px 8px',color:'#94a3b8',fontWeight:700,fontSize:'0.85rem',borderBottom:'1px solid #e5e7eb',width:'40%'}}>Ítem</th>
+                {cols.map(c=><th key={c} style={{textAlign:'center',padding:'4px 4px',color:'#6b7280',fontWeight:700,fontSize:'0.85rem',borderBottom:'1px solid #e5e7eb',minWidth:36}}>{c}</th>)}
+                <th style={{textAlign:'center',padding:'4px 6px',color:'#94a3b8',fontWeight:700,fontSize:'0.85rem',borderBottom:'1px solid #e5e7eb'}}>Prom.</th>
             </tr></thead>
             <tbody>
                 {items.map((item,idx)=>{
@@ -290,19 +290,19 @@ const GMatriz=({resps,items,tipo,min='',max=''})=>{
 const GraficaTextoNLP=({resps})=>{
     const textos=useMemo(()=>resps.map(r=>r.valor).filter(v=>v&&String(v).trim().length>2),[resps]);
     const{palabras,temas,frases,total}=useMemo(()=>analizarTexto(textos),[textos]);
-    if(!total) return <p style={{margin:0,fontSize:'0.70rem',color:'#9ca3af',fontFamily:FONT}}>Sin respuestas</p>;
+    if(!total) return <p style={{margin:0,fontSize:'0.95rem',color:'#9ca3af',fontFamily:FONT}}>Sin respuestas</p>;
     const maxFreq=palabras[0]?.count||1;
     return <div>
         <div style={{display:'flex',alignItems:'center',gap:8,padding:'8px 12px',background:`${AZUL}08`,border:`1px solid ${AZUL}20`,borderRadius:8,marginBottom:12}}>
-            <FaCommentDots style={{color:AZUL,fontSize:'0.78rem',flexShrink:0}}/>
+            <FaCommentDots style={{color:AZUL,fontSize:'0.95rem',flexShrink:0}}/>
             <div>
-                <div style={{fontSize:'0.72rem',fontWeight:700,color:AZUL,fontFamily:FONT}}>Análisis NLP · {total} respuesta{total!==1?'s':''}</div>
-                <div style={{fontSize:'0.60rem',color:'#64748b',fontFamily:FONT}}>Detección automática de patrones y temas</div>
+                <div style={{fontSize:'0.95rem',fontWeight:700,color:AZUL,fontFamily:FONT}}>Análisis NLP · {total} respuesta{total!==1?'s':''}</div>
+                <div style={{fontSize:'0.85rem',color:'#64748b',fontFamily:FONT}}>Detección automática de patrones y temas</div>
             </div>
         </div>
         <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:14}}>
             <div>
-                <p style={{margin:'0 0 8px',fontSize:'0.63rem',fontWeight:700,color:'#6b7280',textTransform:'uppercase',letterSpacing:'0.4px',fontFamily:FONT}}>Palabras frecuentes</p>
+                <p style={{margin:'0 0 8px',fontSize:'0.85rem',fontWeight:700,color:'#6b7280',textTransform:'uppercase',letterSpacing:'0.4px',fontFamily:FONT}}>Palabras frecuentes</p>
                 <div style={{display:'flex',flexWrap:'wrap',gap:5,alignItems:'center',minHeight:80}}>
                     {palabras.slice(0,20).map((p,i)=>{
                         const size=0.62+((p.count/maxFreq)*0.55);
@@ -311,30 +311,30 @@ const GraficaTextoNLP=({resps})=>{
                     })}
                 </div>
                 {frases.length>0&&<div style={{marginTop:10}}>
-                    <p style={{margin:'0 0 6px',fontSize:'0.63rem',fontWeight:700,color:'#6b7280',textTransform:'uppercase',letterSpacing:'0.4px',fontFamily:FONT}}>Frases recurrentes</p>
+                    <p style={{margin:'0 0 6px',fontSize:'0.85rem',fontWeight:700,color:'#6b7280',textTransform:'uppercase',letterSpacing:'0.4px',fontFamily:FONT}}>Frases recurrentes</p>
                     {frases.slice(0,5).map((f,i)=><div key={i} style={{display:'flex',alignItems:'center',gap:8,marginBottom:4,padding:'4px 8px',background:i%2===0?'#f8fafc':'white',borderRadius:5}}>
-                        <FaTag style={{color:PALETA[i%PALETA.length],fontSize:'0.55rem',flexShrink:0}}/>
-                        <span style={{fontSize:'0.70rem',color:'#374151',flex:1,fontFamily:FONT,textTransform:'capitalize'}}>{f.frase}</span>
-                        <span style={{fontSize:'0.62rem',fontWeight:700,color:PALETA[i%PALETA.length],background:`${PALETA[i%PALETA.length]}12`,borderRadius:99,padding:'1px 6px',fontFamily:FONT}}>{f.count}×</span>
+                        <FaTag style={{color:PALETA[i%PALETA.length],fontSize:'0.75rem',flexShrink:0}}/>
+                        <span style={{fontSize:'0.95rem',color:'#374151',flex:1,fontFamily:FONT,textTransform:'capitalize'}}>{f.frase}</span>
+                        <span style={{fontSize:'0.85rem',fontWeight:700,color:PALETA[i%PALETA.length],background:`${PALETA[i%PALETA.length]}12`,borderRadius:99,padding:'1px 6px',fontFamily:FONT}}>{f.count}×</span>
                     </div>)}
                 </div>}
             </div>
             <div>
-                <p style={{margin:'0 0 8px',fontSize:'0.63rem',fontWeight:700,color:'#6b7280',textTransform:'uppercase',letterSpacing:'0.4px',fontFamily:FONT}}>Temas detectados</p>
+                <p style={{margin:'0 0 8px',fontSize:'0.85rem',fontWeight:700,color:'#6b7280',textTransform:'uppercase',letterSpacing:'0.4px',fontFamily:FONT}}>Temas detectados</p>
                 {temas.length>0
                     ?temas.map((t,i)=><Barra key={i} label={t.tema} valor={t.count} total={palabras.reduce((s,p)=>s+p.count,1)} color={t.color} compact/>)
-                    :<p style={{margin:0,fontSize:'0.68rem',color:'#9ca3af',fontFamily:FONT}}>Sin temas detectados.</p>
+                    :<p style={{margin:0,fontSize:'0.85rem',color:'#9ca3af',fontFamily:FONT}}>Sin temas detectados.</p>
                 }
                 {palabras.length>0&&<div style={{marginTop:10}}>
-                    <p style={{margin:'0 0 6px',fontSize:'0.63rem',fontWeight:700,color:'#6b7280',textTransform:'uppercase',letterSpacing:'0.4px',fontFamily:FONT}}>Top 8 términos</p>
+                    <p style={{margin:'0 0 6px',fontSize:'0.85rem',fontWeight:700,color:'#6b7280',textTransform:'uppercase',letterSpacing:'0.4px',fontFamily:FONT}}>Top 8 términos</p>
                     {palabras.slice(0,8).map((p,i)=><Barra key={i} label={p.word} valor={p.count} total={maxFreq} color={PALETA[i%PALETA.length]} compact/>)}
                 </div>}
             </div>
         </div>
         <div style={{marginTop:12,borderTop:'1px solid #f1f5f9',paddingTop:10}}>
-            <p style={{margin:'0 0 6px',fontSize:'0.63rem',fontWeight:700,color:'#6b7280',textTransform:'uppercase',letterSpacing:'0.4px',fontFamily:FONT}}>Muestra de respuestas</p>
+            <p style={{margin:'0 0 6px',fontSize:'0.85rem',fontWeight:700,color:'#6b7280',textTransform:'uppercase',letterSpacing:'0.4px',fontFamily:FONT}}>Muestra de respuestas</p>
             <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:6}}>
-                {textos.filter(t=>t.length>20).slice(0,4).map((t,i)=><div key={i} style={{padding:'7px 10px',background:i%2===0?'#f8fafc':'#fff7f7',borderRadius:7,border:'1px solid #e5e7eb',fontSize:'0.69rem',color:'#374151',fontFamily:FONT,lineHeight:1.55,fontStyle:'italic'}}>"{t.slice(0,120)}{t.length>120?'...':''}"</div>)}
+                {textos.filter(t=>t.length>20).slice(0,4).map((t,i)=><div key={i} style={{padding:'7px 10px',background:i%2===0?'#f8fafc':'#fff7f7',borderRadius:7,border:'1px solid #e5e7eb',fontSize:'0.85rem',color:'#374151',fontFamily:FONT,lineHeight:1.55,fontStyle:'italic'}}>"{t.slice(0,120)}{t.length>120?'...':''}"</div>)}
             </div>
         </div>
     </div>;
@@ -357,13 +357,13 @@ const GraficaPregunta=({grupo,filtros})=>{
         case 'si_no':            return <GSiNo resps={resps}/>;
         case 'texto_libre':      return <GraficaTextoNLP resps={resps}/>;
         case 'numero':           return <GNumero resps={resps}/>;
-        default:                 return <p style={{margin:0,fontSize:'0.70rem',color:'#9ca3af',fontFamily:FONT}}>Tipo no visualizable</p>;
+        default:                 return <p style={{margin:0,fontSize:'0.95rem',color:'#9ca3af',fontFamily:FONT}}>Tipo no visualizable</p>;
     }
 };
 
 const TipoBadge=({tipo,esMatriz})=>{
     const cfg={escala:{lbl:'Escala',c:AZUL},opcion_multiple:{lbl:'Opción',c:VERDE},checkboxes:{lbl:'Múltiple',c:CIAN},si_no:{lbl:'Sí/No',c:NARANJA},texto_libre:{lbl:'Texto · NLP',c:MORADO},numero:{lbl:'Número',c:DORADO}}[tipo]||{lbl:tipo,c:GRIS};
-    return <span style={{fontSize:'0.58rem',fontWeight:700,color:cfg.c,background:`${cfg.c}12`,border:`1px solid ${cfg.c}25`,borderRadius:99,padding:'2px 7px',fontFamily:FONT,whiteSpace:'nowrap'}}>{esMatriz?`${cfg.lbl} · Tabla`:cfg.lbl}</span>;
+    return <span style={{fontSize:'0.75rem',fontWeight:700,color:cfg.c,background:`${cfg.c}12`,border:`1px solid ${cfg.c}25`,borderRadius:99,padding:'2px 7px',fontFamily:FONT,whiteSpace:'nowrap'}}>{esMatriz?`${cfg.lbl} · Tabla`:cfg.lbl}</span>;
 };
 
 const TarjetaGrupo=({grupo,encuestas,filtros,num})=>{
@@ -381,23 +381,23 @@ const TarjetaGrupo=({grupo,encuestas,filtros,num})=>{
     return <div className="teg-a" style={{background:'white',borderRadius:10,border:'1px solid #e5e7eb',overflow:'hidden',marginBottom:10}}>
         <div className="teg-gh" onClick={()=>setOpen(a=>!a)} style={{padding:'10px 14px',display:'flex',alignItems:'flex-start',gap:10,background:open?`${ROJO}04`:'white',borderBottom:open?'1px solid #f1f5f9':'none'}}>
             <div style={{width:22,height:22,borderRadius:5,background:`${ROJO}15`,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,marginTop:1}}>
-                <span style={{fontSize:'0.60rem',fontWeight:800,color:ROJO,fontFamily:FONT}}>{num}</span>
+                <span style={{fontSize:'0.85rem',fontWeight:800,color:ROJO,fontFamily:FONT}}>{num}</span>
             </div>
             <div style={{flex:1,minWidth:0}}>
                 <div style={{display:'flex',alignItems:'flex-start',gap:8,flexWrap:'wrap'}}>
-                    <span style={{fontSize:'0.79rem',fontWeight:600,color:'#0f172a',fontFamily:FONT,flex:1,lineHeight:1.4}}>{grupo.textoCanonical}</span>
+                    <span style={{fontSize:'0.95rem',fontWeight:600,color:'#0f172a',fontFamily:FONT,flex:1,lineHeight:1.4}}>{grupo.textoCanonical}</span>
                     <div style={{display:'flex',gap:5,flexShrink:0,flexWrap:'wrap'}}>
                         <TipoBadge tipo={grupo.tipo} esMatriz={grupo.esMatriz}/>
-                        {grupo.esComun&&<span style={{fontSize:'0.58rem',fontWeight:700,color:VERDE,background:`${VERDE}10`,border:`1px solid ${VERDE}25`,borderRadius:99,padding:'2px 7px',fontFamily:FONT}}>Recurrente</span>}
-                        {invertida&&<span style={{fontSize:'0.58rem',fontWeight:700,color:AZUL,background:`${AZUL}10`,border:`1px solid ${AZUL}25`,borderRadius:99,padding:'2px 7px',fontFamily:FONT}}>⚠ Invertida</span>}
+                        {grupo.esComun&&<span style={{fontSize:'0.75rem',fontWeight:700,color:VERDE,background:`${VERDE}10`,border:`1px solid ${VERDE}25`,borderRadius:99,padding:'2px 7px',fontFamily:FONT}}>Recurrente</span>}
+                        {invertida&&<span style={{fontSize:'0.75rem',fontWeight:700,color:AZUL,background:`${AZUL}10`,border:`1px solid ${AZUL}25`,borderRadius:99,padding:'2px 7px',fontFamily:FONT}}>⚠ Invertida</span>}
                     </div>
                 </div>
                 <div style={{display:'flex',gap:8,marginTop:4,flexWrap:'wrap',alignItems:'center'}}>
-                    <span style={{fontSize:'0.60rem',color:'#94a3b8',fontFamily:FONT}}>{cnt} respuesta{cnt!==1?'s':''}</span>
-                    {aparece.length>0&&<span style={{fontSize:'0.60rem',color:'#94a3b8',fontFamily:FONT}}>· {aparece.slice(0,2).join(', ')}{aparece.length>2?` +${aparece.length-2}`:''}</span>}
+                    <span style={{fontSize:'0.85rem',color:'#94a3b8',fontFamily:FONT}}>{cnt} respuesta{cnt!==1?'s':''}</span>
+                    {aparece.length>0&&<span style={{fontSize:'0.85rem',color:'#94a3b8',fontFamily:FONT}}>· {aparece.slice(0,2).join(', ')}{aparece.length>2?` +${aparece.length-2}`:''}</span>}
                 </div>
             </div>
-            <div style={{fontSize:'0.68rem',color:'#94a3b8',flexShrink:0,padding:'2px 5px',fontFamily:FONT}}>{open?'▲':'▼'}</div>
+            <div style={{fontSize:'0.85rem',color:'#94a3b8',flexShrink:0,padding:'2px 5px',fontFamily:FONT}}>{open?'▲':'▼'}</div>
         </div>
         {open&&<div style={{padding:'12px 14px'}}><GraficaPregunta grupo={grupo} filtros={filtros}/></div>}
     </div>;
@@ -439,25 +439,25 @@ const TarjetaCondicional = ({ grupo, encuestas, filtros, num }) => {
                     {/* Badges: lado + tipo */}
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4, flexWrap: 'wrap' }}>
                         <span style={{
-                            fontSize: '0.56rem', fontWeight: 700, color: lado.color,
+                            fontSize: '0.75rem', fontWeight: 700, color: lado.color,
                             background: lado.bg, border: `1px solid ${lado.bd}`,
                             borderRadius: 99, padding: '1px 7px', fontFamily: FONT,
                         }}>{lado.label}</span>
                         <TipoBadge tipo={grupo.tipo} esMatriz={false} />
                     </div>
                     {/* Pregunta padre — contexto */}
-                    <div style={{ fontSize: '0.60rem', color: '#94a3b8', fontFamily: FONT, marginBottom: 3 }}>
+                    <div style={{ fontSize: '0.85rem', color: '#94a3b8', fontFamily: FONT, marginBottom: 3 }}>
                         ↳ <em>{grupo.textoPadre?.slice(0, 80)}{grupo.textoPadre?.length > 80 ? '…' : ''}</em>
                     </div>
                     {/* Texto de la subpregunta */}
-                    <span style={{ fontSize: '0.79rem', fontWeight: 600, color: '#0f172a', fontFamily: FONT, lineHeight: 1.4 }}>
+                    <span style={{ fontSize: '0.95rem', fontWeight: 600, color: '#0f172a', fontFamily: FONT, lineHeight: 1.4 }}>
                         {num}. {grupo.textoCanonical}
                     </span>
-                    <div style={{ marginTop: 3, fontSize: '0.60rem', color: '#94a3b8', fontFamily: FONT }}>
+                    <div style={{ marginTop: 3, fontSize: '0.85rem', color: '#94a3b8', fontFamily: FONT }}>
                         {cnt} respuesta{cnt !== 1 ? 's' : ''}
                     </div>
                 </div>
-                <div style={{ fontSize: '0.68rem', color: '#94a3b8', flexShrink: 0, padding: '2px 5px', fontFamily: FONT }}>
+                <div style={{ fontSize: '0.85rem', color: '#94a3b8', flexShrink: 0, padding: '2px 5px', fontFamily: FONT }}>
                     {open ? '▲' : '▼'}
                 </div>
             </div>
@@ -691,18 +691,18 @@ const TabEGraduado=()=>{
         };
     },[datos,fEnc]);
 
-    if(cargando) return <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',minHeight:320}}><div style={{width:30,height:30,border:'3px solid #f1f5f9',borderTop:`3px solid ${ROJO}`,borderRadius:'50%',animation:'teg-spin .8s linear infinite'}}/><p style={{margin:'14px 0 0',fontSize:'0.78rem',color:'#9ca3af',fontFamily:FONT}}>Cargando...</p></div>;
-    if(error)    return <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',minHeight:320}}><FaExclamationTriangle style={{fontSize:'2rem',color:NARANJA,marginBottom:10}}/><p style={{margin:'0 0 14px',fontSize:'0.82rem',color:'#374151',fontFamily:FONT}}>{error}</p><button onClick={cargar} style={{display:'inline-flex',alignItems:'center',gap:6,padding:'8px 14px',background:'white',border:'1px solid #e5e7eb',borderRadius:7,cursor:'pointer',fontSize:'0.74rem',fontWeight:600,color:'#374151',fontFamily:FONT}}><FaSyncAlt style={{fontSize:'0.66rem'}}/>Reintentar</button></div>;
+    if(cargando) return <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',minHeight:320}}><div style={{width:30,height:30,border:'3px solid #f1f5f9',borderTop:`3px solid ${ROJO}`,borderRadius:'50%',animation:'teg-spin .8s linear infinite'}}/><p style={{margin:'14px 0 0',fontSize:'0.95rem',color:'#9ca3af',fontFamily:FONT}}>Cargando...</p></div>;
+    if(error)    return <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',minHeight:320}}><FaExclamationTriangle style={{fontSize:'2.3rem',color:NARANJA,marginBottom:10}}/><p style={{margin:'0 0 14px',fontSize:'1rem',color:'#374151',fontFamily:FONT}}>{error}</p><button onClick={cargar} style={{display:'inline-flex',alignItems:'center',gap:6,padding:'8px 14px',background:'white',border:'1px solid #e5e7eb',borderRadius:7,cursor:'pointer',fontSize:'0.95rem',fontWeight:600,color:'#374151',fontFamily:FONT}}><FaSyncAlt style={{fontSize:'0.85rem'}}/>Reintentar</button></div>;
     if(!df) return null;
 
     const{encC,encFiltradas,comunes,otras,condicionales,kE,graduadosRaw,insights,plan}=df;
     const hayF=Object.values(fEnc).some(v=>v!=='');
-    const sinD={margin:0,fontSize:'0.72rem',color:'#9ca3af',textAlign:'center',padding:'16px 0',fontFamily:FONT};
+    const sinD={margin:0,fontSize:'0.95rem',color:'#9ca3af',textAlign:'center',padding:'16px 0',fontFamily:FONT};
 
     return <div style={{fontFamily:FONT,paddingBottom:56}}>
 
         {/* KPIs */}
-        <div style={{display:'grid',gridTemplateColumns:'repeat(5,1fr)',gap:10,marginBottom:14}}>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit, minmax(150px, 1fr))',gap:10,marginBottom:14}}>
             <KPI icon={FaGraduationCap} valor={kE.totalGraduados}          label="Graduados totales"     sub="Con tesis verificada"       color={ROJO}   delay={0}  />
             <KPI icon={FaClipboardList} valor={encC.length}                 label="Encuestas cerradas"    sub="Con resultados"            color={AZUL}   delay={40} />
             <KPI icon={FaCheckCircle}   valor={kE.graduadosRespondieron}    label="Respondieron"          sub={`${kE.tasa}% del total`}   color={VERDE}  delay={80} />
@@ -715,10 +715,10 @@ const TabEGraduado=()=>{
             <div style={{display:'flex',alignItems:'center',gap:8,flexWrap:'wrap'}}>
                 <div style={{display:'flex',alignItems:'center',gap:5,flexShrink:0}}>
                     <div style={{width:22,height:22,borderRadius:5,background:`${ROJO}15`,display:'flex',alignItems:'center',justifyContent:'center'}}>
-                        <FaFilter style={{color:ROJO,fontSize:'0.60rem'}}/>
+                        <FaFilter style={{color:ROJO,fontSize:'0.85rem'}}/>
                     </div>
-                    <span style={{fontSize:'0.72rem',fontWeight:700,color:'#374151',fontFamily:FONT}}>Filtrar resultados</span>
-                    {hayF&&<span style={{background:ROJO,color:'white',borderRadius:99,fontSize:'0.55rem',fontWeight:700,padding:'1px 5px',fontFamily:FONT}}>{Object.values(fEnc).filter(v=>v!=='').length}</span>}
+                    <span style={{fontSize:'0.95rem',fontWeight:700,color:'#374151',fontFamily:FONT}}>Filtrar resultados</span>
+                    {hayF&&<span style={{background:ROJO,color:'white',borderRadius:99,fontSize:'0.75rem',fontWeight:700,padding:'1px 5px',fontFamily:FONT}}>{Object.values(fEnc).filter(v=>v!=='').length}</span>}
                 </div>
                 <div style={{width:1,height:20,background:'#e5e7eb',flexShrink:0}}/>
 
@@ -727,7 +727,7 @@ const TabEGraduado=()=>{
                         <option value="">Todos los períodos</option>
                         {opsMesAnio.map(o=><option key={o.clave} value={o.clave}>{o.label}</option>)}
                     </select>
-                    :<span style={{fontSize:'0.68rem',color:'#94a3b8',fontFamily:FONT}}>Sin períodos cerrados</span>
+                    :<span style={{fontSize:'0.85rem',color:'#94a3b8',fontFamily:FONT}}>Sin períodos cerrados</span>
                 }
                 {opsAnioGrad.length>0&&(
                     <select value={fEnc.anioGraduacion} onChange={e=>cEnc('anioGraduacion',e.target.value)} className={`teg-sel${fEnc.anioGraduacion?' on':''}`}>
@@ -753,17 +753,17 @@ const TabEGraduado=()=>{
                         let display=v;
                         if(k==='mesAnio')    display=opsMesAnio.find(o=>o.clave===v)?.label||v;
                         if(k==='encuestaId') display=(fEnc.mesAnio?encFiltradas:encC).find(e=>e._id===v)?.titulo?.slice(0,28)||v;
-                        return <span key={k} style={{background:`${ROJO}12`,color:ROJO,border:`1px solid ${ROJO}25`,borderRadius:99,fontSize:'0.63rem',fontWeight:600,padding:'2px 7px',fontFamily:FONT,display:'inline-flex',alignItems:'center',gap:3}}>
-                            <span style={{color:'#9ca3af',fontSize:'0.58rem'}}>{lblMap[k]}:</span>&nbsp;{display.length>28?display.slice(0,28)+'…':display}
-                            <button onClick={()=>cEnc(k,'')} style={{background:'none',border:'none',color:ROJO,cursor:'pointer',padding:0,fontSize:'0.70rem',lineHeight:1,opacity:0.7}}>×</button>
+                        return <span key={k} style={{background:`${ROJO}12`,color:ROJO,border:`1px solid ${ROJO}25`,borderRadius:99,fontSize:'0.85rem',fontWeight:600,padding:'2px 7px',fontFamily:FONT,display:'inline-flex',alignItems:'center',gap:3}}>
+                            <span style={{color:'#9ca3af',fontSize:'0.75rem'}}>{lblMap[k]}:</span>&nbsp;{display.length>28?display.slice(0,28)+'…':display}
+                            <button onClick={()=>cEnc(k,'')} style={{background:'none',border:'none',color:ROJO,cursor:'pointer',padding:0,fontSize:'0.95rem',lineHeight:1,opacity:0.7}}>×</button>
                         </span>;
                     })}
-                    <button onClick={lEnc} style={{background:'none',border:'none',cursor:'pointer',color:'#9ca3af',fontSize:'0.65rem',fontFamily:FONT,display:'flex',alignItems:'center',gap:2,padding:'2px 4px'}}><FaTimes style={{fontSize:'0.55rem'}}/>Limpiar</button>
+                    <button onClick={lEnc} style={{background:'none',border:'none',cursor:'pointer',color:'#9ca3af',fontSize:'0.85rem',fontFamily:FONT,display:'flex',alignItems:'center',gap:2,padding:'2px 4px'}}><FaTimes style={{fontSize:'0.75rem'}}/>Limpiar</button>
                 </>}
             </div>
             {fEnc.mesAnio&&<div style={{marginTop:8,paddingTop:8,borderTop:'1px solid #f1f5f9',display:'flex',alignItems:'center',gap:6}}>
-                <FaCalendarAlt style={{color:AZUL,fontSize:'0.60rem'}}/>
-                <span style={{fontSize:'0.62rem',color:'#475569',fontFamily:FONT}}>
+                <FaCalendarAlt style={{color:AZUL,fontSize:'0.85rem'}}/>
+                <span style={{fontSize:'0.85rem',color:'#475569',fontFamily:FONT}}>
                     Período: <strong style={{color:AZUL}}>{opsMesAnio.find(o=>o.clave===fEnc.mesAnio)?.label}</strong>
                     {' · '}{encFiltradas.length} encuesta{encFiltradas.length!==1?'s':''} en este período
                 </span>
@@ -773,10 +773,10 @@ const TabEGraduado=()=>{
         {/* Preguntas recurrentes */}
         {comunes.length>0&&<div style={{marginBottom:14}}>
             <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:10}}>
-                <div style={{width:28,height:28,borderRadius:7,background:`${VERDE}18`,display:'flex',alignItems:'center',justifyContent:'center'}}><FaLayerGroup style={{color:VERDE,fontSize:'0.78rem'}}/></div>
+                <div style={{width:28,height:28,borderRadius:7,background:`${VERDE}18`,display:'flex',alignItems:'center',justifyContent:'center'}}><FaLayerGroup style={{color:VERDE,fontSize:'0.95rem'}}/></div>
                 <div>
-                    <div style={{fontSize:'0.84rem',fontWeight:700,color:'#0f172a',fontFamily:FONT}}>Preguntas Recurrentes</div>
-                    <div style={{fontSize:'0.61rem',color:'#9ca3af',fontFamily:FONT}}>Aparecen en múltiples encuestas · {comunes.length} grupo{comunes.length!==1?'s':''}</div>
+                    <div style={{fontSize:'1rem',fontWeight:700,color:'#0f172a',fontFamily:FONT}}>Preguntas Recurrentes</div>
+                    <div style={{fontSize:'0.85rem',color:'#9ca3af',fontFamily:FONT}}>Aparecen en múltiples encuestas · {comunes.length} grupo{comunes.length!==1?'s':''}</div>
                 </div>
             </div>
             {comunes.map((g,i)=><TarjetaGrupo key={g.id} grupo={g} encuestas={encC} filtros={fEnc} num={i+1}/>)}
@@ -785,10 +785,10 @@ const TabEGraduado=()=>{
         {/* Otras preguntas */}
         {otras.length>0&&<div style={{marginBottom:14}}>
             <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:10}}>
-                <div style={{width:28,height:28,borderRadius:7,background:`${AZUL}18`,display:'flex',alignItems:'center',justifyContent:'center'}}><FaQuestion style={{color:AZUL,fontSize:'0.78rem'}}/></div>
+                <div style={{width:28,height:28,borderRadius:7,background:`${AZUL}18`,display:'flex',alignItems:'center',justifyContent:'center'}}><FaQuestion style={{color:AZUL,fontSize:'0.95rem'}}/></div>
                 <div>
-                    <div style={{fontSize:'0.84rem',fontWeight:700,color:'#0f172a',fontFamily:FONT}}>Otras Preguntas</div>
-                    <div style={{fontSize:'0.61rem',color:'#9ca3af',fontFamily:FONT}}>{fEnc.encuestaId?'De la encuesta seleccionada':'Específicas de una encuesta'} · {otras.length} grupo{otras.length!==1?'s':''}</div>
+                    <div style={{fontSize:'1rem',fontWeight:700,color:'#0f172a',fontFamily:FONT}}>Otras Preguntas</div>
+                    <div style={{fontSize:'0.85rem',color:'#9ca3af',fontFamily:FONT}}>{fEnc.encuestaId?'De la encuesta seleccionada':'Específicas de una encuesta'} · {otras.length} grupo{otras.length!==1?'s':''}</div>
                 </div>
             </div>
             {otras.map((g,i)=><TarjetaGrupo key={g.id} grupo={g} encuestas={encC} filtros={fEnc} num={comunes.length+i+1}/>)}
@@ -798,11 +798,11 @@ const TabEGraduado=()=>{
         {condicionales.length>0&&<div style={{marginBottom:14}}>
             <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:10}}>
                 <div style={{width:28,height:28,borderRadius:7,background:`${NARANJA}18`,display:'flex',alignItems:'center',justifyContent:'center'}}>
-                    <FaCodeBranch style={{color:NARANJA,fontSize:'0.78rem'}}/>
+                    <FaCodeBranch style={{color:NARANJA,fontSize:'0.95rem'}}/>
                 </div>
                 <div>
-                    <div style={{fontSize:'0.84rem',fontWeight:700,color:'#0f172a',fontFamily:FONT}}>Preguntas Condicionales</div>
-                    <div style={{fontSize:'0.61rem',color:'#9ca3af',fontFamily:FONT}}>
+                    <div style={{fontSize:'1rem',fontWeight:700,color:'#0f172a',fontFamily:FONT}}>Preguntas Condicionales</div>
+                    <div style={{fontSize:'0.85rem',color:'#9ca3af',fontFamily:FONT}}>
                         Solo se muestran según la respuesta Sí/No dada · {condicionales.length} subpregunta{condicionales.length!==1?'s':''}
                     </div>
                 </div>
@@ -821,9 +821,9 @@ const TabEGraduado=()=>{
         {/* Sin datos */}
         {comunes.length===0&&otras.length===0&&condicionales.length===0&&(
             <div style={{padding:'32px',background:'white',borderRadius:10,border:'1px solid #e5e7eb',textAlign:'center',marginBottom:14}}>
-                <FaClipboardList style={{color:'#cbd5e1',fontSize:'2rem',marginBottom:8}}/>
-                <p style={{margin:'0 0 6px',fontSize:'0.78rem',fontWeight:600,color:'#94a3b8',fontFamily:FONT}}>{encC.length===0?'No hay encuestas cerradas aún':'Sin resultados con los filtros actuales'}</p>
-                <p style={{margin:0,fontSize:'0.68rem',color:'#cbd5e1',fontFamily:FONT}}>{encC.length===0?'Los gráficos aparecerán al cerrar una encuesta.':'Prueba limpiando los filtros.'}</p>
+                <FaClipboardList style={{color:'#cbd5e1',fontSize:'2.3rem',marginBottom:8}}/>
+                <p style={{margin:'0 0 6px',fontSize:'0.95rem',fontWeight:600,color:'#94a3b8',fontFamily:FONT}}>{encC.length===0?'No hay encuestas cerradas aún':'Sin resultados con los filtros actuales'}</p>
+                <p style={{margin:0,fontSize:'0.85rem',color:'#cbd5e1',fontFamily:FONT}}>{encC.length===0?'Los gráficos aparecerán al cerrar una encuesta.':'Prueba limpiando los filtros.'}</p>
             </div>
         )}
 
@@ -831,16 +831,16 @@ const TabEGraduado=()=>{
         <div style={{display:'grid',gridTemplateColumns:'1fr 320px',gap:14}}>
             <div className="teg-a" style={{background:'white',borderRadius:10,border:'1px solid #e5e7eb',overflow:'hidden',animationDelay:'200ms'}}>
                 <div style={{padding:'11px 16px',borderBottom:'1px solid #f1f5f9',background:`linear-gradient(135deg,${ROJO}09,transparent)`,display:'flex',alignItems:'center',gap:9,flexWrap:'wrap'}}>
-                    <div style={{width:28,height:28,borderRadius:7,background:`${ROJO}18`,display:'flex',alignItems:'center',justifyContent:'center'}}><FaLightbulb style={{color:ROJO,fontSize:'0.82rem'}}/></div>
+                    <div style={{width:28,height:28,borderRadius:7,background:`${ROJO}18`,display:'flex',alignItems:'center',justifyContent:'center'}}><FaLightbulb style={{color:ROJO,fontSize:'1rem'}}/></div>
                     <div>
-                        <div style={{fontSize:'0.82rem',fontWeight:700,color:'#0f172a',fontFamily:FONT}}>Análisis de Situación</div>
-                        <div style={{fontSize:'0.61rem',color:'#9ca3af',fontFamily:FONT}}>{insights.length} observaciones{hayF&&<span style={{color:ROJO,marginLeft:4}}>· Filtrado aplicado</span>}</div>
+                        <div style={{fontSize:'1rem',fontWeight:700,color:'#0f172a',fontFamily:FONT}}>Análisis de Situación</div>
+                        <div style={{fontSize:'0.85rem',color:'#9ca3af',fontFamily:FONT}}>{insights.length} observaciones{hayF&&<span style={{color:ROJO,marginLeft:4}}>· Filtrado aplicado</span>}</div>
                     </div>
                     <div style={{marginLeft:'auto',display:'flex',gap:10}}>
                         {[['crit','Crítico',ROJO],['warn','Atención',NARANJA],['ok','Fortaleza',VERDE],['info','Sugerencia',AZUL]].map(([tipo,lbl,c])=>(
                             <div key={tipo} style={{display:'flex',alignItems:'center',gap:3}}>
                                 <div style={{width:6,height:6,borderRadius:'50%',background:c}}/>
-                                <span style={{fontSize:'0.60rem',color:'#6b7280',fontFamily:FONT}}>{lbl}</span>
+                                <span style={{fontSize:'0.85rem',color:'#6b7280',fontFamily:FONT}}>{lbl}</span>
                             </div>
                         ))}
                     </div>
@@ -852,7 +852,7 @@ const TabEGraduado=()=>{
                             if(!gr.length) return null;
                             const lbls={crit:'🔴 Puntos Críticos',warn:'⚠️ Atención',ok:'✅ Fortalezas',info:'💡 Sugerencias'};
                             return <div key={tipo} style={{marginBottom:12}}>
-                                <p style={{margin:'0 0 6px',fontSize:'0.65rem',fontWeight:700,color:'#6b7280',textTransform:'uppercase',letterSpacing:'0.5px',fontFamily:FONT}}>{lbls[tipo]}</p>
+                                <p style={{margin:'0 0 6px',fontSize:'0.85rem',fontWeight:700,color:'#6b7280',textTransform:'uppercase',letterSpacing:'0.5px',fontFamily:FONT}}>{lbls[tipo]}</p>
                                 <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(260px,1fr))',gap:6}}>
                                     {gr.map((r,i)=><Insight key={i} tipo={r.tipo} titulo={r.titulo} detalle={r.detalle} delay={i*35}/>)}
                                 </div>
@@ -863,26 +863,26 @@ const TabEGraduado=()=>{
             </div>
             <div className="teg-a" style={{background:'white',borderRadius:10,border:'1px solid #e5e7eb',overflow:'hidden',animationDelay:'220ms'}}>
                 <div style={{padding:'11px 16px',borderBottom:'1px solid #f1f5f9',background:`linear-gradient(135deg,${AZUL}09,transparent)`,display:'flex',alignItems:'center',gap:9}}>
-                    <div style={{width:28,height:28,borderRadius:7,background:`${AZUL}18`,display:'flex',alignItems:'center',justifyContent:'center'}}><FaBullseye style={{color:AZUL,fontSize:'0.82rem'}}/></div>
+                    <div style={{width:28,height:28,borderRadius:7,background:`${AZUL}18`,display:'flex',alignItems:'center',justifyContent:'center'}}><FaBullseye style={{color:AZUL,fontSize:'1rem'}}/></div>
                     <div>
-                        <div style={{fontSize:'0.82rem',fontWeight:700,color:'#0f172a',fontFamily:FONT}}>Plan de Acción</div>
-                        <div style={{fontSize:'0.61rem',color:'#9ca3af',fontFamily:FONT}}>Prioridades basadas en datos reales</div>
+                        <div style={{fontSize:'1rem',fontWeight:700,color:'#0f172a',fontFamily:FONT}}>Plan de Acción</div>
+                        <div style={{fontSize:'0.85rem',color:'#9ca3af',fontFamily:FONT}}>Prioridades basadas en datos reales</div>
                     </div>
                 </div>
                 <div style={{padding:'12px 14px'}}>
                     {plan.length===0
-                        ?<div style={{textAlign:'center',padding:'20px 0'}}><FaCheckCircle style={{color:VERDE,fontSize:'1.6rem',marginBottom:8}}/><p style={{margin:0,fontSize:'0.74rem',color:VERDE,fontFamily:FONT,fontWeight:600}}>¡Sin acciones críticas!</p></div>
+                        ?<div style={{textAlign:'center',padding:'20px 0'}}><FaCheckCircle style={{color:VERDE,fontSize:'1.73rem',marginBottom:8}}/><p style={{margin:0,fontSize:'0.95rem',color:VERDE,fontFamily:FONT,fontWeight:600}}>¡Sin acciones críticas!</p></div>
                         :plan.map((a,i)=>{
                             const imp={alto:ROJO,medio:NARANJA,bajo:CIAN}[a.impacto]||AZUL;
                             return <div key={i} style={{display:'flex',gap:10,alignItems:'flex-start',padding:'8px 0',borderBottom:i<plan.length-1?'1px solid #f1f5f9':'none'}}>
                                 <div style={{width:22,height:22,borderRadius:6,background:`${imp}15`,border:`1px solid ${imp}30`,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,marginTop:1}}>
-                                    <span style={{fontSize:'0.65rem',fontWeight:800,color:imp,fontFamily:FONT}}>{a.prioridad}</span>
+                                    <span style={{fontSize:'0.85rem',fontWeight:800,color:imp,fontFamily:FONT}}>{a.prioridad}</span>
                                 </div>
                                 <div style={{flex:1,minWidth:0}}>
-                                    <div style={{fontSize:'0.72rem',fontWeight:600,color:'#0f172a',fontFamily:FONT,marginBottom:2}}>{a.accion}</div>
+                                    <div style={{fontSize:'0.95rem',fontWeight:600,color:'#0f172a',fontFamily:FONT,marginBottom:2}}>{a.accion}</div>
                                     <div style={{display:'flex',gap:5,alignItems:'center',flexWrap:'wrap'}}>
-                                        <span style={{fontSize:'0.60rem',fontWeight:700,color:imp,background:`${imp}12`,border:`1px solid ${imp}25`,borderRadius:99,padding:'1px 5px',fontFamily:FONT}}>Impacto {a.impacto}</span>
-                                        <span style={{fontSize:'0.60rem',color:'#9ca3af',fontFamily:FONT}}>{a.meta}</span>
+                                        <span style={{fontSize:'0.85rem',fontWeight:700,color:imp,background:`${imp}12`,border:`1px solid ${imp}25`,borderRadius:99,padding:'1px 5px',fontFamily:FONT}}>Impacto {a.impacto}</span>
+                                        <span style={{fontSize:'0.85rem',color:'#9ca3af',fontFamily:FONT}}>{a.meta}</span>
                                     </div>
                                 </div>
                             </div>;

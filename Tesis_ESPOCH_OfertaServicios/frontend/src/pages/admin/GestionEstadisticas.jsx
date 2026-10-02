@@ -14,7 +14,7 @@ import { leerSesion } from '../../utils/storageSeguro';
 // ── Config ────────────────────────────────────────────────────
 const API  = import.meta.env.VITE_API_URL || 'http://localhost:8351/api';
 const FONT = "'Rotis', 'Segoe UI', system-ui, -apple-system, sans-serif";
-const ROJO = '#BE1E2D';
+const ROJO = '#BC0613';
 
 const hdrs = () => {
     const usuario = leerSesion('usuario');
@@ -283,7 +283,7 @@ const GestionEstadisticas = () => {
     if (cargando) return (
         <div style={S.centro}>
             <div style={S.spin} />
-            <p style={{ margin: '14px 0 0', fontSize: '0.80rem', color: '#9ca3af', fontFamily: FONT }}>
+            <p style={{ margin: '14px 0 0', fontSize: '1rem', color: '#9ca3af', fontFamily: FONT }}>
                 Calculando estadísticas...
             </p>
         </div>
@@ -291,8 +291,8 @@ const GestionEstadisticas = () => {
 
     if (error) return (
         <div style={S.centro}>
-            <FaExclamationTriangle style={{ fontSize: '2rem', color: '#E65100', marginBottom: 10 }} />
-            <p style={{ margin: '0 0 14px', fontSize: '0.84rem', color: '#374151', fontFamily: FONT }}>{error}</p>
+            <FaExclamationTriangle style={{ fontSize: '2.3rem', color: '#E65100', marginBottom: 10 }} />
+            <p style={{ margin: '0 0 14px', fontSize: '1rem', color: '#374151', fontFamily: FONT }}>{error}</p>
             <button style={S.btnAct} onClick={cargar}>
                 <FaSyncAlt style={{ marginRight: 6 }} />Reintentar
             </button>
@@ -313,7 +313,7 @@ const GestionEstadisticas = () => {
                     return (
                         <button key={t.id} onClick={() => setTab(t.id)} className="gest-anim" style={{
                             display: 'inline-flex', alignItems: 'center', padding: '8px 16px',
-                            borderRadius: 8, cursor: 'pointer', fontSize: '0.78rem', fontFamily: FONT,
+                            borderRadius: 8, cursor: 'pointer', fontSize: '0.95rem', fontFamily: FONT,
                             border: `1px solid ${act ? ROJO : '#e5e7eb'}`,
                             background: act ? ROJO : 'white',
                             color: act ? 'white' : '#6b7280',
@@ -321,13 +321,13 @@ const GestionEstadisticas = () => {
                             boxShadow: '0 1px 2px rgba(0,0,0,0.04)',
                             animationDelay: `${i * 50}ms`,
                         }}>
-                            <Ico style={{ marginRight: 6, fontSize: '0.76rem' }} />{t.label}
+                            <Ico style={{ marginRight: 6, fontSize: '0.95rem' }} />{t.label}
                         </button>
                     );
                 })}
                 <div style={{ marginLeft: 'auto' }}>
                     <button style={S.btnAct} onClick={cargar}>
-                        <FaSyncAlt style={{ marginRight: 5, fontSize: '0.66rem' }} />Actualizar
+                        <FaSyncAlt style={{ marginRight: 5, fontSize: '0.85rem' }} />Actualizar
                     </button>
                 </div>
             </div>
@@ -345,7 +345,7 @@ const GestionEstadisticas = () => {
                                 className="gest-anim"
                                 style={{
                                     display: 'inline-flex', alignItems: 'center', padding: '7px 14px',
-                                    borderRadius: 8, cursor: 'pointer', fontSize: '0.78rem', fontFamily: FONT,
+                                    borderRadius: 8, cursor: 'pointer', fontSize: '0.95rem', fontFamily: FONT,
                                     border: `1px solid ${act ? ROJO : '#e5e7eb'}`,
                                     background: act ? ROJO : 'white',
                                     color: act ? 'white' : '#6b7280',
@@ -354,7 +354,7 @@ const GestionEstadisticas = () => {
                                     animationDelay: `${i * 50}ms`,
                                 }}
                             >
-                                <Ico style={{ marginRight: 6, fontSize: '0.76rem' }} />{st.label}
+                                <Ico style={{ marginRight: 6, fontSize: '0.95rem' }} />{st.label}
                             </button>
                         );
                     })}
@@ -385,7 +385,7 @@ const GestionEstadisticas = () => {
 const S = {
     centro: { display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: 320, textAlign: 'center' },
     spin:   { width: 30, height: 30, border: '3px solid #f1f5f9', borderTop: `3px solid ${ROJO}`, borderRadius: '50%', animation: 'gest-spin 0.8s linear infinite' },
-    btnAct: { display: 'inline-flex', alignItems: 'center', padding: '7px 12px', background: 'white', border: '1px solid #e5e7eb', borderRadius: 7, cursor: 'pointer', fontSize: '0.73rem', fontWeight: 600, color: '#374151', fontFamily: FONT, boxShadow: '0 1px 2px rgba(0,0,0,0.04)' },
+    btnAct: { display: 'inline-flex', alignItems: 'center', padding: '7px 12px', background: 'white', border: '1px solid #e5e7eb', borderRadius: 7, cursor: 'pointer', fontSize: '0.95rem', fontWeight: 600, color: '#374151', fontFamily: FONT, boxShadow: '0 1px 2px rgba(0,0,0,0.04)' },
 };
 
 export default GestionEstadisticas;

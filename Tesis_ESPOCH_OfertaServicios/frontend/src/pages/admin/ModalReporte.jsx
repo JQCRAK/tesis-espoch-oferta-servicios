@@ -22,7 +22,7 @@ const hdrs = () => {
 };
 
 const PALETA = [
-    '#BE1E2D', '#1565C0', '#2E7D32', '#F57F17', '#6A1B9A',
+    '#BC0613', '#1565C0', '#2E7D32', '#F57F17', '#6A1B9A',
     '#00695C', '#AD1457', '#4527A0', '#0277BD', '#558B2F',
 ];
 
@@ -68,7 +68,7 @@ const GraficaDona = ({ datos, total }) => {
         const y = cy + radius * Math.sin(-midAngle * RADIAN);
         return (
             <text x={x} y={y} fill="#2c3e50" textAnchor="middle" dominantBaseline="central"
-                style={{ fontSize: '0.65rem', fontWeight: '700' }}>
+                style={{ fontSize: '0.85rem', fontWeight: '700' }}>
                 {pct}%
             </text>
         );
@@ -89,11 +89,11 @@ const GraficaDona = ({ datos, total }) => {
                             width: 11, height: 11, borderRadius: 3,
                             background: PALETA[i % PALETA.length], flexShrink: 0, justifySelf: 'center',
                         }} />
-                        <span style={{ fontSize: '0.73rem', color: '#2c3e50', lineHeight: 1.3, wordBreak: 'break-word' }}>
+                        <span style={{ fontSize: '0.95rem', color: '#2c3e50', lineHeight: 1.3, wordBreak: 'break-word' }}>
                             {d.opcion}
                         </span>
                         <span style={{
-                            fontSize: '0.73rem', fontWeight: '700',
+                            fontSize: '0.95rem', fontWeight: '700',
                             color: PALETA[i % PALETA.length], textAlign: 'right',
                         }}>
                             {d.cantidad}
@@ -113,7 +113,7 @@ const GraficaDona = ({ datos, total }) => {
                         </Pie>
                         <Tooltip
                             formatter={(v, n) => [`${v} resp. (${dataConPct.find(d => d.opcion === n)?.pct}%)`, n]}
-                            contentStyle={{ fontSize: '0.72rem' }}
+                            contentStyle={{ fontSize: '0.95rem' }}
                         />
                     </PieChart>
                 </ResponsiveContainer>
@@ -143,10 +143,10 @@ const GraficaBarrasH = ({ datos }) => {
                             width: 10, height: 10, borderRadius: 2,
                             background: PALETA[i % PALETA.length], flexShrink: 0,
                         }} />
-                        <span style={{ fontSize: '0.71rem', color: '#2c3e50', flex: 1, lineHeight: 1.35 }}>
+                        <span style={{ fontSize: '0.95rem', color: '#2c3e50', flex: 1, lineHeight: 1.35 }}>
                             {d.opcion}
                         </span>
-                        <span style={{ fontSize: '0.72rem', fontWeight: '700', color: '#2c3e50', minWidth: 22, textAlign: 'right', flexShrink: 0 }}>
+                        <span style={{ fontSize: '0.95rem', fontWeight: '700', color: '#2c3e50', minWidth: 22, textAlign: 'right', flexShrink: 0 }}>
                             {d.cantidad}
                         </span>
                     </div>
@@ -181,7 +181,7 @@ const GraficaBarrasH = ({ datos }) => {
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', paddingRight: 2, height: 22, alignItems: 'flex-end' }}>
                     {[0, ticksMid, maxCant].map((v, i) => (
-                        <span key={i} style={{ fontSize: '0.62rem', color: '#6c757d' }}>{v}</span>
+                        <span key={i} style={{ fontSize: '0.85rem', color: '#6c757d' }}>{v}</span>
                     ))}
                 </div>
             </div>
@@ -200,7 +200,7 @@ const GraficaBarrasV = ({ datos }) => {
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
                 <XAxis dataKey="opcion" tick={{ fontSize: 10 }} />
                 <YAxis tick={{ fontSize: 10 }} allowDecimals={false} />
-                <Tooltip formatter={(v) => [`${v} resp.`]} contentStyle={{ fontSize: '0.72rem' }} />
+                <Tooltip formatter={(v) => [`${v} resp.`]} contentStyle={{ fontSize: '0.95rem' }} />
                 <Bar dataKey="cantidad" fill={PALETA[1]} radius={[4, 4, 0, 0]} barSize={28} />
             </BarChart>
         </ResponsiveContainer>
@@ -229,7 +229,7 @@ const GraficaLikert = ({ datos, etiquetaMin, etiquetaMax, escalaMin, escalaMax }
             {/* Leyenda con colores + opción + cantidad */}
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px 14px', marginBottom: 10 }}>
                 {segmentos.map((s, i) => (
-                    <span key={i} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: '0.7rem', color: '#495057' }}>
+                    <span key={i} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: '0.95rem', color: '#495057' }}>
                         <span style={{ width: 10, height: 10, borderRadius: 2, background: s.color, flexShrink: 0 }} />
                         <span>{s.opcion}</span>
                         <span style={{ fontWeight: '700', color: s.color }}>({s.cantidad})</span>
@@ -240,10 +240,10 @@ const GraficaLikert = ({ datos, etiquetaMin, etiquetaMax, escalaMin, escalaMax }
             {/* Etiquetas min/max encima de la barra */}
             {hayEtiquetas && (
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 3 }}>
-                    <span style={{ fontSize: '0.65rem', color: '#6c757d', fontStyle: 'italic' }}>
+                    <span style={{ fontSize: '0.85rem', color: '#6c757d', fontStyle: 'italic' }}>
                         {escalaMin}{etiquetaMin ? ` = ${etiquetaMin}` : ''}
                     </span>
-                    <span style={{ fontSize: '0.65rem', color: '#6c757d', fontStyle: 'italic' }}>
+                    <span style={{ fontSize: '0.85rem', color: '#6c757d', fontStyle: 'italic' }}>
                         {escalaMax}{etiquetaMax ? ` = ${etiquetaMax}` : ''}
                     </span>
                 </div>
@@ -260,7 +260,7 @@ const GraficaLikert = ({ datos, etiquetaMin, etiquetaMax, escalaMin, escalaMax }
                                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                             }}>
                             {s.pct >= 8 && (
-                                <span style={{ fontSize: '0.65rem', color: 'white', fontWeight: '700' }}>
+                                <span style={{ fontSize: '0.85rem', color: 'white', fontWeight: '700' }}>
                                     {s.pct}%
                                 </span>
                             )}
@@ -273,7 +273,7 @@ const GraficaLikert = ({ datos, etiquetaMin, etiquetaMax, escalaMin, escalaMax }
             <div style={{ display: 'flex', marginTop: 8, gap: 0 }}>
                 {segmentos.map((s, i) => (
                     s.pct > 0 && (
-                        <div key={i} style={{ width: `${s.pct}%`, textAlign: 'center', fontSize: '0.62rem', color: '#6c757d' }}>
+                        <div key={i} style={{ width: `${s.pct}%`, textAlign: 'center', fontSize: '0.85rem', color: '#6c757d' }}>
                             {s.cantidad}
                         </div>
                     )
@@ -311,16 +311,16 @@ const GraficaMatriz = ({ datos, etiquetaMin, etiquetaMax, escalaMin, escalaMax, 
             {/* Leyenda de columnas (colores) */}
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px 14px', marginBottom: 10 }}>
                 {columnas.map((col, i) => (
-                    <span key={i} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: '0.7rem', color: '#495057' }}>
+                    <span key={i} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: '0.95rem', color: '#495057' }}>
                         <span style={{ width: 10, height: 10, borderRadius: 2, background: PALETA[i % PALETA.length], flexShrink: 0 }} />
                         <span>{col}</span>
                         {hayEtiquetas && (
                             <>
                                 {col === String(escalaMin) && etiquetaMin && (
-                                    <span style={{ fontStyle: 'italic', color: '#adb5bd', fontSize: '0.65rem' }}>({etiquetaMin})</span>
+                                    <span style={{ fontStyle: 'italic', color: '#adb5bd', fontSize: '0.85rem' }}>({etiquetaMin})</span>
                                 )}
                                 {col === String(escalaMax) && etiquetaMax && (
-                                    <span style={{ fontStyle: 'italic', color: '#adb5bd', fontSize: '0.65rem' }}>({etiquetaMax})</span>
+                                    <span style={{ fontStyle: 'italic', color: '#adb5bd', fontSize: '0.85rem' }}>({etiquetaMax})</span>
                                 )}
                             </>
                         )}
@@ -341,13 +341,13 @@ const GraficaMatriz = ({ datos, etiquetaMin, etiquetaMax, escalaMin, escalaMax, 
                                 minHeight: 36, padding: '4px 12px 4px 0',
                             }}>
                                 <span style={{
-                                    fontSize: '0.71rem', color: '#2c3e50', flex: 1,
+                                    fontSize: '0.95rem', color: '#2c3e50', flex: 1,
                                     lineHeight: 1.3, wordBreak: 'break-word',
                                 }}>
                                     {d.item.length > 55 ? d.item.substring(0, 55) + '…' : d.item}
                                 </span>
                                 <span style={{
-                                    fontSize: '0.72rem', fontWeight: '700', color: '#2c3e50',
+                                    fontSize: '0.95rem', fontWeight: '700', color: '#2c3e50',
                                     minWidth: 22, textAlign: 'right', flexShrink: 0,
                                 }}>
                                     {totalFila}
@@ -421,7 +421,7 @@ const GraficaMatriz = ({ datos, etiquetaMin, etiquetaMax, escalaMin, escalaMax, 
                     {/* Eje X */}
                     <div style={{ display: 'flex', justifyContent: 'space-between', paddingRight: 2, height: 22, alignItems: 'flex-end' }}>
                         {[0, Math.round(maxTotal / 2), maxTotal].map((v, i) => (
-                            <span key={i} style={{ fontSize: '0.62rem', color: '#6c757d' }}>{v}</span>
+                            <span key={i} style={{ fontSize: '0.85rem', color: '#6c757d' }}>{v}</span>
                         ))}
                     </div>
                 </div>
@@ -442,11 +442,11 @@ const GraficaTextoLibre = ({ datos }) => {
                     display: 'flex', alignItems: 'baseline', gap: 8,
                     padding: '5px 10px',
                     background: i % 2 === 0 ? '#fafafa' : 'white',
-                    borderRadius: 4, fontSize: '0.74rem', color: '#2c3e50', lineHeight: 1.4,
+                    borderRadius: 4, fontSize: '0.95rem', color: '#2c3e50', lineHeight: 1.4,
                 }}>
                     <span style={{ flex: 1 }}>{d.opcion}</span>
                     {d.cantidad > 1 && (
-                        <span style={{ fontSize: '0.68rem', fontWeight: '700', color: '#adb5bd', flexShrink: 0 }}>
+                        <span style={{ fontSize: '0.85rem', fontWeight: '700', color: '#adb5bd', flexShrink: 0 }}>
                             ×{d.cantidad}
                         </span>
                     )}
@@ -457,7 +457,7 @@ const GraficaTextoLibre = ({ datos }) => {
 };
 
 const SinRespuestas = () => (
-    <p style={{ fontSize: '0.74rem', color: '#adb5bd', textAlign: 'center', padding: '14px 0' }}>
+    <p style={{ fontSize: '0.95rem', color: '#adb5bd', textAlign: 'center', padding: '14px 0' }}>
         Sin respuestas para esta pregunta
     </p>
 );
@@ -554,10 +554,10 @@ const ContadorTotal = ({ total, color }) => (
         background: `${color}12`, border: `1px solid ${color}30`,
         borderRadius: 6, marginBottom: 16,
     }}>
-        <span style={{ fontSize: '0.75rem', color: '#6c757d', fontWeight: '500' }}>
+        <span style={{ fontSize: '0.95rem', color: '#6c757d', fontWeight: '500' }}>
             Total que respondieron:
         </span>
-        <span style={{ fontSize: '0.85rem', fontWeight: '800', color }}>
+        <span style={{ fontSize: '1rem', fontWeight: '800', color }}>
             {total}
         </span>
     </div>
@@ -661,10 +661,10 @@ const ModalReporte = ({ onClose }) => {
                                 <React.Fragment key={p}>
                                     <div style={{
                                         ...s.pasoCirculo,
-                                        background: paso >= p ? '#BE1E2D' : '#e9ecef',
+                                        background: paso >= p ? '#BC0613' : '#e9ecef',
                                         color: paso >= p ? 'white' : '#adb5bd',
                                     }}>{p}</div>
-                                    {p < 2 && <div style={{ width: 24, height: 2, background: paso > p ? '#BE1E2D' : '#e9ecef' }} />}
+                                    {p < 2 && <div style={{ width: 24, height: 2, background: paso > p ? '#BC0613' : '#e9ecef' }} />}
                                 </React.Fragment>
                             ))}
                         </div>
@@ -677,8 +677,8 @@ const ModalReporte = ({ onClose }) => {
                     <div style={s.body}>
                         {cargandoOpc ? (
                             <div style={s.loadBox}>
-                                <FaSpinner style={{ fontSize: '1.4rem', color: '#adb5bd', animation: 'spin 1s linear infinite' }} />
-                                <span style={{ fontSize: '0.8rem', color: '#adb5bd' }}>Cargando opciones...</span>
+                                <FaSpinner style={{ fontSize: '1.51rem', color: '#adb5bd', animation: 'spin 1s linear infinite' }} />
+                                <span style={{ fontSize: '1rem', color: '#adb5bd' }}>Cargando opciones...</span>
                             </div>
                         ) : (
                             <>
@@ -687,7 +687,7 @@ const ModalReporte = ({ onClose }) => {
 
                                 <div style={s.campo}>
                                     <label style={s.lbl}>
-                                        <FaCalendarAlt style={{ marginRight: 6, color: '#BE1E2D' }} />
+                                        <FaCalendarAlt style={{ marginRight: 6, color: '#BC0613' }} />
                                         Evento <span style={s.req}>*</span>
                                     </label>
                                     <select value={eventoId} onChange={e => setEventoId(e.target.value)} style={s.sel}>
@@ -736,7 +736,7 @@ const ModalReporte = ({ onClose }) => {
                                 <div style={s.campo}>
                                     <label style={s.lbl}>
                                         Año del informe <span style={s.req}>*</span>
-                                        <span style={{ marginLeft: 6, fontSize: '0.67rem', color: '#adb5bd', fontWeight: '400' }}>
+                                        <span style={{ marginLeft: 6, fontSize: '0.85rem', color: '#adb5bd', fontWeight: '400' }}>
                                             (autocompletado desde el evento)
                                         </span>
                                     </label>
@@ -748,7 +748,7 @@ const ModalReporte = ({ onClose }) => {
 
                                 {eventoSeleccionado && (
                                     <div style={s.resumenBox}>
-                                        <p style={{ margin: '0 0 6px', fontSize: '0.73rem', fontWeight: '700', color: '#2c3e50' }}>
+                                        <p style={{ margin: '0 0 6px', fontSize: '0.95rem', fontWeight: '700', color: '#2c3e50' }}>
                                             Resumen del informe a generar:
                                         </p>
                                         <p style={s.resumenLin}><strong>Evento:</strong> {eventoSeleccionado.titulo}</p>
@@ -767,16 +767,16 @@ const ModalReporte = ({ onClose }) => {
                     <div style={s.body}>
                         {cargandoPrev ? (
                             <div style={s.loadBox}>
-                                <FaSpinner style={{ fontSize: '1.4rem', color: '#BE1E2D', animation: 'spin 1s linear infinite' }} />
-                                <span style={{ fontSize: '0.8rem', color: '#6c757d' }}>Cargando previsualización...</span>
+                                <FaSpinner style={{ fontSize: '1.51rem', color: '#BC0613', animation: 'spin 1s linear infinite' }} />
+                                <span style={{ fontSize: '1rem', color: '#6c757d' }}>Cargando previsualización...</span>
                             </div>
                         ) : exito ? (
                             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14, padding: '32px 20px' }}>
-                                <FaCheckCircle style={{ fontSize: '3rem', color: '#2e7d32' }} />
-                                <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: '700', color: '#2c3e50' }}>
+                                <FaCheckCircle style={{ fontSize: '3.2rem', color: '#2e7d32' }} />
+                                <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: '700', color: '#2c3e50' }}>
                                     ¡Word generado exitosamente!
                                 </h3>
-                                <p style={{ margin: 0, fontSize: '0.8rem', color: '#6c757d', textAlign: 'center' }}>
+                                <p style={{ margin: 0, fontSize: '1rem', color: '#6c757d', textAlign: 'center' }}>
                                     El archivo <strong>Informe_Encuentro_Graduados_{anio}.docx</strong> se descargó en tu computadora.
                                     Las secciones B, C, D, F, G y H están vacías para que las completes en Word.
                                 </p>
@@ -787,7 +787,7 @@ const ModalReporte = ({ onClose }) => {
                         ) : (
                             <>
                                 <p style={s.pasotit}>Paso 2 — Previsualización del análisis estadístico</p>
-                                <p style={{ margin: '0 0 20px', fontSize: '0.75rem', color: '#6c757d' }}>
+                                <p style={{ margin: '0 0 20px', fontSize: '0.95rem', color: '#6c757d' }}>
                                     Estas gráficas se incluirán en la Sección E del Word.
                                 </p>
 
@@ -799,7 +799,7 @@ const ModalReporte = ({ onClose }) => {
                                         </div>
                                         <ContadorTotal total={previewGrad.totalRespuestas} color="#2e7d32" />
                                         {previewGrad.estadisticas.length === 0 ? (
-                                            <p style={{ fontSize: '0.76rem', color: '#adb5bd', padding: '12px 0' }}>Sin datos de respuestas.</p>
+                                            <p style={{ fontSize: '0.95rem', color: '#adb5bd', padding: '12px 0' }}>Sin datos de respuestas.</p>
                                         ) : (
                                             previewGrad.estadisticas.map((stat, i) => (
                                                 <PreguntaCard key={i} stat={stat} totalEncuesta={previewGrad.totalRespuestas} />
@@ -816,7 +816,7 @@ const ModalReporte = ({ onClose }) => {
                                         </div>
                                         <ContadorTotal total={previewEmp.totalRespuestas} color="#1565c0" />
                                         {previewEmp.estadisticas.length === 0 ? (
-                                            <p style={{ fontSize: '0.76rem', color: '#adb5bd', padding: '12px 0' }}>Sin datos de respuestas.</p>
+                                            <p style={{ fontSize: '0.95rem', color: '#adb5bd', padding: '12px 0' }}>Sin datos de respuestas.</p>
                                         ) : (
                                             previewEmp.estadisticas.map((stat, i) => (
                                                 <PreguntaCard key={i} stat={stat} totalEncuesta={previewEmp.totalRespuestas} />
@@ -834,7 +834,7 @@ const ModalReporte = ({ onClose }) => {
                     <div style={s.foot}>
                         {paso === 2 && (
                             <button style={s.btnSecundario} onClick={() => setPaso(1)} disabled={descargando}>
-                                <FaArrowLeft style={{ fontSize: '0.7rem' }} /> Volver
+                                <FaArrowLeft style={{ fontSize: '0.95rem' }} /> Volver
                             </button>
                         )}
                         <span style={{ flex: 1 }} />
@@ -844,7 +844,7 @@ const ModalReporte = ({ onClose }) => {
                                 style={s.btnPrimario} onClick={irPaso2}
                                 disabled={cargandoOpc || !eventoId || !encGradId || !encEmpId}
                             >
-                                Siguiente <FaArrowRight style={{ fontSize: '0.7rem' }} />
+                                Siguiente <FaArrowRight style={{ fontSize: '0.95rem' }} />
                             </button>
                         ) : (
                             !exito && !cargandoPrev && (
@@ -854,7 +854,7 @@ const ModalReporte = ({ onClose }) => {
                                 >
                                     {descargando
                                         ? <><FaSpinner style={{ animation: 'spin 1s linear infinite' }} /> Generando Word...</>
-                                        : <><FaFileWord style={{ fontSize: '0.85rem' }} /> Descargar Word</>
+                                        : <><FaFileWord style={{ fontSize: '1rem' }} /> Descargar Word</>
                                     }
                                 </button>
                             )
@@ -875,34 +875,34 @@ const ModalReporte = ({ onClose }) => {
 const s = {
     overlay: { position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.55)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 16, backdropFilter: 'blur(2px)' },
     modal: { backgroundColor: 'white', borderRadius: 12, width: '100%', maxWidth: 800, maxHeight: '92vh', display: 'flex', flexDirection: 'column', boxShadow: '0 8px 32px rgba(0,0,0,0.2)' },
-    head: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px 13px', borderBottom: '2px solid #BE1E2D', flexShrink: 0 },
-    tit: { margin: '0 0 2px', fontSize: '0.95rem', fontWeight: '700', color: '#2c3e50' },
-    sub: { margin: 0, fontSize: '0.7rem', color: '#adb5bd' },
+    head: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px 13px', borderBottom: '2px solid #BC0613', flexShrink: 0 },
+    tit: { margin: '0 0 2px', fontSize: '1.1rem', fontWeight: '700', color: '#2c3e50' },
+    sub: { margin: 0, fontSize: '0.95rem', color: '#adb5bd' },
     pasos: { display: 'flex', alignItems: 'center', gap: 4 },
-    pasoCirculo: { width: 26, height: 26, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.72rem', fontWeight: '700', transition: 'all 0.2s' },
-    btnClose: { background: 'none', border: 'none', cursor: 'pointer', color: '#adb5bd', fontSize: '1rem', padding: 4, display: 'flex', alignItems: 'center' },
+    pasoCirculo: { width: 26, height: 26, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.95rem', fontWeight: '700', transition: 'all 0.2s' },
+    btnClose: { background: 'none', border: 'none', cursor: 'pointer', color: '#adb5bd', fontSize: '1.1rem', padding: 4, display: 'flex', alignItems: 'center' },
     body: { flex: 1, overflowY: 'auto', padding: '18px 22px' },
     loadBox: { display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12, padding: '40px', background: '#f8f9fa', borderRadius: 8 },
-    pasotit: { margin: '0 0 12px', fontSize: '0.85rem', fontWeight: '700', color: '#2c3e50' },
-    errBox: { padding: '10px 14px', background: '#fff3e0', border: '1px solid #ffe082', borderLeft: '4px solid #f57f17', borderRadius: 7, color: '#e65100', fontSize: '0.77rem', marginBottom: 14 },
+    pasotit: { margin: '0 0 12px', fontSize: '1rem', fontWeight: '700', color: '#2c3e50' },
+    errBox: { padding: '10px 14px', background: '#fff3e0', border: '1px solid #ffe082', borderLeft: '4px solid #f57f17', borderRadius: 7, color: '#e65100', fontSize: '0.95rem', marginBottom: 14 },
     campo: { display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 16 },
-    lbl: { fontSize: '0.78rem', fontWeight: '600', color: '#2c3e50', display: 'flex', alignItems: 'center' },
-    req: { color: '#BE1E2D', marginLeft: 3 },
-    sel: { padding: '8px 11px', border: '1px solid #e9ecef', borderRadius: 7, fontSize: '0.8rem', color: '#2c3e50', outline: 'none', background: '#f8f9fa', cursor: 'pointer', fontFamily: "'Rotis', 'Segoe UI',Roboto,sans-serif" },
-    hint: { fontSize: '0.69rem', color: '#f57f17' },
+    lbl: { fontSize: '0.95rem', fontWeight: '600', color: '#2c3e50', display: 'flex', alignItems: 'center' },
+    req: { color: '#BC0613', marginLeft: 3 },
+    sel: { padding: '8px 11px', border: '1px solid #e9ecef', borderRadius: 7, fontSize: '1rem', color: '#2c3e50', outline: 'none', background: '#f8f9fa', cursor: 'pointer', fontFamily: "'Rotis', 'Segoe UI',Roboto,sans-serif" },
+    hint: { fontSize: '0.85rem', color: '#f57f17' },
     resumenBox: { background: '#f0f7ff', border: '1px solid #bbdefb', borderRadius: 8, padding: '12px 16px', marginTop: 8 },
-    resumenLin: { margin: '0 0 4px', fontSize: '0.76rem', color: '#2c3e50' },
-    seccionLabel: { display: 'flex', alignItems: 'center', gap: 8, padding: '10px 0 10px', borderBottom: '2px solid #f0f0f0', marginBottom: 16, fontSize: '0.85rem', fontWeight: '700', color: '#2c3e50' },
+    resumenLin: { margin: '0 0 4px', fontSize: '0.95rem', color: '#2c3e50' },
+    seccionLabel: { display: 'flex', alignItems: 'center', gap: 8, padding: '10px 0 10px', borderBottom: '2px solid #f0f0f0', marginBottom: 16, fontSize: '1rem', fontWeight: '700', color: '#2c3e50' },
     pregCard: { background: '#fafafa', border: '1px solid #e9ecef', borderRadius: 8, padding: '13px 15px', marginBottom: 12 },
-    pregTxt: { margin: '0 0 10px', fontSize: '0.79rem', fontWeight: '600', color: '#2c3e50', lineHeight: 1.4 },
+    pregTxt: { margin: '0 0 10px', fontSize: '0.95rem', fontWeight: '600', color: '#2c3e50', lineHeight: 1.4 },
     graficaWrap: { background: 'white', borderRadius: 6, padding: '10px', border: '1px solid #f0f0f0' },
     condBlock: { marginTop: 14, borderLeft: '3px solid #e9ecef', paddingLeft: 14 },
-    condTag: { display: 'inline-block', fontSize: '0.68rem', fontStyle: 'italic', color: '#adb5bd', marginBottom: 5, background: '#f8f9fa', padding: '2px 8px', borderRadius: 10 },
-    subPregTxt: { margin: '0 0 6px', fontSize: '0.76rem', fontWeight: '600', color: '#495057' },
+    condTag: { display: 'inline-block', fontSize: '0.85rem', fontStyle: 'italic', color: '#adb5bd', marginBottom: 5, background: '#f8f9fa', padding: '2px 8px', borderRadius: 10 },
+    subPregTxt: { margin: '0 0 6px', fontSize: '0.95rem', fontWeight: '600', color: '#495057' },
     foot: { display: 'flex', alignItems: 'center', gap: 8, padding: '12px 20px', borderTop: '1px solid #e9ecef', backgroundColor: '#f8f9fa', borderRadius: '0 0 12px 12px', flexShrink: 0 },
-    btnPrimario: { display: 'inline-flex', alignItems: 'center', gap: 7, padding: '9px 18px', background: '#BE1E2D', color: 'white', border: 'none', borderRadius: 7, cursor: 'pointer', fontSize: '0.8rem', fontWeight: '700' },
-    btnSecundario: { display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 14px', background: 'white', color: '#6c757d', border: '1px solid #e9ecef', borderRadius: 7, cursor: 'pointer', fontSize: '0.78rem', fontWeight: '600' },
-    btnCerrar: { padding: '8px 14px', background: 'transparent', border: '1px solid #e9ecef', borderRadius: 7, cursor: 'pointer', fontSize: '0.78rem', fontWeight: '600', color: '#6c757d' },
+    btnPrimario: { display: 'inline-flex', alignItems: 'center', gap: 7, padding: '9px 18px', background: '#BC0613', color: 'white', border: 'none', borderRadius: 7, cursor: 'pointer', fontSize: '1rem', fontWeight: '700' },
+    btnSecundario: { display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 14px', background: 'white', color: '#6c757d', border: '1px solid #e9ecef', borderRadius: 7, cursor: 'pointer', fontSize: '0.95rem', fontWeight: '600' },
+    btnCerrar: { padding: '8px 14px', background: 'transparent', border: '1px solid #e9ecef', borderRadius: 7, cursor: 'pointer', fontSize: '0.95rem', fontWeight: '600', color: '#6c757d' },
 };
 
 export default ModalReporte;

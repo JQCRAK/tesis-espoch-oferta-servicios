@@ -304,9 +304,9 @@ const ModalGraduados = ({ onClose, aniosGlobal }) => {
     const anios = datos?.aniosDisponibles || aniosGlobal || [];
 
     const IconOrden = ({ campo }) => {
-        if (orden === `${campo}_asc`) return <FaSortAlphaDown style={{ fontSize: '0.65rem', color: 'var(--color-espoch-rojo)' }} />;
-        if (orden === `${campo}_desc`) return <FaSortAlphaUp style={{ fontSize: '0.65rem', color: 'var(--color-espoch-rojo)' }} />;
-        return <FaSort style={{ fontSize: '0.6rem', color: '#ced4da' }} />;
+        if (orden === `${campo}_asc`) return <FaSortAlphaDown style={{ fontSize: '0.85rem', color: '#BC0613' }} />;
+        if (orden === `${campo}_desc`) return <FaSortAlphaUp style={{ fontSize: '0.85rem', color: '#BC0613' }} />;
+        return <FaSort style={{ fontSize: '0.85rem', color: '#ced4da' }} />;
     };
 
     const toggleOrden = (campo) => {
@@ -316,7 +316,7 @@ const ModalGraduados = ({ onClose, aniosGlobal }) => {
     return (
         <div style={ms.overlay} onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
             <div style={ms.modal}>
-                <div style={{ ...ms.head, borderColor: 'var(--color-espoch-rojo)' }}>
+                <div style={{ ...ms.head, borderColor: '#BC0613' }}>
                     <div>
                         <h2 style={ms.tit}>Anexo 25 — Base de Datos Graduados</h2>
                         <p style={ms.sub}>FIE · Carrera de Software · Solo graduados con tesis verificada · {datos ? `${datos.total} registros` : '...'}</p>
@@ -326,7 +326,7 @@ const ModalGraduados = ({ onClose, aniosGlobal }) => {
 
                 <div style={ms.filtrosWrap}>
                     <div style={ms.filtrosRow}>
-                        <FaCalendarAlt style={{ fontSize: '0.7rem', color: '#adb5bd' }} />
+                        <FaCalendarAlt style={{ fontSize: '0.95rem', color: '#adb5bd' }} />
                         <span style={ms.flbl}>Año graduación:</span>
                         <select value={anioInicio} onChange={e => { setAnioInicio(e.target.value); if (!e.target.value) setAnioFin(''); }} style={ms.sel}>
                             <option value="">Todos</option>
@@ -339,11 +339,11 @@ const ModalGraduados = ({ onClose, aniosGlobal }) => {
                             </select>
                         </>)}
                         <button style={ms.btnFiltrar} onClick={aplicar} disabled={cargando}>
-                            <FaFilter style={{ fontSize: '0.62rem' }} /> Filtrar
+                            <FaFilter style={{ fontSize: '0.85rem' }} /> Filtrar
                         </button>
                         {anioInicio && (
                             <button style={ms.btnLimpiar} onClick={() => { setAnioInicio(''); setAnioFin(''); cargar('', '', orden); }}>
-                                <FaSyncAlt style={{ fontSize: '0.58rem' }} /> Limpiar
+                                <FaSyncAlt style={{ fontSize: '0.75rem' }} /> Limpiar
                             </button>
                         )}
                     </div>
@@ -354,7 +354,7 @@ const ModalGraduados = ({ onClose, aniosGlobal }) => {
                     {cargando ? (
                         <div style={ms.loadBox}>
                             <FaSpinner style={{ fontSize: '1.2rem', color: '#adb5bd', animation: 'spin 1s linear infinite' }} />
-                            <span style={{ fontSize: '0.78rem', color: '#adb5bd' }}>Cargando datos...</span>
+                            <span style={{ fontSize: '0.95rem', color: '#adb5bd' }}>Cargando datos...</span>
                         </div>
                     ) : datos && (
                         <div style={{ overflowX: 'auto' }}>
@@ -381,7 +381,7 @@ const ModalGraduados = ({ onClose, aniosGlobal }) => {
                                             <tr key={i} style={ms.trBody}
                                                 onMouseEnter={e => e.currentTarget.style.backgroundColor = '#fafafa'}
                                                 onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}>
-                                                <td style={{ ...ms.td, textAlign: 'center', color: '#adb5bd', fontSize: '0.7rem' }}>{g.nro}</td>
+                                                <td style={{ ...ms.td, textAlign: 'center', color: '#adb5bd', fontSize: '0.95rem' }}>{g.nro}</td>
                                                 <td style={ms.td}><span style={ms.celTxt}>{g.apellidos}</span></td>
                                                 <td style={ms.td}><span style={ms.celTxt}>{g.nombres}</span></td>
                                                 <td style={{ ...ms.td, textAlign: 'center' }}><span style={ms.celMono}>{g.cedula}</span></td>
@@ -391,7 +391,7 @@ const ModalGraduados = ({ onClose, aniosGlobal }) => {
                                         ))}
                                         {datos.total > 5 && (
                                             <tr><td colSpan={6} style={{ ...ms.tdVacio, padding: '8px 12px', fontStyle: 'normal', color: '#6c757d', background: '#f8f9fa' }}>
-                                                <FaEye style={{ marginRight: 5, fontSize: '0.7rem' }} />
+                                                <FaEye style={{ marginRight: 5, fontSize: '0.95rem' }} />
                                                 Mostrando 5 de {datos.total} registros — el reporte completo incluye todos
                                             </td></tr>
                                         )}
@@ -403,7 +403,7 @@ const ModalGraduados = ({ onClose, aniosGlobal }) => {
                 </div>
 
                 <div style={ms.foot}>
-                    <span style={{ fontSize: '0.71rem', color: '#adb5bd', flex: 1 }}>
+                    <span style={{ fontSize: '0.95rem', color: '#adb5bd', flex: 1 }}>
                         {datos && `${datos.total} registros · Período: ${fmtPeriodo(anioInicio || null, anioFin || null)}`}
                     </span>
                     <button style={{ ...ms.btnDesc, background: '#ffebee', border: '1px solid #ffcdd2', color: '#c62828', opacity: (!datos || cargando || generando) ? 0.5 : 1 }}
@@ -452,9 +452,9 @@ const ModalEmpleadores = ({ onClose }) => {
     const anios = datos?.aniosDisponibles || [];
 
     const IconOrden = ({ campo }) => {
-        if (orden === `${campo}_asc`) return <FaSortAlphaDown style={{ fontSize: '0.65rem', color: 'var(--color-espoch-rojo)' }} />;
-        if (orden === `${campo}_desc`) return <FaSortAlphaUp style={{ fontSize: '0.65rem', color: 'var(--color-espoch-rojo)' }} />;
-        return <FaSort style={{ fontSize: '0.6rem', color: '#ced4da' }} />;
+        if (orden === `${campo}_asc`) return <FaSortAlphaDown style={{ fontSize: '0.85rem', color: '#BC0613' }} />;
+        if (orden === `${campo}_desc`) return <FaSortAlphaUp style={{ fontSize: '0.85rem', color: '#BC0613' }} />;
+        return <FaSort style={{ fontSize: '0.85rem', color: '#ced4da' }} />;
     };
 
     const toggleOrden = (campo) => {
@@ -475,7 +475,7 @@ const ModalEmpleadores = ({ onClose }) => {
 
                 <div style={ms.filtrosWrap}>
                     <div style={ms.filtrosRow}>
-                        <FaCalendarAlt style={{ fontSize: '0.7rem', color: '#adb5bd' }} />
+                        <FaCalendarAlt style={{ fontSize: '0.95rem', color: '#adb5bd' }} />
                         <span style={ms.flbl}>Año registro:</span>
                         <select value={anioInicio} onChange={e => { setAnioInicio(e.target.value); if (!e.target.value) setAnioFin(''); }} style={ms.sel}>
                             <option value="">Todos</option>
@@ -488,11 +488,11 @@ const ModalEmpleadores = ({ onClose }) => {
                             </select>
                         </>)}
                         <button style={ms.btnFiltrar} onClick={aplicar} disabled={cargando}>
-                            <FaFilter style={{ fontSize: '0.62rem' }} /> Filtrar
+                            <FaFilter style={{ fontSize: '0.85rem' }} /> Filtrar
                         </button>
                         {anioInicio && (
                             <button style={ms.btnLimpiar} onClick={() => { setAnioInicio(''); setAnioFin(''); cargar('', '', orden); }}>
-                                <FaSyncAlt style={{ fontSize: '0.58rem' }} /> Limpiar
+                                <FaSyncAlt style={{ fontSize: '0.75rem' }} /> Limpiar
                             </button>
                         )}
                     </div>
@@ -503,7 +503,7 @@ const ModalEmpleadores = ({ onClose }) => {
                     {cargando ? (
                         <div style={ms.loadBox}>
                             <FaSpinner style={{ fontSize: '1.2rem', color: '#adb5bd', animation: 'spin 1s linear infinite' }} />
-                            <span style={{ fontSize: '0.78rem', color: '#adb5bd' }}>Cargando datos...</span>
+                            <span style={{ fontSize: '0.95rem', color: '#adb5bd' }}>Cargando datos...</span>
                         </div>
                     ) : datos && (
                         <div style={{ overflowX: 'auto' }}>
@@ -531,18 +531,18 @@ const ModalEmpleadores = ({ onClose }) => {
                                             <tr key={i} style={ms.trBody}
                                                 onMouseEnter={ev => ev.currentTarget.style.backgroundColor = '#fafafa'}
                                                 onMouseLeave={ev => ev.currentTarget.style.backgroundColor = 'transparent'}>
-                                                <td style={{ ...ms.td, textAlign: 'center', color: '#adb5bd', fontSize: '0.7rem' }}>{e.nro}</td>
+                                                <td style={{ ...ms.td, textAlign: 'center', color: '#adb5bd', fontSize: '0.95rem' }}>{e.nro}</td>
                                                 <td style={ms.td}><span style={ms.celTxt}>{e.nombreOrganizacion}</span></td>
                                                 <td style={ms.td}><span style={ms.celTxt}>{e.nombreGerente}</span></td>
                                                 <td style={ms.td}><span style={{ ...ms.celTxt, color: '#6c757d' }}>{e.provincia}</span></td>
                                                 <td style={ms.td}><span style={{ ...ms.celTxt, color: '#6c757d' }}>{e.ciudad}</span></td>
-                                                <td style={ms.td}><span style={{ ...ms.celTxt, color: '#6c757d', fontSize: '0.7rem' }}>{e.email}</span></td>
+                                                <td style={ms.td}><span style={{ ...ms.celTxt, color: '#6c757d', fontSize: '0.95rem' }}>{e.email}</span></td>
                                                 <td style={{ ...ms.td, textAlign: 'center' }}><span style={ms.celMono}>{e.contacto}</span></td>
                                             </tr>
                                         ))}
                                         {datos.total > 5 && (
                                             <tr><td colSpan={7} style={{ ...ms.tdVacio, padding: '8px 12px', fontStyle: 'normal', color: '#6c757d', background: '#f8f9fa' }}>
-                                                <FaEye style={{ marginRight: 5, fontSize: '0.7rem' }} />
+                                                <FaEye style={{ marginRight: 5, fontSize: '0.95rem' }} />
                                                 Mostrando 5 de {datos.total} registros — el reporte completo incluye todos
                                             </td></tr>
                                         )}
@@ -554,7 +554,7 @@ const ModalEmpleadores = ({ onClose }) => {
                 </div>
 
                 <div style={ms.foot}>
-                    <span style={{ fontSize: '0.71rem', color: '#adb5bd', flex: 1 }}>
+                    <span style={{ fontSize: '0.95rem', color: '#adb5bd', flex: 1 }}>
                         {datos && `${datos.total} registros · Período: ${fmtPeriodo(anioInicio || null, anioFin || null)}`}
                     </span>
                     <button style={{ ...ms.btnDesc, background: '#ffebee', border: '1px solid #ffcdd2', color: '#c62828', opacity: (!datos || cargando || generando) ? 0.5 : 1 }}
@@ -661,7 +661,7 @@ const GestionReportes = () => {
                                     </p>
                                 </div>
                                 <div style={{ ...s.metIco, background: mc.bg, border: `1px solid ${mc.border}` }}>
-                                    <Icon style={{ fontSize: '1rem', color: mc.color }} />
+                                    <Icon style={{ fontSize: '1.1rem', color: mc.color }} />
                                 </div>
                             </div>
                         </div>
@@ -688,7 +688,7 @@ const GestionReportes = () => {
                         }}>
                             <div style={s.reporteCardHead}>
                                 <div style={{ ...s.reporteIco, background: r.bg, border: `1px solid ${r.border}` }}>
-                                    <Icon style={{ fontSize: '1.1rem', color: r.color }} />
+                                    <Icon style={{ fontSize: '1.2rem', color: r.color }} />
                                 </div>
                                 <div style={{ flex: 1 }}>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 3, flexWrap: 'wrap' }}>
@@ -709,7 +709,7 @@ const GestionReportes = () => {
                                 </div>
                             </div>
                             <div style={s.reporteCardFoot}>
-                                <span style={{ fontSize: '0.69rem', color: activo ? '#adb5bd' : '#ced4da' }}>
+                                <span style={{ fontSize: '0.85rem', color: activo ? '#adb5bd' : '#ced4da' }}>
                                     {activo ? 'Listo para descargar' : 'En desarrollo'}
                                 </span>
                                 <button
@@ -721,7 +721,7 @@ const GestionReportes = () => {
                                     disabled={!activo}
                                     onClick={r.onClick || undefined}
                                 >
-                                    <FaEye style={{ fontSize: '0.72rem' }} /> Ver y Descargar
+                                    <FaEye style={{ fontSize: '0.95rem' }} /> Ver y Descargar
                                 </button>
                             </div>
                         </div>
@@ -744,24 +744,24 @@ const GestionReportes = () => {
 ═══════════════════════════════════════════════════════════ */
 const s = {
     page: { maxWidth: 1280, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 16, fontFamily: "'Rotis', 'Segoe UI',Roboto,sans-serif" },
-    gridMet: { display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 14 },
+    gridMet: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: 14 },
     metCard: { backgroundColor: 'white', borderRadius: 10, padding: '14px 16px', border: '1px solid #e9ecef', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' },
     metRow: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 },
-    metEtiq: { margin: '0 0 5px', fontSize: '0.58rem', fontWeight: '700', color: '#adb5bd', letterSpacing: '0.8px' },
-    metVal: { margin: 0, fontSize: '1.8rem', fontWeight: '800', color: '#2c3e50', lineHeight: 1 },
+    metEtiq: { margin: '0 0 5px', fontSize: '0.75rem', fontWeight: '700', color: '#adb5bd', letterSpacing: '0.8px' },
+    metVal: { margin: 0, fontSize: '1.94rem', fontWeight: '800', color: '#2c3e50', lineHeight: 1 },
     metIco: { width: 38, height: 38, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
     cardTit2: { backgroundColor: 'white', borderRadius: 10, padding: '14px 18px', border: '1px solid #e9ecef' },
-    secTit: { margin: '0 0 3px', fontSize: '0.95rem', fontWeight: '700', color: '#2c3e50' },
-    secSub: { margin: 0, fontSize: '0.72rem', color: '#adb5bd' },
-    badge: { display: 'inline-block', fontSize: '0.62rem', fontWeight: '600', padding: '2px 8px', borderRadius: 20, whiteSpace: 'nowrap' },
+    secTit: { margin: '0 0 3px', fontSize: '1.1rem', fontWeight: '700', color: '#2c3e50' },
+    secSub: { margin: 0, fontSize: '0.95rem', color: '#adb5bd' },
+    badge: { display: 'inline-block', fontSize: '0.85rem', fontWeight: '600', padding: '2px 8px', borderRadius: 20, whiteSpace: 'nowrap' },
     reportesGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 14 },
     reporteCard: { backgroundColor: 'white', borderRadius: 10, padding: '16px', border: '1px solid #e9ecef', boxShadow: '0 1px 4px rgba(0,0,0,0.05)', display: 'flex', flexDirection: 'column', gap: 12 },
     reporteCardHead: { display: 'flex', gap: 12, alignItems: 'flex-start' },
     reporteIco: { width: 44, height: 44, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
-    reporteTit: { margin: '0 0 4px', fontSize: '0.85rem', fontWeight: '700', color: '#2c3e50' },
-    reporteDesc: { margin: 0, fontSize: '0.72rem', color: '#6c757d', lineHeight: 1.5 },
+    reporteTit: { margin: '0 0 4px', fontSize: '1rem', fontWeight: '700', color: '#2c3e50' },
+    reporteDesc: { margin: 0, fontSize: '0.95rem', color: '#6c757d', lineHeight: 1.5 },
     reporteCardFoot: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: 10, borderTop: '1px solid #f0f0f0' },
-    btnAbrir: { display: 'inline-flex', alignItems: 'center', gap: 6, padding: '7px 14px', color: 'white', border: 'none', borderRadius: 7, fontSize: '0.75rem', fontWeight: '700' },
+    btnAbrir: { display: 'inline-flex', alignItems: 'center', gap: 6, padding: '7px 14px', color: 'white', border: 'none', borderRadius: 7, fontSize: '0.95rem', fontWeight: '700' },
 };
 
 /* ═══════════════════════════════════════════════════════════
@@ -771,29 +771,29 @@ const ms = {
     overlay: { position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.55)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 16, backdropFilter: 'blur(2px)' },
     modal: { backgroundColor: 'white', borderRadius: 12, width: '100%', maxWidth: 720, maxHeight: '90vh', display: 'flex', flexDirection: 'column', boxShadow: '0 8px 32px rgba(0,0,0,0.2)' },
     head: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', padding: '16px 20px 13px', borderBottom: '2px solid', flexShrink: 0 },
-    tit: { margin: '0 0 2px', fontSize: '0.95rem', fontWeight: '700', color: '#2c3e50' },
-    sub: { margin: 0, fontSize: '0.71rem', color: '#adb5bd' },
-    close: { background: 'none', border: 'none', cursor: 'pointer', color: '#adb5bd', fontSize: '1rem', padding: 4 },
+    tit: { margin: '0 0 2px', fontSize: '1.1rem', fontWeight: '700', color: '#2c3e50' },
+    sub: { margin: 0, fontSize: '0.95rem', color: '#adb5bd' },
+    close: { background: 'none', border: 'none', cursor: 'pointer', color: '#adb5bd', fontSize: '1.1rem', padding: 4 },
     filtrosWrap: { padding: '12px 20px', borderBottom: '1px solid #f0f0f0', flexShrink: 0, background: '#fafafa' },
     filtrosRow: { display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 6 },
-    flbl: { fontSize: '0.74rem', color: '#6c757d', whiteSpace: 'nowrap' },
-    sel: { border: '1px solid #e9ecef', background: 'white', outline: 'none', fontSize: '0.76rem', color: '#2c3e50', cursor: 'pointer', padding: '5px 8px', borderRadius: 6 },
-    btnFiltrar: { display: 'inline-flex', alignItems: 'center', gap: 5, padding: '5px 11px', background: 'var(--color-espoch-rojo)', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontSize: '0.73rem', fontWeight: '700' },
-    btnLimpiar: { display: 'inline-flex', alignItems: 'center', gap: 4, padding: '5px 9px', background: 'white', color: '#6c757d', border: '1px solid #e9ecef', borderRadius: 6, cursor: 'pointer', fontSize: '0.71rem' },
-    periodoTxt: { margin: 0, fontSize: '0.7rem', color: '#adb5bd' },
+    flbl: { fontSize: '0.95rem', color: '#6c757d', whiteSpace: 'nowrap' },
+    sel: { border: '1px solid #e9ecef', background: 'white', outline: 'none', fontSize: '0.95rem', color: '#2c3e50', cursor: 'pointer', padding: '5px 8px', borderRadius: 6 },
+    btnFiltrar: { display: 'inline-flex', alignItems: 'center', gap: 5, padding: '5px 11px', background: '#BC0613', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontSize: '0.95rem', fontWeight: '700' },
+    btnLimpiar: { display: 'inline-flex', alignItems: 'center', gap: 4, padding: '5px 9px', background: 'white', color: '#6c757d', border: '1px solid #e9ecef', borderRadius: 6, cursor: 'pointer', fontSize: '0.95rem' },
+    periodoTxt: { margin: 0, fontSize: '0.95rem', color: '#adb5bd' },
     body: { flex: 1, overflowY: 'auto', padding: '14px 20px' },
     loadBox: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, padding: '32px', background: '#f8f9fa', borderRadius: 8 },
     tabla: { width: '100%', borderCollapse: 'collapse' },
     trHead: { borderBottom: '2px solid #f0f0f0', background: '#f8f9fa' },
-    th: { padding: '8px 10px', textAlign: 'left', fontSize: '0.6rem', fontWeight: '700', color: '#6c757d', letterSpacing: '0.6px', whiteSpace: 'nowrap' },
+    th: { padding: '8px 10px', textAlign: 'left', fontSize: '0.85rem', fontWeight: '700', color: '#6c757d', letterSpacing: '0.6px', whiteSpace: 'nowrap' },
     trBody: { borderBottom: '1px solid #f8f9fa', transition: 'background 0.1s' },
     td: { padding: '8px 10px', verticalAlign: 'middle' },
-    tdVacio: { padding: '20px 10px', textAlign: 'center', color: '#adb5bd', fontSize: '0.76rem', fontStyle: 'italic' },
-    celTxt: { fontSize: '0.76rem', fontWeight: '500', color: '#2c3e50' },
-    celMono: { fontSize: '0.71rem', fontFamily: "'Rotis', 'Segoe UI', sans-serif", color: '#495057', background: '#f8f9fa', padding: '1px 5px', borderRadius: 3, border: '1px solid #e9ecef' },
+    tdVacio: { padding: '20px 10px', textAlign: 'center', color: '#adb5bd', fontSize: '0.95rem', fontStyle: 'italic' },
+    celTxt: { fontSize: '0.95rem', fontWeight: '500', color: '#2c3e50' },
+    celMono: { fontSize: '0.95rem', fontFamily: "'Rotis', 'Segoe UI', sans-serif", color: '#495057', background: '#f8f9fa', padding: '1px 5px', borderRadius: 3, border: '1px solid #e9ecef' },
     foot: { display: 'flex', alignItems: 'center', gap: 8, padding: '12px 20px', borderTop: '1px solid #e9ecef', backgroundColor: '#f8f9fa', borderRadius: '0 0 12px 12px', flexShrink: 0 },
-    btnDesc: { display: 'inline-flex', alignItems: 'center', gap: 6, padding: '7px 14px', borderRadius: 7, cursor: 'pointer', fontSize: '0.76rem', fontWeight: '700', flexShrink: 0 },
-    btnCerrar: { padding: '7px 14px', background: 'transparent', border: '1px solid #e9ecef', borderRadius: 7, cursor: 'pointer', fontSize: '0.76rem', fontWeight: '600', color: '#6c757d' },
+    btnDesc: { display: 'inline-flex', alignItems: 'center', gap: 6, padding: '7px 14px', borderRadius: 7, cursor: 'pointer', fontSize: '0.95rem', fontWeight: '700', flexShrink: 0 },
+    btnCerrar: { padding: '7px 14px', background: 'transparent', border: '1px solid #e9ecef', borderRadius: 7, cursor: 'pointer', fontSize: '0.95rem', fontWeight: '600', color: '#6c757d' },
 };
 
 export default GestionReportes;

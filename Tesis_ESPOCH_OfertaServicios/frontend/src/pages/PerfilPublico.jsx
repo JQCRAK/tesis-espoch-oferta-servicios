@@ -41,7 +41,7 @@ const fmtRangoExp = (ini, fin, actual) => {
 };
 
 const nivelAfinidad = (pct) => {
-    if (pct >= 60) return { label: 'Experto',     color: '#be1e2d', bg: '#fff1f2', bar: 'linear-gradient(90deg,#be1e2d,#f43f5e)' };
+    if (pct >= 60) return { label: 'Experto',     color: '#BC0613', bg: '#fff1f2', bar: 'linear-gradient(90deg,#BC0613,#f43f5e)' };
     if (pct >= 35) return { label: 'Avanzado',    color: '#d97706', bg: '#fffbeb', bar: 'linear-gradient(90deg,#d97706,#fbbf24)' };
     return             { label: 'Intermedio',  color: '#2563eb', bg: '#eff6ff', bar: 'linear-gradient(90deg,#2563eb,#60a5fa)' };
 };
@@ -168,7 +168,7 @@ const Carrusel = ({ items, renderItem, titulo, icono: Icono, vacio, autoMs = 500
                                     key={i}
                                     style={{
                                         ...cr.dot,
-                                        backgroundColor: i === page ? '#be1e2d' : '#e2e8f0',
+                                        backgroundColor: i === page ? '#BC0613' : '#e2e8f0',
                                         width: i === page ? 16 : 6,
                                     }}
                                     onClick={() => goTo(i, i > page ? 'left' : 'right')}
@@ -222,7 +222,7 @@ const ModalNotificar = ({ graduado, onCerrar }) => {
                 <div style={mc.banda} />
                 <div style={mc.head}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
-                        <div style={mc.bellWrap}><FaBell style={{ color: '#be1e2d', fontSize: '0.85rem' }} /></div>
+                        <div style={mc.bellWrap}><FaBell style={{ color: '#BC0613', fontSize: '1rem' }} /></div>
                         <div>
                             <h2 style={{ ...mc.titulo, fontFamily: FONT }}>Notificar a {graduado.nombres}</h2>
                             <p style={{ ...mc.sub, fontFamily: FONT }}>Tu mensaje llegará directamente al graduado.</p>
@@ -232,7 +232,7 @@ const ModalNotificar = ({ graduado, onCerrar }) => {
                 </div>
                 {exito ? (
                     <div style={mc.exitoWrap}>
-                        <div style={mc.exitoCircle}><FaCheckCircle style={{ color: '#16a34a', fontSize: '1.8rem' }} /></div>
+                        <div style={mc.exitoCircle}><FaCheckCircle style={{ color: '#16a34a', fontSize: '1.94rem' }} /></div>
                         <h3 style={{ ...mc.exitoH, fontFamily: FONT }}>¡Notificación enviada!</h3>
                         <p style={{ ...mc.exitoP, fontFamily: FONT }}>
                             El graduado recibirá tu mensaje. Si está interesado, se pondrá en contacto contigo.
@@ -245,7 +245,7 @@ const ModalNotificar = ({ graduado, onCerrar }) => {
                             <div style={mc.chipFotoWrap}>
                                 {graduado.fotoPerfil
                                     ? <ImgProtegida src={urlMedia(graduado.fotoPerfil)} alt="" style={mc.chipFoto} />
-                                    : <FaUserCircle style={{ fontSize: '1.6rem', color: '#94a3b8' }} />
+                                    : <FaUserCircle style={{ fontSize: '1.73rem', color: '#94a3b8' }} />
                                 }
                             </div>
                             <div style={{ flex: 1 }}>
@@ -253,7 +253,7 @@ const ModalNotificar = ({ graduado, onCerrar }) => {
                                 <p style={{ ...mc.chipSub2, fontFamily: FONT }}>Ing. en Software · ESPOCH</p>
                             </div>
                             <div style={{ ...mc.chipBadge, fontFamily: FONT }}>
-                                <FaShieldAlt style={{ fontSize: '0.5rem', marginRight: 3 }} />Verificado
+                                <FaShieldAlt style={{ fontSize: '0.8rem', marginRight: 3 }} />Verificado
                             </div>
                         </div>
                         {error && (
@@ -285,7 +285,7 @@ const ModalNotificar = ({ graduado, onCerrar }) => {
                                 style={{ ...mc.inp, minHeight: 72, resize: 'vertical', fontFamily: FONT }} />
                         </div>
                         <div style={mc.avisoInfo}>
-                            <FaBell style={{ color: '#be1e2d', flexShrink: 0, marginTop: 1, fontSize: '0.68rem' }} />
+                            <FaBell style={{ color: '#BC0613', flexShrink: 0, marginTop: 1, fontSize: '0.8rem' }} />
                             <span style={{ fontFamily: FONT }}>
                                 Tu solicitud va <strong>directamente al graduado</strong>. Tus datos no son compartidos sin su consentimiento.
                             </span>
@@ -328,8 +328,8 @@ const ModalProyecto = ({ proyecto, onCerrar }) => {
                         </div>
                         <button style={md.btnClose} onClick={onCerrar}><FaTimes size={11} /></button>
                         <div style={md.imgProtWrap}>
-                            <FaLock style={{ fontSize: '0.5rem', marginRight: 3 }} />
-                            <span style={{ fontFamily: FONT, fontSize: '0.56rem' }}>Imagen protegida</span>
+                            <FaLock style={{ fontSize: '0.8rem', marginRight: 3 }} />
+                            <span style={{ fontFamily: FONT, fontSize: '0.8rem' }}>Imagen protegida</span>
                         </div>
                     </div>
                 ) : (
@@ -361,7 +361,7 @@ const ModalProyecto = ({ proyecto, onCerrar }) => {
                             <div style={md.metaItem}>
                                 <span style={{ ...md.metaLabel, fontFamily: FONT }}>Año</span>
                                 <span style={{ ...md.metaVal, fontFamily: FONT }}>
-                                    <FaCalendarAlt style={{ marginRight: 4, color: '#be1e2d' }} />
+                                    <FaCalendarAlt style={{ marginRight: 4, color: '#BC0613' }} />
                                     {new Date(proyecto.fechaRealizacion).getFullYear()}
                                 </span>
                             </div>
@@ -407,7 +407,7 @@ const ModalCertificado = ({ cert, onCerrar }) => {
                     <div style={md.headerInner}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
                             <div style={md.medalWrap}>
-                                <FaMedal style={{ color: '#be1e2d', fontSize: '0.85rem' }} />
+                                <FaMedal style={{ color: '#BC0613', fontSize: '1rem' }} />
                             </div>
                             <div>
                                 <h2 style={{ ...md.headerTitulo, fontFamily: FONT }}>{cert.titulo}</h2>
@@ -422,7 +422,7 @@ const ModalCertificado = ({ cert, onCerrar }) => {
                         <div style={md.certImgContainer}>
                             <ImgProtegida src={urlMedia(cert.archivo)} alt={cert.titulo} style={md.certImgGrande} />
                             <div style={md.certProtBadge}>
-                                <FaLock style={{ fontSize: '0.5rem', marginRight: 4 }} />
+                                <FaLock style={{ fontSize: '0.8rem', marginRight: 4 }} />
                                 <span style={{ fontFamily: FONT }}>Imagen protegida · No descargable</span>
                             </div>
                         </div>
@@ -438,7 +438,7 @@ const ModalCertificado = ({ cert, onCerrar }) => {
                             <div style={md.metaItem}>
                                 <span style={{ ...md.metaLabel, fontFamily: FONT }}>Fecha</span>
                                 <span style={{ ...md.metaVal, fontFamily: FONT }}>
-                                    <FaCalendarAlt style={{ marginRight: 4, color: '#be1e2d' }} />
+                                    <FaCalendarAlt style={{ marginRight: 4, color: '#BC0613' }} />
                                     {new Date(cert.fechaFinalizacion).toLocaleDateString('es-EC', { year: 'numeric', month: 'long' })}
                                 </span>
                             </div>
@@ -502,7 +502,7 @@ const PerfilPublico = () => {
     if (cargando) return (
         <div style={s.centrado}>
             <div style={s.spinner} />
-            <p style={{ marginTop: 12, color: '#64748b', fontFamily: FONT, fontSize: '0.75rem' }}>Cargando perfil...</p>
+            <p style={{ marginTop: 12, color: '#64748b', fontFamily: FONT, fontSize: '0.9rem' }}>Cargando perfil...</p>
             <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
         </div>
     );
@@ -510,10 +510,10 @@ const PerfilPublico = () => {
     if (error404 || !datos) return (
         <div style={s.centrado}>
             <div style={s.notFoundBox}>
-                <FaGraduationCap style={{ fontSize: '1.6rem', color: '#cbd5e1' }} />
+                <FaGraduationCap style={{ fontSize: '1.73rem', color: '#cbd5e1' }} />
             </div>
-            <p style={{ fontWeight: 700, color: '#0f172a', fontFamily: FONT, marginBottom: 3, fontSize: '0.85rem' }}>Perfil no encontrado</p>
-            <p style={{ color: '#94a3b8', fontSize: '0.72rem', fontFamily: FONT, marginBottom: 14 }}>Este perfil no existe o no está disponible.</p>
+            <p style={{ fontWeight: 700, color: '#0f172a', fontFamily: FONT, marginBottom: 3, fontSize: '1rem' }}>Perfil no encontrado</p>
+            <p style={{ color: '#94a3b8', fontSize: '0.9rem', fontFamily: FONT, marginBottom: 14 }}>Este perfil no existe o no está disponible.</p>
             <button style={{ ...s.btnVolver, fontFamily: FONT }} onClick={() => navigate('/')}>
                 <FaArrowLeft style={{ marginRight: 5 }} />Volver al inicio
             </button>
@@ -545,7 +545,7 @@ const PerfilPublico = () => {
                 </div>
             ) : (
                 <div style={{ ...s.slideImgWrap, ...s.slideNoImg }}>
-                    <FaImage style={{ fontSize: '1.4rem', color: '#e2e8f0' }} />
+                    <FaImage style={{ fontSize: '1.51rem', color: '#e2e8f0' }} />
                     <div className="slide-overlay" style={s.slideOverlay}>
                         <span style={{ ...s.overlayTxt, fontFamily: FONT }}>Ver detalle</span>
                     </div>
@@ -601,31 +601,31 @@ const PerfilPublico = () => {
     });
 
     const renderExperiencia = (exp) => (
-        <div style={cvCard('#be1e2d')}>
+        <div style={cvCard('#BC0613')}>
             {/* Header: cargo + rango de fechas a la derecha */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}>
-                <h4 style={{ margin: 0, fontSize: '0.84rem', fontWeight: 700, color: '#0f172a', lineHeight: 1.3, fontFamily: FONT, flex: 1 }}>
+                <h4 style={{ margin: 0, fontSize: '1rem', fontWeight: 700, color: '#0f172a', lineHeight: 1.3, fontFamily: FONT, flex: 1 }}>
                     {exp.cargo}
                 </h4>
                 <span style={{
-                    fontSize: '0.62rem', fontWeight: 600, color: '#64748b', fontFamily: FONT,
+                    fontSize: '0.8rem', fontWeight: 600, color: '#64748b', fontFamily: FONT,
                     display: 'inline-flex', alignItems: 'center', gap: 4, flexShrink: 0,
                     background: '#f8fafc', padding: '3px 8px', borderRadius: 6, border: '1px solid #e2e8f0',
                 }}>
-                    <FaCalendarAlt style={{ fontSize: '0.6rem' }} />
+                    <FaCalendarAlt style={{ fontSize: '0.8rem' }} />
                     {fmtRangoExp(exp.fechaInicio, exp.fechaFin, exp.actual)}
                 </span>
             </div>
 
             {/* Empresa */}
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: '0.73rem', color: '#be1e2d', fontWeight: 600, fontFamily: FONT }}>
-                <FaBuilding style={{ fontSize: '0.7rem' }} />{exp.empresa}
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: '0.9rem', color: '#BC0613', fontWeight: 600, fontFamily: FONT }}>
+                <FaBuilding style={{ fontSize: '0.9rem' }} />{exp.empresa}
             </div>
 
             {/* Descripción (si hay) */}
             {exp.descripcion && (
                 <p style={{
-                    margin: '2px 0 0', fontSize: '0.7rem', color: '#475569', lineHeight: 1.55,
+                    margin: '2px 0 0', fontSize: '0.9rem', color: '#475569', lineHeight: 1.55,
                     display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden',
                     fontFamily: FONT,
                 }}>
@@ -639,11 +639,11 @@ const PerfilPublico = () => {
         <div style={cvCard('#7c3aed')}>
             {/* Header: título + nivel a la derecha */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}>
-                <h4 style={{ margin: 0, fontSize: '0.84rem', fontWeight: 700, color: '#0f172a', lineHeight: 1.3, fontFamily: FONT, flex: 1 }}>
+                <h4 style={{ margin: 0, fontSize: '1rem', fontWeight: 700, color: '#0f172a', lineHeight: 1.3, fontFamily: FONT, flex: 1 }}>
                     {edu.titulo}
                 </h4>
                 <span style={{
-                    fontSize: '0.6rem', fontWeight: 700, color: '#7c3aed', fontFamily: FONT,
+                    fontSize: '0.8rem', fontWeight: 700, color: '#7c3aed', fontFamily: FONT,
                     background: '#f3e8ff', padding: '3px 9px', borderRadius: 10, border: '1px solid #ddd6fe',
                     flexShrink: 0, whiteSpace: 'nowrap', textTransform: 'uppercase', letterSpacing: 0.3,
                 }}>
@@ -652,17 +652,17 @@ const PerfilPublico = () => {
             </div>
 
             {/* Institución */}
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: '0.73rem', color: '#7c3aed', fontWeight: 600, fontFamily: FONT }}>
-                <FaUniversity style={{ fontSize: '0.7rem' }} />{edu.institucion}
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: '0.9rem', color: '#7c3aed', fontWeight: 600, fontFamily: FONT }}>
+                <FaUniversity style={{ fontSize: '0.9rem' }} />{edu.institucion}
             </div>
 
             {/* Año de graduación (si hay) */}
             {edu.anioFin && (
                 <div style={{
-                    marginTop: 2, fontSize: '0.68rem', color: '#64748b', fontFamily: FONT,
+                    marginTop: 2, fontSize: '0.8rem', color: '#64748b', fontFamily: FONT,
                     display: 'inline-flex', alignItems: 'center', gap: 4,
                 }}>
-                    <FaCalendarAlt style={{ fontSize: '0.6rem' }} />Graduado en {edu.anioFin}
+                    <FaCalendarAlt style={{ fontSize: '0.8rem' }} />Graduado en {edu.anioFin}
                 </div>
             )}
         </div>
@@ -679,7 +679,7 @@ const PerfilPublico = () => {
                 </div>
             ) : (
                 <div style={{ ...s.slideImgWrap, ...s.slideNoImg, backgroundColor: '#fffbeb' }}>
-                    <FaMedal style={{ fontSize: '1.8rem', color: '#fcd34d' }} />
+                    <FaMedal style={{ fontSize: '1.94rem', color: '#fcd34d' }} />
                     <div className="slide-overlay" style={s.slideOverlay}>
                         <span style={{ ...s.overlayTxt, fontFamily: FONT }}>Ver certificado</span>
                     </div>
@@ -720,7 +720,7 @@ const PerfilPublico = () => {
                 @keyframes crLeft  { from { opacity:0; transform:translateX(32px); } to { opacity:1; transform:translateX(0); } }
                 @keyframes crRight { from { opacity:0; transform:translateX(-32px); } to { opacity:1; transform:translateX(0); } }
                 .btn-notif:hover  { transform:translateY(-1px); box-shadow:0 5px 16px rgba(190,30,45,0.38) !important; }
-                .btn-volver:hover { background-color:#f1f5f9 !important; }
+                .btn-volver:hover { background-color:rgba(255,255,255,0.18) !important; }
                 .red-link:hover   { background-color:#f1f5f9 !important; }
                 .slide-card:hover .slide-overlay { opacity:1 !important; }
                 img { -webkit-touch-callout:none; }
@@ -731,18 +731,21 @@ const PerfilPublico = () => {
             <div style={s.navBar}>
                 <div style={{
                     ...s.navInner,
-                    padding: isMobile ? '0 12px' : '0 20px',
+                    height: isMobile ? 68 : 89,
+                    padding: isMobile ? '0 16px' : '0 24px',
                 }}>
+                    <div style={s.navLogo}>
+                        <img
+                            src="/img/logo-espoch-blanco.png"
+                            alt="Escuela Superior Politécnica de Chimborazo"
+                            style={{ height: isMobile ? 32 : 46, width: 'auto', display: 'block', cursor: 'pointer' }}
+                            onClick={() => navigate('/')}
+                        />
+                    </div>
                     <button className="btn-volver" style={{ ...s.btnVolver, fontFamily: FONT }} onClick={() => navigate(-1)}>
-                        <FaArrowLeft style={{ marginRight: 4 }} />
+                        <FaArrowLeft style={{ marginRight: isMobile ? 0 : 8 }} />
                         {isMobile ? '' : 'Volver'}
                     </button>
-                    <div style={s.navLogo}>
-                        <span style={{ color: '#be1e2d', fontWeight: 800, fontSize: '0.78rem', fontFamily: FONT }}>ESPOCH</span>
-                        {!isMobile && (
-                            <span style={{ color: '#94a3b8', fontSize: '0.68rem', fontFamily: FONT }}> · Perfiles de Software</span>
-                        )}
-                    </div>
                 </div>
             </div>
 
@@ -767,7 +770,7 @@ const PerfilPublico = () => {
                                     }
                                 </div>
 
-                                <h1 style={{ ...s.nombre, fontFamily: FONT, fontSize: isMobile ? '1rem' : '1rem' }}>
+                                <h1 style={{ ...s.nombre, fontFamily: FONT, fontSize: isMobile ? '1.1rem' : '1.1rem' }}>
                                     {graduado.nombres} {graduado.apellidos}
                                 </h1>
                                 <p style={{ ...s.cargoTxt, fontFamily: FONT }}>Ingeniería en Software · ESPOCH</p>
@@ -782,13 +785,13 @@ const PerfilPublico = () => {
                                 <div style={s.metaFila}>
                                     {anioGrad && (
                                         <div style={{ ...s.metaChip, fontFamily: FONT }}>
-                                            <FaGraduationCap style={{ fontSize: '0.62rem', color: '#be1e2d', marginRight: 5 }} />
+                                            <FaGraduationCap style={{ fontSize: '0.8rem', color: '#BC0613', marginRight: 5 }} />
                                             <span style={s.metaChipTxt}>Promoción {anioGrad}</span>
                                         </div>
                                     )}
                                     {graduado.ciudad && (
                                         <div style={{ ...s.metaChip, fontFamily: FONT }}>
-                                            <FaMapMarkerAlt style={{ fontSize: '0.6rem', color: '#64748b', marginRight: 5 }} />
+                                            <FaMapMarkerAlt style={{ fontSize: '0.8rem', color: '#64748b', marginRight: 5 }} />
                                             <span style={s.metaChipTxt}>{graduado.ciudad}</span>
                                         </div>
                                     )}
@@ -803,13 +806,13 @@ const PerfilPublico = () => {
                                         {graduado.github && (
                                             <a href={graduado.github} target="_blank" rel="noopener noreferrer"
                                                 className="red-link" style={{ ...s.redLink, fontFamily: FONT }}>
-                                                <FaGithub style={{ marginRight: 4, fontSize: '0.72rem' }} />GitHub
+                                                <FaGithub style={{ marginRight: 4, fontSize: '0.9rem' }} />GitHub
                                             </a>
                                         )}
                                         {graduado.linkedin && (
                                             <a href={graduado.linkedin} target="_blank" rel="noopener noreferrer"
                                                 className="red-link" style={{ ...s.redLink, color: '#0a66c2', fontFamily: FONT }}>
-                                                <FaLinkedin style={{ marginRight: 4, fontSize: '0.72rem' }} />LinkedIn
+                                                <FaLinkedin style={{ marginRight: 4, fontSize: '0.9rem' }} />LinkedIn
                                             </a>
                                         )}
                                     </div>
@@ -842,7 +845,7 @@ const PerfilPublico = () => {
                                                         <span style={{ ...s.afNombre, fontFamily: FONT }}>{af.categoria}</span>
                                                         <span style={{ ...s.afBadge, color: nv.color, backgroundColor: nv.bg, fontFamily: FONT }}>{nv.label}</span>
                                                     </div>
-                                                    <span style={{ fontSize: '0.68rem', fontWeight: 700, color: nv.color, fontFamily: FONT, flexShrink: 0, marginLeft: 6 }}>{af.porcentaje}%</span>
+                                                    <span style={{ fontSize: '0.8rem', fontWeight: 700, color: nv.color, fontFamily: FONT, flexShrink: 0, marginLeft: 6 }}>{af.porcentaje}%</span>
                                                 </div>
                                                 <div style={{ height: 5, backgroundColor: '#f1f5f9', borderRadius: 10, overflow: 'hidden' }}>
                                                     <div style={{ height: '100%', borderRadius: 10, width: `${af.porcentaje}%`, background: nv.bar, transition: 'width 0.8s cubic-bezier(.4,0,.2,1)' }} />
@@ -967,7 +970,7 @@ const PerfilPublico = () => {
                                                                 <span style={{ ...s.afNombre, fontFamily: FONT }}>{af.categoria}</span>
                                                                 <span style={{ ...s.afBadge, color: nv.color, backgroundColor: nv.bg, fontFamily: FONT }}>{nv.label}</span>
                                                             </div>
-                                                            <span style={{ fontSize: '0.68rem', fontWeight: 700, color: nv.color, fontFamily: FONT, flexShrink: 0, marginLeft: 6 }}>{af.porcentaje}%</span>
+                                                            <span style={{ fontSize: '0.8rem', fontWeight: 700, color: nv.color, fontFamily: FONT, flexShrink: 0, marginLeft: 6 }}>{af.porcentaje}%</span>
                                                         </div>
                                                         <div style={{ height: 5, backgroundColor: '#f1f5f9', borderRadius: 10, overflow: 'hidden' }}>
                                                             <div style={{ height: '100%', borderRadius: 10, width: `${af.porcentaje}%`, background: nv.bar, transition: 'width 0.8s cubic-bezier(.4,0,.2,1)' }} />
@@ -979,7 +982,7 @@ const PerfilPublico = () => {
                                     </div>
                                 )}
                                 {tesis && (
-                                    <div style={{ ...s.card, borderLeft: '3px solid #be1e2d' }}>
+                                    <div style={{ ...s.card, borderLeft: '3px solid #BC0613' }}>
                                         <p style={{ ...s.secTit, fontFamily: FONT }}>
                                             <FaGraduationCap style={s.secIco} />Tesis de Grado
                                         </p>
@@ -990,7 +993,7 @@ const PerfilPublico = () => {
                                         {tesis.urlDspace && (
                                             <a href={tesis.urlDspace} target="_blank" rel="noopener noreferrer"
                                                 style={{ ...s.tesisLink, fontFamily: FONT }}>
-                                                <FaExternalLinkAlt style={{ marginRight: 4, fontSize: '0.58rem' }} />
+                                                <FaExternalLinkAlt style={{ marginRight: 4, fontSize: '0.8rem' }} />
                                                 Ver en repositorio ESPOCH
                                             </a>
                                         )}
@@ -1018,7 +1021,7 @@ const PerfilPublico = () => {
                                                             <span style={{ ...s.afNombre, fontFamily: FONT }}>{af.categoria}</span>
                                                             <span style={{ ...s.afBadge, color: nv.color, backgroundColor: nv.bg, fontFamily: FONT }}>{nv.label}</span>
                                                         </div>
-                                                        <span style={{ fontSize: '0.68rem', fontWeight: 700, color: nv.color, fontFamily: FONT, flexShrink: 0, marginLeft: 6 }}>{af.porcentaje}%</span>
+                                                        <span style={{ fontSize: '0.8rem', fontWeight: 700, color: nv.color, fontFamily: FONT, flexShrink: 0, marginLeft: 6 }}>{af.porcentaje}%</span>
                                                     </div>
                                                     <div style={{ height: 5, backgroundColor: '#f1f5f9', borderRadius: 10, overflow: 'hidden' }}>
                                                         <div style={{ height: '100%', borderRadius: 10, width: `${af.porcentaje}%`, background: nv.bar, transition: 'width 0.8s cubic-bezier(.4,0,.2,1)' }} />
@@ -1031,7 +1034,7 @@ const PerfilPublico = () => {
                             )}
 
                             {tesis && (
-                                <div style={{ ...s.card, borderLeft: '3px solid #be1e2d' }}>
+                                <div style={{ ...s.card, borderLeft: '3px solid #BC0613' }}>
                                     <p style={{ ...s.secTit, fontFamily: FONT }}>
                                         <FaGraduationCap style={s.secIco} />Tesis de Grado
                                     </p>
@@ -1042,7 +1045,7 @@ const PerfilPublico = () => {
                                     {tesis.urlDspace && (
                                         <a href={tesis.urlDspace} target="_blank" rel="noopener noreferrer"
                                             style={{ ...s.tesisLink, fontFamily: FONT }}>
-                                            <FaExternalLinkAlt style={{ marginRight: 4, fontSize: '0.58rem' }} />
+                                            <FaExternalLinkAlt style={{ marginRight: 4, fontSize: '0.8rem' }} />
                                             Ver en repositorio ESPOCH
                                         </a>
                                     )}
@@ -1054,7 +1057,7 @@ const PerfilPublico = () => {
                     {/* En tablet: tesis va en segunda columna debajo de contenido central */}
                     {isTablet && tesis && (
                         <div style={{ gridColumn: '2 / 3' }}>
-                            <div style={{ ...s.card, borderLeft: '3px solid #be1e2d' }}>
+                            <div style={{ ...s.card, borderLeft: '3px solid #BC0613' }}>
                                 <p style={{ ...s.secTit, fontFamily: FONT }}>
                                     <FaGraduationCap style={s.secIco} />Tesis de Grado
                                 </p>
@@ -1068,7 +1071,7 @@ const PerfilPublico = () => {
                                 {tesis.urlDspace && (
                                     <a href={tesis.urlDspace} target="_blank" rel="noopener noreferrer"
                                         style={{ ...s.tesisLink, fontFamily: FONT }}>
-                                        <FaExternalLinkAlt style={{ marginRight: 4, fontSize: '0.58rem' }} />
+                                        <FaExternalLinkAlt style={{ marginRight: 4, fontSize: '0.8rem' }} />
                                         Ver en repositorio ESPOCH
                                     </a>
                                 )}
@@ -1090,11 +1093,11 @@ const PerfilPublico = () => {
 // ══════════════════════════════════════════════
 const s = {
     centrado:    { display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '65vh' },
-    spinner:     { width: 32, height: 32, borderRadius: '50%', border: '3px solid #f1f5f9', borderTopColor: '#be1e2d', animation: 'spin 0.8s linear infinite' },
+    spinner:     { width: 32, height: 32, borderRadius: '50%', border: '3px solid #f1f5f9', borderTopColor: '#BC0613', animation: 'spin 0.8s linear infinite' },
     notFoundBox: { width: 56, height: 56, borderRadius: '50%', backgroundColor: '#f8fafc', border: '2px solid #e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 10 },
-    navBar:      { backgroundColor: 'white', borderBottom: '1px solid #e9ecef', padding: '0', position: 'sticky', top: 0, zIndex: 100, boxShadow: '0 1px 4px rgba(0,0,0,0.05)' },
-    navInner:    { maxWidth: 1400, margin: '0 auto', height: 44, display: 'flex', alignItems: 'center', gap: 10 },
-    btnVolver:   { display: 'inline-flex', alignItems: 'center', padding: '4px 10px', backgroundColor: 'white', border: '1px solid #e2e8f0', borderRadius: 6, cursor: 'pointer', fontSize: '0.72rem', fontWeight: 600, color: '#475569', transition: 'background-color 0.15s' },
+    navBar:      { backgroundColor: '#BC0613', padding: '0', position: 'sticky', top: 0, zIndex: 100, boxShadow: '0 2px 8px rgba(0,0,0,0.18)' },
+    navInner:    { maxWidth: 1300, margin: '0 auto', height: 89, display: 'flex', alignItems: 'center', gap: 16 },
+    btnVolver:   { display: 'inline-flex', alignItems: 'center', padding: '12px 24px', backgroundColor: 'transparent', border: '1px solid rgba(255,255,255,0.7)', borderRadius: 4, cursor: 'pointer', fontSize: '1rem', fontWeight: 500, color: '#FFFFFF', transition: 'background-color 0.15s' },
     navLogo:     { flex: 1 },
     page:        { maxWidth: 1400, margin: '0 auto' },
     colLeft:     { display: 'flex', flexDirection: 'column', gap: 10 },
@@ -1103,53 +1106,53 @@ const s = {
     filaDoble:   { display: 'flex', gap: 10, alignItems: 'flex-start' },
     card:        { backgroundColor: 'white', borderRadius: 11, padding: '13px 14px', border: '1px solid #e9ecef', boxShadow: '0 1px 5px rgba(0,0,0,0.04)', animation: 'fadeUp 0.35s ease both' },
     cardIdentidad:  { backgroundColor: 'white', borderRadius: 11, border: '1px solid #e9ecef', boxShadow: '0 1px 5px rgba(0,0,0,0.04)', overflow: 'hidden', animation: 'fadeUp 0.3s ease both' },
-    cardBanda:      { height: 3, background: 'linear-gradient(90deg,#be1e2d,#e11d48)', backgroundSize: '200% 100%', animation: 'shimmer 3s linear infinite' },
+    cardBanda:      { height: 3, background: 'linear-gradient(90deg,#BC0613,#e11d48)', backgroundSize: '200% 100%', animation: 'shimmer 3s linear infinite' },
     identidadInner: { display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' },
-    fotoWrap:    { width: 76, height: 76, borderRadius: '50%', border: '2.5px solid #be1e2d', overflow: 'hidden', backgroundColor: '#f8fafc', boxShadow: '0 2px 10px rgba(190,30,45,0.14)', marginBottom: 10 },
+    fotoWrap:    { width: 76, height: 76, borderRadius: '50%', border: '2.5px solid #BC0613', overflow: 'hidden', backgroundColor: '#f8fafc', boxShadow: '0 2px 10px rgba(190,30,45,0.14)', marginBottom: 10 },
     fotoImg:     { width: '100%', height: '100%', objectFit: 'cover' },
     fotoFallback:{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f1f5f9' },
     nombre:      { margin: '0 0 2px', fontWeight: 800, color: '#0f172a', letterSpacing: '-0.01em' },
-    cargoTxt:    { margin: '0 0 9px', fontSize: '0.68rem', color: '#64748b', fontWeight: 500 },
+    cargoTxt:    { margin: '0 0 9px', fontSize: '0.8rem', color: '#64748b', fontWeight: 500 },
     badgesStack: { display: 'flex', gap: 4, flexWrap: 'wrap', justifyContent: 'center', marginBottom: 10 },
-    badgeEspoch: { display: 'inline-flex', alignItems: 'center', padding: '2px 7px', backgroundColor: '#fff1f2', color: '#be1e2d', border: '1px solid #fecdd3', borderRadius: 20, fontSize: '0.6rem', fontWeight: 700 },
-    badgeDisp:   { display: 'inline-flex', alignItems: 'center', padding: '2px 7px', borderRadius: 20, fontSize: '0.6rem', fontWeight: 700 },
+    badgeEspoch: { display: 'inline-flex', alignItems: 'center', padding: '2px 7px', backgroundColor: '#fff1f2', color: '#BC0613', border: '1px solid #fecdd3', borderRadius: 20, fontSize: '0.8rem', fontWeight: 700 },
+    badgeDisp:   { display: 'inline-flex', alignItems: 'center', padding: '2px 7px', borderRadius: 20, fontSize: '0.8rem', fontWeight: 700 },
     metaFila:    { display: 'flex', flexDirection: 'column', gap: 5, width: '100%', marginBottom: 12 },
     metaChip:    { display: 'flex', alignItems: 'center', backgroundColor: '#f8fafc', border: '1px solid #f1f5f9', borderRadius: 7, padding: '6px 10px' },
-    metaChipTxt: { fontSize: '0.71rem', fontWeight: 600, color: '#0f172a' },
-    btnNotif:    { width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '8px 0', background: 'linear-gradient(135deg,#be1e2d,#9b1623)', color: 'white', border: 'none', borderRadius: 7, cursor: 'pointer', fontSize: '0.74rem', fontWeight: 700, boxShadow: '0 3px 10px rgba(190,30,45,0.24)', transition: 'transform 0.15s, box-shadow 0.15s', marginBottom: 10 },
+    metaChipTxt: { fontSize: '0.9rem', fontWeight: 600, color: '#0f172a' },
+    btnNotif:    { width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '8px 0', background: 'linear-gradient(135deg,#BC0613,#9b1623)', color: 'white', border: 'none', borderRadius: 7, cursor: 'pointer', fontSize: '0.9rem', fontWeight: 700, boxShadow: '0 3px 10px rgba(190,30,45,0.24)', transition: 'transform 0.15s, box-shadow 0.15s', marginBottom: 10 },
     redesRow:    { display: 'flex', gap: 6, flexWrap: 'wrap', justifyContent: 'center' },
-    redLink:     { display: 'inline-flex', alignItems: 'center', fontSize: '0.68rem', color: '#374151', fontWeight: 600, textDecoration: 'none', padding: '3px 9px', backgroundColor: '#f8fafc', borderRadius: 6, border: '1px solid #e2e8f0', transition: 'background-color 0.15s' },
-    secTit:      { margin: '0 0 10px', fontSize: '0.74rem', fontWeight: 700, color: '#0f172a', display: 'flex', alignItems: 'center', gap: 6 },
-    secIco:      { color: '#be1e2d', fontSize: '0.68rem', flexShrink: 0 },
-    bioTxt:      { margin: 0, fontSize: '0.73rem', color: '#374151', lineHeight: 1.65 },
-    tesisTitulo: { margin: '0 0 4px', fontSize: '0.73rem', fontWeight: 700, color: '#0f172a', lineHeight: 1.45 },
-    tesisAutor:  { margin: '0 0 5px', fontSize: '0.63rem', color: '#7c3aed', fontWeight: 600 },
-    tesisResumen:{ margin: '0 0 7px', fontSize: '0.67rem', color: '#475569', lineHeight: 1.6, display: '-webkit-box', WebkitLineClamp: 5, WebkitBoxOrient: 'vertical', overflow: 'hidden' },
-    tesisLink:   { display: 'inline-flex', alignItems: 'center', fontSize: '0.65rem', color: '#7c3aed', fontWeight: 600, textDecoration: 'none' },
+    redLink:     { display: 'inline-flex', alignItems: 'center', fontSize: '0.8rem', color: '#374151', fontWeight: 600, textDecoration: 'none', padding: '3px 9px', backgroundColor: '#f8fafc', borderRadius: 6, border: '1px solid #e2e8f0', transition: 'background-color 0.15s' },
+    secTit:      { margin: '0 0 10px', fontSize: '0.9rem', fontWeight: 700, color: '#0f172a', display: 'flex', alignItems: 'center', gap: 6 },
+    secIco:      { color: '#BC0613', fontSize: '0.8rem', flexShrink: 0 },
+    bioTxt:      { margin: 0, fontSize: '0.9rem', color: '#374151', lineHeight: 1.65 },
+    tesisTitulo: { margin: '0 0 4px', fontSize: '0.9rem', fontWeight: 700, color: '#0f172a', lineHeight: 1.45 },
+    tesisAutor:  { margin: '0 0 5px', fontSize: '0.8rem', color: '#7c3aed', fontWeight: 600 },
+    tesisResumen:{ margin: '0 0 7px', fontSize: '0.8rem', color: '#475569', lineHeight: 1.6, display: '-webkit-box', WebkitLineClamp: 5, WebkitBoxOrient: 'vertical', overflow: 'hidden' },
+    tesisLink:   { display: 'inline-flex', alignItems: 'center', fontSize: '0.8rem', color: '#7c3aed', fontWeight: 600, textDecoration: 'none' },
     tagsWrap:    { display: 'flex', flexWrap: 'wrap', gap: 5 },
-    tagTec:      { backgroundColor: '#eff6ff', color: '#1d4ed8', padding: '3px 9px', borderRadius: 20, fontSize: '0.64rem', fontWeight: 600, border: '1px solid #bfdbfe' },
-    tagTecSm:    { backgroundColor: '#eff6ff', color: '#1d4ed8', padding: '2px 6px', borderRadius: 20, fontSize: '0.6rem', fontWeight: 500, border: '1px solid #bfdbfe' },
-    tagBlanda:   { backgroundColor: '#faf5ff', color: '#7c3aed', padding: '3px 9px', borderRadius: 20, fontSize: '0.64rem', fontWeight: 600, border: '1px solid #e9d5ff' },
-    tagMas:      { backgroundColor: '#f1f5f9', color: '#94a3b8', padding: '2px 6px', borderRadius: 20, fontSize: '0.6rem', fontWeight: 500 },
-    afNombre:    { fontSize: '0.71rem', fontWeight: 600, color: '#0f172a' },
-    afBadge:     { fontSize: '0.57rem', fontWeight: 700, padding: '1px 5px', borderRadius: 8 },
+    tagTec:      { backgroundColor: '#eff6ff', color: '#1d4ed8', padding: '3px 9px', borderRadius: 20, fontSize: '0.8rem', fontWeight: 600, border: '1px solid #bfdbfe' },
+    tagTecSm:    { backgroundColor: '#eff6ff', color: '#1d4ed8', padding: '2px 6px', borderRadius: 20, fontSize: '0.8rem', fontWeight: 500, border: '1px solid #bfdbfe' },
+    tagBlanda:   { backgroundColor: '#faf5ff', color: '#7c3aed', padding: '3px 9px', borderRadius: 20, fontSize: '0.8rem', fontWeight: 600, border: '1px solid #e9d5ff' },
+    tagMas:      { backgroundColor: '#f1f5f9', color: '#94a3b8', padding: '2px 6px', borderRadius: 20, fontSize: '0.8rem', fontWeight: 500 },
+    afNombre:    { fontSize: '0.9rem', fontWeight: 600, color: '#0f172a' },
+    afBadge:     { fontSize: '0.8rem', fontWeight: 700, padding: '1px 5px', borderRadius: 8 },
     slideCard:   { border: '1px solid #e9ecef', borderRadius: 10, overflow: 'hidden', backgroundColor: 'white', cursor: 'pointer' },
     slideImgWrap:{ position: 'relative', width: '100%', height: 120, overflow: 'hidden', backgroundColor: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center' },
     slideNoImg:  { height: 76 },
     slideImg:    { width: '100%', height: '100%', objectFit: 'cover', display: 'block' },
     slideOverlay:{ position: 'absolute', inset: 0, background: 'rgba(15,23,42,0.48)', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0, transition: 'opacity 0.2s ease' },
-    overlayTxt:  { color: 'white', fontSize: '0.65rem', fontWeight: 700, backgroundColor: 'rgba(190,30,45,0.88)', padding: '4px 9px', borderRadius: 5 },
+    overlayTxt:  { color: 'white', fontSize: '0.8rem', fontWeight: 700, backgroundColor: 'rgba(190,30,45,0.88)', padding: '4px 9px', borderRadius: 5 },
     slideBody:   { padding: '8px 10px' },
-    slideTitulo: { margin: '0 0 3px', fontSize: '0.74rem', fontWeight: 700, color: '#0f172a', lineHeight: 1.35, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' },
-    slideDesc:   { margin: 0, fontSize: '0.66rem', color: '#64748b', lineHeight: 1.5, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' },
-    certInstSlide:{ margin: '0 0 2px', fontSize: '0.61rem', color: '#7c3aed', fontWeight: 600 },
+    slideTitulo: { margin: '0 0 3px', fontSize: '0.9rem', fontWeight: 700, color: '#0f172a', lineHeight: 1.35, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' },
+    slideDesc:   { margin: 0, fontSize: '0.8rem', color: '#64748b', lineHeight: 1.5, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' },
+    certInstSlide:{ margin: '0 0 2px', fontSize: '0.8rem', color: '#7c3aed', fontWeight: 600 },
     slideMeta:   { display: 'flex', alignItems: 'center', marginTop: 6, paddingTop: 6, borderTop: '1px solid #f1f5f9', gap: 6 },
-    metaTxt:     { display: 'inline-flex', alignItems: 'center', fontSize: '0.61rem', color: '#94a3b8' },
-    metaLink:    { display: 'inline-flex', alignItems: 'center', fontSize: '0.61rem', color: '#2563eb', fontWeight: 600, textDecoration: 'none' },
-    verMas:      { fontSize: '0.62rem', color: '#be1e2d', fontWeight: 700 },
+    metaTxt:     { display: 'inline-flex', alignItems: 'center', fontSize: '0.8rem', color: '#94a3b8' },
+    metaLink:    { display: 'inline-flex', alignItems: 'center', fontSize: '0.8rem', color: '#2563eb', fontWeight: 600, textDecoration: 'none' },
+    verMas:      { fontSize: '0.8rem', color: '#BC0613', fontWeight: 700 },
     emptyBox:    { textAlign: 'center', padding: '16px 0', display: 'flex', flexDirection: 'column', alignItems: 'center' },
-    emptyTxt:    { margin: 0, fontSize: '0.7rem', color: '#94a3b8' },
-    btnVolver:   { display: 'inline-flex', alignItems: 'center', padding: '8px 16px', backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 8, cursor: 'pointer', fontSize: '0.8rem', fontWeight: 600, color: '#475569' },
+    emptyTxt:    { margin: 0, fontSize: '0.9rem', color: '#94a3b8' },
+    btnVolver:   { display: 'inline-flex', alignItems: 'center', padding: '8px 16px', backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 8, cursor: 'pointer', fontSize: '1rem', fontWeight: 600, color: '#475569' },
 };
 
 // ══════════════════════════════════════════════
@@ -1158,12 +1161,12 @@ const s = {
 const cr = {
     wrap:       { display: 'flex', flexDirection: 'column' },
     header:     { display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 },
-    titulo:     { margin: 0, fontSize: '0.74rem', fontWeight: 700, color: '#0f172a', display: 'flex', alignItems: 'center', gap: 6 },
-    ico:        { color: '#be1e2d', fontSize: '0.68rem', flexShrink: 0 },
-    countBadge: { marginLeft: 4, backgroundColor: '#f1f5f9', color: '#64748b', padding: '1px 7px', borderRadius: 20, fontSize: '0.6rem', fontWeight: 600 },
+    titulo:     { margin: 0, fontSize: '0.9rem', fontWeight: 700, color: '#0f172a', display: 'flex', alignItems: 'center', gap: 6 },
+    ico:        { color: '#BC0613', fontSize: '0.8rem', flexShrink: 0 },
+    countBadge: { marginLeft: 4, backgroundColor: '#f1f5f9', color: '#64748b', padding: '1px 7px', borderRadius: 20, fontSize: '0.8rem', fontWeight: 600 },
     controles:  { display: 'flex', alignItems: 'center', gap: 4 },
     btnNav:     { width: 24, height: 24, borderRadius: 6, border: '1px solid #e2e8f0', backgroundColor: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b', transition: 'background-color 0.15s', flexShrink: 0 },
-    paginador:  { fontSize: '0.63rem', color: '#94a3b8', fontWeight: 600, minWidth: 30, textAlign: 'center' },
+    paginador:  { fontSize: '0.8rem', color: '#94a3b8', fontWeight: 600, minWidth: 30, textAlign: 'center' },
     dots:       { display: 'flex', justifyContent: 'center', gap: 5, marginTop: 10 },
     dot:        { height: 6, borderRadius: 3, border: 'none', cursor: 'pointer', padding: 0, transition: 'all 0.3s ease', flexShrink: 0 },
     vacio:      { padding: '8px 0' },
@@ -1180,61 +1183,61 @@ const md = {
     imgHero:        { width: '100%', height: '100%', objectFit: 'cover', display: 'block', opacity: 0.72 },
     imgOverlay:     { position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 55%)' },
     imgHeaderContent: { position: 'absolute', bottom: 12, left: 16, right: 48 },
-    imgTitulo:      { margin: 0, fontSize: '0.96rem', fontWeight: 800, color: 'white', lineHeight: 1.3 },
+    imgTitulo:      { margin: 0, fontSize: '1.1rem', fontWeight: 800, color: 'white', lineHeight: 1.3 },
     btnClose:       { position: 'absolute', top: 10, right: 10, background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(255,255,255,0.18)', borderRadius: '50%', width: 28, height: 28, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'white' },
     imgProtWrap:    { position: 'absolute', top: 8, left: 10, display: 'flex', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.44)', color: 'rgba(255,255,255,0.65)', padding: '2px 7px', borderRadius: 20 },
     headerSin:      { backgroundColor: 'white', flexShrink: 0 },
-    headerBanda:    { height: 3, background: 'linear-gradient(90deg,#be1e2d,#e11d48)' },
+    headerBanda:    { height: 3, background: 'linear-gradient(90deg,#BC0613,#e11d48)' },
     headerInner:    { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', padding: '12px 15px 10px' },
-    headerTitulo:   { margin: '0 0 1px', fontSize: '0.88rem', fontWeight: 700, color: '#0f172a' },
-    subInst:        { margin: 0, fontSize: '0.66rem', color: '#64748b' },
+    headerTitulo:   { margin: '0 0 1px', fontSize: '1rem', fontWeight: 700, color: '#0f172a' },
+    subInst:        { margin: 0, fontSize: '0.8rem', color: '#64748b' },
     btnCloseFlat:   { background: '#f1f5f9', border: 'none', borderRadius: '50%', width: 26, height: 26, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#64748b', flexShrink: 0 },
     medalWrap:      { width: 30, height: 30, borderRadius: 7, backgroundColor: '#fff1f2', border: '1px solid #fecdd3', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
     body:           { flex: 1, overflowY: 'auto', padding: '14px 16px 18px' },
     certImgContainer:{ marginBottom: 12, borderRadius: 8, overflow: 'hidden', border: '1px solid #e9ecef', backgroundColor: '#f8fafc' },
     certImgGrande:  { width: '100%', maxHeight: 290, objectFit: 'contain', display: 'block' },
-    certProtBadge:  { display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '4px', backgroundColor: '#f8fafc', borderTop: '1px solid #f1f5f9', fontSize: '0.6rem', color: '#94a3b8', gap: 3 },
+    certProtBadge:  { display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '4px', backgroundColor: '#f8fafc', borderTop: '1px solid #f1f5f9', fontSize: '0.8rem', color: '#94a3b8', gap: 3 },
     seccion:        { marginBottom: 12 },
-    secTitulo:      { margin: '0 0 5px', fontSize: '0.64rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.06em' },
-    texto:          { margin: 0, fontSize: '0.76rem', color: '#374151', lineHeight: 1.65 },
+    secTitulo:      { margin: '0 0 5px', fontSize: '0.8rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.06em' },
+    texto:          { margin: 0, fontSize: '0.9rem', color: '#374151', lineHeight: 1.65 },
     metaGrid:       { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 7, marginBottom: 12, backgroundColor: '#f8fafc', borderRadius: 7, padding: '10px 12px', border: '1px solid #f1f5f9' },
     metaItem:       { display: 'flex', flexDirection: 'column', gap: 2 },
-    metaLabel:      { fontSize: '0.6rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em' },
-    metaVal:        { fontSize: '0.74rem', fontWeight: 600, color: '#0f172a', display: 'flex', alignItems: 'center' },
-    tagTec:         { backgroundColor: '#eff6ff', color: '#1d4ed8', padding: '3px 8px', borderRadius: 20, fontSize: '0.64rem', fontWeight: 600, border: '1px solid #bfdbfe' },
+    metaLabel:      { fontSize: '0.8rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em' },
+    metaVal:        { fontSize: '0.9rem', fontWeight: 600, color: '#0f172a', display: 'flex', alignItems: 'center' },
+    tagTec:         { backgroundColor: '#eff6ff', color: '#1d4ed8', padding: '3px 8px', borderRadius: 20, fontSize: '0.8rem', fontWeight: 600, border: '1px solid #bfdbfe' },
     linksRow:       { display: 'flex', gap: 7, flexWrap: 'wrap' },
-    linkBtn:        { display: 'inline-flex', alignItems: 'center', padding: '6px 12px', backgroundColor: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', borderRadius: 6, fontSize: '0.72rem', fontWeight: 600, textDecoration: 'none' },
-    linkBtnGreen:   { display: 'inline-flex', alignItems: 'center', padding: '6px 12px', backgroundColor: '#ecfdf5', color: '#059669', border: '1px solid #a7f3d0', borderRadius: 6, fontSize: '0.72rem', fontWeight: 600, textDecoration: 'none' },
+    linkBtn:        { display: 'inline-flex', alignItems: 'center', padding: '6px 12px', backgroundColor: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', borderRadius: 6, fontSize: '0.9rem', fontWeight: 600, textDecoration: 'none' },
+    linkBtnGreen:   { display: 'inline-flex', alignItems: 'center', padding: '6px 12px', backgroundColor: '#ecfdf5', color: '#059669', border: '1px solid #a7f3d0', borderRadius: 6, fontSize: '0.9rem', fontWeight: 600, textDecoration: 'none' },
 };
 
 const mc = {
     overlay:    { position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1200, padding: 16, backdropFilter: 'blur(4px)' },
     modal:      { backgroundColor: 'white', borderRadius: 12, width: '100%', maxWidth: 450, maxHeight: '90vh', display: 'flex', flexDirection: 'column', boxShadow: '0 18px 52px rgba(0,0,0,0.24)', overflow: 'hidden', animation: 'fadeUp 0.22s ease both' },
-    banda:      { height: 3, background: 'linear-gradient(90deg,#be1e2d,#e11d48)', flexShrink: 0 },
+    banda:      { height: 3, background: 'linear-gradient(90deg,#BC0613,#e11d48)', flexShrink: 0 },
     head:       { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', padding: '12px 15px 10px' },
     bellWrap:   { width: 30, height: 30, borderRadius: 7, backgroundColor: '#fff1f2', border: '1px solid #fecdd3', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
-    titulo:     { margin: '0 0 1px', fontSize: '0.88rem', fontWeight: 700, color: '#0f172a' },
-    sub:        { margin: 0, fontSize: '0.65rem', color: '#64748b', lineHeight: 1.45 },
+    titulo:     { margin: '0 0 1px', fontSize: '1rem', fontWeight: 700, color: '#0f172a' },
+    sub:        { margin: 0, fontSize: '0.8rem', color: '#64748b', lineHeight: 1.45 },
     btnX:       { background: '#f1f5f9', border: 'none', borderRadius: '50%', width: 26, height: 26, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#64748b', flexShrink: 0 },
     body:       { flex: 1, overflowY: 'auto', padding: '10px 15px' },
     exitoWrap:  { display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '28px 20px', textAlign: 'center', gap: 5 },
     exitoCircle:{ width: 56, height: 56, borderRadius: '50%', backgroundColor: '#f0fdf4', border: '2px solid #86efac', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 3 },
-    exitoH:     { margin: 0, fontSize: '1rem', fontWeight: 700, color: '#0f172a' },
-    exitoP:     { margin: '2px 0 12px', fontSize: '0.72rem', color: '#64748b', lineHeight: 1.55, maxWidth: 260 },
+    exitoH:     { margin: 0, fontSize: '1.1rem', fontWeight: 700, color: '#0f172a' },
+    exitoP:     { margin: '2px 0 12px', fontSize: '0.9rem', color: '#64748b', lineHeight: 1.55, maxWidth: 260 },
     chip:       { display: 'flex', alignItems: 'center', gap: 8, backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 7, padding: '7px 10px', marginBottom: 10 },
-    chipFotoWrap:{ width: 34, height: 34, borderRadius: '50%', overflow: 'hidden', border: '2px solid #be1e2d', flexShrink: 0, backgroundColor: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+    chipFotoWrap:{ width: 34, height: 34, borderRadius: '50%', overflow: 'hidden', border: '2px solid #BC0613', flexShrink: 0, backgroundColor: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center' },
     chipFoto:   { width: '100%', height: '100%', objectFit: 'cover', display: 'block' },
-    chipNombre: { margin: '0 0 1px', fontWeight: 700, fontSize: '0.76rem', color: '#0f172a' },
-    chipSub2:   { margin: 0, fontSize: '0.62rem', color: '#94a3b8' },
-    chipBadge:  { marginLeft: 'auto', display: 'inline-flex', alignItems: 'center', backgroundColor: '#f5f3ff', color: '#7c3aed', border: '1px solid #ddd6fe', padding: '2px 6px', borderRadius: 20, fontSize: '0.58rem', fontWeight: 700, whiteSpace: 'nowrap' },
-    alerta:     { backgroundColor: '#fef2f2', color: '#b91c1c', border: '1px solid #fecaca', padding: '6px 9px', borderRadius: 6, fontSize: '0.68rem', marginBottom: 8, display: 'flex', alignItems: 'center' },
+    chipNombre: { margin: '0 0 1px', fontWeight: 700, fontSize: '0.9rem', color: '#0f172a' },
+    chipSub2:   { margin: 0, fontSize: '0.8rem', color: '#94a3b8' },
+    chipBadge:  { marginLeft: 'auto', display: 'inline-flex', alignItems: 'center', backgroundColor: '#f5f3ff', color: '#7c3aed', border: '1px solid #ddd6fe', padding: '2px 6px', borderRadius: 20, fontSize: '0.8rem', fontWeight: 700, whiteSpace: 'nowrap' },
+    alerta:     { backgroundColor: '#fef2f2', color: '#b91c1c', border: '1px solid #fecaca', padding: '6px 9px', borderRadius: 6, fontSize: '0.8rem', marginBottom: 8, display: 'flex', alignItems: 'center' },
     campo:      { display: 'flex', flexDirection: 'column', gap: 3, marginBottom: 7 },
-    lbl:        { fontSize: '0.66rem', fontWeight: 600, color: '#374151' },
-    inp:        { padding: '6px 9px', border: '1px solid #e2e8f0', borderRadius: 6, fontSize: '0.75rem', color: '#0f172a', outline: 'none', backgroundColor: '#f8fafc', transition: 'border-color 0.15s' },
-    avisoInfo:  { display: 'flex', alignItems: 'flex-start', gap: 7, backgroundColor: '#fff8f0', border: '1px solid #fed7aa', borderRadius: 6, padding: '7px 9px', fontSize: '0.64rem', color: '#64748b', lineHeight: 1.5, marginBottom: 0 },
+    lbl:        { fontSize: '0.8rem', fontWeight: 600, color: '#374151' },
+    inp:        { padding: '6px 9px', border: '1px solid #e2e8f0', borderRadius: 6, fontSize: '0.9rem', color: '#0f172a', outline: 'none', backgroundColor: '#f8fafc', transition: 'border-color 0.15s' },
+    avisoInfo:  { display: 'flex', alignItems: 'flex-start', gap: 7, backgroundColor: '#fff8f0', border: '1px solid #fed7aa', borderRadius: 6, padding: '7px 9px', fontSize: '0.8rem', color: '#64748b', lineHeight: 1.5, marginBottom: 0 },
     footer:     { display: 'flex', justifyContent: 'flex-end', gap: 6, padding: '9px 15px', borderTop: '1px solid #f1f5f9', backgroundColor: '#f8fafc' },
-    btnCancelar:{ padding: '6px 11px', backgroundColor: 'transparent', border: '1px solid #e2e8f0', borderRadius: 6, cursor: 'pointer', fontSize: '0.72rem', fontWeight: 600, color: '#64748b' },
-    btnEnviar:  { padding: '6px 14px', background: 'linear-gradient(135deg,#be1e2d,#9b1623)', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontSize: '0.72rem', fontWeight: 700, display: 'inline-flex', alignItems: 'center' },
+    btnCancelar:{ padding: '6px 11px', backgroundColor: 'transparent', border: '1px solid #e2e8f0', borderRadius: 6, cursor: 'pointer', fontSize: '0.9rem', fontWeight: 600, color: '#64748b' },
+    btnEnviar:  { padding: '6px 14px', background: 'linear-gradient(135deg,#BC0613,#9b1623)', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontSize: '0.9rem', fontWeight: 700, display: 'inline-flex', alignItems: 'center' },
 };
 
 export default PerfilPublico;

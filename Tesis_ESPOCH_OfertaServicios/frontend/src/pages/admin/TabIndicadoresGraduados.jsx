@@ -16,7 +16,7 @@ import {
 // ── Constantes ────────────────────────────────────────────────
 const BASE_URL = (import.meta.env.VITE_API_URL || 'http://localhost:8351/api').replace('/api', '');
 
-const ROJO    = '#BE1E2D';
+const ROJO    = '#BC0613';
 const AZUL    = '#1565C0';
 const VERDE   = '#2E7D32';
 const NARANJA = '#E65100';
@@ -68,7 +68,7 @@ if (typeof document !== 'undefined' && !document.getElementById('tab-ind-kf')) {
         .leaflet-tooltip::before { display: none !important; }
         .leaflet-control-zoom { border: 1px solid #e2e8f0 !important; border-radius: 8px !important; box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important; overflow: hidden !important; }
         .leaflet-control-zoom a { color: #374151 !important; font-size: 16px !important; width: 32px !important; height: 32px !important; line-height: 32px !important; background: white !important; }
-        .leaflet-control-zoom a:hover { background: #f8fafc !important; color: #BE1E2D !important; }
+        .leaflet-control-zoom a:hover { background: #f8fafc !important; color: #BC0613 !important; }
         .leaflet-control-attribution { font-size: 0.58rem !important; }
         .leaflet-bar { border: none !important; }
         .fil-select {
@@ -77,11 +77,11 @@ if (typeof document !== 'undefined' && !document.getElementById('tab-ind-kf')) {
             color: #374151; background: white; outline: none; cursor: pointer;
             transition: border-color 0.15s, box-shadow 0.15s;
         }
-        .fil-select:focus { border-color: #BE1E2D; box-shadow: 0 0 0 2px #BE1E2D22; }
-        .fil-select.activo { border-color: #BE1E2D; color: #0f172a; box-shadow: 0 0 0 2px #BE1E2D15; }
+        .fil-select:focus { border-color: #BC0613; box-shadow: 0 0 0 2px #BC061322; }
+        .fil-select.activo { border-color: #BC0613; color: #0f172a; box-shadow: 0 0 0 2px #BC061315; }
         .prov-row:hover { background: #f1f5f9 !important; }
         .grad-card:hover { background: #f8fafc !important; transform: translateY(-1px); box-shadow: 0 3px 10px rgba(0,0,0,0.09) !important; }
-        .pag-btn:hover:not(:disabled) { background: #BE1E2D !important; color: white !important; border-color: #BE1E2D !important; }
+        .pag-btn:hover:not(:disabled) { background: #BC0613 !important; color: white !important; border-color: #BC0613 !important; }
     `;
     document.head.appendChild(st);
 }
@@ -97,9 +97,9 @@ const Barra = ({ label, valor, total, color, compact = false }) => {
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2, alignItems: 'baseline' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6, minWidth: 0 }}>
                     <div style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: color, flexShrink: 0 }} />
-                    <span style={{ fontSize: compact ? '0.71rem' : '0.74rem', color: '#374151', fontFamily: FONT, fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{label}</span>
+                    <span style={{ fontSize: compact ? '0.95rem' : '0.95rem', color: '#374151', fontFamily: FONT, fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{label}</span>
                 </div>
-                <span style={{ fontSize: '0.69rem', color: '#6b7280', fontFamily: FONT, whiteSpace: 'nowrap', marginLeft: 6 }}>
+                <span style={{ fontSize: '0.85rem', color: '#6b7280', fontFamily: FONT, whiteSpace: 'nowrap', marginLeft: 6 }}>
                     <strong style={{ color: '#111827' }}>{valor}</strong>
                     <span style={{ color: '#d1d5db', margin: '0 2px' }}>·</span>{p}%
                 </span>
@@ -124,8 +124,8 @@ const Donut = ({ segs, r = 42, g = 12, sz = 100, label, sublabel }) => {
             </svg>
             {label && (
                 <div style={{ position: 'absolute', textAlign: 'center', pointerEvents: 'none' }}>
-                    <div style={{ fontSize: sz > 100 ? '1.2rem' : '0.9rem', fontWeight: 800, color: '#111827', lineHeight: 1, fontFamily: FONT }}>{label}</div>
-                    {sublabel && <div style={{ fontSize: '0.56rem', color: '#9ca3af', fontFamily: FONT, marginTop: 1 }}>{sublabel}</div>}
+                    <div style={{ fontSize: sz > 100 ? '1.2rem' : '1.1rem', fontWeight: 800, color: '#111827', lineHeight: 1, fontFamily: FONT }}>{label}</div>
+                    {sublabel && <div style={{ fontSize: '0.75rem', color: '#9ca3af', fontFamily: FONT, marginTop: 1 }}>{sublabel}</div>}
                 </div>
             )}
         </div>
@@ -141,12 +141,12 @@ const KPI = ({ icon: Icon, valor, label, sub, color, delay = 0 }) => (
         animationDelay: `${delay}ms`,
     }}>
         <div style={{ width: 30, height: 30, borderRadius: 7, background: `${color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-            <Icon style={{ color, fontSize: '0.82rem' }} />
+            <Icon style={{ color, fontSize: '1rem' }} />
         </div>
         <div style={{ minWidth: 0 }}>
             <div style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0f172a', lineHeight: 1, fontFamily: FONT }}>{valor}</div>
-            <div style={{ fontSize: '0.63rem', fontWeight: 600, color: '#6b7280', fontFamily: FONT, marginTop: 2 }}>{label}</div>
-            {sub && <div style={{ fontSize: '0.57rem', color: '#9ca3af', fontFamily: FONT, marginTop: 1 }}>{sub}</div>}
+            <div style={{ fontSize: '0.85rem', fontWeight: 600, color: '#6b7280', fontFamily: FONT, marginTop: 2 }}>{label}</div>
+            {sub && <div style={{ fontSize: '0.75rem', color: '#9ca3af', fontFamily: FONT, marginTop: 1 }}>{sub}</div>}
         </div>
     </div>
 );
@@ -159,11 +159,11 @@ const Panel = ({ titulo, sub, icon: Icon, color, children, delay = 0, style = {}
     }}>
         <div style={{ padding: '9px 14px', borderBottom: '1px solid #f1f5f9', background: `linear-gradient(135deg,${color}09 0%,transparent 100%)`, display: 'flex', alignItems: 'center', gap: 8 }}>
             <div style={{ width: 24, height: 24, borderRadius: 6, background: `${color}18`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <Icon style={{ color, fontSize: '0.74rem' }} />
+                <Icon style={{ color, fontSize: '0.95rem' }} />
             </div>
             <div style={{ minWidth: 0 }}>
-                <div style={{ fontSize: '0.80rem', fontWeight: 700, color: '#0f172a', fontFamily: FONT }}>{titulo}</div>
-                {sub && <div style={{ fontSize: '0.61rem', color: '#9ca3af', fontFamily: FONT }}>{sub}</div>}
+                <div style={{ fontSize: '1rem', fontWeight: 700, color: '#0f172a', fontFamily: FONT }}>{titulo}</div>
+                {sub && <div style={{ fontSize: '0.85rem', color: '#9ca3af', fontFamily: FONT }}>{sub}</div>}
             </div>
         </div>
         <div style={{ padding: '12px 14px' }}>{children}</div>
@@ -173,7 +173,7 @@ const Panel = ({ titulo, sub, icon: Icon, color, children, delay = 0, style = {}
 const Tag = ({ label, color }) => (
     <span style={{
         display: 'inline-block', padding: '2px 7px', borderRadius: 99,
-        fontSize: '0.66rem', fontWeight: 600, margin: '2px',
+        fontSize: '0.85rem', fontWeight: 600, margin: '2px',
         background: `${color}12`, color, border: `1px solid ${color}25`, fontFamily: FONT,
     }}>{label}</span>
 );
@@ -192,11 +192,11 @@ const Insight = ({ tipo, titulo, detalle, delay = 0 }) => {
             borderRadius: 7, padding: '8px 11px', display: 'flex', gap: 8, alignItems: 'flex-start',
             animationDelay: `${delay}ms`,
         }}>
-            <Ico style={{ color: cfg.color, fontSize: '0.82rem', flexShrink: 0, marginTop: 1 }} />
+            <Ico style={{ color: cfg.color, fontSize: '1rem', flexShrink: 0, marginTop: 1 }} />
             <div>
-                <span style={{ fontSize: '0.58rem', fontWeight: 700, color: cfg.color, textTransform: 'uppercase', letterSpacing: '0.5px', fontFamily: FONT }}>{cfg.lbl} · </span>
-                <span style={{ fontSize: '0.76rem', fontWeight: 600, color: '#0f172a', fontFamily: FONT }}>{titulo}</span>
-                {detalle && <p style={{ margin: '2px 0 0', fontSize: '0.68rem', color: '#6b7280', fontFamily: FONT, lineHeight: 1.5 }}>{detalle}</p>}
+                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: cfg.color, textTransform: 'uppercase', letterSpacing: '0.5px', fontFamily: FONT }}>{cfg.lbl} · </span>
+                <span style={{ fontSize: '0.95rem', fontWeight: 600, color: '#0f172a', fontFamily: FONT }}>{titulo}</span>
+                {detalle && <p style={{ margin: '2px 0 0', fontSize: '0.85rem', color: '#6b7280', fontFamily: FONT, lineHeight: 1.5 }}>{detalle}</p>}
             </div>
         </div>
     );
@@ -214,10 +214,10 @@ const Gauge = ({ valor, color, titulo, sz = 80 }) => {
                     <path d={`M ${x1} ${cy} A ${r} ${r} 0 0 1 ${x2} ${cy}`} fill="none" stroke={color} strokeWidth={sz * 0.11} strokeLinecap="round" strokeDasharray={`${arcFill} ${arcTotal + 10}`} />
                 </svg>
                 <div style={{ position: 'absolute', bottom: 2, textAlign: 'center', lineHeight: 1 }}>
-                    <span style={{ fontSize: sz > 75 ? '0.95rem' : '0.78rem', fontWeight: 800, color: '#0f172a', fontFamily: FONT }}>{valor}%</span>
+                    <span style={{ fontSize: sz > 75 ? '1.1rem' : '0.95rem', fontWeight: 800, color: '#0f172a', fontFamily: FONT }}>{valor}%</span>
                 </div>
             </div>
-            <span style={{ fontSize: '0.62rem', fontWeight: 600, color: '#6b7280', fontFamily: FONT }}>{titulo}</span>
+            <span style={{ fontSize: '0.85rem', fontWeight: 600, color: '#6b7280', fontFamily: FONT }}>{titulo}</span>
         </div>
     );
 };
@@ -232,9 +232,9 @@ const BarrasVerticales = ({ data, alto = 80 }) => {
                 const color = PALETA[i % PALETA.length];
                 return (
                     <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                        <span style={{ fontSize: '0.60rem', fontWeight: 700, color: '#374151', fontFamily: FONT, marginBottom: 2 }}>{d.total}</span>
+                        <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#374151', fontFamily: FONT, marginBottom: 2 }}>{d.total}</span>
                         <div style={{ width: '100%', height: h, backgroundColor: color, borderRadius: '3px 3px 0 0' }} />
-                        <span style={{ fontSize: '0.58rem', color: '#9ca3af', fontFamily: FONT, marginTop: 3 }}>{d.anio}</span>
+                        <span style={{ fontSize: '0.75rem', color: '#9ca3af', fontFamily: FONT, marginTop: 3 }}>{d.anio}</span>
                     </div>
                 );
             })}
@@ -279,15 +279,15 @@ const ListaGraduados = ({ graduados, filtros }) => {
             <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
                 <div style={{ padding: '8px 10px 6px', borderBottom: '1px solid #f1f5f9', background: '#fafafa', flexShrink: 0 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-                        <FaUsers style={{ color: ROJO, fontSize: '0.60rem' }} />
-                        <span style={{ fontSize: '0.62rem', fontWeight: 700, color: '#475569', fontFamily: FONT, textTransform: 'uppercase', letterSpacing: '0.4px' }}>Graduados</span>
-                        {filtros.canton && <span style={{ fontSize: '0.58rem', color: '#94a3b8', fontFamily: FONT }}>· {filtros.canton}</span>}
+                        <FaUsers style={{ color: ROJO, fontSize: '0.85rem' }} />
+                        <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#475569', fontFamily: FONT, textTransform: 'uppercase', letterSpacing: '0.4px' }}>Graduados</span>
+                        {filtros.canton && <span style={{ fontSize: '0.75rem', color: '#94a3b8', fontFamily: FONT }}>· {filtros.canton}</span>}
                     </div>
                 </div>
                 <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <div style={{ textAlign: 'center', padding: 16 }}>
-                        <FaUserCircle style={{ fontSize: '2rem', color: '#cbd5e1', marginBottom: 6 }} />
-                        <p style={{ margin: 0, fontSize: '0.70rem', color: '#94a3b8', fontFamily: FONT }}>
+                        <FaUserCircle style={{ fontSize: '2.3rem', color: '#cbd5e1', marginBottom: 6 }} />
+                        <p style={{ margin: 0, fontSize: '0.95rem', color: '#94a3b8', fontFamily: FONT }}>
                             Sin graduados{filtros.canton ? ` en ${filtros.canton}` : ''}
                         </p>
                     </div>
@@ -304,18 +304,18 @@ const ListaGraduados = ({ graduados, filtros }) => {
         <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
             <div style={{ padding: '8px 10px 6px', borderBottom: '1px solid #f1f5f9', background: '#fafafa', flexShrink: 0 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-                    <FaUsers style={{ color: ROJO, fontSize: '0.60rem' }} />
-                    <span style={{ fontSize: '0.62rem', fontWeight: 700, color: '#475569', fontFamily: FONT, textTransform: 'uppercase', letterSpacing: '0.4px' }}>Graduados</span>
-                    {filtros.canton && <span style={{ fontSize: '0.58rem', color: '#94a3b8', fontFamily: FONT }}>· {filtros.canton}</span>}
-                    <span style={{ fontSize: '0.58rem', fontWeight: 700, color: ROJO, background: `${ROJO}12`, border: `1px solid ${ROJO}25`, borderRadius: 99, padding: '0px 6px', fontFamily: FONT, marginLeft: 'auto' }}>
+                    <FaUsers style={{ color: ROJO, fontSize: '0.85rem' }} />
+                    <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#475569', fontFamily: FONT, textTransform: 'uppercase', letterSpacing: '0.4px' }}>Graduados</span>
+                    {filtros.canton && <span style={{ fontSize: '0.75rem', color: '#94a3b8', fontFamily: FONT }}>· {filtros.canton}</span>}
+                    <span style={{ fontSize: '0.75rem', fontWeight: 700, color: ROJO, background: `${ROJO}12`, border: `1px solid ${ROJO}25`, borderRadius: 99, padding: '0px 6px', fontFamily: FONT, marginLeft: 'auto' }}>
                         {graduados.length}
                     </span>
                 </div>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '28px 1fr auto', gap: 6, padding: '4px 10px 4px 8px', borderBottom: '1px solid #e5e7eb', flexShrink: 0 }}>
                 <div />
-                <span style={{ fontSize: '0.57rem', fontWeight: 700, color: '#94a3b8', fontFamily: FONT, textTransform: 'uppercase' }}>Graduado</span>
-                <span style={{ fontSize: '0.57rem', fontWeight: 700, color: '#94a3b8', fontFamily: FONT, textTransform: 'uppercase' }}>Estado</span>
+                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', fontFamily: FONT, textTransform: 'uppercase' }}>Graduado</span>
+                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', fontFamily: FONT, textTransform: 'uppercase' }}>Estado</span>
             </div>
             <div style={{ flex: 1, overflowY: 'auto', padding: '4px 0' }}>
                 {pagActual.map((g, i) => {
@@ -329,15 +329,15 @@ const ListaGraduados = ({ graduados, filtros }) => {
                         }}>
                             <AvatarGraduado nombres={g.nombres} apellidos={g.apellidos} fotoPerfil={g.fotoPerfil} size={26} />
                             <div style={{ minWidth: 0 }}>
-                                <div style={{ fontSize: '0.72rem', fontWeight: 600, color: '#1e293b', fontFamily: FONT, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                <div style={{ fontSize: '0.95rem', fontWeight: 600, color: '#1e293b', fontFamily: FONT, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                     {g.nombres} {g.apellidos}
                                 </div>
                                 {g.anioGraduacion && (
-                                    <span style={{ fontSize: '0.57rem', color: '#94a3b8', fontFamily: FONT }}>Graduado {g.anioGraduacion}</span>
+                                    <span style={{ fontSize: '0.75rem', color: '#94a3b8', fontFamily: FONT }}>Graduado {g.anioGraduacion}</span>
                                 )}
                             </div>
                             <span style={{
-                                fontSize: '0.56rem', fontWeight: 700,
+                                fontSize: '0.75rem', fontWeight: 700,
                                 background: esDis ? `${VERDE}15` : `${GRIS}12`,
                                 color: esDis ? VERDE : GRIS,
                                 border: `1px solid ${esDis ? VERDE : GRIS}25`,
@@ -351,12 +351,12 @@ const ListaGraduados = ({ graduados, filtros }) => {
             </div>
             {totalPag > 1 && (
                 <div style={{ flexShrink: 0, borderTop: '1px solid #f1f5f9', padding: '6px 10px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#fafafa' }}>
-                    <span style={{ fontSize: '0.60rem', color: '#94a3b8', fontFamily: FONT }}>
+                    <span style={{ fontSize: '0.85rem', color: '#94a3b8', fontFamily: FONT }}>
                         {inicio + 1}–{Math.min(inicio + POR_PAGINA, graduados.length)} de {graduados.length}
                     </span>
                     <div style={{ display: 'flex', gap: 4 }}>
                         <button className="pag-btn" disabled={pagina === 1} onClick={() => setPagina(p => p - 1)}
-                            style={{ width: 22, height: 22, borderRadius: 5, border: '1px solid #e5e7eb', background: 'white', color: pagina === 1 ? '#d1d5db' : '#374151', cursor: pagina === 1 ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.62rem', transition: 'all 0.15s' }}>
+                            style={{ width: 22, height: 22, borderRadius: 5, border: '1px solid #e5e7eb', background: 'white', color: pagina === 1 ? '#d1d5db' : '#374151', cursor: pagina === 1 ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.85rem', transition: 'all 0.15s' }}>
                             <FaChevronLeft />
                         </button>
                         {Array.from({ length: Math.min(totalPag, 5) }, (_, i) => {
@@ -371,7 +371,7 @@ const ListaGraduados = ({ graduados, filtros }) => {
                                     border: `1px solid ${pagina === pg ? ROJO : '#e5e7eb'}`,
                                     background: pagina === pg ? ROJO : 'white',
                                     color: pagina === pg ? 'white' : '#374151',
-                                    cursor: 'pointer', fontSize: '0.62rem',
+                                    cursor: 'pointer', fontSize: '0.85rem',
                                     fontWeight: pagina === pg ? 700 : 400,
                                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                                     fontFamily: FONT, transition: 'all 0.15s',
@@ -379,7 +379,7 @@ const ListaGraduados = ({ graduados, filtros }) => {
                             );
                         })}
                         <button className="pag-btn" disabled={pagina === totalPag} onClick={() => setPagina(p => p + 1)}
-                            style={{ width: 22, height: 22, borderRadius: 5, border: '1px solid #e5e7eb', background: 'white', color: pagina === totalPag ? '#d1d5db' : '#374151', cursor: pagina === totalPag ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.62rem', transition: 'all 0.15s' }}>
+                            style={{ width: 22, height: 22, borderRadius: 5, border: '1px solid #e5e7eb', background: 'white', color: pagina === totalPag ? '#d1d5db' : '#374151', cursor: pagina === totalPag ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.85rem', transition: 'all 0.15s' }}>
                             <FaChevronRight />
                         </button>
                     </div>
@@ -398,11 +398,11 @@ const ColIzquierda = ({ filtros, porProvincia, porCanton, total, mitad }) => {
             <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
                 <div style={{ padding: '8px 10px 6px', borderBottom: '1px solid #f1f5f9', background: '#fafafa', flexShrink: 0 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-                        <FaMapMarkerAlt style={{ color: ROJO, fontSize: '0.60rem' }} />
-                        <span style={{ fontSize: '0.62rem', fontWeight: 700, color: '#475569', fontFamily: FONT, textTransform: 'uppercase', letterSpacing: '0.4px' }}>Cantones</span>
-                        <span style={{ fontSize: '0.58rem', color: '#94a3b8', fontFamily: FONT }}>· {filtros.provincia}</span>
+                        <FaMapMarkerAlt style={{ color: ROJO, fontSize: '0.85rem' }} />
+                        <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#475569', fontFamily: FONT, textTransform: 'uppercase', letterSpacing: '0.4px' }}>Cantones</span>
+                        <span style={{ fontSize: '0.75rem', color: '#94a3b8', fontFamily: FONT }}>· {filtros.provincia}</span>
                         {!vacia && (
-                            <span style={{ fontSize: '0.58rem', fontWeight: 700, color: ROJO, background: `${ROJO}12`, border: `1px solid ${ROJO}25`, borderRadius: 99, padding: '0px 6px', fontFamily: FONT, marginLeft: 'auto' }}>
+                            <span style={{ fontSize: '0.75rem', fontWeight: 700, color: ROJO, background: `${ROJO}12`, border: `1px solid ${ROJO}25`, borderRadius: 99, padding: '0px 6px', fontFamily: FONT, marginLeft: 'auto' }}>
                                 {porCanton.length}
                             </span>
                         )}
@@ -410,15 +410,15 @@ const ColIzquierda = ({ filtros, porProvincia, porCanton, total, mitad }) => {
                 </div>
                 {!vacia && (
                     <div style={{ display: 'grid', gridTemplateColumns: '10px 1fr 1fr 1fr', gap: 6, padding: '4px 10px 4px 8px', borderBottom: '1px solid #e5e7eb', flexShrink: 0 }}>
-                        <div /><span style={{ fontSize: '0.57rem', fontWeight: 700, color: '#94a3b8', fontFamily: FONT, textTransform: 'uppercase' }}>Cantón</span>
-                        <span style={{ fontSize: '0.57rem', fontWeight: 700, color: '#94a3b8', fontFamily: FONT, textAlign: 'center' }}>N</span>
-                        <span style={{ fontSize: '0.57rem', fontWeight: 700, color: '#94a3b8', fontFamily: FONT, textAlign: 'center' }}>%</span>
+                        <div /><span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', fontFamily: FONT, textTransform: 'uppercase' }}>Cantón</span>
+                        <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', fontFamily: FONT, textAlign: 'center' }}>N</span>
+                        <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', fontFamily: FONT, textAlign: 'center' }}>%</span>
                     </div>
                 )}
                 <div style={{ flex: 1, overflowY: 'auto', padding: '4px 0' }}>
                     {vacia ? (
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
-                            <span style={{ fontSize: '0.68rem', color: '#cbd5e1', fontFamily: FONT }}>Sin cantones</span>
+                            <span style={{ fontSize: '0.85rem', color: '#cbd5e1', fontFamily: FONT }}>Sin cantones</span>
                         </div>
                     ) : (
                         porCanton.map((c, i) => {
@@ -433,9 +433,9 @@ const ColIzquierda = ({ filtros, porProvincia, porCanton, total, mitad }) => {
                                     minHeight: 32, borderLeft: activo ? `3px solid ${ROJO}` : '3px solid transparent',
                                 }}>
                                     <div style={{ width: 8, height: 8, borderRadius: 2, backgroundColor: color, flexShrink: 0 }} />
-                                    <span style={{ fontSize: '0.70rem', fontWeight: activo ? 700 : 500, color: activo ? ROJO : '#1e293b', fontFamily: FONT, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', textTransform: 'capitalize' }}>{c.canton}</span>
-                                    <span style={{ fontSize: '0.70rem', fontWeight: 700, color: '#0f172a', fontFamily: FONT, textAlign: 'center' }}>{c.total}</span>
-                                    <span style={{ fontSize: '0.60rem', fontWeight: 700, color, background: `${color}14`, border: `1px solid ${color}25`, borderRadius: 99, padding: '2px 4px', textAlign: 'center', fontFamily: FONT, whiteSpace: 'nowrap', display: 'block', margin: '0 auto', width: 'fit-content' }}>{porc}%</span>
+                                    <span style={{ fontSize: '0.95rem', fontWeight: activo ? 700 : 500, color: activo ? ROJO : '#1e293b', fontFamily: FONT, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', textTransform: 'capitalize' }}>{c.canton}</span>
+                                    <span style={{ fontSize: '0.95rem', fontWeight: 700, color: '#0f172a', fontFamily: FONT, textAlign: 'center' }}>{c.total}</span>
+                                    <span style={{ fontSize: '0.85rem', fontWeight: 700, color, background: `${color}14`, border: `1px solid ${color}25`, borderRadius: 99, padding: '2px 4px', textAlign: 'center', fontFamily: FONT, whiteSpace: 'nowrap', display: 'block', margin: '0 auto', width: 'fit-content' }}>{porc}%</span>
                                 </div>
                             );
                         })
@@ -451,29 +451,29 @@ const ColIzquierda = ({ filtros, porProvincia, porCanton, total, mitad }) => {
         <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
             <div style={{ padding: '8px 10px 6px', borderBottom: '1px solid #f1f5f9', background: '#fafafa', flexShrink: 0 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-                    <FaMapMarkerAlt style={{ color: CIAN, fontSize: '0.60rem' }} />
-                    <span style={{ fontSize: '0.62rem', fontWeight: 700, color: '#475569', fontFamily: FONT, textTransform: 'uppercase', letterSpacing: '0.4px' }}>Provincias</span>
-                    {!vacia && <span style={{ fontSize: '0.58rem', fontWeight: 700, color: CIAN, background: `${CIAN}12`, border: `1px solid ${CIAN}25`, borderRadius: 99, padding: '0px 6px', fontFamily: FONT }}>1–{provincias.length}</span>}
+                    <FaMapMarkerAlt style={{ color: CIAN, fontSize: '0.85rem' }} />
+                    <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#475569', fontFamily: FONT, textTransform: 'uppercase', letterSpacing: '0.4px' }}>Provincias</span>
+                    {!vacia && <span style={{ fontSize: '0.75rem', fontWeight: 700, color: CIAN, background: `${CIAN}12`, border: `1px solid ${CIAN}25`, borderRadius: 99, padding: '0px 6px', fontFamily: FONT }}>1–{provincias.length}</span>}
                 </div>
             </div>
             {!vacia && (
                 <div style={{ display: 'grid', gridTemplateColumns: '10px 1fr 1fr 1fr', gap: 6, padding: '4px 10px 4px 8px', borderBottom: '1px solid #e5e7eb', flexShrink: 0 }}>
-                    <div /><span style={{ fontSize: '0.57rem', fontWeight: 700, color: '#94a3b8', fontFamily: FONT, textTransform: 'uppercase' }}>Provincia</span>
-                    <span style={{ fontSize: '0.57rem', fontWeight: 700, color: '#94a3b8', fontFamily: FONT, textAlign: 'center' }}>N</span>
-                    <span style={{ fontSize: '0.57rem', fontWeight: 700, color: '#94a3b8', fontFamily: FONT, textAlign: 'center' }}>%</span>
+                    <div /><span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', fontFamily: FONT, textTransform: 'uppercase' }}>Provincia</span>
+                    <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', fontFamily: FONT, textAlign: 'center' }}>N</span>
+                    <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', fontFamily: FONT, textAlign: 'center' }}>%</span>
                 </div>
             )}
             <div style={{ flex: 1, overflowY: 'auto', padding: '4px 0' }}>
-                {vacia ? <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}><span style={{ fontSize: '0.68rem', color: '#cbd5e1', fontFamily: FONT }}>—</span></div> : (
+                {vacia ? <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}><span style={{ fontSize: '0.85rem', color: '#cbd5e1', fontFamily: FONT }}>—</span></div> : (
                     provincias.map((p, i) => {
                         const color = PALETA[i % PALETA.length];
                         const porc  = pct(p.total, total);
                         return (
                             <div key={i} className="prov-row" style={{ display: 'grid', gridTemplateColumns: '10px 1fr 1fr 1fr', alignItems: 'center', gap: 6, padding: '6px 10px 6px 8px', background: i % 2 === 0 ? '#f8fafc' : 'transparent', minHeight: 32 }}>
                                 <div style={{ width: 8, height: 8, borderRadius: 2, backgroundColor: color, flexShrink: 0 }} />
-                                <span style={{ fontSize: '0.70rem', fontWeight: 500, color: '#1e293b', fontFamily: FONT, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.provincia}</span>
-                                <span style={{ fontSize: '0.70rem', fontWeight: 700, color: '#0f172a', fontFamily: FONT, textAlign: 'center' }}>{p.total}</span>
-                                <span style={{ fontSize: '0.60rem', fontWeight: 700, color, background: `${color}14`, border: `1px solid ${color}25`, borderRadius: 99, padding: '2px 4px', textAlign: 'center', fontFamily: FONT, whiteSpace: 'nowrap', display: 'block', margin: '0 auto', width: 'fit-content' }}>{porc}%</span>
+                                <span style={{ fontSize: '0.95rem', fontWeight: 500, color: '#1e293b', fontFamily: FONT, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.provincia}</span>
+                                <span style={{ fontSize: '0.95rem', fontWeight: 700, color: '#0f172a', fontFamily: FONT, textAlign: 'center' }}>{p.total}</span>
+                                <span style={{ fontSize: '0.85rem', fontWeight: 700, color, background: `${color}14`, border: `1px solid ${color}25`, borderRadius: 99, padding: '2px 4px', textAlign: 'center', fontFamily: FONT, whiteSpace: 'nowrap', display: 'block', margin: '0 auto', width: 'fit-content' }}>{porc}%</span>
                             </div>
                         );
                     })
@@ -495,20 +495,20 @@ const ColDerecha = ({ filtros, porProvincia, graduadosFiltrados, total, offset }
         <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
             <div style={{ padding: '8px 10px 6px', borderBottom: '1px solid #f1f5f9', background: '#fafafa', flexShrink: 0 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-                    <FaMapMarkerAlt style={{ color: CIAN, fontSize: '0.60rem' }} />
-                    <span style={{ fontSize: '0.62rem', fontWeight: 700, color: '#475569', fontFamily: FONT, textTransform: 'uppercase', letterSpacing: '0.4px' }}>Provincias</span>
-                    {!vacia && <span style={{ fontSize: '0.58rem', fontWeight: 700, color: CIAN, background: `${CIAN}12`, border: `1px solid ${CIAN}25`, borderRadius: 99, padding: '0px 6px', fontFamily: FONT }}>{offset + 1}–{offset + provincias.length}</span>}
+                    <FaMapMarkerAlt style={{ color: CIAN, fontSize: '0.85rem' }} />
+                    <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#475569', fontFamily: FONT, textTransform: 'uppercase', letterSpacing: '0.4px' }}>Provincias</span>
+                    {!vacia && <span style={{ fontSize: '0.75rem', fontWeight: 700, color: CIAN, background: `${CIAN}12`, border: `1px solid ${CIAN}25`, borderRadius: 99, padding: '0px 6px', fontFamily: FONT }}>{offset + 1}–{offset + provincias.length}</span>}
                 </div>
             </div>
             {!vacia && (
                 <div style={{ display: 'grid', gridTemplateColumns: '10px 1fr 1fr 1fr', gap: 6, padding: '4px 10px 4px 8px', borderBottom: '1px solid #e5e7eb', flexShrink: 0 }}>
-                    <div /><span style={{ fontSize: '0.57rem', fontWeight: 700, color: '#94a3b8', fontFamily: FONT, textTransform: 'uppercase' }}>Provincia</span>
-                    <span style={{ fontSize: '0.57rem', fontWeight: 700, color: '#94a3b8', fontFamily: FONT, textAlign: 'center' }}>N</span>
-                    <span style={{ fontSize: '0.57rem', fontWeight: 700, color: '#94a3b8', fontFamily: FONT, textAlign: 'center' }}>%</span>
+                    <div /><span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', fontFamily: FONT, textTransform: 'uppercase' }}>Provincia</span>
+                    <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', fontFamily: FONT, textAlign: 'center' }}>N</span>
+                    <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', fontFamily: FONT, textAlign: 'center' }}>%</span>
                 </div>
             )}
             <div style={{ flex: 1, overflowY: 'auto', padding: '4px 0' }}>
-                {vacia ? <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}><span style={{ fontSize: '0.68rem', color: '#cbd5e1', fontFamily: FONT }}>—</span></div> : (
+                {vacia ? <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}><span style={{ fontSize: '0.85rem', color: '#cbd5e1', fontFamily: FONT }}>—</span></div> : (
                     provincias.map((p, i) => {
                         const realIdx = i + offset;
                         const color   = PALETA[realIdx % PALETA.length];
@@ -516,9 +516,9 @@ const ColDerecha = ({ filtros, porProvincia, graduadosFiltrados, total, offset }
                         return (
                             <div key={i} className="prov-row" style={{ display: 'grid', gridTemplateColumns: '10px 1fr 1fr 1fr', alignItems: 'center', gap: 6, padding: '6px 10px 6px 8px', background: i % 2 === 0 ? '#f8fafc' : 'transparent', minHeight: 32 }}>
                                 <div style={{ width: 8, height: 8, borderRadius: 2, backgroundColor: color, flexShrink: 0 }} />
-                                <span style={{ fontSize: '0.70rem', fontWeight: 500, color: '#1e293b', fontFamily: FONT, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.provincia}</span>
-                                <span style={{ fontSize: '0.70rem', fontWeight: 700, color: '#0f172a', fontFamily: FONT, textAlign: 'center' }}>{p.total}</span>
-                                <span style={{ fontSize: '0.60rem', fontWeight: 700, color, background: `${color}14`, border: `1px solid ${color}25`, borderRadius: 99, padding: '2px 4px', textAlign: 'center', fontFamily: FONT, whiteSpace: 'nowrap', display: 'block', margin: '0 auto', width: 'fit-content' }}>{porc}%</span>
+                                <span style={{ fontSize: '0.95rem', fontWeight: 500, color: '#1e293b', fontFamily: FONT, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.provincia}</span>
+                                <span style={{ fontSize: '0.95rem', fontWeight: 700, color: '#0f172a', fontFamily: FONT, textAlign: 'center' }}>{p.total}</span>
+                                <span style={{ fontSize: '0.85rem', fontWeight: 700, color, background: `${color}14`, border: `1px solid ${color}25`, borderRadius: 99, padding: '2px 4px', textAlign: 'center', fontFamily: FONT, whiteSpace: 'nowrap', display: 'block', margin: '0 auto', width: 'fit-content' }}>{porc}%</span>
                             </div>
                         );
                     })
@@ -576,10 +576,10 @@ const FiltrosInline = ({ datos, filtros, onChange, onLimpiar }) => {
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 5, flexShrink: 0 }}>
                     <div style={{ width: 22, height: 22, borderRadius: 5, background: `${ROJO}15`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <FaFilter style={{ color: ROJO, fontSize: '0.62rem' }} />
+                        <FaFilter style={{ color: ROJO, fontSize: '0.85rem' }} />
                     </div>
-                    <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#374151', fontFamily: FONT }}>Filtros</span>
-                    {hayF && <span style={{ background: ROJO, color: 'white', borderRadius: 99, fontSize: '0.55rem', fontWeight: 700, padding: '1px 5px', fontFamily: FONT }}>{activos}</span>}
+                    <span style={{ fontSize: '0.95rem', fontWeight: 700, color: '#374151', fontFamily: FONT }}>Filtros</span>
+                    {hayF && <span style={{ background: ROJO, color: 'white', borderRadius: 99, fontSize: '0.75rem', fontWeight: 700, padding: '1px 5px', fontFamily: FONT }}>{activos}</span>}
                 </div>
                 <div style={{ width: 1, height: 20, background: '#e5e7eb', flexShrink: 0 }} />
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap', flex: 1 }}>
@@ -593,13 +593,13 @@ const FiltrosInline = ({ datos, filtros, onChange, onLimpiar }) => {
                 {hayF && (
                     <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexWrap: 'wrap' }}>
                         {Object.entries(filtros).filter(([, v]) => v).map(([k, v]) => (
-                            <span key={k} style={{ background: `${ROJO}12`, color: ROJO, border: `1px solid ${ROJO}25`, borderRadius: 99, fontSize: '0.63rem', fontWeight: 600, padding: '2px 7px', fontFamily: FONT, display: 'inline-flex', alignItems: 'center', gap: 3 }}>
-                                <span style={{ color: '#9ca3af', fontSize: '0.58rem' }}>{etiquetas[k]}:</span>&nbsp;{DISP_LABELS[v] ?? v}
-                                <button onClick={() => onChange(k, '')} style={{ background: 'none', border: 'none', color: ROJO, cursor: 'pointer', padding: 0, fontSize: '0.70rem', lineHeight: 1, opacity: 0.7 }}>×</button>
+                            <span key={k} style={{ background: `${ROJO}12`, color: ROJO, border: `1px solid ${ROJO}25`, borderRadius: 99, fontSize: '0.85rem', fontWeight: 600, padding: '2px 7px', fontFamily: FONT, display: 'inline-flex', alignItems: 'center', gap: 3 }}>
+                                <span style={{ color: '#9ca3af', fontSize: '0.75rem' }}>{etiquetas[k]}:</span>&nbsp;{DISP_LABELS[v] ?? v}
+                                <button onClick={() => onChange(k, '')} style={{ background: 'none', border: 'none', color: ROJO, cursor: 'pointer', padding: 0, fontSize: '0.95rem', lineHeight: 1, opacity: 0.7 }}>×</button>
                             </span>
                         ))}
-                        <button onClick={onLimpiar} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af', fontSize: '0.65rem', fontFamily: FONT, display: 'flex', alignItems: 'center', gap: 2, padding: '2px 4px' }}>
-                            <FaTimes style={{ fontSize: '0.55rem' }} />Limpiar
+                        <button onClick={onLimpiar} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af', fontSize: '0.85rem', fontFamily: FONT, display: 'flex', alignItems: 'center', gap: 2, padding: '2px 4px' }}>
+                            <FaTimes style={{ fontSize: '0.75rem' }} />Limpiar
                         </button>
                     </div>
                 )}
@@ -798,8 +798,8 @@ const MapaGraduados = ({ porProvincia, porCanton, filtros, geoData }) => {
     if (!porProvincia?.length || !geoData?.ecuador || !geoData?.cantones || !geoData?.provincias) {
         return (
             <div style={{ width: '100%', height: '100%', background: 'linear-gradient(135deg,#f8fafc,#f1f5f9)', borderRadius: 8, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 10 }}>
-                <FaGlobeAmericas style={{ fontSize: '2rem', color: '#94a3b8' }} />
-                <p style={{ margin: 0, fontSize: '0.80rem', color: '#475569', fontFamily: FONT, fontWeight: 700 }}>
+                <FaGlobeAmericas style={{ fontSize: '2.3rem', color: '#94a3b8' }} />
+                <p style={{ margin: 0, fontSize: '1rem', color: '#475569', fontFamily: FONT, fontWeight: 700 }}>
                     {!geoData?.cantones ? 'Cargando mapa...' : 'Sin datos geográficos'}
                 </p>
             </div>
@@ -864,13 +864,13 @@ const TabIndicadoresGraduados = ({ df, datos, filtros, cambiarFiltro, limpiar, g
     }
 
     const mitadProv = Math.ceil(porProvincia.length / 2);
-    const sinD = { margin: 0, fontSize: '0.74rem', color: '#9ca3af', textAlign: 'center', padding: '12px 0', fontFamily: FONT };
+    const sinD = { margin: 0, fontSize: '0.95rem', color: '#9ca3af', textAlign: 'center', padding: '12px 0', fontFamily: FONT };
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
 
             {/* 1. KPIs */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6,1fr)', gap: 10 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 10 }}>
                 <KPI icon={FaUsers}        valor={totalGraduados}   label="Graduados"         sub="Con tesis verificada"                color={ROJO}   delay={0}   />
                 <KPI icon={FaGraduationCap}valor={totalPublicos}    label="Perfiles públicos" sub={`${tasaVis}% visibles`}             color={AZUL}   delay={40}  />
                 <KPI icon={FaBriefcase}    valor={totalEmpleados}   label="Empleados"         sub={`${tasaEmp}% del total`}            color={VERDE}  delay={80}  />
@@ -886,11 +886,11 @@ const TabIndicadoresGraduados = ({ df, datos, filtros, cambiarFiltro, limpiar, g
             <div className="est-anim" style={{ background: 'white', borderRadius: 12, border: '1px solid #e2e8f0', boxShadow: '0 2px 8px rgba(0,0,0,0.06)', overflow: 'hidden', animationDelay: '80ms' }}>
                 <div style={{ padding: '11px 16px', borderBottom: '1px solid #f1f5f9', background: `linear-gradient(135deg,${CIAN}0a,transparent)`, display: 'flex', alignItems: 'center', gap: 10 }}>
                     <div style={{ width: 28, height: 28, borderRadius: 7, background: `${CIAN}1a`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                        <FaMapMarked style={{ color: CIAN, fontSize: '0.80rem' }} />
+                        <FaMapMarked style={{ color: CIAN, fontSize: '1rem' }} />
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontSize: '0.84rem', fontWeight: 700, color: '#0f172a', fontFamily: FONT }}>Distribución Geográfica</div>
-                        <div style={{ fontSize: '0.62rem', color: '#94a3b8', fontFamily: FONT }}>
+                        <div style={{ fontSize: '1rem', fontWeight: 700, color: '#0f172a', fontFamily: FONT }}>Distribución Geográfica</div>
+                        <div style={{ fontSize: '0.85rem', color: '#94a3b8', fontFamily: FONT }}>
                             Ubicación actual de graduados · Ecuador continental
                             {filtros.provincia && <span style={{ color: ROJO, marginLeft: 4, fontWeight: 600 }}>· {filtros.provincia}{filtros.canton ? ` › ${filtros.canton}` : ''}</span>}
                         </div>
@@ -899,13 +899,13 @@ const TabIndicadoresGraduados = ({ df, datos, filtros, cambiarFiltro, limpiar, g
                         {[[PALETA[0], 'Con graduados'], [PALETA_LIGHT[0], 'Sin graduados en cantón'], ['#edf0f4', 'Sin presencia']].map(([bg, lbl]) => (
                             <div key={lbl} style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
                                 <div style={{ width: 13, height: 13, borderRadius: 3, background: bg, border: '1px solid #94a3b8' }} />
-                                <span style={{ fontSize: '0.62rem', color: '#6b7280', fontFamily: FONT }}>{lbl}</span>
+                                <span style={{ fontSize: '0.85rem', color: '#6b7280', fontFamily: FONT }}>{lbl}</span>
                             </div>
                         ))}
                         {filtros.provincia && (
                             <div style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '3px 8px', background: `${ROJO}10`, border: `1px solid ${ROJO}25`, borderRadius: 99 }}>
-                                <FaUsers style={{ color: ROJO, fontSize: '0.58rem' }} />
-                                <span style={{ fontSize: '0.62rem', fontWeight: 700, color: ROJO, fontFamily: FONT }}>
+                                <FaUsers style={{ color: ROJO, fontSize: '0.75rem' }} />
+                                <span style={{ fontSize: '0.85rem', fontWeight: 700, color: ROJO, fontFamily: FONT }}>
                                     {graduadosFiltrados.length} graduado{graduadosFiltrados.length !== 1 ? 's' : ''}
                                 </span>
                             </div>
@@ -915,9 +915,9 @@ const TabIndicadoresGraduados = ({ df, datos, filtros, cambiarFiltro, limpiar, g
 
                 {geoError && (
                     <div style={{ padding: '9px 16px', background: '#fff7ed', borderBottom: '1px solid #fed7aa', display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <FaExclamationTriangle style={{ color: '#d97706', fontSize: '0.80rem', flexShrink: 0 }} />
-                        <p style={{ margin: 0, fontSize: '0.72rem', color: '#92400e', fontFamily: FONT }}>
-                            No se pudieron cargar los archivos GeoJSON. Verifica <code style={{ background: '#fef3c7', padding: '1px 4px', borderRadius: 3, fontSize: '0.68rem' }}>public/geo/</code>
+                        <FaExclamationTriangle style={{ color: '#d97706', fontSize: '1rem', flexShrink: 0 }} />
+                        <p style={{ margin: 0, fontSize: '0.95rem', color: '#92400e', fontFamily: FONT }}>
+                            No se pudieron cargar los archivos GeoJSON. Verifica <code style={{ background: '#fef3c7', padding: '1px 4px', borderRadius: 3, fontSize: '0.85rem' }}>public/geo/</code>
                         </p>
                     </div>
                 )}
@@ -935,10 +935,10 @@ const TabIndicadoresGraduados = ({ df, datos, filtros, cambiarFiltro, limpiar, g
                 </div>
 
                 <div style={{ borderTop: '1px solid #e5e7eb', padding: '14px 20px', background: '#fafafa' }}>
-                    <p style={{ margin: '0 0 12px', fontSize: '0.63rem', fontWeight: 700, color: '#94a3b8', fontFamily: FONT, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                    <p style={{ margin: '0 0 12px', fontSize: '0.85rem', fontWeight: 700, color: '#94a3b8', fontFamily: FONT, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                         Indicadores clave de calidad
                     </p>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 24 }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 24 }}>
                         <Gauge valor={tasaEmp}  color={tasaEmp >= 70 ? VERDE : tasaEmp >= 50 ? NARANJA : ROJO} titulo="Empleabilidad" sz={84} />
                         <Gauge valor={tasaVis}  color={tasaVis >= 70 ? AZUL : NARANJA}                         titulo="Visibilidad"   sz={84} />
                         <Gauge valor={tasaProy} color={CIAN}                                                    titulo="Portafolio"    sz={84} />
@@ -956,9 +956,9 @@ const TabIndicadoresGraduados = ({ df, datos, filtros, cambiarFiltro, limpiar, g
                             {porGenero.map((g, i) => (
                                 <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 5 }}>
                                     <div style={{ width: 8, height: 8, borderRadius: '50%', background: PALETA[i], flexShrink: 0 }} />
-                                    <span style={{ fontSize: '0.72rem', color: '#374151', flex: 1, fontFamily: FONT }}>{g.label}</span>
-                                    <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#111827', fontFamily: FONT }}>{g.valor}</span>
-                                    <span style={{ fontSize: '0.62rem', color: '#9ca3af', fontFamily: FONT }}>({pct(g.valor, totalGraduados)}%)</span>
+                                    <span style={{ fontSize: '0.95rem', color: '#374151', flex: 1, fontFamily: FONT }}>{g.label}</span>
+                                    <span style={{ fontSize: '0.95rem', fontWeight: 700, color: '#111827', fontFamily: FONT }}>{g.valor}</span>
+                                    <span style={{ fontSize: '0.85rem', color: '#9ca3af', fontFamily: FONT }}>({pct(g.valor, totalGraduados)}%)</span>
                                 </div>
                             ))}
                         </div>
@@ -990,9 +990,9 @@ const TabIndicadoresGraduados = ({ df, datos, filtros, cambiarFiltro, limpiar, g
                                     {filas.map(f => (
                                         <div key={f.key} style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 5 }}>
                                             <div style={{ width: 8, height: 8, borderRadius: '50%', background: f.color, flexShrink: 0 }} />
-                                            <span style={{ fontSize: '0.72rem', color: '#374151', flex: 1, fontFamily: FONT }}>{f.label}</span>
-                                            <span style={{ fontSize: '0.72rem', fontWeight: 700, color: f.color, fontFamily: FONT }}>{f.v}</span>
-                                            <span style={{ fontSize: '0.62rem', color: '#9ca3af', fontFamily: FONT }}>({pct(f.v, totalEstados || totalGraduados)}%)</span>
+                                            <span style={{ fontSize: '0.95rem', color: '#374151', flex: 1, fontFamily: FONT }}>{f.label}</span>
+                                            <span style={{ fontSize: '0.95rem', fontWeight: 700, color: f.color, fontFamily: FONT }}>{f.v}</span>
+                                            <span style={{ fontSize: '0.85rem', color: '#9ca3af', fontFamily: FONT }}>({pct(f.v, totalEstados || totalGraduados)}%)</span>
                                         </div>
                                     ))}
                                 </div>
@@ -1008,14 +1008,14 @@ const TabIndicadoresGraduados = ({ df, datos, filtros, cambiarFiltro, limpiar, g
                             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                                 {anioMax?.anio > 0 && (
                                     <div style={{ background: `${MORADO}10`, border: `1px solid ${MORADO}25`, borderRadius: 7, padding: '5px 10px', display: 'flex', gap: 6, alignItems: 'center' }}>
-                                        <FaTrophy style={{ color: MORADO, fontSize: '0.72rem' }} />
-                                        <span style={{ fontSize: '0.68rem', color: '#374151', fontFamily: FONT }}>Año récord: <strong style={{ color: MORADO }}>{anioMax.anio}</strong> · {anioMax.total} graduados</span>
+                                        <FaTrophy style={{ color: MORADO, fontSize: '0.95rem' }} />
+                                        <span style={{ fontSize: '0.85rem', color: '#374151', fontFamily: FONT }}>Año récord: <strong style={{ color: MORADO }}>{anioMax.anio}</strong> · {anioMax.total} graduados</span>
                                     </div>
                                 )}
                                 {badgeTendencia !== 0 && (
                                     <div style={{ background: badgeTendencia > 0 ? `${VERDE}10` : `${ROJO}10`, border: `1px solid ${badgeTendencia > 0 ? VERDE : ROJO}25`, borderRadius: 7, padding: '5px 10px', display: 'flex', gap: 6, alignItems: 'center' }}>
-                                        {badgeTendencia > 0 ? <FaArrowUp style={{ color: VERDE, fontSize: '0.72rem' }} /> : <FaArrowDown style={{ color: ROJO, fontSize: '0.72rem' }} />}
-                                        <span style={{ fontSize: '0.68rem', color: '#374151', fontFamily: FONT }}>{badgeTendencia > 0 ? '+' : ''}{badgeTendencia}% vs año anterior</span>
+                                        {badgeTendencia > 0 ? <FaArrowUp style={{ color: VERDE, fontSize: '0.95rem' }} /> : <FaArrowDown style={{ color: ROJO, fontSize: '0.95rem' }} />}
+                                        <span style={{ fontSize: '0.85rem', color: '#374151', fontFamily: FONT }}>{badgeTendencia > 0 ? '+' : ''}{badgeTendencia}% vs año anterior</span>
                                     </div>
                                 )}
                             </div>
@@ -1026,8 +1026,8 @@ const TabIndicadoresGraduados = ({ df, datos, filtros, cambiarFiltro, limpiar, g
 
             {/* Nota metodológica */}
             <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8, padding: '8px 14px', background: '#fffbeb', border: '1px solid #fde68a', borderRadius: 8 }}>
-                <FaExclamationTriangle style={{ color: '#d97706', fontSize: '0.72rem', flexShrink: 0, marginTop: 2 }} />
-                <p style={{ margin: 0, fontSize: '0.67rem', color: '#92400e', fontFamily: FONT, lineHeight: 1.6 }}>
+                <FaExclamationTriangle style={{ color: '#d97706', fontSize: '0.95rem', flexShrink: 0, marginTop: 2 }} />
+                <p style={{ margin: 0, fontSize: '0.85rem', color: '#92400e', fontFamily: FONT, lineHeight: 1.6 }}>
                     <strong>Supuesto metodológico:</strong> La tasa de empleabilidad se calcula sobre graduados con <em>disponibilidad = "no disponible"</em>, lo que indica que no buscan empleo activamente. Esto incluye graduados empleados, en posgrado o con perfil no actualizado. Los valores deben interpretarse como indicador de referencia, no como dato exacto de inserción laboral.
                 </p>
             </div>
@@ -1040,8 +1040,8 @@ const TabIndicadoresGraduados = ({ df, datos, filtros, cambiarFiltro, limpiar, g
                             <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 12 }}>
                                 {Object.entries(tecsPorCategoria).sort((a, b) => b[1] - a[1]).map(([cat, tot], i) => (
                                     <div key={cat} style={{ background: `${PALETA[i % PALETA.length]}10`, border: `1px solid ${PALETA[i % PALETA.length]}25`, borderRadius: 6, padding: '4px 9px', display: 'flex', gap: 5, alignItems: 'center' }}>
-                                        <span style={{ fontSize: '0.65rem', fontWeight: 700, color: PALETA[i % PALETA.length], fontFamily: FONT, textTransform: 'capitalize' }}>{cat}</span>
-                                        <span style={{ fontSize: '0.60rem', color: '#6b7280', fontFamily: FONT }}>{tot}</span>
+                                        <span style={{ fontSize: '0.85rem', fontWeight: 700, color: PALETA[i % PALETA.length], fontFamily: FONT, textTransform: 'capitalize' }}>{cat}</span>
+                                        <span style={{ fontSize: '0.85rem', color: '#6b7280', fontFamily: FONT }}>{tot}</span>
                                     </div>
                                 ))}
                             </div>
@@ -1053,7 +1053,7 @@ const TabIndicadoresGraduados = ({ df, datos, filtros, cambiarFiltro, limpiar, g
                         </div>
                         {topTecnologias.length > 12 && (
                             <div style={{ borderTop: '1px solid #f1f5f9', paddingTop: 8, marginBottom: 12 }}>
-                                <p style={{ margin: '0 0 5px', fontSize: '0.61rem', fontWeight: 700, color: '#9ca3af', fontFamily: FONT, textTransform: 'uppercase', letterSpacing: '0.4px' }}>Otras tecnologías detectadas</p>
+                                <p style={{ margin: '0 0 5px', fontSize: '0.85rem', fontWeight: 700, color: '#9ca3af', fontFamily: FONT, textTransform: 'uppercase', letterSpacing: '0.4px' }}>Otras tecnologías detectadas</p>
                                 <div style={{ display: 'flex', flexWrap: 'wrap' }}>
                                     {topTecnologias.slice(12).map((t, i) => <Tag key={i} label={`${t.tecnologia} (${t.total})`} color={PALETA[(i + 12) % PALETA.length]} />)}
                                 </div>
@@ -1061,20 +1061,20 @@ const TabIndicadoresGraduados = ({ df, datos, filtros, cambiarFiltro, limpiar, g
                         )}
                         {tecEmergentes.length > 0 && (
                             <div style={{ borderTop: '1px solid #f1f5f9', paddingTop: 10 }}>
-                                <p style={{ margin: '0 0 8px', fontSize: '0.62rem', fontWeight: 700, color: '#374151', fontFamily: FONT, textTransform: 'uppercase', letterSpacing: '0.4px', display: 'flex', alignItems: 'center', gap: 5 }}>
-                                    <FaArrowUp style={{ color: VERDE, fontSize: '0.58rem' }} />Tendencia reciente — últimos 2 años
+                                <p style={{ margin: '0 0 8px', fontSize: '0.85rem', fontWeight: 700, color: '#374151', fontFamily: FONT, textTransform: 'uppercase', letterSpacing: '0.4px', display: 'flex', alignItems: 'center', gap: 5 }}>
+                                    <FaArrowUp style={{ color: VERDE, fontSize: '0.75rem' }} />Tendencia reciente — últimos 2 años
                                 </p>
                                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                                     {tecEmergentes.map((t, i) => (
                                         <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '4px 9px', background: `${VERDE}0e`, border: `1px solid ${VERDE}25`, borderRadius: 7 }}>
                                             <div style={{ width: 6, height: 6, borderRadius: '50%', background: VERDE, flexShrink: 0 }} />
-                                            <span style={{ fontSize: '0.66rem', fontWeight: 600, color: '#1e293b', fontFamily: FONT }}>{t.tecnologia}</span>
-                                            <span style={{ fontSize: '0.60rem', color: VERDE, fontWeight: 700, fontFamily: FONT }}>{t.total}</span>
-                                            {t.totalGeneral > 0 && <span style={{ fontSize: '0.57rem', color: '#94a3b8', fontFamily: FONT }}>/{t.totalGeneral} total</span>}
+                                            <span style={{ fontSize: '0.85rem', fontWeight: 600, color: '#1e293b', fontFamily: FONT }}>{t.tecnologia}</span>
+                                            <span style={{ fontSize: '0.85rem', color: VERDE, fontWeight: 700, fontFamily: FONT }}>{t.total}</span>
+                                            {t.totalGeneral > 0 && <span style={{ fontSize: '0.75rem', color: '#94a3b8', fontFamily: FONT }}>/{t.totalGeneral} total</span>}
                                         </div>
                                     ))}
                                 </div>
-                                <p style={{ margin: '6px 0 0', fontSize: '0.60rem', color: '#9ca3af', fontFamily: FONT }}>Tecnologías usadas por graduados de los últimos 2 años. Refleja las tendencias más recientes del mercado laboral.</p>
+                                <p style={{ margin: '6px 0 0', fontSize: '0.85rem', color: '#9ca3af', fontFamily: FONT }}>Tecnologías usadas por graduados de los últimos 2 años. Refleja las tendencias más recientes del mercado laboral.</p>
                             </div>
                         )}
                     </>
@@ -1094,9 +1094,9 @@ const TabIndicadoresGraduados = ({ df, datos, filtros, cambiarFiltro, limpiar, g
                                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 3, alignItems: 'center' }}>
                                                 <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                                                     <div style={{ width: 8, height: 8, borderRadius: 2, background: r.color, flexShrink: 0 }} />
-                                                    <span style={{ fontSize: '0.72rem', fontWeight: 600, color: '#374151', fontFamily: FONT }}>{r.label}</span>
+                                                    <span style={{ fontSize: '0.95rem', fontWeight: 600, color: '#374151', fontFamily: FONT }}>{r.label}</span>
                                                 </div>
-                                                <span style={{ fontSize: '0.68rem', fontFamily: FONT, color: '#6b7280' }}><strong style={{ color: '#111827' }}>{r.cantidad}</strong> grad. · {p2}%</span>
+                                                <span style={{ fontSize: '0.85rem', fontFamily: FONT, color: '#6b7280' }}><strong style={{ color: '#111827' }}>{r.cantidad}</strong> grad. · {p2}%</span>
                                             </div>
                                             <div style={{ height: 8, background: '#f1f5f9', borderRadius: 99, overflow: 'hidden' }}>
                                                 <div style={{ height: '100%', width: `${p2}%`, background: r.color, borderRadius: 99, transition: 'width 0.7s ease' }} />
@@ -1106,7 +1106,7 @@ const TabIndicadoresGraduados = ({ df, datos, filtros, cambiarFiltro, limpiar, g
                                 })}
                             </div>
                             <div style={{ padding: '7px 10px', background: '#f0fdfa', border: '1px solid #99f6e4', borderRadius: 6 }}>
-                                <p style={{ margin: 0, fontSize: '0.64rem', color: '#0f766e', fontFamily: FONT, lineHeight: 1.5 }}>El portafolio máximo es de <strong>5 proyectos</strong> por graduado. Graduados con 3–5 proyectos representan el perfil más competitivo para empleadores.</p>
+                                <p style={{ margin: 0, fontSize: '0.85rem', color: '#0f766e', fontFamily: FONT, lineHeight: 1.5 }}>El portafolio máximo es de <strong>5 proyectos</strong> por graduado. Graduados con 3–5 proyectos representan el perfil más competitivo para empleadores.</p>
                             </div>
                         </>
                     )}
@@ -1123,9 +1123,9 @@ const TabIndicadoresGraduados = ({ df, datos, filtros, cambiarFiltro, limpiar, g
                                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 3, alignItems: 'center' }}>
                                                 <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                                                     <div style={{ width: 8, height: 8, borderRadius: 2, background: r.color, flexShrink: 0 }} />
-                                                    <span style={{ fontSize: '0.72rem', fontWeight: 600, color: '#374151', fontFamily: FONT }}>{r.label}</span>
+                                                    <span style={{ fontSize: '0.95rem', fontWeight: 600, color: '#374151', fontFamily: FONT }}>{r.label}</span>
                                                 </div>
-                                                <span style={{ fontSize: '0.68rem', fontFamily: FONT, color: '#6b7280' }}><strong style={{ color: '#111827' }}>{r.cantidad}</strong> grad. · {p2}%</span>
+                                                <span style={{ fontSize: '0.85rem', fontFamily: FONT, color: '#6b7280' }}><strong style={{ color: '#111827' }}>{r.cantidad}</strong> grad. · {p2}%</span>
                                             </div>
                                             <div style={{ height: 8, background: '#f1f5f9', borderRadius: 99, overflow: 'hidden' }}>
                                                 <div style={{ height: '100%', width: `${p2}%`, background: r.color, borderRadius: 99, transition: 'width 0.7s ease' }} />
@@ -1135,7 +1135,7 @@ const TabIndicadoresGraduados = ({ df, datos, filtros, cambiarFiltro, limpiar, g
                                 })}
                             </div>
                             <div style={{ padding: '7px 10px', background: '#faf5ff', border: '1px solid #e9d5ff', borderRadius: 6 }}>
-                                <p style={{ margin: 0, fontSize: '0.64rem', color: '#6b21a8', fontFamily: FONT, lineHeight: 1.5 }}>El portafolio máximo es de <strong>5 certificados</strong> por graduado. Certificaciones en cloud, IA y DevOps tienen mayor valoración en el mercado.</p>
+                                <p style={{ margin: 0, fontSize: '0.85rem', color: '#6b21a8', fontFamily: FONT, lineHeight: 1.5 }}>El portafolio máximo es de <strong>5 certificados</strong> por graduado. Certificaciones en cloud, IA y DevOps tienen mayor valoración en el mercado.</p>
                             </div>
                         </>
                     )}
@@ -1152,9 +1152,9 @@ const TabIndicadoresGraduados = ({ df, datos, filtros, cambiarFiltro, limpiar, g
                                 {topAfinidades.map((a, i) => (
                                     <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 5 }}>
                                         <div style={{ width: 7, height: 7, borderRadius: '50%', background: PALETA[i], flexShrink: 0 }} />
-                                        <span style={{ fontSize: '0.71rem', color: '#374151', flex: 1, fontFamily: FONT }}>{a.categoria}</span>
-                                        <span style={{ fontSize: '0.70rem', fontWeight: 700, color: '#111827', fontFamily: FONT }}>{a.total}</span>
-                                        <span style={{ fontSize: '0.62rem', color: '#9ca3af', fontFamily: FONT }}>{pct(a.total, totalGraduados)}%</span>
+                                        <span style={{ fontSize: '0.95rem', color: '#374151', flex: 1, fontFamily: FONT }}>{a.categoria}</span>
+                                        <span style={{ fontSize: '0.95rem', fontWeight: 700, color: '#111827', fontFamily: FONT }}>{a.total}</span>
+                                        <span style={{ fontSize: '0.85rem', color: '#9ca3af', fontFamily: FONT }}>{pct(a.total, totalGraduados)}%</span>
                                     </div>
                                 ))}
                             </div>
@@ -1183,11 +1183,11 @@ const TabIndicadoresGraduados = ({ df, datos, filtros, cambiarFiltro, limpiar, g
                 <div className="est-anim" style={{ background: 'white', borderRadius: 10, border: '1px solid #e5e7eb', overflow: 'hidden', animationDelay: '360ms' }}>
                     <div style={{ padding: '11px 16px', borderBottom: '1px solid #f1f5f9', background: `linear-gradient(135deg,${ROJO}09,transparent)`, display: 'flex', alignItems: 'center', gap: 9, flexWrap: 'wrap' }}>
                         <div style={{ width: 28, height: 28, borderRadius: 7, background: `${ROJO}18`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            <FaLightbulb style={{ color: ROJO, fontSize: '0.82rem' }} />
+                            <FaLightbulb style={{ color: ROJO, fontSize: '1rem' }} />
                         </div>
                         <div>
-                            <div style={{ fontSize: '0.82rem', fontWeight: 700, color: '#0f172a', fontFamily: FONT }}>Análisis de Situación Institucional</div>
-                            <div style={{ fontSize: '0.61rem', color: '#9ca3af', fontFamily: FONT }}>
+                            <div style={{ fontSize: '1rem', fontWeight: 700, color: '#0f172a', fontFamily: FONT }}>Análisis de Situación Institucional</div>
+                            <div style={{ fontSize: '0.85rem', color: '#9ca3af', fontFamily: FONT }}>
                                 Generado automáticamente · {(insights || []).length} observaciones
                                 {hayF && <span style={{ color: ROJO, marginLeft: 4 }}>· Filtrado aplicado</span>}
                             </div>
@@ -1196,7 +1196,7 @@ const TabIndicadoresGraduados = ({ df, datos, filtros, cambiarFiltro, limpiar, g
                             {[['crit', 'Crítico', ROJO], ['warn', 'Atención', NARANJA], ['ok', 'Fortaleza', VERDE], ['info', 'Sugerencia', AZUL]].map(([tipo, lbl, c]) => (
                                 <div key={tipo} style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
                                     <div style={{ width: 6, height: 6, borderRadius: '50%', background: c }} />
-                                    <span style={{ fontSize: '0.60rem', color: '#6b7280', fontFamily: FONT }}>{lbl}</span>
+                                    <span style={{ fontSize: '0.85rem', color: '#6b7280', fontFamily: FONT }}>{lbl}</span>
                                 </div>
                             ))}
                         </div>
@@ -1210,7 +1210,7 @@ const TabIndicadoresGraduados = ({ df, datos, filtros, cambiarFiltro, limpiar, g
                                     const lbls = { crit: '🔴 Puntos Críticos', warn: '⚠️ Puntos de Atención', ok: '✅ Fortalezas', info: '💡 Sugerencias' };
                                     return (
                                         <div key={tipo} style={{ marginBottom: 12 }}>
-                                            <p style={{ margin: '0 0 6px', fontSize: '0.65rem', fontWeight: 700, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.5px', fontFamily: FONT }}>{lbls[tipo]}</p>
+                                            <p style={{ margin: '0 0 6px', fontSize: '0.85rem', fontWeight: 700, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.5px', fontFamily: FONT }}>{lbls[tipo]}</p>
                                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(260px,1fr))', gap: 6 }}>
                                                 {grupo.map((r, i) => <Insight key={i} tipo={r.tipo} titulo={r.titulo} detalle={r.detalle} delay={i * 35} />)}
                                             </div>
@@ -1218,7 +1218,7 @@ const TabIndicadoresGraduados = ({ df, datos, filtros, cambiarFiltro, limpiar, g
                                     );
                                 })}
                                 <div style={{ marginTop: 4, padding: '8px 12px', background: '#f8fafc', borderRadius: 7, border: '1px solid #e5e7eb' }}>
-                                    <p style={{ margin: 0, fontSize: '0.67rem', color: '#9ca3af', fontFamily: FONT, lineHeight: 1.6 }}>
+                                    <p style={{ margin: 0, fontSize: '0.85rem', color: '#9ca3af', fontFamily: FONT, lineHeight: 1.6 }}>
                                         <strong style={{ color: '#6b7280' }}>Nota metodológica:</strong> Análisis generado desde perfiles, proyectos y certificados. Complementar con encuestas según Res. 018.CP.2025.
                                     </p>
                                 </div>
@@ -1230,19 +1230,19 @@ const TabIndicadoresGraduados = ({ df, datos, filtros, cambiarFiltro, limpiar, g
                 <div className="est-anim" style={{ background: 'white', borderRadius: 10, border: '1px solid #e5e7eb', overflow: 'hidden', animationDelay: '380ms' }}>
                     <div style={{ padding: '11px 16px', borderBottom: '1px solid #f1f5f9', background: `linear-gradient(135deg,${AZUL}09,transparent)`, display: 'flex', alignItems: 'center', gap: 9 }}>
                         <div style={{ width: 28, height: 28, borderRadius: 7, background: `${AZUL}18`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            <FaBullseye style={{ color: AZUL, fontSize: '0.82rem' }} />
+                            <FaBullseye style={{ color: AZUL, fontSize: '1rem' }} />
                         </div>
                         <div>
-                            <div style={{ fontSize: '0.82rem', fontWeight: 700, color: '#0f172a', fontFamily: FONT }}>Plan de Acción</div>
-                            <div style={{ fontSize: '0.61rem', color: '#9ca3af', fontFamily: FONT }}>Acciones priorizadas por impacto</div>
+                            <div style={{ fontSize: '1rem', fontWeight: 700, color: '#0f172a', fontFamily: FONT }}>Plan de Acción</div>
+                            <div style={{ fontSize: '0.85rem', color: '#9ca3af', fontFamily: FONT }}>Acciones priorizadas por impacto</div>
                         </div>
                     </div>
                     <div style={{ padding: '12px 14px' }}>
                         {(planAccion || []).length === 0 ? (
                             <div style={{ textAlign: 'center', padding: '20px 0' }}>
-                                <FaCheckCircle style={{ color: VERDE, fontSize: '1.6rem', marginBottom: 8 }} />
-                                <p style={{ margin: 0, fontSize: '0.74rem', color: VERDE, fontFamily: FONT, fontWeight: 600 }}>¡Sin acciones críticas!</p>
-                                <p style={{ margin: '4px 0 0', fontSize: '0.66rem', color: '#9ca3af', fontFamily: FONT }}>Todos los indicadores están en niveles aceptables.</p>
+                                <FaCheckCircle style={{ color: VERDE, fontSize: '1.73rem', marginBottom: 8 }} />
+                                <p style={{ margin: 0, fontSize: '0.95rem', color: VERDE, fontFamily: FONT, fontWeight: 600 }}>¡Sin acciones críticas!</p>
+                                <p style={{ margin: '4px 0 0', fontSize: '0.85rem', color: '#9ca3af', fontFamily: FONT }}>Todos los indicadores están en niveles aceptables.</p>
                             </div>
                         ) : (
                             (planAccion || []).map((a, i) => {
@@ -1250,13 +1250,13 @@ const TabIndicadoresGraduados = ({ df, datos, filtros, cambiarFiltro, limpiar, g
                                 return (
                                     <div key={i} style={{ display: 'flex', gap: 10, alignItems: 'flex-start', padding: '8px 0', borderBottom: i < planAccion.length - 1 ? '1px solid #f1f5f9' : 'none' }}>
                                         <div style={{ width: 22, height: 22, borderRadius: 6, background: `${imp}15`, border: `1px solid ${imp}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 1 }}>
-                                            <span style={{ fontSize: '0.65rem', fontWeight: 800, color: imp, fontFamily: FONT }}>{a.prioridad}</span>
+                                            <span style={{ fontSize: '0.85rem', fontWeight: 800, color: imp, fontFamily: FONT }}>{a.prioridad}</span>
                                         </div>
                                         <div style={{ flex: 1, minWidth: 0 }}>
-                                            <div style={{ fontSize: '0.72rem', fontWeight: 600, color: '#0f172a', fontFamily: FONT, marginBottom: 2 }}>{a.accion}</div>
+                                            <div style={{ fontSize: '0.95rem', fontWeight: 600, color: '#0f172a', fontFamily: FONT, marginBottom: 2 }}>{a.accion}</div>
                                             <div style={{ display: 'flex', gap: 5, alignItems: 'center', flexWrap: 'wrap' }}>
-                                                <span style={{ fontSize: '0.60rem', fontWeight: 700, color: imp, background: `${imp}12`, border: `1px solid ${imp}25`, borderRadius: 99, padding: '1px 5px', fontFamily: FONT }}>Impacto {a.impacto}</span>
-                                                <span style={{ fontSize: '0.60rem', color: '#9ca3af', fontFamily: FONT }}>{a.meta}</span>
+                                                <span style={{ fontSize: '0.85rem', fontWeight: 700, color: imp, background: `${imp}12`, border: `1px solid ${imp}25`, borderRadius: 99, padding: '1px 5px', fontFamily: FONT }}>Impacto {a.impacto}</span>
+                                                <span style={{ fontSize: '0.85rem', color: '#9ca3af', fontFamily: FONT }}>{a.meta}</span>
                                             </div>
                                         </div>
                                     </div>

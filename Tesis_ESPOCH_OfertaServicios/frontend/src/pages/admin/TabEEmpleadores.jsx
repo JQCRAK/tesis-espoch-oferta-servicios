@@ -14,7 +14,7 @@ import {
 
 const API  = import.meta.env.VITE_API_URL || 'http://localhost:8351/api';
 const FONT = "'Rotis', 'Segoe UI', system-ui, -apple-system, sans-serif";
-const ROJO='#BE1E2D',AZUL='#1565C0',VERDE='#2E7D32',NARANJA='#E65100',MORADO='#4527A0',CIAN='#00695C',GRIS='#37474F',DORADO='#F57F17';
+const ROJO='#BC0613',AZUL='#1565C0',VERDE='#2E7D32',NARANJA='#E65100',MORADO='#4527A0',CIAN='#00695C',GRIS='#37474F',DORADO='#F57F17';
 const PALETA=[ROJO,AZUL,VERDE,NARANJA,MORADO,CIAN,GRIS,DORADO,'#AD1457','#00838F','#558B2F','#4E342E'];
 const PALETA_LIGHT=['#f7c5c9','#b3c9f0','#b2dfb4','#f9cba8','#c5bce8','#a8d5cc','#b0bec5','#fde68a','#f4b8d1','#a8d8db','#c8dba6','#c8b5b0'];
 import { leerSesion } from '../../utils/storageSeguro';
@@ -39,8 +39,8 @@ if(typeof document!=='undefined'&&!document.getElementById('tee5-kf')){
         .t5a{animation:t5in 0.28s ease both;}
         .t5r:hover{background:#f8fafc !important;}
         .t5sel{padding:5px 8px;border-radius:6px;border:1px solid #e5e7eb;font-size:0.73rem;font-family:'Rotis', 'Segoe UI',system-ui,sans-serif;color:#374151;background:white;outline:none;cursor:pointer;}
-        .t5sel:focus,.t5sel.on{border-color:#BE1E2D !important;}
-        .t5pag:hover:not(:disabled){background:#BE1E2D !important;color:white !important;border-color:#BE1E2D !important;}
+        .t5sel:focus,.t5sel.on{border-color:#BC0613 !important;}
+        .t5pag:hover:not(:disabled){background:#BC0613 !important;color:white !important;border-color:#BC0613 !important;}
         .t5tab:hover{background:#f1f5f9 !important;}
         .t5gh:hover{background:#f8fafc !important;cursor:pointer;}
         .leaflet-container{font-family:'Rotis', 'Segoe UI',system-ui,sans-serif !important;}
@@ -48,7 +48,7 @@ if(typeof document!=='undefined'&&!document.getElementById('tee5-kf')){
         .leaflet-tooltip::before{display:none !important;}
         .leaflet-control-zoom{border:1px solid #e2e8f0 !important;border-radius:8px !important;overflow:hidden !important;}
         .leaflet-control-zoom a{color:#374151 !important;width:32px !important;height:32px !important;line-height:32px !important;background:white !important;}
-        .leaflet-control-zoom a:hover{background:#f8fafc !important;color:#BE1E2D !important;}
+        .leaflet-control-zoom a:hover{background:#f8fafc !important;color:#BC0613 !important;}
         .leaflet-control-attribution{font-size:.58rem !important;}
         .emp-card:hover{box-shadow:0 4px 16px rgba(0,0,0,0.10) !important;transform:translateY(-1px);}
         .emp-card{transition:all 0.18s ease;}
@@ -86,11 +86,11 @@ function analizarTexto(textos){
 // ═══════════════════════════════════════════════════════════
 const KPI=({icon:I,valor,label,sub,color,delay=0})=>(
     <div className="t5a" style={{background:'white',borderRadius:10,padding:'10px 13px',border:'1px solid #e5e7eb',borderLeft:`4px solid ${color}`,boxShadow:'0 1px 3px rgba(0,0,0,.05)',display:'flex',alignItems:'center',gap:10,animationDelay:`${delay}ms`}}>
-        <div style={{width:32,height:32,borderRadius:8,background:`${color}14`,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}><I style={{color,fontSize:'0.84rem'}}/></div>
+        <div style={{width:32,height:32,borderRadius:8,background:`${color}14`,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}><I style={{color,fontSize:'1rem'}}/></div>
         <div>
-            <div style={{fontSize:'1.25rem',fontWeight:800,color:'#0f172a',lineHeight:1,fontFamily:FONT}}>{valor}</div>
-            <div style={{fontSize:'0.63rem',fontWeight:600,color:'#6b7280',fontFamily:FONT,marginTop:2}}>{label}</div>
-            {sub&&<div style={{fontSize:'0.57rem',color:'#9ca3af',fontFamily:FONT,marginTop:1}}>{sub}</div>}
+            <div style={{fontSize:'1.2rem',fontWeight:800,color:'#0f172a',lineHeight:1,fontFamily:FONT}}>{valor}</div>
+            <div style={{fontSize:'0.85rem',fontWeight:600,color:'#6b7280',fontFamily:FONT,marginTop:2}}>{label}</div>
+            {sub&&<div style={{fontSize:'0.75rem',color:'#9ca3af',fontFamily:FONT,marginTop:1}}>{sub}</div>}
         </div>
     </div>
 );
@@ -98,10 +98,10 @@ const KPI=({icon:I,valor,label,sub,color,delay=0})=>(
 const Panel=({titulo,sub,icon:I,color,children,delay=0,style={}})=>(
     <div className="t5a" style={{background:'white',borderRadius:10,border:'1px solid #e5e7eb',boxShadow:'0 1px 3px rgba(0,0,0,.05)',overflow:'hidden',animationDelay:`${delay}ms`,...style}}>
         <div style={{padding:'9px 14px',borderBottom:'1px solid #f1f5f9',background:`linear-gradient(135deg,${color}08,transparent)`,display:'flex',alignItems:'center',gap:8}}>
-            <div style={{width:26,height:26,borderRadius:6,background:`${color}18`,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}><I style={{color,fontSize:'0.74rem'}}/></div>
+            <div style={{width:26,height:26,borderRadius:6,background:`${color}18`,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}><I style={{color,fontSize:'0.95rem'}}/></div>
             <div>
-                <div style={{fontSize:'0.80rem',fontWeight:700,color:'#0f172a',fontFamily:FONT}}>{titulo}</div>
-                {sub&&<div style={{fontSize:'0.61rem',color:'#9ca3af',fontFamily:FONT}}>{sub}</div>}
+                <div style={{fontSize:'1rem',fontWeight:700,color:'#0f172a',fontFamily:FONT}}>{titulo}</div>
+                {sub&&<div style={{fontSize:'0.85rem',color:'#9ca3af',fontFamily:FONT}}>{sub}</div>}
             </div>
         </div>
         <div style={{padding:'12px 14px'}}>{children}</div>
@@ -114,9 +114,9 @@ const Barra=({label,valor,total,color,compact=false})=>{
         <div style={{display:'flex',justifyContent:'space-between',marginBottom:2,alignItems:'baseline'}}>
             <div style={{display:'flex',alignItems:'center',gap:6,minWidth:0}}>
                 <div style={{width:7,height:7,borderRadius:'50%',backgroundColor:color,flexShrink:0}}/>
-                <span style={{fontSize:compact?'0.70rem':'0.73rem',color:'#374151',fontFamily:FONT,fontWeight:500,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{label}</span>
+                <span style={{fontSize:compact?'0.95rem':'0.95rem',color:'#374151',fontFamily:FONT,fontWeight:500,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{label}</span>
             </div>
-            <span style={{fontSize:'0.67rem',color:'#6b7280',fontFamily:FONT,whiteSpace:'nowrap',marginLeft:6}}><strong style={{color:'#111827'}}>{valor}</strong><span style={{color:'#d1d5db',margin:'0 2px'}}>·</span>{p}%</span>
+            <span style={{fontSize:'0.85rem',color:'#6b7280',fontFamily:FONT,whiteSpace:'nowrap',marginLeft:6}}><strong style={{color:'#111827'}}>{valor}</strong><span style={{color:'#d1d5db',margin:'0 2px'}}>·</span>{p}%</span>
         </div>
         <div style={{height:compact?4:6,backgroundColor:'#f1f5f9',borderRadius:99,overflow:'hidden'}}>
             <div style={{height:'100%',width:`${p}%`,backgroundColor:color,borderRadius:99,transition:'width .7s cubic-bezier(.4,0,.2,1)'}}/>
@@ -135,8 +135,8 @@ const Donut=({segs,r=40,g=11,sz=96,label,sublabel})=>{
             {segs.map((s,i)=>{const da=((s.v||0)/tot)*circ;const el=<circle key={i} cx={cx} cy={cy} r={r} fill="none" stroke={s.c} strokeWidth={g} strokeDasharray={`${da} ${circ}`} strokeDashoffset={-off} strokeLinecap="butt"/>;off+=da;return el;})}
         </svg>
         {label&&<div style={{position:'absolute',textAlign:'center',pointerEvents:'none'}}>
-            <div style={{fontSize:sz>100?'1.1rem':'0.85rem',fontWeight:800,color:'#111827',lineHeight:1,fontFamily:FONT}}>{label}</div>
-            {sublabel&&<div style={{fontSize:'0.54rem',color:'#9ca3af',fontFamily:FONT,marginTop:1}}>{sublabel}</div>}
+            <div style={{fontSize:sz>100?'1.2rem':'1rem',fontWeight:800,color:'#111827',lineHeight:1,fontFamily:FONT}}>{label}</div>
+            {sublabel&&<div style={{fontSize:'0.75rem',color:'#9ca3af',fontFamily:FONT,marginTop:1}}>{sublabel}</div>}
         </div>}
     </div>;
 };
@@ -145,11 +145,11 @@ const Insight=({tipo,titulo,detalle,delay=0})=>{
     const cfg={ok:{I:FaCheckCircle,color:VERDE,bg:'#f0fdf4',bd:'#bbf7d0',lbl:'Fortaleza'},warn:{I:FaExclamationTriangle,color:NARANJA,bg:'#fff7ed',bd:'#fed7aa',lbl:'Atención'},crit:{I:FaTimesCircle,color:ROJO,bg:'#fef2f2',bd:'#fecaca',lbl:'Crítico'},info:{I:FaLightbulb,color:AZUL,bg:'#eff6ff',bd:'#bfdbfe',lbl:'Sugerencia'}}[tipo]||{I:FaLightbulb,color:AZUL,bg:'#eff6ff',bd:'#bfdbfe',lbl:'Info'};
     const {I}=cfg;
     return <div className="t5a" style={{background:cfg.bg,border:`1px solid ${cfg.bd}`,borderLeft:`3px solid ${cfg.color}`,borderRadius:7,padding:'8px 11px',display:'flex',gap:8,alignItems:'flex-start',animationDelay:`${delay}ms`}}>
-        <I style={{color:cfg.color,fontSize:'0.82rem',flexShrink:0,marginTop:1}}/>
+        <I style={{color:cfg.color,fontSize:'1rem',flexShrink:0,marginTop:1}}/>
         <div>
-            <span style={{fontSize:'0.58rem',fontWeight:700,color:cfg.color,textTransform:'uppercase',letterSpacing:'0.5px',fontFamily:FONT}}>{cfg.lbl} · </span>
-            <span style={{fontSize:'0.76rem',fontWeight:600,color:'#0f172a',fontFamily:FONT}}>{titulo}</span>
-            {detalle&&<p style={{margin:'2px 0 0',fontSize:'0.68rem',color:'#6b7280',fontFamily:FONT,lineHeight:1.5}}>{detalle}</p>}
+            <span style={{fontSize:'0.75rem',fontWeight:700,color:cfg.color,textTransform:'uppercase',letterSpacing:'0.5px',fontFamily:FONT}}>{cfg.lbl} · </span>
+            <span style={{fontSize:'0.95rem',fontWeight:600,color:'#0f172a',fontFamily:FONT}}>{titulo}</span>
+            {detalle&&<p style={{margin:'2px 0 0',fontSize:'0.85rem',color:'#6b7280',fontFamily:FONT,lineHeight:1.5}}>{detalle}</p>}
         </div>
     </div>;
 };
@@ -160,19 +160,19 @@ const Insight=({tipo,titulo,detalle,delay=0})=>{
 const GraficaTextoNLP=({resps,pregunta})=>{
     const textos=useMemo(()=>resps.map(r=>r.valor).filter(v=>v&&String(v).trim().length>2),[resps]);
     const {palabras,temas,frases,total}=useMemo(()=>analizarTexto(textos),[textos]);
-    if(!total) return <p style={{margin:0,fontSize:'0.70rem',color:'#9ca3af',fontFamily:FONT}}>Sin respuestas</p>;
+    if(!total) return <p style={{margin:0,fontSize:'0.95rem',color:'#9ca3af',fontFamily:FONT}}>Sin respuestas</p>;
     const maxFreq=palabras[0]?.count||1;
     return <div>
         <div style={{display:'flex',alignItems:'center',gap:8,padding:'8px 12px',background:`${AZUL}08`,border:`1px solid ${AZUL}20`,borderRadius:8,marginBottom:12}}>
-            <FaCommentDots style={{color:AZUL,fontSize:'0.78rem',flexShrink:0}}/>
+            <FaCommentDots style={{color:AZUL,fontSize:'0.95rem',flexShrink:0}}/>
             <div>
-                <div style={{fontSize:'0.72rem',fontWeight:700,color:AZUL,fontFamily:FONT}}>Análisis de {total} respuesta{total!==1?'s':''}</div>
-                <div style={{fontSize:'0.60rem',color:'#64748b',fontFamily:FONT}}>Detección automática de patrones y palabras clave</div>
+                <div style={{fontSize:'0.95rem',fontWeight:700,color:AZUL,fontFamily:FONT}}>Análisis de {total} respuesta{total!==1?'s':''}</div>
+                <div style={{fontSize:'0.85rem',color:'#64748b',fontFamily:FONT}}>Detección automática de patrones y palabras clave</div>
             </div>
         </div>
         <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:14}}>
             <div>
-                <p style={{margin:'0 0 8px',fontSize:'0.63rem',fontWeight:700,color:'#6b7280',textTransform:'uppercase',letterSpacing:'0.4px',fontFamily:FONT}}>Palabras más frecuentes</p>
+                <p style={{margin:'0 0 8px',fontSize:'0.85rem',fontWeight:700,color:'#6b7280',textTransform:'uppercase',letterSpacing:'0.4px',fontFamily:FONT}}>Palabras más frecuentes</p>
                 <div style={{display:'flex',flexWrap:'wrap',gap:5,alignItems:'center',minHeight:80}}>
                     {palabras.slice(0,20).map((p,i)=>{
                         const size=0.62+((p.count/maxFreq)*0.55);
@@ -182,32 +182,32 @@ const GraficaTextoNLP=({resps,pregunta})=>{
                     })}
                 </div>
                 {frases.length>0&&<div style={{marginTop:12}}>
-                    <p style={{margin:'0 0 6px',fontSize:'0.63rem',fontWeight:700,color:'#6b7280',textTransform:'uppercase',letterSpacing:'0.4px',fontFamily:FONT}}>Frases recurrentes</p>
+                    <p style={{margin:'0 0 6px',fontSize:'0.85rem',fontWeight:700,color:'#6b7280',textTransform:'uppercase',letterSpacing:'0.4px',fontFamily:FONT}}>Frases recurrentes</p>
                     {frases.slice(0,5).map((f,i)=><div key={i} style={{display:'flex',alignItems:'center',gap:8,marginBottom:4,padding:'4px 8px',background:i%2===0?'#f8fafc':'white',borderRadius:5}}>
-                        <FaTag style={{color:PALETA[i%PALETA.length],fontSize:'0.55rem',flexShrink:0}}/>
-                        <span style={{fontSize:'0.70rem',color:'#374151',flex:1,fontFamily:FONT,textTransform:'capitalize'}}>{f.frase}</span>
-                        <span style={{fontSize:'0.62rem',fontWeight:700,color:PALETA[i%PALETA.length],background:`${PALETA[i%PALETA.length]}12`,borderRadius:99,padding:'1px 6px',fontFamily:FONT}}>{f.count}×</span>
+                        <FaTag style={{color:PALETA[i%PALETA.length],fontSize:'0.75rem',flexShrink:0}}/>
+                        <span style={{fontSize:'0.95rem',color:'#374151',flex:1,fontFamily:FONT,textTransform:'capitalize'}}>{f.frase}</span>
+                        <span style={{fontSize:'0.85rem',fontWeight:700,color:PALETA[i%PALETA.length],background:`${PALETA[i%PALETA.length]}12`,borderRadius:99,padding:'1px 6px',fontFamily:FONT}}>{f.count}×</span>
                     </div>)}
                 </div>}
             </div>
             <div>
-                <p style={{margin:'0 0 8px',fontSize:'0.63rem',fontWeight:700,color:'#6b7280',textTransform:'uppercase',letterSpacing:'0.4px',fontFamily:FONT}}>Temas identificados</p>
+                <p style={{margin:'0 0 8px',fontSize:'0.85rem',fontWeight:700,color:'#6b7280',textTransform:'uppercase',letterSpacing:'0.4px',fontFamily:FONT}}>Temas identificados</p>
                 {temas.length>0?<>
                     {temas.map((t,i)=><Barra key={i} label={t.tema} valor={t.count} total={palabras.reduce((s,p)=>s+p.count,1)} color={t.color} compact/>)}
                     <div style={{marginTop:10,padding:'8px 10px',background:`${VERDE}08`,border:`1px solid ${VERDE}20`,borderRadius:7}}>
-                        <p style={{margin:0,fontSize:'0.64rem',color:'#14532d',fontFamily:FONT,lineHeight:1.55}}><strong>Patrón principal:</strong> "{temas[0]?.tema}" — la mayoría de respuestas converge en este tema.</p>
+                        <p style={{margin:0,fontSize:'0.85rem',color:'#14532d',fontFamily:FONT,lineHeight:1.55}}><strong>Patrón principal:</strong> "{temas[0]?.tema}" — la mayoría de respuestas converge en este tema.</p>
                     </div>
-                </>:<p style={{margin:0,fontSize:'0.68rem',color:'#9ca3af',fontFamily:FONT}}>No se detectaron temas con suficiente frecuencia.</p>}
+                </>:<p style={{margin:0,fontSize:'0.85rem',color:'#9ca3af',fontFamily:FONT}}>No se detectaron temas con suficiente frecuencia.</p>}
                 {palabras.length>0&&<div style={{marginTop:12}}>
-                    <p style={{margin:'0 0 6px',fontSize:'0.63rem',fontWeight:700,color:'#6b7280',textTransform:'uppercase',letterSpacing:'0.4px',fontFamily:FONT}}>Top 8 términos</p>
+                    <p style={{margin:'0 0 6px',fontSize:'0.85rem',fontWeight:700,color:'#6b7280',textTransform:'uppercase',letterSpacing:'0.4px',fontFamily:FONT}}>Top 8 términos</p>
                     {palabras.slice(0,8).map((p,i)=><Barra key={i} label={p.word} valor={p.count} total={maxFreq} color={PALETA[i%PALETA.length]} compact/>)}
                 </div>}
             </div>
         </div>
         <div style={{marginTop:14,borderTop:'1px solid #f1f5f9',paddingTop:12}}>
-            <p style={{margin:'0 0 8px',fontSize:'0.63rem',fontWeight:700,color:'#6b7280',textTransform:'uppercase',letterSpacing:'0.4px',fontFamily:FONT}}>Muestra de respuestas</p>
+            <p style={{margin:'0 0 8px',fontSize:'0.85rem',fontWeight:700,color:'#6b7280',textTransform:'uppercase',letterSpacing:'0.4px',fontFamily:FONT}}>Muestra de respuestas</p>
             <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:6}}>
-                {textos.filter(t=>t.length>20).slice(0,4).map((t,i)=><div key={i} style={{padding:'7px 10px',background:i%2===0?'#f8fafc':'#fff7f7',borderRadius:7,border:'1px solid #e5e7eb',fontSize:'0.69rem',color:'#374151',fontFamily:FONT,lineHeight:1.55,fontStyle:'italic'}}>"{t.slice(0,120)}{t.length>120?'...':''}"</div>)}
+                {textos.filter(t=>t.length>20).slice(0,4).map((t,i)=><div key={i} style={{padding:'7px 10px',background:i%2===0?'#f8fafc':'#fff7f7',borderRadius:7,border:'1px solid #e5e7eb',fontSize:'0.85rem',color:'#374151',fontFamily:FONT,lineHeight:1.55,fontStyle:'italic'}}>"{t.slice(0,120)}{t.length>120?'...':''}"</div>)}
             </div>
         </div>
     </div>;
@@ -218,7 +218,7 @@ const GraficaTextoNLP=({resps,pregunta})=>{
 // ═══════════════════════════════════════════════════════════
 const GEscala=({resps,min,max})=>{
     const vals=resps.map(r=>Number(r.valor)).filter(v=>v>=1&&v<=5);
-    if(!vals.length) return <p style={{margin:0,fontSize:'0.70rem',color:'#9ca3af',fontFamily:FONT}}>Sin respuestas</p>;
+    if(!vals.length) return <p style={{margin:0,fontSize:'0.95rem',color:'#9ca3af',fontFamily:FONT}}>Sin respuestas</p>;
     const c={1:0,2:0,3:0,4:0,5:0};vals.forEach(v=>c[v]++);
     const mx=Math.max(...Object.values(c),1);
     const prom=(vals.reduce((s,v)=>s+v,0)/vals.length).toFixed(2);
@@ -226,34 +226,34 @@ const GEscala=({resps,min,max})=>{
     return <div>
         <div style={{display:'flex',gap:6,alignItems:'flex-end',marginBottom:10}}>
             {[1,2,3,4,5].map(n=>{const h=Math.max(4,Math.round((c[n]/mx)*64));return <div key={n} style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',gap:3}}>
-                <span style={{fontSize:'0.60rem',fontWeight:700,color:'#374151',fontFamily:FONT}}>{c[n]}</span>
+                <span style={{fontSize:'0.85rem',fontWeight:700,color:'#374151',fontFamily:FONT}}>{c[n]}</span>
                 <div style={{width:'100%',height:h,backgroundColor:col[n],borderRadius:'3px 3px 0 0'}}/>
-                <span style={{fontSize:'0.62rem',fontWeight:700,color:col[n],fontFamily:FONT}}>{n}</span>
+                <span style={{fontSize:'0.85rem',fontWeight:700,color:col[n],fontFamily:FONT}}>{n}</span>
             </div>;})}
         </div>
         <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-            <span style={{fontSize:'0.60rem',color:'#94a3b8',fontFamily:FONT}}>{min||'1=Muy bajo'}</span>
+            <span style={{fontSize:'0.85rem',color:'#94a3b8',fontFamily:FONT}}>{min||'1=Muy bajo'}</span>
             <div style={{background:`${AZUL}10`,border:`1px solid ${AZUL}25`,borderRadius:6,padding:'3px 9px',display:'inline-flex',alignItems:'center',gap:5}}>
-                <FaStar style={{color:DORADO,fontSize:'0.58rem'}}/>
-                <span style={{fontSize:'0.68rem',fontWeight:700,color:AZUL,fontFamily:FONT}}>Promedio: {prom}</span>
+                <FaStar style={{color:DORADO,fontSize:'0.75rem'}}/>
+                <span style={{fontSize:'0.85rem',fontWeight:700,color:AZUL,fontFamily:FONT}}>Promedio: {prom}</span>
             </div>
-            <span style={{fontSize:'0.60rem',color:'#94a3b8',fontFamily:FONT}}>{max||'5=Excelente'}</span>
+            <span style={{fontSize:'0.85rem',color:'#94a3b8',fontFamily:FONT}}>{max||'5=Excelente'}</span>
         </div>
     </div>;
 };
 
 const GOpciones=({resps,tipo})=>{
     const total=resps.length;
-    if(!total) return <p style={{margin:0,fontSize:'0.70rem',color:'#9ca3af',fontFamily:FONT}}>Sin respuestas</p>;
+    if(!total) return <p style={{margin:0,fontSize:'0.95rem',color:'#9ca3af',fontFamily:FONT}}>Sin respuestas</p>;
     const c={};
     resps.forEach(r=>{const v=r.valor;if(Array.isArray(v))v.forEach(x=>{c[x]=(c[x]||0)+1;});else if(v)c[v]=(c[v]||0)+1;});
     const lista=Object.entries(c).sort((a,b)=>b[1]-a[1]);
-    return <div>{lista.map(([op,cnt],i)=><Barra key={i} label={op} valor={cnt} total={total} color={PALETA[i%PALETA.length]} compact/>)}<div style={{marginTop:6,fontSize:'0.60rem',color:'#9ca3af',fontFamily:FONT}}>{total} respuesta{total!==1?'s':''}{tipo==='checkboxes'?' (múltiple)':''}</div></div>;
+    return <div>{lista.map(([op,cnt],i)=><Barra key={i} label={op} valor={cnt} total={total} color={PALETA[i%PALETA.length]} compact/>)}<div style={{marginTop:6,fontSize:'0.85rem',color:'#9ca3af',fontFamily:FONT}}>{total} respuesta{total!==1?'s':''}{tipo==='checkboxes'?' (múltiple)':''}</div></div>;
 };
 
 const GSiNo=({resps})=>{
     const total=resps.length;
-    if(!total) return <p style={{margin:0,fontSize:'0.70rem',color:'#9ca3af',fontFamily:FONT}}>Sin respuestas</p>;
+    if(!total) return <p style={{margin:0,fontSize:'0.95rem',color:'#9ca3af',fontFamily:FONT}}>Sin respuestas</p>;
     const si=resps.filter(r=>r.valor==='Sí').length,no=resps.filter(r=>r.valor==='No').length;
     return <div style={{display:'flex',gap:12,alignItems:'center'}}>
         <Donut segs={[{v:si,c:VERDE},{v:no,c:ROJO}]} r={34} g={10} sz={84} label={`${pct(si,total)}%`} sublabel="Sí"/>
@@ -261,9 +261,9 @@ const GSiNo=({resps})=>{
             {[[VERDE,'Sí',si],[ROJO,'No',no]].map(([c,l,v])=>(
                 <div key={l} style={{display:'flex',alignItems:'center',gap:7,marginBottom:6}}>
                     <div style={{width:8,height:8,borderRadius:'50%',background:c,flexShrink:0}}/>
-                    <span style={{fontSize:'0.72rem',color:'#374151',flex:1,fontFamily:FONT}}>{l}</span>
-                    <span style={{fontSize:'0.72rem',fontWeight:700,color:c,fontFamily:FONT}}>{v}</span>
-                    <span style={{fontSize:'0.60rem',color:'#9ca3af',fontFamily:FONT}}>({pct(v,total)}%)</span>
+                    <span style={{fontSize:'0.95rem',color:'#374151',flex:1,fontFamily:FONT}}>{l}</span>
+                    <span style={{fontSize:'0.95rem',fontWeight:700,color:c,fontFamily:FONT}}>{v}</span>
+                    <span style={{fontSize:'0.85rem',color:'#9ca3af',fontFamily:FONT}}>({pct(v,total)}%)</span>
                 </div>
             ))}
         </div>
@@ -272,31 +272,31 @@ const GSiNo=({resps})=>{
 
 const GNumero=({resps})=>{
     const vals=resps.map(r=>Number(r.valor)).filter(v=>!isNaN(v)&&v>=0);
-    if(!vals.length) return <p style={{margin:0,fontSize:'0.70rem',color:'#9ca3af',fontFamily:FONT}}>Sin respuestas</p>;
+    if(!vals.length) return <p style={{margin:0,fontSize:'0.95rem',color:'#9ca3af',fontFamily:FONT}}>Sin respuestas</p>;
     const avg=(vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(1);
     return <div style={{display:'flex',gap:10}}>
         {[['Promedio',avg,AZUL],['Mínimo',Math.min(...vals),VERDE],['Máximo',Math.max(...vals),ROJO],['N',vals.length,GRIS]].map(([l,v,c])=>(
             <div key={l} style={{flex:1,textAlign:'center',padding:8,background:`${c}08`,border:`1px solid ${c}20`,borderRadius:8}}>
-                <div style={{fontSize:'1.1rem',fontWeight:800,color:c,fontFamily:FONT}}>{v}</div>
-                <div style={{fontSize:'0.60rem',color:'#6b7280',fontFamily:FONT}}>{l}</div>
+                <div style={{fontSize:'1.2rem',fontWeight:800,color:c,fontFamily:FONT}}>{v}</div>
+                <div style={{fontSize:'0.85rem',color:'#6b7280',fontFamily:FONT}}>{l}</div>
             </div>
         ))}
     </div>;
 };
 
 const GMatriz=({resps,items,tipo,min,max})=>{
-    if(!resps.length||!items?.length) return <p style={{margin:0,fontSize:'0.70rem',color:'#9ca3af',fontFamily:FONT}}>Sin respuestas</p>;
+    if(!resps.length||!items?.length) return <p style={{margin:0,fontSize:'0.95rem',color:'#9ca3af',fontFamily:FONT}}>Sin respuestas</p>;
     const pi={};items.forEach((_,idx)=>{pi[idx]={votos:{}};});
     resps.forEach(r=>{const arr=Array.isArray(r.valor)?r.valor:[];arr.forEach(({indice,valor})=>{if(pi[indice]!==undefined){const k=String(valor);pi[indice].votos[k]=(pi[indice].votos[k]||0)+1;}});});
     const cols=tipo==='escala'?[1,2,3,4,5]:[];
     const cH={1:'#fee2e2',2:'#fef3c7',3:'#fef9c3',4:'#dcfce7',5:'#bbf7d0'};
     return <div style={{overflowX:'auto'}}>
-        {tipo==='escala'&&<div style={{display:'flex',justifyContent:'space-between',marginBottom:4}}><span style={{fontSize:'0.58rem',color:'#94a3b8',fontFamily:FONT}}>{min||'1=Bajo'}</span><span style={{fontSize:'0.58rem',color:'#94a3b8',fontFamily:FONT}}>{max||'5=Alto'}</span></div>}
-        <table style={{width:'100%',borderCollapse:'collapse',fontSize:'0.70rem',fontFamily:FONT}}>
+        {tipo==='escala'&&<div style={{display:'flex',justifyContent:'space-between',marginBottom:4}}><span style={{fontSize:'0.75rem',color:'#94a3b8',fontFamily:FONT}}>{min||'1=Bajo'}</span><span style={{fontSize:'0.75rem',color:'#94a3b8',fontFamily:FONT}}>{max||'5=Alto'}</span></div>}
+        <table style={{width:'100%',borderCollapse:'collapse',fontSize:'0.95rem',fontFamily:FONT}}>
             <thead><tr>
-                <th style={{textAlign:'left',padding:'4px 8px',color:'#94a3b8',fontWeight:700,fontSize:'0.60rem',borderBottom:'1px solid #e5e7eb',width:'40%'}}>Ítem</th>
-                {cols.map(c=><th key={c} style={{textAlign:'center',padding:'4px 4px',color:'#6b7280',fontWeight:700,fontSize:'0.60rem',borderBottom:'1px solid #e5e7eb',minWidth:36}}>{c}</th>)}
-                <th style={{textAlign:'center',padding:'4px 6px',color:'#94a3b8',fontWeight:700,fontSize:'0.60rem',borderBottom:'1px solid #e5e7eb'}}>Prom.</th>
+                <th style={{textAlign:'left',padding:'4px 8px',color:'#94a3b8',fontWeight:700,fontSize:'0.85rem',borderBottom:'1px solid #e5e7eb',width:'40%'}}>Ítem</th>
+                {cols.map(c=><th key={c} style={{textAlign:'center',padding:'4px 4px',color:'#6b7280',fontWeight:700,fontSize:'0.85rem',borderBottom:'1px solid #e5e7eb',minWidth:36}}>{c}</th>)}
+                <th style={{textAlign:'center',padding:'4px 6px',color:'#94a3b8',fontWeight:700,fontSize:'0.85rem',borderBottom:'1px solid #e5e7eb'}}>Prom.</th>
             </tr></thead>
             <tbody>
                 {items.map((item,idx)=>{
@@ -328,13 +328,13 @@ const GraficaPregunta=({grupo,filtros})=>{
         case 'si_no': return <GSiNo resps={resps}/>;
         case 'texto_libre': return <GraficaTextoNLP resps={resps} pregunta={grupo.textoCanonical}/>;
         case 'numero': return <GNumero resps={resps}/>;
-        default: return <p style={{margin:0,fontSize:'0.70rem',color:'#9ca3af',fontFamily:FONT}}>Tipo no visualizable</p>;
+        default: return <p style={{margin:0,fontSize:'0.95rem',color:'#9ca3af',fontFamily:FONT}}>Tipo no visualizable</p>;
     }
 };
 
 const TipoBadge=({tipo,esMatriz})=>{
     const cfg={escala:{lbl:'Escala',c:AZUL},opcion_multiple:{lbl:'Opción',c:VERDE},checkboxes:{lbl:'Múltiple',c:CIAN},si_no:{lbl:'Sí/No',c:NARANJA},texto_libre:{lbl:'Texto · NLP',c:MORADO},numero:{lbl:'Número',c:DORADO}}[tipo]||{lbl:tipo,c:GRIS};
-    return <span style={{fontSize:'0.58rem',fontWeight:700,color:cfg.c,background:`${cfg.c}12`,border:`1px solid ${cfg.c}25`,borderRadius:99,padding:'2px 7px',fontFamily:FONT,whiteSpace:'nowrap'}}>{esMatriz?`${cfg.lbl} · Tabla`:cfg.lbl}</span>;
+    return <span style={{fontSize:'0.75rem',fontWeight:700,color:cfg.c,background:`${cfg.c}12`,border:`1px solid ${cfg.c}25`,borderRadius:99,padding:'2px 7px',fontFamily:FONT,whiteSpace:'nowrap'}}>{esMatriz?`${cfg.lbl} · Tabla`:cfg.lbl}</span>;
 };
 
 const TarjetaGrupo=({grupo,encuestas,filtros,num})=>{
@@ -349,22 +349,22 @@ const TarjetaGrupo=({grupo,encuestas,filtros,num})=>{
     return <div className="t5a" style={{background:'white',borderRadius:10,border:'1px solid #e5e7eb',overflow:'hidden',marginBottom:10}}>
         <div className="t5gh" onClick={()=>setOpen(a=>!a)} style={{padding:'10px 14px',display:'flex',alignItems:'flex-start',gap:10,background:open?`${ROJO}04`:'white',borderBottom:open?'1px solid #f1f5f9':'none'}}>
             <div style={{width:22,height:22,borderRadius:5,background:`${ROJO}15`,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,marginTop:1}}>
-                <span style={{fontSize:'0.60rem',fontWeight:800,color:ROJO,fontFamily:FONT}}>{num}</span>
+                <span style={{fontSize:'0.85rem',fontWeight:800,color:ROJO,fontFamily:FONT}}>{num}</span>
             </div>
             <div style={{flex:1,minWidth:0}}>
                 <div style={{display:'flex',alignItems:'flex-start',gap:8,flexWrap:'wrap'}}>
-                    <span style={{fontSize:'0.79rem',fontWeight:600,color:'#0f172a',fontFamily:FONT,flex:1,lineHeight:1.4}}>{grupo.textoCanonical}</span>
+                    <span style={{fontSize:'0.95rem',fontWeight:600,color:'#0f172a',fontFamily:FONT,flex:1,lineHeight:1.4}}>{grupo.textoCanonical}</span>
                     <div style={{display:'flex',gap:5,flexShrink:0,flexWrap:'wrap'}}>
                         <TipoBadge tipo={grupo.tipo} esMatriz={grupo.esMatriz}/>
-                        {grupo.esComun&&<span style={{fontSize:'0.58rem',fontWeight:700,color:VERDE,background:`${VERDE}10`,border:`1px solid ${VERDE}25`,borderRadius:99,padding:'2px 7px',fontFamily:FONT}}>Recurrente</span>}
+                        {grupo.esComun&&<span style={{fontSize:'0.75rem',fontWeight:700,color:VERDE,background:`${VERDE}10`,border:`1px solid ${VERDE}25`,borderRadius:99,padding:'2px 7px',fontFamily:FONT}}>Recurrente</span>}
                     </div>
                 </div>
                 <div style={{display:'flex',gap:8,marginTop:4,flexWrap:'wrap',alignItems:'center'}}>
-                    <span style={{fontSize:'0.60rem',color:'#94a3b8',fontFamily:FONT}}>{cnt} respuesta{cnt!==1?'s':''}</span>
-                    {aparece.length>0&&<span style={{fontSize:'0.60rem',color:'#94a3b8',fontFamily:FONT}}>· {aparece.slice(0,2).join(', ')}{aparece.length>2?` +${aparece.length-2}`:''}</span>}
+                    <span style={{fontSize:'0.85rem',color:'#94a3b8',fontFamily:FONT}}>{cnt} respuesta{cnt!==1?'s':''}</span>
+                    {aparece.length>0&&<span style={{fontSize:'0.85rem',color:'#94a3b8',fontFamily:FONT}}>· {aparece.slice(0,2).join(', ')}{aparece.length>2?` +${aparece.length-2}`:''}</span>}
                 </div>
             </div>
-            <div style={{fontSize:'0.68rem',color:'#94a3b8',flexShrink:0,padding:'2px 5px',fontFamily:FONT}}>{open?'▲':'▼'}</div>
+            <div style={{fontSize:'0.85rem',color:'#94a3b8',flexShrink:0,padding:'2px 5px',fontFamily:FONT}}>{open?'▲':'▼'}</div>
         </div>
         {open&&<div style={{padding:'12px 14px'}}><GraficaPregunta grupo={grupo} filtros={filtros}/></div>}
     </div>;
@@ -484,7 +484,7 @@ const MapaEmp=({porProv,porCiud,filtros,geoData})=>{
     const kP=useMemo(()=>`p5-${JSON.stringify(Object.keys(lP))}-${filtros.provincia}`,[lP,filtros.provincia]);
 
     if(!porProv?.length||!geoData?.ecuador||!geoData?.cantones||!geoData?.provincias)
-        return <div style={{width:'100%',height:'100%',background:'linear-gradient(135deg,#f8fafc,#f1f5f9)',borderRadius:8,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:10}}><FaGlobeAmericas style={{fontSize:'2rem',color:'#94a3b8'}}/><p style={{margin:0,fontSize:'0.80rem',color:'#475569',fontFamily:FONT,fontWeight:700}}>{!geoData?.cantones?'Cargando mapa...':'Sin datos geográficos'}</p></div>;
+        return <div style={{width:'100%',height:'100%',background:'linear-gradient(135deg,#f8fafc,#f1f5f9)',borderRadius:8,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:10}}><FaGlobeAmericas style={{fontSize:'2.3rem',color:'#94a3b8'}}/><p style={{margin:0,fontSize:'1rem',color:'#475569',fontFamily:FONT,fontWeight:700}}>{!geoData?.cantones?'Cargando mapa...':'Sin datos geográficos'}</p></div>;
 
     return <MapContainer bounds={EC} boundsOptions={{padding:[8,8]}} minZoom={6.4} maxZoom={13} maxBounds={[[-5.5,-82.0],[2.0,-74.5]]} maxBoundsViscosity={0.9} style={{width:'100%',height:'100%',borderRadius:8,zIndex:1}} scrollWheelZoom zoomControl>
         <TileLayer url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png" attribution='&copy; CARTO' subdomains="abcd" maxZoom={19}/>
@@ -514,23 +514,23 @@ const ColIzq=({filtros,porProv,porCiud,total,mitad})=>{
     const color=hayP?ROJO:CIAN,titulo=hayP?'Cantones':'Provincias',key=hayP?'ciudad':'provincia';
     return <div style={{display:'flex',flexDirection:'column',height:'100%'}}>
         <div style={{padding:'8px 10px 6px',borderBottom:'1px solid #f1f5f9',background:'#fafafa',display:'flex',alignItems:'center',gap:5}}>
-            <FaMapMarkerAlt style={{color,fontSize:'0.60rem'}}/>
-            <span style={{fontSize:'0.62rem',fontWeight:700,color:'#475569',fontFamily:FONT,textTransform:'uppercase',letterSpacing:'0.4px'}}>{titulo}</span>
-            {hayP&&<span style={{fontSize:'0.58rem',color:'#94a3b8',fontFamily:FONT}}>· {filtros.provincia}</span>}
-            <span style={{fontSize:'0.58rem',fontWeight:700,color,background:`${color}12`,border:`1px solid ${color}25`,borderRadius:99,padding:'0 6px',fontFamily:FONT,marginLeft:'auto'}}>{lista.length}</span>
+            <FaMapMarkerAlt style={{color,fontSize:'0.85rem'}}/>
+            <span style={{fontSize:'0.85rem',fontWeight:700,color:'#475569',fontFamily:FONT,textTransform:'uppercase',letterSpacing:'0.4px'}}>{titulo}</span>
+            {hayP&&<span style={{fontSize:'0.75rem',color:'#94a3b8',fontFamily:FONT}}>· {filtros.provincia}</span>}
+            <span style={{fontSize:'0.75rem',fontWeight:700,color,background:`${color}12`,border:`1px solid ${color}25`,borderRadius:99,padding:'0 6px',fontFamily:FONT,marginLeft:'auto'}}>{lista.length}</span>
         </div>
         {lista.length>0&&<div style={{display:'grid',gridTemplateColumns:'10px 1fr 1fr 1fr',gap:6,padding:'4px 10px 4px 8px',borderBottom:'1px solid #e5e7eb'}}>
-            <div/><span style={{fontSize:'0.57rem',fontWeight:700,color:'#94a3b8',fontFamily:FONT,textTransform:'uppercase'}}>{titulo.slice(0,-1)}</span>
-            <span style={{fontSize:'0.57rem',fontWeight:700,color:'#94a3b8',fontFamily:FONT,textAlign:'center'}}>N</span>
-            <span style={{fontSize:'0.57rem',fontWeight:700,color:'#94a3b8',fontFamily:FONT,textAlign:'center'}}>%</span>
+            <div/><span style={{fontSize:'0.75rem',fontWeight:700,color:'#94a3b8',fontFamily:FONT,textTransform:'uppercase'}}>{titulo.slice(0,-1)}</span>
+            <span style={{fontSize:'0.75rem',fontWeight:700,color:'#94a3b8',fontFamily:FONT,textAlign:'center'}}>N</span>
+            <span style={{fontSize:'0.75rem',fontWeight:700,color:'#94a3b8',fontFamily:FONT,textAlign:'center'}}>%</span>
         </div>}
         <div style={{flex:1,overflowY:'auto',padding:'4px 0'}}>
-            {lista.length===0?<div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'100%'}}><span style={{fontSize:'0.68rem',color:'#cbd5e1',fontFamily:FONT}}>—</span></div>
+            {lista.length===0?<div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'100%'}}><span style={{fontSize:'0.85rem',color:'#cbd5e1',fontFamily:FONT}}>—</span></div>
             :lista.map((item,i)=>{const nombre=item[key]||item.ciudad||item.provincia;const ci=PALETA[i%PALETA.length];return <div key={i} className="t5r" style={{display:'grid',gridTemplateColumns:'10px 1fr 1fr 1fr',alignItems:'center',gap:6,padding:'6px 10px 6px 8px',background:i%2===0?'#f8fafc':'transparent',minHeight:32}}>
                 <div style={{width:8,height:8,borderRadius:2,backgroundColor:ci,flexShrink:0}}/>
-                <span style={{fontSize:'0.70rem',fontWeight:500,color:'#1e293b',fontFamily:FONT,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',textTransform:'capitalize'}}>{nombre}</span>
-                <span style={{fontSize:'0.70rem',fontWeight:700,color:'#0f172a',fontFamily:FONT,textAlign:'center'}}>{item.total}</span>
-                <span style={{fontSize:'0.60rem',fontWeight:700,color:ci,background:`${ci}14`,border:`1px solid ${ci}25`,borderRadius:99,padding:'2px 4px',textAlign:'center',fontFamily:FONT,display:'block',margin:'0 auto',width:'fit-content'}}>{pct(item.total,total)}%</span>
+                <span style={{fontSize:'0.95rem',fontWeight:500,color:'#1e293b',fontFamily:FONT,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',textTransform:'capitalize'}}>{nombre}</span>
+                <span style={{fontSize:'0.95rem',fontWeight:700,color:'#0f172a',fontFamily:FONT,textAlign:'center'}}>{item.total}</span>
+                <span style={{fontSize:'0.85rem',fontWeight:700,color:ci,background:`${ci}14`,border:`1px solid ${ci}25`,borderRadius:99,padding:'2px 4px',textAlign:'center',fontFamily:FONT,display:'block',margin:'0 auto',width:'fit-content'}}>{pct(item.total,total)}%</span>
             </div>;})}
         </div>
     </div>;
@@ -559,24 +559,24 @@ const TarjetaEmpresa=({empresa,encuestasRespondidas,encCerradas,idx})=>{
             {/* Header empresa */}
             <div style={{display:'flex',alignItems:'flex-start',gap:9,marginBottom:respondio?10:0}}>
                 <div style={{width:32,height:32,borderRadius:8,background:`${colorAcc}18`,border:`1px solid ${colorAcc}28`,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
-                    <FaBuilding style={{color:colorAcc,fontSize:'0.78rem'}}/>
+                    <FaBuilding style={{color:colorAcc,fontSize:'0.95rem'}}/>
                 </div>
                 <div style={{flex:1,minWidth:0}}>
-                    <div style={{fontSize:'0.76rem',fontWeight:700,color:'#0f172a',fontFamily:FONT,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{empresa.nombreEmpresa}</div>
+                    <div style={{fontSize:'0.95rem',fontWeight:700,color:'#0f172a',fontFamily:FONT,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{empresa.nombreEmpresa}</div>
                     <div style={{display:'flex',alignItems:'center',gap:5,marginTop:2,flexWrap:'wrap'}}>
-                        <FaUserTie style={{color:'#94a3b8',fontSize:'0.58rem',flexShrink:0}}/>
-                        <span style={{fontSize:'0.65rem',color:'#64748b',fontFamily:FONT,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{empresa.nombreGerente}</span>
+                        <FaUserTie style={{color:'#94a3b8',fontSize:'0.75rem',flexShrink:0}}/>
+                        <span style={{fontSize:'0.85rem',color:'#64748b',fontFamily:FONT,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{empresa.nombreGerente}</span>
                     </div>
                     <div style={{display:'flex',gap:4,marginTop:4,flexWrap:'wrap'}}>
-                        <span style={{fontSize:'0.55rem',fontWeight:700,color:VERDE,background:`${VERDE}10`,borderRadius:99,padding:'1px 5px',fontFamily:FONT}}>{empresa.tipoCapital}</span>
-                        <span style={{fontSize:'0.55rem',fontWeight:700,color:NARANJA,background:`${NARANJA}10`,borderRadius:99,padding:'1px 5px',fontFamily:FONT}}>{empresa.tipoActividad}</span>
-                        {!respondio&&<span style={{fontSize:'0.55rem',fontWeight:700,color:GRIS,background:`${GRIS}10`,borderRadius:99,padding:'1px 5px',fontFamily:FONT}}>Sin encuestas</span>}
+                        <span style={{fontSize:'0.75rem',fontWeight:700,color:VERDE,background:`${VERDE}10`,borderRadius:99,padding:'1px 5px',fontFamily:FONT}}>{empresa.tipoCapital}</span>
+                        <span style={{fontSize:'0.75rem',fontWeight:700,color:NARANJA,background:`${NARANJA}10`,borderRadius:99,padding:'1px 5px',fontFamily:FONT}}>{empresa.tipoActividad}</span>
+                        {!respondio&&<span style={{fontSize:'0.75rem',fontWeight:700,color:GRIS,background:`${GRIS}10`,borderRadius:99,padding:'1px 5px',fontFamily:FONT}}>Sin encuestas</span>}
                     </div>
                 </div>
                 {/* Indicador de compromiso */}
                 <div style={{flexShrink:0,textAlign:'center'}}>
-                    <div style={{fontSize:'0.90rem',fontWeight:800,color:colorAcc,fontFamily:FONT,lineHeight:1}}>{encuestasRespondidas.length}</div>
-                    <div style={{fontSize:'0.52rem',color:'#94a3b8',fontFamily:FONT,marginTop:1}}>{encuestasRespondidas.length===1?'encuesta':'encuestas'}</div>
+                    <div style={{fontSize:'1.1rem',fontWeight:800,color:colorAcc,fontFamily:FONT,lineHeight:1}}>{encuestasRespondidas.length}</div>
+                    <div style={{fontSize:'0.75rem',color:'#94a3b8',fontFamily:FONT,marginTop:1}}>{encuestasRespondidas.length===1?'encuesta':'encuestas'}</div>
                 </div>
             </div>
 
@@ -592,18 +592,18 @@ const TarjetaEmpresa=({empresa,encuestasRespondidas,encCerradas,idx})=>{
                             borderRadius:6,
                         }}>
                             <div style={{width:20,height:20,borderRadius:5,background:`${VERDE}15`,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
-                                <FaCheckCircle style={{color:VERDE,fontSize:'0.60rem'}}/>
+                                <FaCheckCircle style={{color:VERDE,fontSize:'0.85rem'}}/>
                             </div>
                             <div style={{flex:1,minWidth:0}}>
-                                <div style={{fontSize:'0.67rem',fontWeight:600,color:'#1e293b',fontFamily:FONT,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{enc.titulo}</div>
+                                <div style={{fontSize:'0.85rem',fontWeight:600,color:'#1e293b',fontFamily:FONT,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{enc.titulo}</div>
                                 {enc.fechaRespuesta&&(
                                     <div style={{display:'flex',alignItems:'center',gap:3,marginTop:1}}>
-                                        <FaCalendarAlt style={{color:'#94a3b8',fontSize:'0.52rem'}}/>
-                                        <span style={{fontSize:'0.57rem',color:'#94a3b8',fontFamily:FONT}}>{fmt(enc.fechaRespuesta)}</span>
+                                        <FaCalendarAlt style={{color:'#94a3b8',fontSize:'0.75rem'}}/>
+                                        <span style={{fontSize:'0.75rem',color:'#94a3b8',fontFamily:FONT}}>{fmt(enc.fechaRespuesta)}</span>
                                     </div>
                                 )}
                             </div>
-                            <span style={{fontSize:'0.56rem',fontWeight:700,color:VERDE,background:`${VERDE}12`,border:`1px solid ${VERDE}25`,borderRadius:99,padding:'1px 5px',fontFamily:FONT,whiteSpace:'nowrap',flexShrink:0}}>Completada</span>
+                            <span style={{fontSize:'0.75rem',fontWeight:700,color:VERDE,background:`${VERDE}12`,border:`1px solid ${VERDE}25`,borderRadius:99,padding:'1px 5px',fontFamily:FONT,whiteSpace:'nowrap',flexShrink:0}}>Completada</span>
                         </div>
                     ))}
                 </div>
@@ -623,22 +623,22 @@ const ColDer=({filtros,porProv,emps,total,offset,respuestasRaw,encCerradas})=>{
         const lista=porProv.slice(offset);
         return <div style={{display:'flex',flexDirection:'column',height:'100%'}}>
             <div style={{padding:'8px 10px 6px',borderBottom:'1px solid #f1f5f9',background:'#fafafa',display:'flex',alignItems:'center',gap:5}}>
-                <FaMapMarkerAlt style={{color:CIAN,fontSize:'0.60rem'}}/>
-                <span style={{fontSize:'0.62rem',fontWeight:700,color:'#475569',fontFamily:FONT,textTransform:'uppercase',letterSpacing:'0.4px'}}>Provincias</span>
-                {lista.length>0&&<span style={{fontSize:'0.58rem',fontWeight:700,color:CIAN,background:`${CIAN}12`,border:`1px solid ${CIAN}25`,borderRadius:99,padding:'0 6px',fontFamily:FONT}}>{offset+1}–{offset+lista.length}</span>}
+                <FaMapMarkerAlt style={{color:CIAN,fontSize:'0.85rem'}}/>
+                <span style={{fontSize:'0.85rem',fontWeight:700,color:'#475569',fontFamily:FONT,textTransform:'uppercase',letterSpacing:'0.4px'}}>Provincias</span>
+                {lista.length>0&&<span style={{fontSize:'0.75rem',fontWeight:700,color:CIAN,background:`${CIAN}12`,border:`1px solid ${CIAN}25`,borderRadius:99,padding:'0 6px',fontFamily:FONT}}>{offset+1}–{offset+lista.length}</span>}
             </div>
             {lista.length>0&&<div style={{display:'grid',gridTemplateColumns:'10px 1fr 1fr 1fr',gap:6,padding:'4px 10px 4px 8px',borderBottom:'1px solid #e5e7eb'}}>
-                <div/><span style={{fontSize:'0.57rem',fontWeight:700,color:'#94a3b8',fontFamily:FONT,textTransform:'uppercase'}}>Provincia</span>
-                <span style={{fontSize:'0.57rem',fontWeight:700,color:'#94a3b8',fontFamily:FONT,textAlign:'center'}}>N</span>
-                <span style={{fontSize:'0.57rem',fontWeight:700,color:'#94a3b8',fontFamily:FONT,textAlign:'center'}}>%</span>
+                <div/><span style={{fontSize:'0.75rem',fontWeight:700,color:'#94a3b8',fontFamily:FONT,textTransform:'uppercase'}}>Provincia</span>
+                <span style={{fontSize:'0.75rem',fontWeight:700,color:'#94a3b8',fontFamily:FONT,textAlign:'center'}}>N</span>
+                <span style={{fontSize:'0.75rem',fontWeight:700,color:'#94a3b8',fontFamily:FONT,textAlign:'center'}}>%</span>
             </div>}
             <div style={{flex:1,overflowY:'auto',padding:'4px 0'}}>
-                {lista.length===0?<div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'100%'}}><span style={{fontSize:'0.68rem',color:'#cbd5e1',fontFamily:FONT}}>—</span></div>
+                {lista.length===0?<div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'100%'}}><span style={{fontSize:'0.85rem',color:'#cbd5e1',fontFamily:FONT}}>—</span></div>
                 :lista.map((p,i)=>{const ri=i+offset,ci=PALETA[ri%PALETA.length];return <div key={i} className="t5r" style={{display:'grid',gridTemplateColumns:'10px 1fr 1fr 1fr',alignItems:'center',gap:6,padding:'6px 10px 6px 8px',background:i%2===0?'#f8fafc':'transparent',minHeight:32}}>
                     <div style={{width:8,height:8,borderRadius:2,backgroundColor:ci,flexShrink:0}}/>
-                    <span style={{fontSize:'0.70rem',fontWeight:500,color:'#1e293b',fontFamily:FONT,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{p.provincia}</span>
-                    <span style={{fontSize:'0.70rem',fontWeight:700,color:'#0f172a',fontFamily:FONT,textAlign:'center'}}>{p.total}</span>
-                    <span style={{fontSize:'0.60rem',fontWeight:700,color:ci,background:`${ci}14`,border:`1px solid ${ci}25`,borderRadius:99,padding:'2px 4px',textAlign:'center',fontFamily:FONT,display:'block',margin:'0 auto',width:'fit-content'}}>{pct(p.total,total)}%</span>
+                    <span style={{fontSize:'0.95rem',fontWeight:500,color:'#1e293b',fontFamily:FONT,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{p.provincia}</span>
+                    <span style={{fontSize:'0.95rem',fontWeight:700,color:'#0f172a',fontFamily:FONT,textAlign:'center'}}>{p.total}</span>
+                    <span style={{fontSize:'0.85rem',fontWeight:700,color:ci,background:`${ci}14`,border:`1px solid ${ci}25`,borderRadius:99,padding:'2px 4px',textAlign:'center',fontFamily:FONT,display:'block',margin:'0 auto',width:'fit-content'}}>{pct(p.total,total)}%</span>
                 </div>;})}
             </div>
         </div>;
@@ -680,10 +680,10 @@ const ColDer=({filtros,porProv,emps,total,offset,respuestasRaw,encCerradas})=>{
             {/* Header */}
             <div style={{padding:'8px 10px 6px',borderBottom:'1px solid #f1f5f9',background:'#fafafa',flexShrink:0}}>
                 <div style={{display:'flex',alignItems:'center',gap:5}}>
-                    <FaBuilding style={{color:ROJO,fontSize:'0.60rem'}}/>
-                    <span style={{fontSize:'0.62rem',fontWeight:700,color:'#475569',fontFamily:FONT,textTransform:'uppercase',letterSpacing:'0.4px'}}>Empresas</span>
-                    <span style={{fontSize:'0.58rem',color:'#94a3b8',fontFamily:FONT}}>· {filtros.ciudad||filtros.provincia}</span>
-                    <span style={{fontSize:'0.58rem',fontWeight:700,color:ROJO,background:`${ROJO}12`,border:`1px solid ${ROJO}25`,borderRadius:99,padding:'0 5px',fontFamily:FONT,marginLeft:'auto'}}>{empsEnZona.length}</span>
+                    <FaBuilding style={{color:ROJO,fontSize:'0.85rem'}}/>
+                    <span style={{fontSize:'0.85rem',fontWeight:700,color:'#475569',fontFamily:FONT,textTransform:'uppercase',letterSpacing:'0.4px'}}>Empresas</span>
+                    <span style={{fontSize:'0.75rem',color:'#94a3b8',fontFamily:FONT}}>· {filtros.ciudad||filtros.provincia}</span>
+                    <span style={{fontSize:'0.75rem',fontWeight:700,color:ROJO,background:`${ROJO}12`,border:`1px solid ${ROJO}25`,borderRadius:99,padding:'0 5px',fontFamily:FONT,marginLeft:'auto'}}>{empsEnZona.length}</span>
                 </div>
             </div>
 
@@ -691,8 +691,8 @@ const ColDer=({filtros,porProv,emps,total,offset,respuestasRaw,encCerradas})=>{
             {empsEnZona.length>0&&(
                 <div style={{padding:'8px 10px',borderBottom:'1px solid #f1f5f9',background:'white',flexShrink:0}}>
                     <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:5}}>
-                        <span style={{fontSize:'0.60rem',fontWeight:700,color:'#475569',fontFamily:FONT,textTransform:'uppercase',letterSpacing:'0.4px'}}>Compromiso institucional</span>
-                        <span style={{fontSize:'0.66rem',fontWeight:800,color:tasaCompromiso>=70?VERDE:tasaCompromiso>=40?NARANJA:ROJO,fontFamily:FONT}}>{tasaCompromiso}%</span>
+                        <span style={{fontSize:'0.85rem',fontWeight:700,color:'#475569',fontFamily:FONT,textTransform:'uppercase',letterSpacing:'0.4px'}}>Compromiso institucional</span>
+                        <span style={{fontSize:'0.85rem',fontWeight:800,color:tasaCompromiso>=70?VERDE:tasaCompromiso>=40?NARANJA:ROJO,fontFamily:FONT}}>{tasaCompromiso}%</span>
                     </div>
                     <div style={{height:5,background:'#f1f5f9',borderRadius:99,overflow:'hidden',marginBottom:4}}>
                         <div style={{height:'100%',width:`${tasaCompromiso}%`,background:tasaCompromiso>=70?VERDE:tasaCompromiso>=40?NARANJA:ROJO,borderRadius:99,transition:'width .6s ease'}}/>
@@ -700,11 +700,11 @@ const ColDer=({filtros,porProv,emps,total,offset,respuestasRaw,encCerradas})=>{
                     <div style={{display:'flex',gap:8}}>
                         <div style={{display:'flex',alignItems:'center',gap:3}}>
                             <div style={{width:6,height:6,borderRadius:'50%',background:VERDE}}/>
-                            <span style={{fontSize:'0.57rem',color:'#6b7280',fontFamily:FONT}}>{conResp} respondieron</span>
+                            <span style={{fontSize:'0.75rem',color:'#6b7280',fontFamily:FONT}}>{conResp} respondieron</span>
                         </div>
                         <div style={{display:'flex',alignItems:'center',gap:3}}>
                             <div style={{width:6,height:6,borderRadius:'50%',background:'#e5e7eb'}}/>
-                            <span style={{fontSize:'0.57rem',color:'#6b7280',fontFamily:FONT}}>{sinResp} sin responder</span>
+                            <span style={{fontSize:'0.75rem',color:'#6b7280',fontFamily:FONT}}>{sinResp} sin responder</span>
                         </div>
                     </div>
                 </div>
@@ -714,8 +714,8 @@ const ColDer=({filtros,porProv,emps,total,offset,respuestasRaw,encCerradas})=>{
             <div style={{flex:1,overflowY:'auto',padding:'8px 8px 4px'}}>
                 {empsEnZona.length===0?(
                     <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',height:'100%',gap:8}}>
-                        <FaBuilding style={{fontSize:'1.6rem',color:'#cbd5e1'}}/>
-                        <span style={{fontSize:'0.68rem',color:'#94a3b8',fontFamily:FONT}}>Sin empresas en esta zona</span>
+                        <FaBuilding style={{fontSize:'1.73rem',color:'#cbd5e1'}}/>
+                        <span style={{fontSize:'0.85rem',color:'#94a3b8',fontFamily:FONT}}>Sin empresas en esta zona</span>
                     </div>
                 ):slice.map((emp,i)=>(
                     <TarjetaEmpresa
@@ -731,13 +731,13 @@ const ColDer=({filtros,porProv,emps,total,offset,respuestasRaw,encCerradas})=>{
             {/* Paginador */}
             {totalPag>1&&(
                 <div style={{flexShrink:0,borderTop:'1px solid #f1f5f9',padding:'5px 10px',display:'flex',justifyContent:'space-between',alignItems:'center',background:'#fafafa'}}>
-                    <span style={{fontSize:'0.57rem',color:'#94a3b8',fontFamily:FONT}}>{(pag-1)*POR_PAG_E+1}–{Math.min(pag*POR_PAG_E,empsEnZona.length)} de {empsEnZona.length}</span>
+                    <span style={{fontSize:'0.75rem',color:'#94a3b8',fontFamily:FONT}}>{(pag-1)*POR_PAG_E+1}–{Math.min(pag*POR_PAG_E,empsEnZona.length)} de {empsEnZona.length}</span>
                     <div style={{display:'flex',gap:3}}>
-                        <button className="t5pag" disabled={pag===1} onClick={()=>setPag(p=>p-1)} style={{width:20,height:20,borderRadius:4,border:'1px solid #e5e7eb',background:'white',color:pag===1?'#d1d5db':'#374151',cursor:pag===1?'not-allowed':'pointer',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'0.58rem',transition:'all .15s'}}><FaChevronLeft/></button>
+                        <button className="t5pag" disabled={pag===1} onClick={()=>setPag(p=>p-1)} style={{width:20,height:20,borderRadius:4,border:'1px solid #e5e7eb',background:'white',color:pag===1?'#d1d5db':'#374151',cursor:pag===1?'not-allowed':'pointer',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'0.75rem',transition:'all .15s'}}><FaChevronLeft/></button>
                         {Array.from({length:Math.min(totalPag,4)},(_,i)=>i+1).map(p=>(
-                            <button key={p} className="t5pag" onClick={()=>setPag(p)} style={{width:20,height:20,borderRadius:4,border:`1px solid ${pag===p?ROJO:'#e5e7eb'}`,background:pag===p?ROJO:'white',color:pag===p?'white':'#374151',cursor:'pointer',fontSize:'0.58rem',fontWeight:pag===p?700:400,display:'flex',alignItems:'center',justifyContent:'center',fontFamily:FONT,transition:'all .15s'}}>{p}</button>
+                            <button key={p} className="t5pag" onClick={()=>setPag(p)} style={{width:20,height:20,borderRadius:4,border:`1px solid ${pag===p?ROJO:'#e5e7eb'}`,background:pag===p?ROJO:'white',color:pag===p?'white':'#374151',cursor:'pointer',fontSize:'0.75rem',fontWeight:pag===p?700:400,display:'flex',alignItems:'center',justifyContent:'center',fontFamily:FONT,transition:'all .15s'}}>{p}</button>
                         ))}
-                        <button className="t5pag" disabled={pag===totalPag} onClick={()=>setPag(p=>p+1)} style={{width:20,height:20,borderRadius:4,border:'1px solid #e5e7eb',background:'white',color:pag===totalPag?'#d1d5db':'#374151',cursor:pag===totalPag?'not-allowed':'pointer',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'0.58rem',transition:'all .15s'}}><FaChevronRight/></button>
+                        <button className="t5pag" disabled={pag===totalPag} onClick={()=>setPag(p=>p+1)} style={{width:20,height:20,borderRadius:4,border:'1px solid #e5e7eb',background:'white',color:pag===totalPag?'#d1d5db':'#374151',cursor:pag===totalPag?'not-allowed':'pointer',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'0.75rem',transition:'all .15s'}}><FaChevronRight/></button>
                     </div>
                 </div>
             )}
@@ -978,42 +978,42 @@ const TablaEmpresasPaginada=({empleadoresFiltrados,hayFE,sinD,fEmp})=>{
         <div className="t5a" style={{background:'white',borderRadius:10,border:'1px solid #e5e7eb',boxShadow:'0 1px 3px rgba(0,0,0,.05)',overflow:'hidden',marginBottom:14,animationDelay:'100ms'}}>
             <div style={{padding:'9px 14px',borderBottom:'1px solid #f1f5f9',background:`linear-gradient(135deg,${ROJO}08,transparent)`,display:'flex',alignItems:'center',gap:8}}>
                 <div style={{width:26,height:26,borderRadius:6,background:`${ROJO}18`,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
-                    <FaBuilding style={{color:ROJO,fontSize:'0.74rem'}}/>
+                    <FaBuilding style={{color:ROJO,fontSize:'0.95rem'}}/>
                 </div>
                 <div style={{flex:1}}>
-                    <div style={{fontSize:'0.80rem',fontWeight:700,color:'#0f172a',fontFamily:FONT}}>Empresas Registradas</div>
-                    {empleadoresFiltrados.length>0&&<div style={{fontSize:'0.61rem',color:'#9ca3af',fontFamily:FONT}}>{empleadoresFiltrados.length} organizaciones{hayFE?' · filtrado':''} · página {pagTabla} de {totalPagT}</div>}
+                    <div style={{fontSize:'1rem',fontWeight:700,color:'#0f172a',fontFamily:FONT}}>Empresas Registradas</div>
+                    {empleadoresFiltrados.length>0&&<div style={{fontSize:'0.85rem',color:'#9ca3af',fontFamily:FONT}}>{empleadoresFiltrados.length} organizaciones{hayFE?' · filtrado':''} · página {pagTabla} de {totalPagT}</div>}
                 </div>
-                {empleadoresFiltrados.length>0&&<span style={{fontSize:'0.63rem',fontWeight:700,color:ROJO,background:`${ROJO}10`,border:`1px solid ${ROJO}25`,borderRadius:99,padding:'2px 9px',fontFamily:FONT}}>{empleadoresFiltrados.length} total</span>}
+                {empleadoresFiltrados.length>0&&<span style={{fontSize:'0.85rem',fontWeight:700,color:ROJO,background:`${ROJO}10`,border:`1px solid ${ROJO}25`,borderRadius:99,padding:'2px 9px',fontFamily:FONT}}>{empleadoresFiltrados.length} total</span>}
             </div>
             <div style={{padding:'12px 14px'}}>
                 {!empleadoresFiltrados.length?<p style={sinD}>Sin empresas</p>:<>
                     <div style={{display:'grid',gridTemplateColumns:'1.4fr 1fr 1fr 1fr auto',gap:8,padding:'5px 10px',borderBottom:'2px solid #f0f0f0',marginBottom:4}}>
-                        {['Empresa','Gerente','Provincia / Cantón','Tipo','Estado'].map(h=><span key={h} style={{fontSize:'0.58rem',fontWeight:700,color:'#94a3b8',fontFamily:FONT,textTransform:'uppercase',letterSpacing:'0.5px'}}>{h}</span>)}
+                        {['Empresa','Gerente','Provincia / Cantón','Tipo','Estado'].map(h=><span key={h} style={{fontSize:'0.75rem',fontWeight:700,color:'#94a3b8',fontFamily:FONT,textTransform:'uppercase',letterSpacing:'0.5px'}}>{h}</span>)}
                     </div>
                     {sliceT.map((e,i)=>(
                         <div key={e._id} className="t5r" style={{display:'grid',gridTemplateColumns:'1.4fr 1fr 1fr 1fr auto',gap:8,padding:'8px 10px',background:i%2===0?'#fafafa':'white',borderRadius:6,alignItems:'center',minHeight:40,marginBottom:2}}>
                             <div style={{minWidth:0}}>
-                                <div style={{fontSize:'0.74rem',fontWeight:600,color:'#1e293b',fontFamily:FONT,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{e.nombreEmpresa}</div>
-                                {e.emailOrganizacion&&<div style={{fontSize:'0.60rem',color:'#94a3b8',fontFamily:FONT,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{e.emailOrganizacion}</div>}
+                                <div style={{fontSize:'0.95rem',fontWeight:600,color:'#1e293b',fontFamily:FONT,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{e.nombreEmpresa}</div>
+                                {e.emailOrganizacion&&<div style={{fontSize:'0.85rem',color:'#94a3b8',fontFamily:FONT,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{e.emailOrganizacion}</div>}
                             </div>
-                            <span style={{fontSize:'0.68rem',color:'#475569',fontFamily:FONT,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{e.nombreGerente||'—'}</span>
-                            <span style={{fontSize:'0.66rem',color:'#64748b',fontFamily:FONT,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{[e.provincia,e.ciudad].filter(Boolean).join(' › ')||'—'}</span>
+                            <span style={{fontSize:'0.85rem',color:'#475569',fontFamily:FONT,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{e.nombreGerente||'—'}</span>
+                            <span style={{fontSize:'0.85rem',color:'#64748b',fontFamily:FONT,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{[e.provincia,e.ciudad].filter(Boolean).join(' › ')||'—'}</span>
                             <div style={{display:'flex',gap:3,flexWrap:'wrap'}}>
-                                <span style={{fontSize:'0.55rem',fontWeight:700,color:VERDE,background:`${VERDE}10`,borderRadius:99,padding:'1px 5px',fontFamily:FONT}}>{e.tipoCapital}</span>
-                                <span style={{fontSize:'0.55rem',fontWeight:700,color:NARANJA,background:`${NARANJA}10`,borderRadius:99,padding:'1px 5px',fontFamily:FONT}}>{e.tipoActividad}</span>
+                                <span style={{fontSize:'0.75rem',fontWeight:700,color:VERDE,background:`${VERDE}10`,borderRadius:99,padding:'1px 5px',fontFamily:FONT}}>{e.tipoCapital}</span>
+                                <span style={{fontSize:'0.75rem',fontWeight:700,color:NARANJA,background:`${NARANJA}10`,borderRadius:99,padding:'1px 5px',fontFamily:FONT}}>{e.tipoActividad}</span>
                             </div>
-                            <span style={{fontSize:'0.60rem',fontWeight:700,color:e.respondio?VERDE:GRIS,background:e.respondio?`${VERDE}10`:`${GRIS}10`,border:`1px solid ${e.respondio?VERDE:GRIS}22`,borderRadius:99,padding:'2px 8px',fontFamily:FONT,whiteSpace:'nowrap'}}>
+                            <span style={{fontSize:'0.85rem',fontWeight:700,color:e.respondio?VERDE:GRIS,background:e.respondio?`${VERDE}10`:`${GRIS}10`,border:`1px solid ${e.respondio?VERDE:GRIS}22`,borderRadius:99,padding:'2px 8px',fontFamily:FONT,whiteSpace:'nowrap'}}>
                                 {e.respondio?'✓ Respondió':'Pendiente'}
                             </span>
                         </div>
                     ))}
                     {totalPagT>1&&(
                         <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginTop:10,paddingTop:10,borderTop:'1px solid #f1f5f9'}}>
-                            <span style={{fontSize:'0.65rem',color:'#94a3b8',fontFamily:FONT}}>Mostrando {ini}–{fin} de {empleadoresFiltrados.length}</span>
+                            <span style={{fontSize:'0.85rem',color:'#94a3b8',fontFamily:FONT}}>Mostrando {ini}–{fin} de {empleadoresFiltrados.length}</span>
                             <div style={{display:'flex',gap:4,alignItems:'center'}}>
                                 <button className="t5pag" disabled={pagTabla===1} onClick={()=>setPagTabla(p=>p-1)}
-                                    style={{width:28,height:28,borderRadius:6,border:'1px solid #e5e7eb',background:'white',color:pagTabla===1?'#d1d5db':'#374151',cursor:pagTabla===1?'not-allowed':'pointer',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'0.62rem',transition:'all .15s'}}>
+                                    style={{width:28,height:28,borderRadius:6,border:'1px solid #e5e7eb',background:'white',color:pagTabla===1?'#d1d5db':'#374151',cursor:pagTabla===1?'not-allowed':'pointer',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'0.85rem',transition:'all .15s'}}>
                                     <FaChevronLeft/>
                                 </button>
                                 {Array.from({length:Math.min(totalPagT,5)},(_,i)=>{
@@ -1025,14 +1025,14 @@ const TablaEmpresasPaginada=({empleadoresFiltrados,hayFE,sinD,fEmp})=>{
                                         border:`1px solid ${pagTabla===p?ROJO:'#e5e7eb'}`,
                                         background:pagTabla===p?ROJO:'white',
                                         color:pagTabla===p?'white':'#374151',
-                                        cursor:'pointer',fontSize:'0.72rem',
+                                        cursor:'pointer',fontSize:'0.95rem',
                                         fontWeight:pagTabla===p?700:400,
                                         display:'flex',alignItems:'center',justifyContent:'center',
                                         fontFamily:FONT,transition:'all .15s',
                                     }}>{p}</button>
                                 ))}
                                 <button className="t5pag" disabled={pagTabla===totalPagT} onClick={()=>setPagTabla(p=>p+1)}
-                                    style={{width:28,height:28,borderRadius:6,border:'1px solid #e5e7eb',background:'white',color:pagTabla===totalPagT?'#d1d5db':'#374151',cursor:pagTabla===totalPagT?'not-allowed':'pointer',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'0.62rem',transition:'all .15s'}}>
+                                    style={{width:28,height:28,borderRadius:6,border:'1px solid #e5e7eb',background:'white',color:pagTabla===totalPagT?'#d1d5db':'#374151',cursor:pagTabla===totalPagT?'not-allowed':'pointer',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'0.85rem',transition:'all .15s'}}>
                                     <FaChevronRight/>
                                 </button>
                             </div>
@@ -1106,16 +1106,16 @@ const PanelEncuestadores=({empleadoresFiltrados,respuestasRaw,fEmp})=>{
         <div className="t5a" style={{background:'white',borderRadius:10,border:'1px solid #e5e7eb',boxShadow:'0 1px 3px rgba(0,0,0,.05)',overflow:'hidden',marginBottom:14,animationDelay:'140ms'}}>
             <div style={{padding:'9px 14px',borderBottom:'1px solid #f1f5f9',background:`linear-gradient(135deg,${MORADO}08,transparent)`,display:'flex',alignItems:'center',gap:8}}>
                 <div style={{width:26,height:26,borderRadius:6,background:`${MORADO}18`,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
-                    <FaUserTie style={{color:MORADO,fontSize:'0.74rem'}}/>
+                    <FaUserTie style={{color:MORADO,fontSize:'0.95rem'}}/>
                 </div>
                 <div style={{flex:1}}>
-                    <div style={{fontSize:'0.80rem',fontWeight:700,color:'#0f172a',fontFamily:FONT}}>Encuestadores por Empresa</div>
-                    <div style={{fontSize:'0.61rem',color:'#9ca3af',fontFamily:FONT}}>
+                    <div style={{fontSize:'1rem',fontWeight:700,color:'#0f172a',fontFamily:FONT}}>Encuestadores por Empresa</div>
+                    <div style={{fontSize:'0.85rem',color:'#9ca3af',fontFamily:FONT}}>
                         Personas que completaron encuestas · agrupadas por empresa
                         {fEmp.provincia&&<span style={{color:MORADO,marginLeft:4,fontWeight:600}}>· {fEmp.ciudad||fEmp.provincia}</span>}
                     </div>
                 </div>
-                <span style={{fontSize:'0.63rem',fontWeight:700,color:MORADO,background:`${MORADO}10`,border:`1px solid ${MORADO}25`,borderRadius:99,padding:'2px 9px',fontFamily:FONT}}>{empsConResp.length} empresa{empsConResp.length!==1?'s':''}</span>
+                <span style={{fontSize:'0.85rem',fontWeight:700,color:MORADO,background:`${MORADO}10`,border:`1px solid ${MORADO}25`,borderRadius:99,padding:'2px 9px',fontFamily:FONT}}>{empsConResp.length} empresa{empsConResp.length!==1?'s':''}</span>
             </div>
 
             <div style={{padding:'12px 14px',display:'flex',flexDirection:'column',gap:8}}>
@@ -1134,28 +1134,28 @@ const PanelEncuestadores=({empleadoresFiltrados,respuestasRaw,fEmp})=>{
                                 borderBottom:abierto?'1px solid #f1f5f9':'none',
                             }}>
                                 <div style={{width:34,height:34,borderRadius:8,background:`${MORADO}15`,border:`1px solid ${MORADO}25`,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
-                                    <FaBuilding style={{color:MORADO,fontSize:'0.82rem'}}/>
+                                    <FaBuilding style={{color:MORADO,fontSize:'1rem'}}/>
                                 </div>
                                 <div style={{flex:1,minWidth:0}}>
-                                    <div style={{fontSize:'0.78rem',fontWeight:700,color:'#0f172a',fontFamily:FONT,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{emp.nombreEmpresa}</div>
+                                    <div style={{fontSize:'0.95rem',fontWeight:700,color:'#0f172a',fontFamily:FONT,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{emp.nombreEmpresa}</div>
                                     <div style={{display:'flex',gap:6,marginTop:2,flexWrap:'wrap',alignItems:'center'}}>
-                                        {emp.provincia&&<span style={{fontSize:'0.60rem',color:'#64748b',fontFamily:FONT}}>{emp.provincia}{emp.ciudad?` › ${emp.ciudad}`:''}</span>}
-                                        <span style={{fontSize:'0.60rem',color:'#94a3b8',fontFamily:FONT}}>·</span>
-                                        <span style={{fontSize:'0.60rem',fontWeight:600,color:MORADO,fontFamily:FONT}}>{totalEncuestadores} encuestador{totalEncuestadores!==1?'es':''}</span>
-                                        <span style={{fontSize:'0.60rem',color:'#94a3b8',fontFamily:FONT}}>·</span>
-                                        <span style={{fontSize:'0.60rem',color:'#64748b',fontFamily:FONT}}>{totalEncuestas} encuesta{totalEncuestas!==1?'s':''} completada{totalEncuestas!==1?'s':''}</span>
+                                        {emp.provincia&&<span style={{fontSize:'0.85rem',color:'#64748b',fontFamily:FONT}}>{emp.provincia}{emp.ciudad?` › ${emp.ciudad}`:''}</span>}
+                                        <span style={{fontSize:'0.85rem',color:'#94a3b8',fontFamily:FONT}}>·</span>
+                                        <span style={{fontSize:'0.85rem',fontWeight:600,color:MORADO,fontFamily:FONT}}>{totalEncuestadores} encuestador{totalEncuestadores!==1?'es':''}</span>
+                                        <span style={{fontSize:'0.85rem',color:'#94a3b8',fontFamily:FONT}}>·</span>
+                                        <span style={{fontSize:'0.85rem',color:'#64748b',fontFamily:FONT}}>{totalEncuestas} encuesta{totalEncuestas!==1?'s':''} completada{totalEncuestas!==1?'s':''}</span>
                                     </div>
                                 </div>
                                 <div style={{display:'flex',gap:5,flexShrink:0,alignItems:'center'}}>
                                     <div style={{display:'flex',alignItems:'center',gap:4,padding:'3px 8px',background:`${VERDE}10`,border:`1px solid ${VERDE}22`,borderRadius:99}}>
-                                        <FaCheckCircle style={{color:VERDE,fontSize:'0.54rem'}}/>
-                                        <span style={{fontSize:'0.62rem',fontWeight:700,color:VERDE,fontFamily:FONT}}>{totalEncuestas}</span>
+                                        <FaCheckCircle style={{color:VERDE,fontSize:'0.75rem'}}/>
+                                        <span style={{fontSize:'0.85rem',fontWeight:700,color:VERDE,fontFamily:FONT}}>{totalEncuestas}</span>
                                     </div>
                                     <div style={{display:'flex',alignItems:'center',gap:4,padding:'3px 8px',background:`${MORADO}10`,border:`1px solid ${MORADO}22`,borderRadius:99}}>
-                                        <FaUserTie style={{color:MORADO,fontSize:'0.54rem'}}/>
-                                        <span style={{fontSize:'0.62rem',fontWeight:700,color:MORADO,fontFamily:FONT}}>{totalEncuestadores}</span>
+                                        <FaUserTie style={{color:MORADO,fontSize:'0.75rem'}}/>
+                                        <span style={{fontSize:'0.85rem',fontWeight:700,color:MORADO,fontFamily:FONT}}>{totalEncuestadores}</span>
                                     </div>
-                                    <span style={{fontSize:'0.62rem',color:'#94a3b8',fontFamily:FONT,marginLeft:4}}>{abierto?'▲':'▼'}</span>
+                                    <span style={{fontSize:'0.85rem',color:'#94a3b8',fontFamily:FONT,marginLeft:4}}>{abierto?'▲':'▼'}</span>
                                 </div>
                             </div>
 
@@ -1180,20 +1180,20 @@ const PanelEncuestadores=({empleadoresFiltrados,respuestasRaw,fEmp})=>{
                                                     background:`${color}18`,
                                                     border:`2px solid ${color}35`,
                                                     display:'flex',alignItems:'center',justifyContent:'center',
-                                                    flexShrink:0,fontSize:'0.88rem',fontWeight:800,
+                                                    flexShrink:0,fontSize:'1rem',fontWeight:800,
                                                     color,fontFamily:FONT,
                                                 }}>
                                                     {enc.nombre.charAt(0).toUpperCase()}
                                                 </div>
                                                 <div style={{flex:1,minWidth:0}}>
-                                                    <div style={{fontSize:'0.75rem',fontWeight:700,color:'#0f172a',fontFamily:FONT,lineHeight:1.3}}>{enc.nombre}</div>
+                                                    <div style={{fontSize:'0.95rem',fontWeight:700,color:'#0f172a',fontFamily:FONT,lineHeight:1.3}}>{enc.nombre}</div>
                                                     <div style={{display:'flex',gap:4,marginTop:4,flexWrap:'wrap'}}>
-                                                        {enc.cargo&&<span style={{fontSize:'0.60rem',fontWeight:600,color,background:`${color}12`,border:`1px solid ${color}25`,borderRadius:99,padding:'1px 6px',fontFamily:FONT}}>{enc.cargo}</span>}
-                                                        {enc.profesion&&<span style={{fontSize:'0.59rem',color:'#64748b',background:'#f1f5f9',borderRadius:99,padding:'1px 6px',fontFamily:FONT}}>{enc.profesion}</span>}
+                                                        {enc.cargo&&<span style={{fontSize:'0.85rem',fontWeight:600,color,background:`${color}12`,border:`1px solid ${color}25`,borderRadius:99,padding:'1px 6px',fontFamily:FONT}}>{enc.cargo}</span>}
+                                                        {enc.profesion&&<span style={{fontSize:'0.75rem',color:'#64748b',background:'#f1f5f9',borderRadius:99,padding:'1px 6px',fontFamily:FONT}}>{enc.profesion}</span>}
                                                     </div>
                                                 </div>
                                                 {enc.encuestas.length>1&&(
-                                                    <span style={{fontSize:'0.57rem',fontWeight:700,color:VERDE,background:`${VERDE}10`,border:`1px solid ${VERDE}25`,borderRadius:99,padding:'2px 6px',fontFamily:FONT,flexShrink:0,whiteSpace:'nowrap'}}>×{enc.encuestas.length}</span>
+                                                    <span style={{fontSize:'0.75rem',fontWeight:700,color:VERDE,background:`${VERDE}10`,border:`1px solid ${VERDE}25`,borderRadius:99,padding:'2px 6px',fontFamily:FONT,flexShrink:0,whiteSpace:'nowrap'}}>×{enc.encuestas.length}</span>
                                                 )}
                                             </div>
 
@@ -1201,26 +1201,26 @@ const PanelEncuestadores=({empleadoresFiltrados,respuestasRaw,fEmp})=>{
                                             <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:4}}>
                                                 {enc.genero&&(
                                                     <div style={{display:'flex',alignItems:'center',gap:4,padding:'4px 6px',background:'#f8fafc',borderRadius:5}}>
-                                                        <span style={{fontSize:'0.62rem',color:'#94a3b8'}}>👤</span>
-                                                        <span style={{fontSize:'0.60rem',color:'#475569',fontFamily:FONT}}>{enc.genero}</span>
+                                                        <span style={{fontSize:'0.85rem',color:'#94a3b8'}}>👤</span>
+                                                        <span style={{fontSize:'0.85rem',color:'#475569',fontFamily:FONT}}>{enc.genero}</span>
                                                     </div>
                                                 )}
                                                 {enc.edad&&(
                                                     <div style={{display:'flex',alignItems:'center',gap:4,padding:'4px 6px',background:'#f8fafc',borderRadius:5}}>
-                                                        <span style={{fontSize:'0.62rem',color:'#94a3b8'}}>🎂</span>
-                                                        <span style={{fontSize:'0.60rem',color:'#475569',fontFamily:FONT}}>{enc.edad} años</span>
+                                                        <span style={{fontSize:'0.85rem',color:'#94a3b8'}}>🎂</span>
+                                                        <span style={{fontSize:'0.85rem',color:'#475569',fontFamily:FONT}}>{enc.edad} años</span>
                                                     </div>
                                                 )}
                                                 {enc.aniosServicio&&(
                                                     <div style={{display:'flex',alignItems:'center',gap:4,padding:'4px 6px',background:'#f8fafc',borderRadius:5}}>
-                                                        <span style={{fontSize:'0.62rem',color:'#94a3b8'}}>📅</span>
-                                                        <span style={{fontSize:'0.60rem',color:'#475569',fontFamily:FONT}}>{enc.aniosServicio} años serv.</span>
+                                                        <span style={{fontSize:'0.85rem',color:'#94a3b8'}}>📅</span>
+                                                        <span style={{fontSize:'0.85rem',color:'#475569',fontFamily:FONT}}>{enc.aniosServicio} años serv.</span>
                                                     </div>
                                                 )}
                                                 {enc.estudiosEspoch&&(
                                                     <div style={{display:'flex',alignItems:'center',gap:4,padding:'4px 6px',background:`${ROJO}06`,border:`1px solid ${ROJO}15`,borderRadius:5}}>
-                                                        <span style={{fontSize:'0.62rem',color:ROJO}}>🎓</span>
-                                                        <span style={{fontSize:'0.59rem',fontWeight:600,color:ROJO,fontFamily:FONT,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{enc.estudiosEspoch}</span>
+                                                        <span style={{fontSize:'0.85rem',color:ROJO}}>🎓</span>
+                                                        <span style={{fontSize:'0.75rem',fontWeight:600,color:ROJO,fontFamily:FONT,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{enc.estudiosEspoch}</span>
                                                     </div>
                                                 )}
                                             </div>
@@ -1230,14 +1230,14 @@ const PanelEncuestadores=({empleadoresFiltrados,respuestasRaw,fEmp})=>{
                                                 <div style={{display:'flex',flexDirection:'column',gap:4,paddingTop:6,borderTop:`1px dashed ${color}20`}}>
                                                     {enc.email&&(
                                                         <div style={{display:'flex',alignItems:'center',gap:5}}>
-                                                            <FaEnvelope style={{color:'#94a3b8',fontSize:'0.58rem',flexShrink:0}}/>
-                                                            <span style={{fontSize:'0.61rem',color:'#475569',fontFamily:FONT,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{enc.email}</span>
+                                                            <FaEnvelope style={{color:'#94a3b8',fontSize:'0.75rem',flexShrink:0}}/>
+                                                            <span style={{fontSize:'0.85rem',color:'#475569',fontFamily:FONT,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{enc.email}</span>
                                                         </div>
                                                     )}
                                                     {enc.telefono&&(
                                                         <div style={{display:'flex',alignItems:'center',gap:5}}>
-                                                            <span style={{fontSize:'0.58rem',color:'#94a3b8',flexShrink:0}}>📞</span>
-                                                            <span style={{fontSize:'0.61rem',color:'#475569',fontFamily:FONT}}>{enc.telefono}</span>
+                                                            <span style={{fontSize:'0.75rem',color:'#94a3b8',flexShrink:0}}>📞</span>
+                                                            <span style={{fontSize:'0.85rem',color:'#475569',fontFamily:FONT}}>{enc.telefono}</span>
                                                         </div>
                                                     )}
                                                 </div>
@@ -1245,7 +1245,7 @@ const PanelEncuestadores=({empleadoresFiltrados,respuestasRaw,fEmp})=>{
 
                                             {/* Encuestas completadas */}
                                             <div style={{display:'flex',flexDirection:'column',gap:4,paddingTop:6,borderTop:`1px solid ${color}15`}}>
-                                                <div style={{fontSize:'0.58rem',fontWeight:700,color:'#94a3b8',textTransform:'uppercase',letterSpacing:'0.4px',fontFamily:FONT,marginBottom:2}}>Encuestas completadas</div>
+                                                <div style={{fontSize:'0.75rem',fontWeight:700,color:'#94a3b8',textTransform:'uppercase',letterSpacing:'0.4px',fontFamily:FONT,marginBottom:2}}>Encuestas completadas</div>
                                                 {enc.encuestas.map((encu,ei2)=>(
                                                     <div key={ei2} style={{
                                                         display:'flex',alignItems:'center',gap:6,
@@ -1254,12 +1254,12 @@ const PanelEncuestadores=({empleadoresFiltrados,respuestasRaw,fEmp})=>{
                                                         border:`1px solid ${VERDE}20`,
                                                         borderRadius:6,
                                                     }}>
-                                                        <FaCheckCircle style={{color:VERDE,fontSize:'0.58rem',flexShrink:0}}/>
+                                                        <FaCheckCircle style={{color:VERDE,fontSize:'0.75rem',flexShrink:0}}/>
                                                         <div style={{flex:1,minWidth:0}}>
-                                                            <div style={{fontSize:'0.66rem',fontWeight:600,color:'#1e293b',fontFamily:FONT,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{encu.titulo}</div>
+                                                            <div style={{fontSize:'0.85rem',fontWeight:600,color:'#1e293b',fontFamily:FONT,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{encu.titulo}</div>
                                                             {encu.fecha&&<div style={{display:'flex',alignItems:'center',gap:3,marginTop:1}}>
-                                                                <FaCalendarAlt style={{color:'#94a3b8',fontSize:'0.50rem'}}/>
-                                                                <span style={{fontSize:'0.57rem',color:'#94a3b8',fontFamily:FONT}}>{fmt(encu.fecha)}</span>
+                                                                <FaCalendarAlt style={{color:'#94a3b8',fontSize:'0.75rem'}}/>
+                                                                <span style={{fontSize:'0.75rem',color:'#94a3b8',fontFamily:FONT}}>{fmt(encu.fecha)}</span>
                                                             </div>}
                                                         </div>
                                                     </div>
@@ -1308,23 +1308,23 @@ const TarjetaCondicionalEmp = ({ grupo, encuestas, filtros, num }) => {
                 <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4, flexWrap: 'wrap' }}>
                         <span style={{
-                            fontSize: '0.56rem', fontWeight: 700, color: lado.color,
+                            fontSize: '0.75rem', fontWeight: 700, color: lado.color,
                             background: lado.bg, border: `1px solid ${lado.bd}`,
                             borderRadius: 99, padding: '1px 7px', fontFamily: FONT,
                         }}>{lado.label}</span>
                         <TipoBadge tipo={grupo.tipo} esMatriz={false} />
                     </div>
-                    <div style={{ fontSize: '0.60rem', color: '#94a3b8', fontFamily: FONT, marginBottom: 3 }}>
+                    <div style={{ fontSize: '0.85rem', color: '#94a3b8', fontFamily: FONT, marginBottom: 3 }}>
                         ↳ <em>{grupo.textoPadre?.slice(0, 80)}{grupo.textoPadre?.length > 80 ? '…' : ''}</em>
                     </div>
-                    <span style={{ fontSize: '0.79rem', fontWeight: 600, color: '#0f172a', fontFamily: FONT, lineHeight: 1.4 }}>
+                    <span style={{ fontSize: '0.95rem', fontWeight: 600, color: '#0f172a', fontFamily: FONT, lineHeight: 1.4 }}>
                         {num}. {grupo.textoCanonical}
                     </span>
-                    <div style={{ marginTop: 3, fontSize: '0.60rem', color: '#94a3b8', fontFamily: FONT }}>
+                    <div style={{ marginTop: 3, fontSize: '0.85rem', color: '#94a3b8', fontFamily: FONT }}>
                         {cnt} respuesta{cnt !== 1 ? 's' : ''}
                     </div>
                 </div>
-                <div style={{ fontSize: '0.68rem', color: '#94a3b8', flexShrink: 0, padding: '2px 5px', fontFamily: FONT }}>
+                <div style={{ fontSize: '0.85rem', color: '#94a3b8', flexShrink: 0, padding: '2px 5px', fontFamily: FONT }}>
                     {open ? '▲' : '▼'}
                 </div>
             </div>
@@ -1475,14 +1475,14 @@ const TabEEmpleadores=()=>{
             });
     },[datos]);
 
-    if(cargando) return <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',minHeight:320}}><div style={{width:30,height:30,border:'3px solid #f1f5f9',borderTop:`3px solid ${ROJO}`,borderRadius:'50%',animation:'t5spin .8s linear infinite'}}/><p style={{margin:'14px 0 0',fontSize:'0.78rem',color:'#9ca3af',fontFamily:FONT}}>Cargando...</p></div>;
-    if(error)    return <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',minHeight:320}}><FaExclamationTriangle style={{fontSize:'2rem',color:NARANJA,marginBottom:10}}/><p style={{margin:'0 0 14px',fontSize:'0.82rem',color:'#374151',fontFamily:FONT}}>{error}</p><button onClick={cargar} style={{display:'inline-flex',alignItems:'center',gap:6,padding:'8px 14px',background:'white',border:'1px solid #e5e7eb',borderRadius:7,cursor:'pointer',fontSize:'0.74rem',fontWeight:600,color:'#374151',fontFamily:FONT}}><FaSyncAlt style={{fontSize:'0.66rem'}}/>Reintentar</button></div>;
+    if(cargando) return <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',minHeight:320}}><div style={{width:30,height:30,border:'3px solid #f1f5f9',borderTop:`3px solid ${ROJO}`,borderRadius:'50%',animation:'t5spin .8s linear infinite'}}/><p style={{margin:'14px 0 0',fontSize:'0.95rem',color:'#9ca3af',fontFamily:FONT}}>Cargando...</p></div>;
+    if(error)    return <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',minHeight:320}}><FaExclamationTriangle style={{fontSize:'2.3rem',color:NARANJA,marginBottom:10}}/><p style={{margin:'0 0 14px',fontSize:'1rem',color:'#374151',fontFamily:FONT}}>{error}</p><button onClick={cargar} style={{display:'inline-flex',alignItems:'center',gap:6,padding:'8px 14px',background:'white',border:'1px solid #e5e7eb',borderRadius:7,cursor:'pointer',fontSize:'0.95rem',fontWeight:600,color:'#374151',fontFamily:FONT}}><FaSyncAlt style={{fontSize:'0.85rem'}}/>Reintentar</button></div>;
     if(!df) return null;
 
     const{encC,encFiltradas,empleadoresFiltrados,empleadoresRaw,respuestasRaw,porProv,porCiud,porCap,porAct,mitad,ciuD,comunes,otras,condicionales,kE,insights,plan}=df;
     const hayFE=Object.values(fEmp).some(v=>v!=='');
     const hayFN=Object.values(fEnc).some(v=>v!=='');
-    const sinD={margin:0,fontSize:'0.72rem',color:'#9ca3af',textAlign:'center',padding:'16px 0',fontFamily:FONT};
+    const sinD={margin:0,fontSize:'0.95rem',color:'#9ca3af',textAlign:'center',padding:'16px 0',fontFamily:FONT};
 
     return <div style={{fontFamily:FONT,paddingBottom:56}}>
 
@@ -1490,8 +1490,8 @@ const TabEEmpleadores=()=>{
         <div style={{display:'flex',gap:8,marginBottom:14,alignItems:'center',borderBottom:'2px solid #f1f5f9',paddingBottom:10}}>
             {[{id:'empresas',lbl:'Información de Empresas',icon:FaBuilding},{id:'encuestas',lbl:'Resultados de Encuestas',icon:FaChartBar}].map(({id,lbl,icon:I})=>{
                 const act=modo===id;
-                return <button key={id} className="t5tab" onClick={()=>setModo(id)} style={{display:'inline-flex',alignItems:'center',gap:7,padding:'8px 16px',borderRadius:8,cursor:'pointer',fontSize:'0.78rem',fontFamily:FONT,border:`2px solid ${act?ROJO:'#e5e7eb'}`,background:act?ROJO:'white',color:act?'white':'#6b7280',fontWeight:act?700:500,boxShadow:act?`0 2px 8px ${ROJO}30`:'none',transition:'all .15s'}}>
-                    <I style={{fontSize:'0.72rem'}}/>{lbl}
+                return <button key={id} className="t5tab" onClick={()=>setModo(id)} style={{display:'inline-flex',alignItems:'center',gap:7,padding:'8px 16px',borderRadius:8,cursor:'pointer',fontSize:'0.95rem',fontFamily:FONT,border:`2px solid ${act?ROJO:'#e5e7eb'}`,background:act?ROJO:'white',color:act?'white':'#6b7280',fontWeight:act?700:500,boxShadow:act?`0 2px 8px ${ROJO}30`:'none',transition:'all .15s'}}>
+                    <I style={{fontSize:'0.95rem'}}/>{lbl}
                 </button>;
             })}
         </div>
@@ -1502,9 +1502,9 @@ const TabEEmpleadores=()=>{
             <div className="t5a" style={{background:'white',borderRadius:10,border:'1px solid #e5e7eb',padding:'10px 14px',marginBottom:14}}>
                 <div style={{display:'flex',alignItems:'center',gap:8,flexWrap:'wrap'}}>
                     <div style={{display:'flex',alignItems:'center',gap:5,flexShrink:0}}>
-                        <div style={{width:22,height:22,borderRadius:5,background:`${ROJO}15`,display:'flex',alignItems:'center',justifyContent:'center'}}><FaFilter style={{color:ROJO,fontSize:'0.60rem'}}/></div>
-                        <span style={{fontSize:'0.72rem',fontWeight:700,color:'#374151',fontFamily:FONT}}>Filtrar empresas</span>
-                        {hayFE&&<span style={{background:ROJO,color:'white',borderRadius:99,fontSize:'0.55rem',fontWeight:700,padding:'1px 5px',fontFamily:FONT}}>{Object.values(fEmp).filter(v=>v!=='').length}</span>}
+                        <div style={{width:22,height:22,borderRadius:5,background:`${ROJO}15`,display:'flex',alignItems:'center',justifyContent:'center'}}><FaFilter style={{color:ROJO,fontSize:'0.85rem'}}/></div>
+                        <span style={{fontSize:'0.95rem',fontWeight:700,color:'#374151',fontFamily:FONT}}>Filtrar empresas</span>
+                        {hayFE&&<span style={{background:ROJO,color:'white',borderRadius:99,fontSize:'0.75rem',fontWeight:700,padding:'1px 5px',fontFamily:FONT}}>{Object.values(fEmp).filter(v=>v!=='').length}</span>}
                     </div>
                     <div style={{width:1,height:20,background:'#e5e7eb',flexShrink:0}}/>
                     <select value={fEmp.provincia} onChange={e=>cEmp('provincia',e.target.value)} className={`t5sel${fEmp.provincia?' on':''}`} disabled={opsProv.length===0}>
@@ -1519,18 +1519,18 @@ const TabEEmpleadores=()=>{
                     {hayFE&&<>
                         {Object.entries(fEmp).filter(([,v])=>v).map(([k,v])=>{
                             const lbl={provincia:'Provincia',ciudad:'Cantón',tipoCapital:'Tipo'}[k]||k;
-                            return <span key={k} style={{background:`${ROJO}12`,color:ROJO,border:`1px solid ${ROJO}25`,borderRadius:99,fontSize:'0.63rem',fontWeight:600,padding:'2px 7px',fontFamily:FONT,display:'inline-flex',alignItems:'center',gap:3}}>
-                                <span style={{color:'#9ca3af',fontSize:'0.58rem'}}>{lbl}:</span>&nbsp;{v}
-                                <button onClick={()=>cEmp(k,'')} style={{background:'none',border:'none',color:ROJO,cursor:'pointer',padding:0,fontSize:'0.70rem',lineHeight:1,opacity:0.7}}>×</button>
+                            return <span key={k} style={{background:`${ROJO}12`,color:ROJO,border:`1px solid ${ROJO}25`,borderRadius:99,fontSize:'0.85rem',fontWeight:600,padding:'2px 7px',fontFamily:FONT,display:'inline-flex',alignItems:'center',gap:3}}>
+                                <span style={{color:'#9ca3af',fontSize:'0.75rem'}}>{lbl}:</span>&nbsp;{v}
+                                <button onClick={()=>cEmp(k,'')} style={{background:'none',border:'none',color:ROJO,cursor:'pointer',padding:0,fontSize:'0.95rem',lineHeight:1,opacity:0.7}}>×</button>
                             </span>;
                         })}
-                        <button onClick={lEmp} style={{background:'none',border:'none',cursor:'pointer',color:'#9ca3af',fontSize:'0.65rem',fontFamily:FONT,display:'flex',alignItems:'center',gap:2,padding:'2px 4px'}}><FaTimes style={{fontSize:'0.55rem'}}/>Limpiar</button>
+                        <button onClick={lEmp} style={{background:'none',border:'none',cursor:'pointer',color:'#9ca3af',fontSize:'0.85rem',fontFamily:FONT,display:'flex',alignItems:'center',gap:2,padding:'2px 4px'}}><FaTimes style={{fontSize:'0.75rem'}}/>Limpiar</button>
                     </>}
                 </div>
             </div>
 
             {/* KPIs */}
-            <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:10,marginBottom:14}}>
+            <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit, minmax(180px, 1fr))',gap:10,marginBottom:14}}>
                 <KPI icon={FaBuilding}      valor={empleadoresFiltrados.length}                          label="Empleadores"         sub="Registrados activos"     color={ROJO}    delay={0}  />
                 <KPI icon={FaCheckCircle}   valor={empleadoresFiltrados.filter(e=>e.respondio).length}   label="Respondieron alguna" sub="Al menos una encuesta"  color={VERDE}   delay={40} />
                 <KPI icon={FaTimesCircle}   valor={empleadoresFiltrados.filter(e=>!e.respondio).length}  label="Sin responder"       sub="Ninguna encuesta"       color={NARANJA} delay={80} />
@@ -1540,22 +1540,22 @@ const TabEEmpleadores=()=>{
             {/* Mapa */}
             <div className="t5a" style={{background:'white',borderRadius:12,border:'1px solid #e2e8f0',boxShadow:'0 2px 8px rgba(0,0,0,.06)',overflow:'hidden',marginBottom:14,animationDelay:'80ms'}}>
                 <div style={{padding:'11px 16px',borderBottom:'1px solid #f1f5f9',background:`linear-gradient(135deg,${CIAN}0a,transparent)`,display:'flex',alignItems:'center',gap:10}}>
-                    <div style={{width:28,height:28,borderRadius:7,background:`${CIAN}1a`,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}><FaMapMarked style={{color:CIAN,fontSize:'0.80rem'}}/></div>
+                    <div style={{width:28,height:28,borderRadius:7,background:`${CIAN}1a`,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}><FaMapMarked style={{color:CIAN,fontSize:'1rem'}}/></div>
                     <div style={{flex:1,minWidth:0}}>
-                        <div style={{fontSize:'0.84rem',fontWeight:700,color:'#0f172a',fontFamily:FONT}}>Distribución Geográfica</div>
-                        <div style={{fontSize:'0.62rem',color:'#94a3b8',fontFamily:FONT}}>
+                        <div style={{fontSize:'1rem',fontWeight:700,color:'#0f172a',fontFamily:FONT}}>Distribución Geográfica</div>
+                        <div style={{fontSize:'0.85rem',color:'#94a3b8',fontFamily:FONT}}>
                             Ubicación de organizaciones · Ecuador continental
                             {fEmp.provincia&&<span style={{color:ROJO,marginLeft:4,fontWeight:600}}>· {fEmp.provincia}{fEmp.ciudad?` › ${fEmp.ciudad}`:''}</span>}
                         </div>
                     </div>
                     {fEmp.provincia&&<div style={{display:'flex',gap:8}}>
                         <div style={{display:'flex',alignItems:'center',gap:5,padding:'3px 8px',background:`${ROJO}10`,border:`1px solid ${ROJO}25`,borderRadius:99}}>
-                            <FaBuilding style={{color:ROJO,fontSize:'0.58rem'}}/>
-                            <span style={{fontSize:'0.62rem',fontWeight:700,color:ROJO,fontFamily:FONT}}>{empleadoresFiltrados.length} empresa{empleadoresFiltrados.length!==1?'s':''}</span>
+                            <FaBuilding style={{color:ROJO,fontSize:'0.75rem'}}/>
+                            <span style={{fontSize:'0.85rem',fontWeight:700,color:ROJO,fontFamily:FONT}}>{empleadoresFiltrados.length} empresa{empleadoresFiltrados.length!==1?'s':''}</span>
                         </div>
                     </div>}
                 </div>
-                {geoError&&<div style={{padding:'9px 16px',background:'#fff7ed',borderBottom:'1px solid #fed7aa',display:'flex',alignItems:'center',gap:8}}><FaExclamationTriangle style={{color:'#d97706',fontSize:'0.80rem'}}/><p style={{margin:0,fontSize:'0.72rem',color:'#92400e',fontFamily:FONT}}>No se cargaron GeoJSON. Verifica <code>public/geo/</code></p></div>}
+                {geoError&&<div style={{padding:'9px 16px',background:'#fff7ed',borderBottom:'1px solid #fed7aa',display:'flex',alignItems:'center',gap:8}}><FaExclamationTriangle style={{color:'#d97706',fontSize:'1rem'}}/><p style={{margin:0,fontSize:'0.95rem',color:'#92400e',fontFamily:FONT}}>No se cargaron GeoJSON. Verifica <code>public/geo/</code></p></div>}
                 <div style={{display:'grid',gridTemplateColumns:'1fr 420px 1fr',gap:0,height:480}}>
                     <div style={{borderRight:'1px solid #f1f5f9',overflow:'hidden'}}>
                         <ColIzq filtros={fEmp} porProv={porProv} porCiud={porCiud} total={empleadoresFiltrados.length} mitad={mitad}/>
@@ -1577,18 +1577,18 @@ const TabEEmpleadores=()=>{
                 </div>
                 {/* Composición del sector */}
                 <div style={{borderTop:'1px solid #e5e7eb',padding:'14px 20px',background:'#fafafa'}}>
-                    <p style={{margin:'0 0 12px',fontSize:'0.63rem',fontWeight:700,color:'#94a3b8',fontFamily:FONT,textTransform:'uppercase',letterSpacing:'0.5px'}}>Composición del sector</p>
+                    <p style={{margin:'0 0 12px',fontSize:'0.85rem',fontWeight:700,color:'#94a3b8',fontFamily:FONT,textTransform:'uppercase',letterSpacing:'0.5px'}}>Composición del sector</p>
                     <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:24}}>
                         {[[porCap,'Tipo de Capital',0],[porAct,'Tipo de Actividad',4]].map(([lista,tit,off])=>(
                             <div key={tit} style={{display:'flex',gap:14,alignItems:'center'}}>
                                 <Donut segs={lista.map((c,i)=>({v:c.total,c:PALETA[(i+off)%PALETA.length]}))} r={34} g={10} sz={84} label={empleadoresFiltrados.length} sublabel="total"/>
                                 <div style={{flex:1}}>
-                                    <div style={{fontSize:'0.64rem',fontWeight:700,color:'#6b7280',textTransform:'uppercase',letterSpacing:'0.4px',marginBottom:6,fontFamily:FONT}}>{tit}</div>
+                                    <div style={{fontSize:'0.85rem',fontWeight:700,color:'#6b7280',textTransform:'uppercase',letterSpacing:'0.4px',marginBottom:6,fontFamily:FONT}}>{tit}</div>
                                     {lista.map((c,i)=><div key={i} style={{display:'flex',alignItems:'center',gap:6,marginBottom:4}}>
                                         <div style={{width:7,height:7,borderRadius:'50%',background:PALETA[(i+off)%PALETA.length],flexShrink:0}}/>
-                                        <span style={{fontSize:'0.70rem',color:'#374151',flex:1,fontFamily:FONT}}>{c.tipo}</span>
-                                        <span style={{fontSize:'0.70rem',fontWeight:700,color:PALETA[(i+off)%PALETA.length],fontFamily:FONT}}>{c.total}</span>
-                                        <span style={{fontSize:'0.58rem',color:'#9ca3af',fontFamily:FONT}}>({pct(c.total,empleadoresFiltrados.length)}%)</span>
+                                        <span style={{fontSize:'0.95rem',color:'#374151',flex:1,fontFamily:FONT}}>{c.tipo}</span>
+                                        <span style={{fontSize:'0.95rem',fontWeight:700,color:PALETA[(i+off)%PALETA.length],fontFamily:FONT}}>{c.total}</span>
+                                        <span style={{fontSize:'0.75rem',color:'#9ca3af',fontFamily:FONT}}>({pct(c.total,empleadoresFiltrados.length)}%)</span>
                                     </div>)}
                                 </div>
                             </div>
@@ -1603,7 +1603,7 @@ const TabEEmpleadores=()=>{
 
         {/* ════════ MODO ENCUESTAS ════════ */}
         {modo==='encuestas'&&<>
-            <div style={{display:'grid',gridTemplateColumns:'repeat(5,1fr)',gap:10,marginBottom:14}}>
+            <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit, minmax(150px, 1fr))',gap:10,marginBottom:14}}>
                 <KPI icon={FaBuilding}      valor={kE.totalEmps}      label="Empleadores totales" sub="Registrados activos"      color={ROJO}   delay={0}  />
                 <KPI icon={FaClipboardList} valor={encC.length}        label="Encuestas cerradas"  sub="Con resultados"          color={AZUL}   delay={40} />
                 <KPI icon={FaCheckCircle}   valor={kE.respondieron}    label="Respondieron"        sub={`${kE.tasa}% del total`} color={VERDE}  delay={80} />
@@ -1617,10 +1617,10 @@ const TabEEmpleadores=()=>{
                     {/* Ícono + label */}
                     <div style={{display:'flex',alignItems:'center',gap:5,flexShrink:0}}>
                         <div style={{width:22,height:22,borderRadius:5,background:`${ROJO}15`,display:'flex',alignItems:'center',justifyContent:'center'}}>
-                            <FaFilter style={{color:ROJO,fontSize:'0.60rem'}}/>
+                            <FaFilter style={{color:ROJO,fontSize:'0.85rem'}}/>
                         </div>
-                        <span style={{fontSize:'0.72rem',fontWeight:700,color:'#374151',fontFamily:FONT}}>Filtrar resultados</span>
-                        {hayFN&&<span style={{background:ROJO,color:'white',borderRadius:99,fontSize:'0.55rem',fontWeight:700,padding:'1px 5px',fontFamily:FONT}}>{Object.values(fEnc).filter(v=>v!=='').length}</span>}
+                        <span style={{fontSize:'0.95rem',fontWeight:700,color:'#374151',fontFamily:FONT}}>Filtrar resultados</span>
+                        {hayFN&&<span style={{background:ROJO,color:'white',borderRadius:99,fontSize:'0.75rem',fontWeight:700,padding:'1px 5px',fontFamily:FONT}}>{Object.values(fEnc).filter(v=>v!=='').length}</span>}
                     </div>
                     <div style={{width:1,height:20,background:'#e5e7eb',flexShrink:0}}/>
 
@@ -1630,7 +1630,7 @@ const TabEEmpleadores=()=>{
                             <option value="">Todos los períodos</option>
                             {opsMesAnio.map(o=><option key={o.clave} value={o.clave}>{o.label}</option>)}
                         </select>
-                        :<span style={{fontSize:'0.68rem',color:'#94a3b8',fontFamily:FONT}}>Sin períodos disponibles</span>
+                        :<span style={{fontSize:'0.85rem',color:'#94a3b8',fontFamily:FONT}}>Sin períodos disponibles</span>
                     }
 
                     {/* 2. Tipo de empresa */}
@@ -1645,7 +1645,7 @@ const TabEEmpleadores=()=>{
                             <option value="">{fEnc.mesAnio?'Todas de este período':'Todas las encuestas cerradas'}</option>
                             {(fEnc.mesAnio?encFiltradas:encC).map(e=><option key={e._id} value={e._id}>{e.titulo}</option>)}
                         </select>
-                        :fEnc.mesAnio&&<span style={{fontSize:'0.68rem',color:'#94a3b8',fontFamily:FONT}}>Sin encuestas en este período</span>
+                        :fEnc.mesAnio&&<span style={{fontSize:'0.85rem',color:'#94a3b8',fontFamily:FONT}}>Sin encuestas en este período</span>
                     }
 
                     {/* Chips de filtros activos */}
@@ -1658,14 +1658,14 @@ const TabEEmpleadores=()=>{
                                 if(k==='mesAnio') display=opsMesAnio.find(o=>o.clave===v)?.label||v;
                                 if(k==='encuestaId') display=(fEnc.mesAnio?encFiltradas:encC).find(e=>e._id===v)?.titulo?.slice(0,28)||v;
                                 return(
-                                    <span key={k} style={{background:`${ROJO}12`,color:ROJO,border:`1px solid ${ROJO}25`,borderRadius:99,fontSize:'0.63rem',fontWeight:600,padding:'2px 7px',fontFamily:FONT,display:'inline-flex',alignItems:'center',gap:3}}>
-                                        <span style={{color:'#9ca3af',fontSize:'0.58rem'}}>{lbl}:</span>&nbsp;{display.length>28?display.slice(0,28)+'…':display}
-                                        <button onClick={()=>cEnc(k,'')} style={{background:'none',border:'none',color:ROJO,cursor:'pointer',padding:0,fontSize:'0.70rem',lineHeight:1,opacity:0.7}}>×</button>
+                                    <span key={k} style={{background:`${ROJO}12`,color:ROJO,border:`1px solid ${ROJO}25`,borderRadius:99,fontSize:'0.85rem',fontWeight:600,padding:'2px 7px',fontFamily:FONT,display:'inline-flex',alignItems:'center',gap:3}}>
+                                        <span style={{color:'#9ca3af',fontSize:'0.75rem'}}>{lbl}:</span>&nbsp;{display.length>28?display.slice(0,28)+'…':display}
+                                        <button onClick={()=>cEnc(k,'')} style={{background:'none',border:'none',color:ROJO,cursor:'pointer',padding:0,fontSize:'0.95rem',lineHeight:1,opacity:0.7}}>×</button>
                                     </span>
                                 );
                             })}
-                            <button onClick={lEnc} style={{background:'none',border:'none',cursor:'pointer',color:'#9ca3af',fontSize:'0.65rem',fontFamily:FONT,display:'flex',alignItems:'center',gap:2,padding:'2px 4px'}}>
-                                <FaTimes style={{fontSize:'0.55rem'}}/>Limpiar
+                            <button onClick={lEnc} style={{background:'none',border:'none',cursor:'pointer',color:'#9ca3af',fontSize:'0.85rem',fontFamily:FONT,display:'flex',alignItems:'center',gap:2,padding:'2px 4px'}}>
+                                <FaTimes style={{fontSize:'0.75rem'}}/>Limpiar
                             </button>
                         </>
                     )}
@@ -1674,8 +1674,8 @@ const TabEEmpleadores=()=>{
                 {/* Indicador del período activo */}
                 {fEnc.mesAnio&&(
                     <div style={{marginTop:8,paddingTop:8,borderTop:'1px solid #f1f5f9',display:'flex',alignItems:'center',gap:6}}>
-                        <FaCalendarAlt style={{color:AZUL,fontSize:'0.60rem'}}/>
-                        <span style={{fontSize:'0.62rem',color:'#475569',fontFamily:FONT}}>
+                        <FaCalendarAlt style={{color:AZUL,fontSize:'0.85rem'}}/>
+                        <span style={{fontSize:'0.85rem',color:'#475569',fontFamily:FONT}}>
                             Período: <strong style={{color:AZUL}}>{opsMesAnio.find(o=>o.clave===fEnc.mesAnio)?.label}</strong>
                             {' · '}{encFiltradas.length} encuesta{encFiltradas.length!==1?'s':''} en este período
                         </span>
@@ -1685,10 +1685,10 @@ const TabEEmpleadores=()=>{
 
             {comunes.length>0&&<div style={{marginBottom:14}}>
                 <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:10}}>
-                    <div style={{width:28,height:28,borderRadius:7,background:`${VERDE}18`,display:'flex',alignItems:'center',justifyContent:'center'}}><FaLayerGroup style={{color:VERDE,fontSize:'0.78rem'}}/></div>
+                    <div style={{width:28,height:28,borderRadius:7,background:`${VERDE}18`,display:'flex',alignItems:'center',justifyContent:'center'}}><FaLayerGroup style={{color:VERDE,fontSize:'0.95rem'}}/></div>
                     <div>
-                        <div style={{fontSize:'0.84rem',fontWeight:700,color:'#0f172a',fontFamily:FONT}}>Preguntas Recurrentes</div>
-                        <div style={{fontSize:'0.61rem',color:'#9ca3af',fontFamily:FONT}}>Aparecen en múltiples encuestas · {comunes.length} grupo{comunes.length!==1?'s':''}</div>
+                        <div style={{fontSize:'1rem',fontWeight:700,color:'#0f172a',fontFamily:FONT}}>Preguntas Recurrentes</div>
+                        <div style={{fontSize:'0.85rem',color:'#9ca3af',fontFamily:FONT}}>Aparecen en múltiples encuestas · {comunes.length} grupo{comunes.length!==1?'s':''}</div>
                     </div>
                 </div>
                 {comunes.map((g,i)=><TarjetaGrupo key={g.id} grupo={g} encuestas={encC} filtros={fEnc} num={i+1}/>)}
@@ -1696,10 +1696,10 @@ const TabEEmpleadores=()=>{
 
             {otras.length>0&&<div style={{marginBottom:14}}>
                 <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:10}}>
-                    <div style={{width:28,height:28,borderRadius:7,background:`${AZUL}18`,display:'flex',alignItems:'center',justifyContent:'center'}}><FaQuestion style={{color:AZUL,fontSize:'0.78rem'}}/></div>
+                    <div style={{width:28,height:28,borderRadius:7,background:`${AZUL}18`,display:'flex',alignItems:'center',justifyContent:'center'}}><FaQuestion style={{color:AZUL,fontSize:'0.95rem'}}/></div>
                     <div>
-                        <div style={{fontSize:'0.84rem',fontWeight:700,color:'#0f172a',fontFamily:FONT}}>Otras Preguntas</div>
-                        <div style={{fontSize:'0.61rem',color:'#9ca3af',fontFamily:FONT}}>{fEnc.encuestaId?'Preguntas de la encuesta seleccionada':'Específicas de una encuesta'} · {otras.length} grupo{otras.length!==1?'s':''}</div>
+                        <div style={{fontSize:'1rem',fontWeight:700,color:'#0f172a',fontFamily:FONT}}>Otras Preguntas</div>
+                        <div style={{fontSize:'0.85rem',color:'#9ca3af',fontFamily:FONT}}>{fEnc.encuestaId?'Preguntas de la encuesta seleccionada':'Específicas de una encuesta'} · {otras.length} grupo{otras.length!==1?'s':''}</div>
                     </div>
                 </div>
                 {otras.map((g,i)=><TarjetaGrupo key={g.id} grupo={g} encuestas={encC} filtros={fEnc} num={comunes.length+i+1}/>)}
@@ -1709,11 +1709,11 @@ const TabEEmpleadores=()=>{
             {condicionales.length>0&&<div style={{marginBottom:14}}>
                 <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:10}}>
                     <div style={{width:28,height:28,borderRadius:7,background:`${NARANJA}18`,display:'flex',alignItems:'center',justifyContent:'center'}}>
-                        <FaQuestion style={{color:NARANJA,fontSize:'0.78rem'}}/>
+                        <FaQuestion style={{color:NARANJA,fontSize:'0.95rem'}}/>
                     </div>
                     <div>
-                        <div style={{fontSize:'0.84rem',fontWeight:700,color:'#0f172a',fontFamily:FONT}}>Preguntas Condicionales</div>
-                        <div style={{fontSize:'0.61rem',color:'#9ca3af',fontFamily:FONT}}>
+                        <div style={{fontSize:'1rem',fontWeight:700,color:'#0f172a',fontFamily:FONT}}>Preguntas Condicionales</div>
+                        <div style={{fontSize:'0.85rem',color:'#9ca3af',fontFamily:FONT}}>
                             Solo se muestran según la respuesta Sí/No · {condicionales.length} subpregunta{condicionales.length!==1?'s':''}
                         </div>
                     </div>
@@ -1731,19 +1731,19 @@ const TabEEmpleadores=()=>{
  
             {/* Sin datos — ACTUALIZADO (incluye condicionales) */}
             {comunes.length===0&&otras.length===0&&condicionales.length===0&&<div style={{padding:'32px',background:'white',borderRadius:10,border:'1px solid #e5e7eb',textAlign:'center',marginBottom:14}}>
-                <FaClipboardList style={{color:'#cbd5e1',fontSize:'2rem',marginBottom:8}}/>
-                <p style={{margin:'0 0 6px',fontSize:'0.78rem',fontWeight:600,color:'#94a3b8',fontFamily:FONT}}>{encC.length===0?'No hay encuestas cerradas aún':'Sin resultados con los filtros actuales'}</p>
-                <p style={{margin:0,fontSize:'0.68rem',color:'#cbd5e1',fontFamily:FONT}}>{encC.length===0?'Los gráficos aparecerán al cerrar una encuesta.':'Prueba limpiando los filtros.'}</p>
+                <FaClipboardList style={{color:'#cbd5e1',fontSize:'2.3rem',marginBottom:8}}/>
+                <p style={{margin:'0 0 6px',fontSize:'0.95rem',fontWeight:600,color:'#94a3b8',fontFamily:FONT}}>{encC.length===0?'No hay encuestas cerradas aún':'Sin resultados con los filtros actuales'}</p>
+                <p style={{margin:0,fontSize:'0.85rem',color:'#cbd5e1',fontFamily:FONT}}>{encC.length===0?'Los gráficos aparecerán al cerrar una encuesta.':'Prueba limpiando los filtros.'}</p>
             </div>}
 
             {/* Insights + Plan */}
             <div style={{display:'grid',gridTemplateColumns:'1fr 320px',gap:14}}>
                 <div className="t5a" style={{background:'white',borderRadius:10,border:'1px solid #e5e7eb',overflow:'hidden',animationDelay:'200ms'}}>
                     <div style={{padding:'11px 16px',borderBottom:'1px solid #f1f5f9',background:`linear-gradient(135deg,${ROJO}09,transparent)`,display:'flex',alignItems:'center',gap:9,flexWrap:'wrap'}}>
-                        <div style={{width:28,height:28,borderRadius:7,background:`${ROJO}18`,display:'flex',alignItems:'center',justifyContent:'center'}}><FaLightbulb style={{color:ROJO,fontSize:'0.82rem'}}/></div>
+                        <div style={{width:28,height:28,borderRadius:7,background:`${ROJO}18`,display:'flex',alignItems:'center',justifyContent:'center'}}><FaLightbulb style={{color:ROJO,fontSize:'1rem'}}/></div>
                         <div>
-                            <div style={{fontSize:'0.82rem',fontWeight:700,color:'#0f172a',fontFamily:FONT}}>Análisis de Situación — Empleadores</div>
-                            <div style={{fontSize:'0.61rem',color:'#9ca3af',fontFamily:FONT}}>{insights.length} observaciones · generado automáticamente</div>
+                            <div style={{fontSize:'1rem',fontWeight:700,color:'#0f172a',fontFamily:FONT}}>Análisis de Situación — Empleadores</div>
+                            <div style={{fontSize:'0.85rem',color:'#9ca3af',fontFamily:FONT}}>{insights.length} observaciones · generado automáticamente</div>
                         </div>
                     </div>
                     <div style={{padding:'13px 16px'}}>
@@ -1753,7 +1753,7 @@ const TabEEmpleadores=()=>{
                                 if(!gr.length) return null;
                                 const lbls={crit:'🔴 Puntos Críticos',warn:'⚠️ Atención',ok:'✅ Fortalezas',info:'💡 Sugerencias'};
                                 return <div key={tipo} style={{marginBottom:12}}>
-                                    <p style={{margin:'0 0 6px',fontSize:'0.65rem',fontWeight:700,color:'#6b7280',textTransform:'uppercase',letterSpacing:'0.5px',fontFamily:FONT}}>{lbls[tipo]}</p>
+                                    <p style={{margin:'0 0 6px',fontSize:'0.85rem',fontWeight:700,color:'#6b7280',textTransform:'uppercase',letterSpacing:'0.5px',fontFamily:FONT}}>{lbls[tipo]}</p>
                                     <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(260px,1fr))',gap:6}}>
                                         {gr.map((r,i)=><Insight key={i} tipo={r.tipo} titulo={r.titulo} detalle={r.detalle} delay={i*35}/>)}
                                     </div>
@@ -1764,19 +1764,19 @@ const TabEEmpleadores=()=>{
                 </div>
                 <div className="t5a" style={{background:'white',borderRadius:10,border:'1px solid #e5e7eb',overflow:'hidden',animationDelay:'220ms'}}>
                     <div style={{padding:'11px 16px',borderBottom:'1px solid #f1f5f9',background:`linear-gradient(135deg,${AZUL}09,transparent)`,display:'flex',alignItems:'center',gap:9}}>
-                        <div style={{width:28,height:28,borderRadius:7,background:`${AZUL}18`,display:'flex',alignItems:'center',justifyContent:'center'}}><FaBullseye style={{color:AZUL,fontSize:'0.82rem'}}/></div>
-                        <div><div style={{fontSize:'0.82rem',fontWeight:700,color:'#0f172a',fontFamily:FONT}}>Plan de Acción</div><div style={{fontSize:'0.61rem',color:'#9ca3af',fontFamily:FONT}}>Acciones priorizadas por impacto</div></div>
+                        <div style={{width:28,height:28,borderRadius:7,background:`${AZUL}18`,display:'flex',alignItems:'center',justifyContent:'center'}}><FaBullseye style={{color:AZUL,fontSize:'1rem'}}/></div>
+                        <div><div style={{fontSize:'1rem',fontWeight:700,color:'#0f172a',fontFamily:FONT}}>Plan de Acción</div><div style={{fontSize:'0.85rem',color:'#9ca3af',fontFamily:FONT}}>Acciones priorizadas por impacto</div></div>
                     </div>
                     <div style={{padding:'12px 14px'}}>
                         {plan.length===0
-                            ?<div style={{textAlign:'center',padding:'20px 0'}}><FaCheckCircle style={{color:VERDE,fontSize:'1.6rem',marginBottom:8}}/><p style={{margin:0,fontSize:'0.74rem',color:VERDE,fontFamily:FONT,fontWeight:600}}>¡Sin acciones críticas!</p></div>
+                            ?<div style={{textAlign:'center',padding:'20px 0'}}><FaCheckCircle style={{color:VERDE,fontSize:'1.73rem',marginBottom:8}}/><p style={{margin:0,fontSize:'0.95rem',color:VERDE,fontFamily:FONT,fontWeight:600}}>¡Sin acciones críticas!</p></div>
                             :plan.map((a,i)=>{const imp={alto:ROJO,medio:NARANJA,bajo:CIAN}[a.impacto]||AZUL;return <div key={i} style={{display:'flex',gap:10,alignItems:'flex-start',padding:'8px 0',borderBottom:i<plan.length-1?'1px solid #f1f5f9':'none'}}>
-                                <div style={{width:22,height:22,borderRadius:6,background:`${imp}15`,border:`1px solid ${imp}30`,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,marginTop:1}}><span style={{fontSize:'0.65rem',fontWeight:800,color:imp,fontFamily:FONT}}>{a.prioridad}</span></div>
+                                <div style={{width:22,height:22,borderRadius:6,background:`${imp}15`,border:`1px solid ${imp}30`,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,marginTop:1}}><span style={{fontSize:'0.85rem',fontWeight:800,color:imp,fontFamily:FONT}}>{a.prioridad}</span></div>
                                 <div style={{flex:1,minWidth:0}}>
-                                    <div style={{fontSize:'0.72rem',fontWeight:600,color:'#0f172a',fontFamily:FONT,marginBottom:2}}>{a.accion}</div>
+                                    <div style={{fontSize:'0.95rem',fontWeight:600,color:'#0f172a',fontFamily:FONT,marginBottom:2}}>{a.accion}</div>
                                     <div style={{display:'flex',gap:5,alignItems:'center',flexWrap:'wrap'}}>
-                                        <span style={{fontSize:'0.60rem',fontWeight:700,color:imp,background:`${imp}12`,border:`1px solid ${imp}25`,borderRadius:99,padding:'1px 5px',fontFamily:FONT}}>Impacto {a.impacto}</span>
-                                        <span style={{fontSize:'0.60rem',color:'#9ca3af',fontFamily:FONT}}>{a.meta}</span>
+                                        <span style={{fontSize:'0.85rem',fontWeight:700,color:imp,background:`${imp}12`,border:`1px solid ${imp}25`,borderRadius:99,padding:'1px 5px',fontFamily:FONT}}>Impacto {a.impacto}</span>
+                                        <span style={{fontSize:'0.85rem',color:'#9ca3af',fontFamily:FONT}}>{a.meta}</span>
                                     </div>
                                 </div>
                             </div>;})}

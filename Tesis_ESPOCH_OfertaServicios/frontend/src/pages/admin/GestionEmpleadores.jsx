@@ -54,8 +54,8 @@ const FORM_IND_VACIO = {
 const sf = {
     grid2: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 },
     campo: { display: 'flex', flexDirection: 'column', gap: 5, marginBottom: 10 },
-    lbl:   { fontSize: '0.75rem', fontWeight: '600', color: '#2c3e50', display: 'flex', alignItems: 'center' },
-    inp:   { padding: '8px 11px', border: '1px solid #e9ecef', borderRadius: 7, fontSize: '0.8rem', color: '#2c3e50', outline: 'none', fontFamily: "'Rotis', 'Segoe UI',Roboto,sans-serif", backgroundColor: '#f8f9fa', width: '100%', boxSizing: 'border-box' },
+    lbl:   { fontSize: '0.95rem', fontWeight: '600', color: '#2c3e50', display: 'flex', alignItems: 'center' },
+    inp:   { padding: '8px 11px', border: '1px solid #e9ecef', borderRadius: 7, fontSize: '1rem', color: '#2c3e50', outline: 'none', fontFamily: "'Rotis', 'Segoe UI',Roboto,sans-serif", backgroundColor: '#f8f9fa', width: '100%', boxSizing: 'border-box' },
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -84,12 +84,12 @@ const CamposOrganizacion = ({ form, onChange }) => (
         </div>
         <div style={sf.grid2}>
             <div style={sf.campo}>
-                <label style={sf.lbl}><FaPhone style={{ marginRight: 4, fontSize: '0.65rem' }} />Teléfono de contacto *</label>
+                <label style={sf.lbl}><FaPhone style={{ marginRight: 4, fontSize: '0.85rem' }} />Teléfono de contacto *</label>
                 <input value={form.telefonoOrganizacion} onChange={e => onChange('telefonoOrganizacion', e.target.value)}
                     style={sf.inp} placeholder="Ej: 0991234567" />
             </div>
             <div style={sf.campo}>
-                <label style={sf.lbl}><FaMapMarkerAlt style={{ marginRight: 4, fontSize: '0.65rem' }} />Provincia *</label>
+                <label style={sf.lbl}><FaMapMarkerAlt style={{ marginRight: 4, fontSize: '0.85rem' }} />Provincia *</label>
                 <select value={form.provincia} onChange={e => onChange('provincia', e.target.value)} style={sf.inp}>
                     <option value="">Seleccionar...</option>
                     {PROVINCIAS_EC.map(p => <option key={p}>{p}</option>)}
@@ -98,7 +98,7 @@ const CamposOrganizacion = ({ form, onChange }) => (
         </div>
         <div style={sf.grid2}>
             <div style={sf.campo}>
-                <label style={sf.lbl}><FaMapMarkerAlt style={{ marginRight: 4, fontSize: '0.65rem' }} />Ciudad *</label>
+                <label style={sf.lbl}><FaMapMarkerAlt style={{ marginRight: 4, fontSize: '0.85rem' }} />Ciudad *</label>
                 <input value={form.ciudad} onChange={e => onChange('ciudad', e.target.value)}
                     style={sf.inp} placeholder="Ej: Riobamba" />
             </div>
@@ -318,13 +318,13 @@ const GestionEmpleadores = () => {
         const pags = Array.from({ length: fin - ini + 1 }, (_, i) => ini + i);
         return (
             <div style={s.pagRow}>
-                <button style={{ ...s.pagBtn, opacity: pagina === 1 ? 0.4 : 1 }} onClick={() => irPagina(pagina - 1)} disabled={pagina === 1}><FaChevronLeft style={{ fontSize: '0.6rem' }} /></button>
+                <button style={{ ...s.pagBtn, opacity: pagina === 1 ? 0.4 : 1 }} onClick={() => irPagina(pagina - 1)} disabled={pagina === 1}><FaChevronLeft style={{ fontSize: '0.85rem' }} /></button>
                 {ini > 1 && <span style={s.pagPuntos}>···</span>}
                 {pags.map(p => (
-                    <button key={p} style={{ ...s.pagBtn, background: p === pagina ? 'var(--color-espoch-rojo)' : 'white', color: p === pagina ? 'white' : '#6c757d', border: p === pagina ? '1px solid var(--color-espoch-rojo)' : '1px solid #e9ecef', fontWeight: p === pagina ? '700' : '400' }} onClick={() => irPagina(p)}>{p}</button>
+                    <button key={p} style={{ ...s.pagBtn, background: p === pagina ? '#BC0613' : 'white', color: p === pagina ? 'white' : '#6c757d', border: p === pagina ? '1px solid #BC0613' : '1px solid #e9ecef', fontWeight: p === pagina ? '700' : '400' }} onClick={() => irPagina(p)}>{p}</button>
                 ))}
                 {fin < paginas && <span style={s.pagPuntos}>···</span>}
-                <button style={{ ...s.pagBtn, opacity: pagina === paginas ? 0.4 : 1 }} onClick={() => irPagina(pagina + 1)} disabled={pagina === paginas}><FaChevronRight style={{ fontSize: '0.6rem' }} /></button>
+                <button style={{ ...s.pagBtn, opacity: pagina === paginas ? 0.4 : 1 }} onClick={() => irPagina(pagina + 1)} disabled={pagina === paginas}><FaChevronRight style={{ fontSize: '0.85rem' }} /></button>
             </div>
         );
     };
@@ -353,7 +353,7 @@ const GestionEmpleadores = () => {
                                 <p style={s.metVal}>{cargando ? <span style={{ color: '#ced4da' }}>···</span> : (metricas?.[m.key] ?? '—')}</p>
                             </div>
                             <div style={{ ...s.metIco, background: m.bg, border: `1px solid ${m.border}` }}>
-                                <m.Icon style={{ fontSize: '1rem', color: m.color }} />
+                                <m.Icon style={{ fontSize: '1.1rem', color: m.color }} />
                             </div>
                         </div>
                     </div>
@@ -369,17 +369,17 @@ const GestionEmpleadores = () => {
                     </div>
                     <div style={{ position: 'relative' }} ref={menuRef}>
                         <button style={s.btnNuevo} onClick={() => setMenuNuevo(v => !v)}>
-                            <FaPlus style={{ fontSize: '0.72rem' }} />Nuevo Empleador<FaChevronDown style={{ fontSize: '0.6rem', marginLeft: 2 }} />
+                            <FaPlus style={{ fontSize: '0.95rem' }} />Nuevo Empleador<FaChevronDown style={{ fontSize: '0.85rem', marginLeft: 2 }} />
                         </button>
                         {menuNuevo && (
                             <div style={s.dropdown}>
                                 <button style={s.dropItem} onClick={abrirInd}>
-                                    <div style={{ ...s.dropIco, background: '#e3f2fd', border: '1px solid #bbdefb' }}><FaUser style={{ color: '#1565c0', fontSize: '0.75rem' }} /></div>
+                                    <div style={{ ...s.dropIco, background: '#e3f2fd', border: '1px solid #bbdefb' }}><FaUser style={{ color: '#1565c0', fontSize: '0.95rem' }} /></div>
                                     <div><p style={s.dropTit}>Individual</p><p style={s.dropSub}>Registrar una empresa manualmente</p></div>
                                 </button>
                                 <div style={s.dropDivider} />
                                 <button style={s.dropItem} onClick={abrirMasivo}>
-                                    <div style={{ ...s.dropIco, background: '#e8f5e9', border: '1px solid #c8e6c9' }}><FaUsers style={{ color: '#2e7d32', fontSize: '0.75rem' }} /></div>
+                                    <div style={{ ...s.dropIco, background: '#e8f5e9', border: '1px solid #c8e6c9' }}><FaUsers style={{ color: '#2e7d32', fontSize: '0.95rem' }} /></div>
                                     <div><p style={s.dropTit}>Carga masiva CSV</p><p style={s.dropSub}>Registrar múltiples empresas desde archivo</p></div>
                                 </button>
                             </div>
@@ -389,19 +389,19 @@ const GestionEmpleadores = () => {
 
                 <div style={s.filtrosRow}>
                     <div style={s.busqWrap}>
-                        <FaSearch style={{ fontSize: '0.65rem', color: '#adb5bd', flexShrink: 0 }} />
+                        <FaSearch style={{ fontSize: '0.85rem', color: '#adb5bd', flexShrink: 0 }} />
                         <input type="text" placeholder="Buscar por empresa, gerente o correo..."
                             value={buscar} onChange={e => setBuscar(e.target.value)} style={s.busqInp} />
                     </div>
                     <div style={s.selectWrap}>
-                        <FaFilter style={{ fontSize: '0.6rem', color: '#adb5bd', flexShrink: 0 }} />
+                        <FaFilter style={{ fontSize: '0.85rem', color: '#adb5bd', flexShrink: 0 }} />
                         <select value={filtroCapital} onChange={e => setFiltroCapital(e.target.value)} style={s.selectEl}>
                             <option value="">Capital: Todos</option>
                             {TIPO_CAPITAL_OPTS.map(o => <option key={o}>{o}</option>)}
                         </select>
                     </div>
                     <div style={s.selectWrap}>
-                        <FaFilter style={{ fontSize: '0.6rem', color: '#adb5bd', flexShrink: 0 }} />
+                        <FaFilter style={{ fontSize: '0.85rem', color: '#adb5bd', flexShrink: 0 }} />
                         <select value={filtroActividad} onChange={e => setFiltroActividad(e.target.value)} style={s.selectEl}>
                             <option value="">Actividad: Todas</option>
                             {TIPO_ACTIVIDAD_OPTS.map(o => <option key={o}>{o}</option>)}
@@ -442,22 +442,22 @@ const GestionEmpleadores = () => {
                                                         </div>
                                                     </td>
                                                     <td style={s.td}>
-                                                        <p style={{ margin: 0, fontSize: '0.78rem', fontWeight: '600', color: '#2c3e50' }}>{emp.nombreGerente}</p>
-                                                        {emp.telefonoOrganizacion && <p style={{ margin: '1px 0 0', fontSize: '0.66rem', color: '#adb5bd' }}><FaPhone style={{ marginRight: 3, fontSize: '0.58rem' }} />{emp.telefonoOrganizacion}</p>}
+                                                        <p style={{ margin: 0, fontSize: '0.95rem', fontWeight: '600', color: '#2c3e50' }}>{emp.nombreGerente}</p>
+                                                        {emp.telefonoOrganizacion && <p style={{ margin: '1px 0 0', fontSize: '0.85rem', color: '#adb5bd' }}><FaPhone style={{ marginRight: 3, fontSize: '0.75rem' }} />{emp.telefonoOrganizacion}</p>}
                                                     </td>
                                                     <td style={s.td}>
                                                         {(emp.ciudad || emp.provincia)
-                                                            ? <p style={{ margin: 0, fontSize: '0.74rem', color: '#6c757d' }}><FaMapMarkerAlt style={{ marginRight: 3, fontSize: '0.62rem', color: '#adb5bd' }} />{[emp.ciudad, emp.provincia].filter(Boolean).join(', ')}</p>
-                                                            : <span style={{ fontSize: '0.72rem', color: '#ced4da' }}>—</span>}
+                                                            ? <p style={{ margin: 0, fontSize: '0.95rem', color: '#6c757d' }}><FaMapMarkerAlt style={{ marginRight: 3, fontSize: '0.85rem', color: '#adb5bd' }} />{[emp.ciudad, emp.provincia].filter(Boolean).join(', ')}</p>
+                                                            : <span style={{ fontSize: '0.95rem', color: '#ced4da' }}>—</span>}
                                                     </td>
                                                     <td style={s.td}><span style={{ ...s.badge, background: bCap.bg, color: bCap.color, border: `1px solid ${bCap.border}` }}>{emp.tipoCapital}</span></td>
                                                     <td style={s.td}><span style={{ ...s.badge, background: bAct.bg, color: bAct.color, border: `1px solid ${bAct.border}` }}>{emp.tipoActividad}</span></td>
-                                                    <td style={s.td}><span style={{ fontSize: '0.72rem', color: '#adb5bd' }}>{new Date(emp.createdAt).toLocaleDateString('es-EC', { day: 'numeric', month: 'short', year: 'numeric' })}</span></td>
+                                                    <td style={s.td}><span style={{ fontSize: '0.95rem', color: '#adb5bd' }}>{new Date(emp.createdAt).toLocaleDateString('es-EC', { day: 'numeric', month: 'short', year: 'numeric' })}</span></td>
                                                     <td style={s.td}>
                                                         <div style={s.accsRow}>
-                                                            <button style={s.btnAcc} onClick={() => abrirVer(emp)} title="Ver"><FaEye style={{ fontSize: '0.7rem' }} /></button>
-                                                            <button style={{ ...s.btnAcc, background: '#e3f2fd', border: '1px solid #bbdefb', color: '#1565c0' }} onClick={() => abrirVer(emp, true)} title="Editar"><FaEdit style={{ fontSize: '0.7rem' }} /></button>
-                                                            <button style={{ ...s.btnAcc, background: '#ffebee', border: '1px solid #ffcdd2', color: '#c62828' }} onClick={() => setModalElim({ abierto: true, id: emp._id, nombre: emp.nombreEmpresa })} title="Eliminar"><FaTrash style={{ fontSize: '0.7rem' }} /></button>
+                                                            <button style={s.btnAcc} onClick={() => abrirVer(emp)} title="Ver"><FaEye style={{ fontSize: '0.95rem' }} /></button>
+                                                            <button style={{ ...s.btnAcc, background: '#e3f2fd', border: '1px solid #bbdefb', color: '#1565c0' }} onClick={() => abrirVer(emp, true)} title="Editar"><FaEdit style={{ fontSize: '0.95rem' }} /></button>
+                                                            <button style={{ ...s.btnAcc, background: '#ffebee', border: '1px solid #ffcdd2', color: '#c62828' }} onClick={() => setModalElim({ abierto: true, id: emp._id, nombre: emp.nombreEmpresa })} title="Eliminar"><FaTrash style={{ fontSize: '0.95rem' }} /></button>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -479,9 +479,9 @@ const GestionEmpleadores = () => {
             {modalVer && empSel && (
                 <div style={s.overlay} onClick={e => { if (e.target === e.currentTarget) setModalVer(false); }}>
                     <div style={{ ...s.modal, maxWidth: 600 }}>
-                        <div style={{ ...s.modalHead, borderColor: 'var(--color-espoch-rojo)' }}>
+                        <div style={{ ...s.modalHead, borderColor: '#BC0613' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                                <div style={{ ...s.avatarEmp, width: 44, height: 44, fontSize: '0.9rem', borderRadius: 10 }}>{iniciales(empSel.nombreEmpresa)}</div>
+                                <div style={{ ...s.avatarEmp, width: 44, height: 44, fontSize: '1.1rem', borderRadius: 10 }}>{iniciales(empSel.nombreEmpresa)}</div>
                                 <div>
                                     <h2 style={s.modalTit}>{empSel.nombreEmpresa}</h2>
                                     <p style={s.modalSub}>{empSel.emailOrganizacion}</p>
@@ -493,7 +493,7 @@ const GestionEmpleadores = () => {
                             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 16 }}>
                                 {(() => { const b = CAPITAL_BADGE[empSel.tipoCapital] || {}; return <span style={{ ...s.badge, background: b.bg, color: b.color, border: `1px solid ${b.border}` }}>{empSel.tipoCapital}</span>; })()}
                                 {(() => { const b = ACTIVIDAD_BADGE[empSel.tipoActividad] || {}; return <span style={{ ...s.badge, background: b.bg, color: b.color, border: `1px solid ${b.border}` }}>{empSel.tipoActividad}</span>; })()}
-                                {empSel.ciudad && <span style={{ ...s.badge, background: '#f3e8ff', color: '#6a1b9a', border: '1px solid #ddd6fe' }}><FaMapMarkerAlt style={{ marginRight: 3, fontSize: '0.58rem' }} />{empSel.ciudad}</span>}
+                                {empSel.ciudad && <span style={{ ...s.badge, background: '#f3e8ff', color: '#6a1b9a', border: '1px solid #ddd6fe' }}><FaMapMarkerAlt style={{ marginRight: 3, fontSize: '0.75rem' }} />{empSel.ciudad}</span>}
                             </div>
                             <div style={s.verSec}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
@@ -503,7 +503,7 @@ const GestionEmpleadores = () => {
                                             setFormEdit({ nombreEmpresa: empSel.nombreEmpresa, nombreGerente: empSel.nombreGerente, emailOrganizacion: empSel.emailOrganizacion, telefonoOrganizacion: empSel.telefonoOrganizacion || '', provincia: empSel.provincia || '', ciudad: empSel.ciudad || '', tipoCapital: empSel.tipoCapital, tipoActividad: empSel.tipoActividad });
                                             setEditando(true); setErrEdit('');
                                         }}>
-                                            <FaEdit style={{ fontSize: '0.65rem' }} /> Editar
+                                            <FaEdit style={{ fontSize: '0.85rem' }} /> Editar
                                         </button>
                                     )}
                                 </div>
@@ -556,7 +556,7 @@ const GestionEmpleadores = () => {
                                     </div>
                                 ) : (
                                     <div style={{ padding: '14px', background: '#f8f9fa', border: '1px solid #e9ecef', borderRadius: 8, textAlign: 'center' }}>
-                                        <p style={{ margin: 0, fontSize: '0.78rem', color: '#adb5bd', fontStyle: 'italic' }}>ℹ️ Se completarán cuando la empresa responda su primera encuesta.</p>
+                                        <p style={{ margin: 0, fontSize: '0.95rem', color: '#adb5bd', fontStyle: 'italic' }}>ℹ️ Se completarán cuando la empresa responda su primera encuesta.</p>
                                     </div>
                                 )}
                             </div>
@@ -564,7 +564,7 @@ const GestionEmpleadores = () => {
                         <div style={s.modalFoot}>
                             <button style={{ ...s.btnCancelar, color: '#c62828', borderColor: '#ffcdd2', marginRight: 'auto', display: 'inline-flex', alignItems: 'center' }}
                                 onClick={() => setModalElim({ abierto: true, id: empSel._id, nombre: empSel.nombreEmpresa })}>
-                                <FaTrash style={{ marginRight: 5, fontSize: '0.65rem' }} />Eliminar
+                                <FaTrash style={{ marginRight: 5, fontSize: '0.85rem' }} />Eliminar
                             </button>
                             <button style={s.btnCancelar} onClick={() => setModalVer(false)}>Cerrar</button>
                         </div>
@@ -576,7 +576,7 @@ const GestionEmpleadores = () => {
             {modalInd && (
                 <div style={s.overlay} onClick={e => { if (e.target === e.currentTarget) setModalInd(false); }}>
                     <div style={{ ...s.modal, maxWidth: 560 }}>
-                        <div style={{ ...s.modalHead, borderColor: 'var(--color-espoch-rojo)' }}>
+                        <div style={{ ...s.modalHead, borderColor: '#BC0613' }}>
                             <div>
                                 <h2 style={s.modalTit}>Nuevo Empleador — Individual</h2>
                                 <p style={s.modalSub}>Todos los campos son obligatorios *</p>
@@ -615,18 +615,18 @@ const GestionEmpleadores = () => {
                                     <p style={s.pasoTit}>Descarga la plantilla CSV</p>
                                     <p style={s.pasoDesc}>Todos los campos son obligatorios: empresa, gerente, correo, teléfono, provincia, ciudad, capital y actividad.</p>
                                     <button style={s.btnDescarga} onClick={descargarPlantilla}>
-                                        <FaDownload style={{ marginRight: 6, fontSize: '0.78rem' }} />Descargar plantilla_empleadores_espoch.csv
+                                        <FaDownload style={{ marginRight: 6, fontSize: '0.95rem' }} />Descargar plantilla_empleadores_espoch.csv
                                     </button>
                                 </div>
                             </div>
                             <div style={s.columnasBox}>
-                                <p style={{ margin: '0 0 6px', fontSize: '0.71rem', fontWeight: '700', color: '#adb5bd', letterSpacing: '0.5px' }}>COLUMNAS DEL CSV (todas obligatorias)</p>
+                                <p style={{ margin: '0 0 6px', fontSize: '0.95rem', fontWeight: '700', color: '#adb5bd', letterSpacing: '0.5px' }}>COLUMNAS DEL CSV (todas obligatorias)</p>
                                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
                                     {['nombre empresa', 'nombre gerente', 'email organizacion', 'telefono organizacion', 'provincia', 'ciudad', 'tipo capital', 'tipo actividad'].map(c => (
-                                        <span key={c} style={{ fontSize: '0.65rem', padding: '2px 7px', borderRadius: 4, background: '#fff8e1', color: '#e65100', border: '1px solid #ffe082', fontWeight: '600', fontFamily: "'Rotis', 'Segoe UI', sans-serif" }}>{c}</span>
+                                        <span key={c} style={{ fontSize: '0.85rem', padding: '2px 7px', borderRadius: 4, background: '#fff8e1', color: '#e65100', border: '1px solid #ffe082', fontWeight: '600', fontFamily: "'Rotis', 'Segoe UI', sans-serif" }}>{c}</span>
                                     ))}
                                 </div>
-                                <p style={{ margin: '6px 0 0', fontSize: '0.68rem', color: '#adb5bd' }}>Capital: <strong>Pública / Privada / Mixto</strong> · Actividad: <strong>Industrial / Comercial / Servicios</strong></p>
+                                <p style={{ margin: '6px 0 0', fontSize: '0.85rem', color: '#adb5bd' }}>Capital: <strong>Pública / Privada / Mixto</strong> · Actividad: <strong>Industrial / Comercial / Servicios</strong></p>
                             </div>
                             <div style={s.pasoBox}>
                                 <div style={s.pasoNum}>2</div>
@@ -635,22 +635,22 @@ const GestionEmpleadores = () => {
                                     <div style={s.dropZona} onClick={() => !cargandoMasivo && csvRef.current?.click()} onDragOver={e => e.preventDefault()} onDrop={e => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f?.name.endsWith('.csv')) setArchivoCsv(f); }}>
                                         {archivoCsv ? (
                                             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                                                <FaFileAlt style={{ fontSize: '1.4rem', color: '#2e7d32', flexShrink: 0 }} />
+                                                <FaFileAlt style={{ fontSize: '1.51rem', color: '#2e7d32', flexShrink: 0 }} />
                                                 <div>
-                                                    <p style={{ margin: 0, fontSize: '0.82rem', fontWeight: '700', color: '#2e7d32' }}>{archivoCsv.name}</p>
-                                                    <p style={{ margin: 0, fontSize: '0.7rem', color: '#adb5bd' }}>{(archivoCsv.size / 1024).toFixed(1)} KB</p>
+                                                    <p style={{ margin: 0, fontSize: '1rem', fontWeight: '700', color: '#2e7d32' }}>{archivoCsv.name}</p>
+                                                    <p style={{ margin: 0, fontSize: '0.95rem', color: '#adb5bd' }}>{(archivoCsv.size / 1024).toFixed(1)} KB</p>
                                                 </div>
                                                 <button onClick={e => { e.stopPropagation(); setArchivoCsv(null); if (csvRef.current) csvRef.current.value = ''; }} style={{ marginLeft: 'auto', background: 'none', border: 'none', cursor: 'pointer', color: '#adb5bd' }}><FaTimes /></button>
                                             </div>
                                         ) : (
-                                            <><FaUpload style={{ fontSize: '1.8rem', color: '#adb5bd', marginBottom: 6 }} /><p style={{ margin: 0, fontSize: '0.8rem', fontWeight: '600', color: '#6c757d' }}>Arrastra el CSV aquí o haz clic</p><p style={{ margin: '3px 0 0', fontSize: '0.7rem', color: '#adb5bd' }}>Solo .csv · Máx. 5 MB</p></>
+                                            <><FaUpload style={{ fontSize: '1.94rem', color: '#adb5bd', marginBottom: 6 }} /><p style={{ margin: 0, fontSize: '1rem', fontWeight: '600', color: '#6c757d' }}>Arrastra el CSV aquí o haz clic</p><p style={{ margin: '3px 0 0', fontSize: '0.95rem', color: '#adb5bd' }}>Solo .csv · Máx. 5 MB</p></>
                                         )}
                                     </div>
                                     <input ref={csvRef} type="file" accept=".csv,text/csv" onChange={e => { const f = e.target.files[0]; if (f) setArchivoCsv(f); }} style={{ display: 'none' }} />
                                 </div>
                             </div>
                             {errMasivo && <p style={{ ...s.errMsg, marginTop: 8 }}>{errMasivo}</p>}
-                            {cargandoMasivo && <div style={s.cargandoBox}><FaSpinner style={{ fontSize: '1.4rem', color: 'var(--color-espoch-rojo)' }} /><div><p style={{ margin: 0, fontWeight: '700', fontSize: '0.85rem' }}>Procesando empleadores...</p><p style={{ margin: '2px 0 0', fontSize: '0.72rem', color: '#6c757d' }}>Por favor espera.</p></div></div>}
+                            {cargandoMasivo && <div style={s.cargandoBox}><FaSpinner style={{ fontSize: '1.51rem', color: '#BC0613' }} /><div><p style={{ margin: 0, fontWeight: '700', fontSize: '1rem' }}>Procesando empleadores...</p><p style={{ margin: '2px 0 0', fontSize: '0.95rem', color: '#6c757d' }}>Por favor espera.</p></div></div>}
                         </div>
                         <div style={s.modalFoot}>
                             {!cargandoMasivo && <button style={s.btnCancelar} onClick={() => setModalMasivo(false)}>Cancelar</button>}
@@ -692,23 +692,23 @@ const GestionEmpleadores = () => {
                         </div>
                         <div style={{ ...s.modalBody, padding: '12px 20px' }}>
                             {detalleFiltrado.length === 0
-                                ? <p style={{ color: '#adb5bd', fontSize: '0.78rem', textAlign: 'center', fontStyle: 'italic' }}>Sin registros.</p>
+                                ? <p style={{ color: '#adb5bd', fontSize: '0.95rem', textAlign: 'center', fontStyle: 'italic' }}>Sin registros.</p>
                                 : detalleFiltrado.map((d, i) => (
                                     <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, padding: '10px 12px', borderRadius: 8, marginBottom: 6, background: d.estado === 'exitoso' ? '#f1f8e9' : '#fff8f8', border: `1px solid ${d.estado === 'exitoso' ? '#c8e6c9' : '#ffcdd2'}` }}>
-                                        <div style={{ width: 24, height: 24, borderRadius: '50%', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: d.estado === 'exitoso' ? '#2e7d32' : '#c62828', fontSize: '0.7rem', color: 'white', fontWeight: '700', marginTop: 1 }}>{d.estado === 'exitoso' ? '✓' : '✕'}</div>
+                                        <div style={{ width: 24, height: 24, borderRadius: '50%', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: d.estado === 'exitoso' ? '#2e7d32' : '#c62828', fontSize: '0.95rem', color: 'white', fontWeight: '700', marginTop: 1 }}>{d.estado === 'exitoso' ? '✓' : '✕'}</div>
                                         <div style={{ flex: 1 }}>
                                             <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap', marginBottom: 2 }}>
-                                                <span style={{ fontSize: '0.82rem', fontWeight: '700', color: '#2c3e50' }}>{d.nombreEmpresa}</span>
-                                                <span style={{ fontSize: '0.65rem', color: '#adb5bd' }}>Fila {d.fila}</span>
+                                                <span style={{ fontSize: '1rem', fontWeight: '700', color: '#2c3e50' }}>{d.nombreEmpresa}</span>
+                                                <span style={{ fontSize: '0.85rem', color: '#adb5bd' }}>Fila {d.fila}</span>
                                             </div>
-                                            <p style={{ margin: 0, fontSize: '0.72rem', color: '#6c757d' }}>{d.email}</p>
-                                            <p style={{ margin: '3px 0 0', fontSize: '0.72rem', color: d.estado === 'exitoso' ? '#2e7d32' : '#c62828', fontWeight: d.estado === 'error' ? '600' : '400' }}>{d.motivo}</p>
+                                            <p style={{ margin: 0, fontSize: '0.95rem', color: '#6c757d' }}>{d.email}</p>
+                                            <p style={{ margin: '3px 0 0', fontSize: '0.95rem', color: d.estado === 'exitoso' ? '#2e7d32' : '#c62828', fontWeight: d.estado === 'error' ? '600' : '400' }}>{d.motivo}</p>
                                         </div>
                                     </div>
                                 ))}
                         </div>
                         <div style={s.modalFoot}>
-                            {reporte.fallidos > 0 && <p style={{ margin: 0, fontSize: '0.72rem', color: '#f57f17', flex: 1 }}>⚠️ Corrige los errores y vuelve a subirlos.</p>}
+                            {reporte.fallidos > 0 && <p style={{ margin: 0, fontSize: '0.95rem', color: '#f57f17', flex: 1 }}>⚠️ Corrige los errores y vuelve a subirlos.</p>}
                             <button style={s.btnCancelar} onClick={() => setModalReporte(false)}>Cerrar</button>
                         </div>
                     </div>
@@ -719,7 +719,7 @@ const GestionEmpleadores = () => {
             {modalElim.abierto && (
                 <div style={{ ...s.overlay, zIndex: 1100 }}>
                     <div style={s.modalConfirm}>
-                        <div style={s.confirmIco}><FaExclamationTriangle style={{ fontSize: '1.8rem', color: '#c62828' }} /></div>
+                        <div style={s.confirmIco}><FaExclamationTriangle style={{ fontSize: '1.94rem', color: '#c62828' }} /></div>
                         <h3 style={s.confirmH}>¿Eliminar empleador?</h3>
                         <p style={s.confirmSub}>Se eliminará <strong style={{ color: '#c62828' }}>"{modalElim.nombre}"</strong>.<br /><strong>Esta acción no se puede deshacer.</strong></p>
                         <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
@@ -737,86 +737,86 @@ const GestionEmpleadores = () => {
 
 const s = {
     page: { maxWidth: 1280, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 16, fontFamily: "'Rotis', 'Segoe UI',Roboto,sans-serif" },
-    gridMet: { display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 14 },
+    gridMet: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: 14 },
     metCard: { backgroundColor: 'white', borderRadius: 10, padding: '14px 16px', border: '1px solid #e9ecef', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' },
     metRow: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 },
-    metEtiq: { margin: '0 0 5px', fontSize: '0.58rem', fontWeight: '700', color: '#adb5bd', letterSpacing: '0.8px' },
-    metVal: { margin: 0, fontSize: '1.8rem', fontWeight: '800', color: '#2c3e50', lineHeight: 1 },
+    metEtiq: { margin: '0 0 5px', fontSize: '0.75rem', fontWeight: '700', color: '#adb5bd', letterSpacing: '0.8px' },
+    metVal: { margin: 0, fontSize: '1.94rem', fontWeight: '800', color: '#2c3e50', lineHeight: 1 },
     metIco: { width: 38, height: 38, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
     card: { backgroundColor: 'white', borderRadius: 10, padding: '16px 18px', border: '1px solid #e9ecef', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' },
     cardHead: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 14 },
-    cardTit: { margin: '0 0 2px', fontSize: '0.9rem', fontWeight: '700', color: '#2c3e50' },
-    cardSub: { margin: 0, fontSize: '0.7rem', color: '#adb5bd' },
-    btnNuevo: { display: 'inline-flex', alignItems: 'center', gap: 7, padding: '8px 16px', backgroundColor: 'var(--color-espoch-rojo)', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: '0.8rem', fontWeight: '700', flexShrink: 0 },
+    cardTit: { margin: '0 0 2px', fontSize: '1.1rem', fontWeight: '700', color: '#2c3e50' },
+    cardSub: { margin: 0, fontSize: '0.95rem', color: '#adb5bd' },
+    btnNuevo: { display: 'inline-flex', alignItems: 'center', gap: 7, padding: '8px 16px', backgroundColor: '#BC0613', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: '1rem', fontWeight: '700', flexShrink: 0 },
     dropdown: { position: 'absolute', top: 'calc(100% + 6px)', right: 0, backgroundColor: 'white', borderRadius: 10, border: '1px solid #e9ecef', boxShadow: '0 8px 24px rgba(0,0,0,0.12)', zIndex: 200, minWidth: 260, overflow: 'hidden' },
     dropItem: { display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', background: 'none', border: 'none', cursor: 'pointer', width: '100%', textAlign: 'left' },
     dropIco: { width: 32, height: 32, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
-    dropTit: { margin: 0, fontSize: '0.82rem', fontWeight: '700', color: '#2c3e50' },
-    dropSub: { margin: '2px 0 0', fontSize: '0.69rem', color: '#adb5bd' },
+    dropTit: { margin: 0, fontSize: '1rem', fontWeight: '700', color: '#2c3e50' },
+    dropSub: { margin: '2px 0 0', fontSize: '0.85rem', color: '#adb5bd' },
     dropDivider: { height: 1, backgroundColor: '#f0f0f0', margin: '0 12px' },
     filtrosRow: { display: 'flex', gap: 10, marginBottom: 14, flexWrap: 'wrap' },
     busqWrap: { display: 'flex', alignItems: 'center', gap: 7, flex: 1, minWidth: 180, background: '#f8f9fa', border: '1px solid #e9ecef', borderRadius: 8, padding: '9px 12px' },
-    busqInp: { border: 'none', background: 'transparent', outline: 'none', fontSize: '0.77rem', color: '#2c3e50', width: '100%', fontFamily: "'Rotis', 'Segoe UI',Roboto,sans-serif" },
+    busqInp: { border: 'none', background: 'transparent', outline: 'none', fontSize: '0.95rem', color: '#2c3e50', width: '100%', fontFamily: "'Rotis', 'Segoe UI',Roboto,sans-serif" },
     selectWrap: { display: 'flex', alignItems: 'center', gap: 7, background: '#f8f9fa', border: '1px solid #e9ecef', borderRadius: 8, padding: '9px 12px', flexShrink: 0 },
-    selectEl: { border: 'none', background: 'transparent', outline: 'none', fontSize: '0.76rem', color: '#6c757d', cursor: 'pointer', fontFamily: "'Rotis', 'Segoe UI',Roboto,sans-serif" },
+    selectEl: { border: 'none', background: 'transparent', outline: 'none', fontSize: '0.95rem', color: '#6c757d', cursor: 'pointer', fontFamily: "'Rotis', 'Segoe UI',Roboto,sans-serif" },
     tabla: { width: '100%', borderCollapse: 'collapse' },
     trHead: { borderBottom: '2px solid #f0f0f0' },
-    th: { padding: '8px 10px', textAlign: 'left', fontSize: '0.61rem', fontWeight: '700', color: '#adb5bd', letterSpacing: '0.7px', whiteSpace: 'nowrap' },
+    th: { padding: '8px 10px', textAlign: 'left', fontSize: '0.85rem', fontWeight: '700', color: '#adb5bd', letterSpacing: '0.7px', whiteSpace: 'nowrap' },
     trBody: { borderBottom: '1px solid #f8f9fa', transition: 'background 0.1s' },
     td: { padding: '10px 10px', verticalAlign: 'middle' },
-    tdVacio: { padding: '32px 10px', textAlign: 'center', color: '#adb5bd', fontSize: '0.8rem' },
+    tdVacio: { padding: '32px 10px', textAlign: 'center', color: '#adb5bd', fontSize: '1rem' },
     skBar: { height: 11, borderRadius: 5, background: '#f0f0f0' },
     nomCell: { display: 'flex', alignItems: 'center', gap: 9 },
-    avatarEmp: { width: 36, height: 36, borderRadius: 8, background: 'var(--color-espoch-rojo)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: '700', flexShrink: 0 },
-    nomTxt: { margin: 0, fontSize: '0.78rem', fontWeight: '600', color: '#2c3e50', whiteSpace: 'nowrap' },
-    nomSub: { margin: 0, fontSize: '0.66rem', color: '#adb5bd' },
-    badge: { display: 'inline-block', fontSize: '0.63rem', fontWeight: '600', padding: '3px 8px', borderRadius: 20, whiteSpace: 'nowrap' },
+    avatarEmp: { width: 36, height: 36, borderRadius: 8, background: '#BC0613', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.95rem', fontWeight: '700', flexShrink: 0 },
+    nomTxt: { margin: 0, fontSize: '0.95rem', fontWeight: '600', color: '#2c3e50', whiteSpace: 'nowrap' },
+    nomSub: { margin: 0, fontSize: '0.85rem', color: '#adb5bd' },
+    badge: { display: 'inline-block', fontSize: '0.85rem', fontWeight: '600', padding: '3px 8px', borderRadius: 20, whiteSpace: 'nowrap' },
     accsRow: { display: 'flex', gap: 5, alignItems: 'center' },
     btnAcc: { width: 28, height: 28, borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8f9fa', border: '1px solid #e9ecef', cursor: 'pointer', color: '#6c757d', flexShrink: 0 },
-    errMsg: { padding: '10px', background: '#ffebee', border: '1px solid #ffcdd2', borderRadius: 7, color: '#c62828', fontSize: '0.75rem', margin: '0 0 10px' },
+    errMsg: { padding: '10px', background: '#ffebee', border: '1px solid #ffcdd2', borderRadius: 7, color: '#c62828', fontSize: '0.95rem', margin: '0 0 10px' },
     footTabla: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 14, flexWrap: 'wrap', gap: 8 },
-    contadorTxt: { margin: 0, fontSize: '0.7rem', color: '#adb5bd' },
+    contadorTxt: { margin: 0, fontSize: '0.95rem', color: '#adb5bd' },
     pagRow: { display: 'flex', gap: 4, alignItems: 'center' },
-    pagBtn: { minWidth: 30, height: 30, borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #e9ecef', background: 'white', cursor: 'pointer', fontSize: '0.75rem', color: '#6c757d', padding: '0 8px' },
-    pagPuntos: { fontSize: '0.75rem', color: '#adb5bd', padding: '0 2px' },
+    pagBtn: { minWidth: 30, height: 30, borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #e9ecef', background: 'white', cursor: 'pointer', fontSize: '0.95rem', color: '#6c757d', padding: '0 8px' },
+    pagPuntos: { fontSize: '0.95rem', color: '#adb5bd', padding: '0 2px' },
     overlay: { position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 16, backdropFilter: 'blur(2px)' },
     modal: { backgroundColor: 'white', borderRadius: 12, width: '100%', maxWidth: 560, maxHeight: '90vh', display: 'flex', flexDirection: 'column', boxShadow: '0 8px 32px rgba(0,0,0,0.18)' },
     modalHead: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', padding: '16px 20px 13px', borderBottom: '2px solid', flexShrink: 0 },
-    modalTit: { margin: '0 0 2px', fontSize: '0.95rem', fontWeight: '700', color: '#2c3e50' },
-    modalSub: { margin: 0, fontSize: '0.71rem', color: '#adb5bd' },
-    modalClose: { background: 'none', border: 'none', cursor: 'pointer', color: '#adb5bd', fontSize: '0.9rem', padding: 4 },
+    modalTit: { margin: '0 0 2px', fontSize: '1.1rem', fontWeight: '700', color: '#2c3e50' },
+    modalSub: { margin: 0, fontSize: '0.95rem', color: '#adb5bd' },
+    modalClose: { background: 'none', border: 'none', cursor: 'pointer', color: '#adb5bd', fontSize: '1.1rem', padding: 4 },
     modalBody: { flex: 1, overflowY: 'auto', padding: '16px 20px' },
     modalFoot: { display: 'flex', justifyContent: 'flex-end', gap: 8, padding: '12px 20px', borderTop: '1px solid #e9ecef', backgroundColor: '#f8f9fa', borderRadius: '0 0 12px 12px', flexShrink: 0, alignItems: 'center' },
     verSec: { marginBottom: 14, paddingBottom: 14, borderBottom: '1px solid #f0f0f0' },
-    verSecTit: { margin: '0 0 10px', fontSize: '0.8rem', fontWeight: '700', color: '#2c3e50' },
+    verSecTit: { margin: '0 0 10px', fontSize: '1rem', fontWeight: '700', color: '#2c3e50' },
     grid2: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 },
-    grid3: { display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 10 },
+    grid3: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 10 },
     datoItem: { display: 'flex', flexDirection: 'column', gap: 3, padding: '8px 10px', background: '#f8f9fa', border: '1px solid #f0f0f0', borderRadius: 7 },
-    datoLabel: { fontSize: '0.62rem', fontWeight: '700', color: '#adb5bd', letterSpacing: '0.4px' },
-    datoVal: { fontSize: '0.77rem', fontWeight: '600', color: '#2c3e50', wordBreak: 'break-all' },
-    btnEditInline: { display: 'inline-flex', alignItems: 'center', gap: 5, padding: '4px 10px', background: '#e3f2fd', border: '1px solid #bbdefb', borderRadius: 6, cursor: 'pointer', fontSize: '0.69rem', fontWeight: '600', color: '#1565c0' },
+    datoLabel: { fontSize: '0.85rem', fontWeight: '700', color: '#adb5bd', letterSpacing: '0.4px' },
+    datoVal: { fontSize: '0.95rem', fontWeight: '600', color: '#2c3e50', wordBreak: 'break-all' },
+    btnEditInline: { display: 'inline-flex', alignItems: 'center', gap: 5, padding: '4px 10px', background: '#e3f2fd', border: '1px solid #bbdefb', borderRadius: 6, cursor: 'pointer', fontSize: '0.85rem', fontWeight: '600', color: '#1565c0' },
     editCard: { background: '#f0f7ff', border: '1px solid #bbdefb', borderRadius: 8, padding: '14px', marginTop: 6 },
-    btnCancelar: { padding: '8px 16px', background: 'transparent', border: '1px solid #e9ecef', borderRadius: 7, cursor: 'pointer', fontSize: '0.8rem', fontWeight: '600', color: '#6c757d' },
-    btnGuardar: { display: 'inline-flex', alignItems: 'center', padding: '8px 18px', backgroundColor: 'var(--color-espoch-rojo)', color: 'white', border: 'none', borderRadius: 7, cursor: 'pointer', fontSize: '0.8rem', fontWeight: '700' },
+    btnCancelar: { padding: '8px 16px', background: 'transparent', border: '1px solid #e9ecef', borderRadius: 7, cursor: 'pointer', fontSize: '1rem', fontWeight: '600', color: '#6c757d' },
+    btnGuardar: { display: 'inline-flex', alignItems: 'center', padding: '8px 18px', backgroundColor: '#BC0613', color: 'white', border: 'none', borderRadius: 7, cursor: 'pointer', fontSize: '1rem', fontWeight: '700' },
     pasoBox: { display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 16 },
-    pasoNum: { width: 28, height: 28, borderRadius: '50%', backgroundColor: 'var(--color-espoch-rojo)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.8rem', fontWeight: '800', flexShrink: 0, marginTop: 1 },
-    pasoTit: { margin: '0 0 3px', fontSize: '0.84rem', fontWeight: '700', color: '#2c3e50' },
-    pasoDesc: { margin: '0 0 8px', fontSize: '0.73rem', color: '#6c757d', lineHeight: 1.5 },
-    btnDescarga: { display: 'inline-flex', alignItems: 'center', padding: '7px 14px', backgroundColor: '#e3f2fd', color: '#1565c0', border: '1px solid #bbdefb', borderRadius: 7, cursor: 'pointer', fontSize: '0.76rem', fontWeight: '700' },
+    pasoNum: { width: 28, height: 28, borderRadius: '50%', backgroundColor: '#BC0613', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1rem', fontWeight: '800', flexShrink: 0, marginTop: 1 },
+    pasoTit: { margin: '0 0 3px', fontSize: '1rem', fontWeight: '700', color: '#2c3e50' },
+    pasoDesc: { margin: '0 0 8px', fontSize: '0.95rem', color: '#6c757d', lineHeight: 1.5 },
+    btnDescarga: { display: 'inline-flex', alignItems: 'center', padding: '7px 14px', backgroundColor: '#e3f2fd', color: '#1565c0', border: '1px solid #bbdefb', borderRadius: 7, cursor: 'pointer', fontSize: '0.95rem', fontWeight: '700' },
     columnasBox: { backgroundColor: '#f8f9fa', border: '1px solid #e9ecef', borderRadius: 8, padding: '10px 12px', marginBottom: 16 },
     dropZona: { border: '2px dashed #dee2e6', borderRadius: 8, padding: '20px 16px', textAlign: 'center', cursor: 'pointer', backgroundColor: 'white' },
     cargandoBox: { display: 'flex', alignItems: 'center', gap: 12, backgroundColor: '#fff8e1', border: '1px solid #ffe082', borderRadius: 8, padding: '12px 16px', marginTop: 12 },
     tabs: { display: 'flex', borderBottom: '2px solid #f0f0f0', flexShrink: 0 },
-    tab: { padding: '10px 14px', border: 'none', background: 'none', cursor: 'pointer', fontSize: '0.78rem', fontWeight: '600', color: '#adb5bd', borderBottom: '2px solid transparent', marginBottom: -2 },
-    tabActivo: { color: 'var(--color-espoch-rojo)', borderBottomColor: 'var(--color-espoch-rojo)' },
-    reporteResumen: { display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 10, padding: '14px 20px', borderBottom: '1px solid #f0f0f0', flexShrink: 0 },
+    tab: { padding: '10px 14px', border: 'none', background: 'none', cursor: 'pointer', fontSize: '0.95rem', fontWeight: '600', color: '#adb5bd', borderBottom: '2px solid transparent', marginBottom: -2 },
+    tabActivo: { color: '#BC0613', borderBottomColor: '#BC0613' },
+    reporteResumen: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 10, padding: '14px 20px', borderBottom: '1px solid #f0f0f0', flexShrink: 0 },
     reporteStat: { display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '10px', borderRadius: 8, gap: 3 },
-    reporteStatNum: { fontSize: '1.6rem', fontWeight: '800', lineHeight: 1 },
-    reporteStatLbl: { fontSize: '0.58rem', fontWeight: '700', letterSpacing: '0.8px' },
+    reporteStatNum: { fontSize: '1.73rem', fontWeight: '800', lineHeight: 1 },
+    reporteStatLbl: { fontSize: '0.75rem', fontWeight: '700', letterSpacing: '0.8px' },
     modalConfirm: { backgroundColor: 'white', borderRadius: 14, width: '100%', maxWidth: 380, padding: '28px 24px 22px', textAlign: 'center', boxShadow: '0 16px 48px rgba(0,0,0,0.22)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 },
     confirmIco: { width: 56, height: 56, borderRadius: '50%', backgroundColor: '#ffebee', border: '2px solid #ffcdd2', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 4 },
-    confirmH: { margin: '0 0 4px', fontSize: '1rem', fontWeight: '700', color: '#2c3e50' },
-    confirmSub: { margin: '0 0 16px', fontSize: '0.79rem', color: '#6c757d', lineHeight: 1.6 },
+    confirmH: { margin: '0 0 4px', fontSize: '1.1rem', fontWeight: '700', color: '#2c3e50' },
+    confirmSub: { margin: '0 0 16px', fontSize: '0.95rem', color: '#6c757d', lineHeight: 1.6 },
 };
 
 export default GestionEmpleadores;

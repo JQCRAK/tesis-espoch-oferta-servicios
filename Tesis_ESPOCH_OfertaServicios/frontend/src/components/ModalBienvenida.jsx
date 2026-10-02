@@ -38,13 +38,11 @@ const ModalBienvenida = ({ onCerrar }) => {
                 {/* ── Encabezado ── */}
                 <div style={s.header}>
                     <img
-                        src="/img/ESPOCH_LOGO.png"
-                        alt="ESPOCH"
+                        src="/img/logo-espoch-blanco.png"
+                        alt="Escuela Superior Politécnica de Chimborazo"
                         style={s.logo}
-                        onError={e => e.target.style.display = 'none'}
                     />
                     <h2 style={s.titulo}>¡Bienvenido al Portal de Graduados!</h2>
-                    <p style={s.subtitulo}>Carrera de Ingeniería de Software · ESPOCH</p>
                 </div>
 
                 {/* ── Cuerpo ── */}
@@ -158,18 +156,17 @@ const s = {
         overflow: 'hidden',
     },
     header: {
-        background: 'linear-gradient(135deg, #be1e2d 0%, #7c1525 100%)',
+        background: 'linear-gradient(135deg, #BC0613 0%, #7c1525 100%)',
         padding: '22px 24px 18px',
         textAlign: 'center',
         flexShrink: 0,
         display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8,
     },
     logo: {
-        height: 48, objectFit: 'contain',
-        marginBottom: 4,
+        height: 56, width: 'auto', display: 'block',
+        marginBottom: 8,
     },
-    titulo: { margin: 0, fontSize: '1.12rem', fontWeight: 800, color: 'white' },
-    subtitulo: { margin: 0, fontSize: '0.76rem', color: 'rgba(255,255,255,0.82)' },
+    titulo: { margin: 0, fontSize: '1.3rem', fontWeight: 800, color: 'white' },
     cuerpo: {
         flex: 1, overflowY: 'auto', padding: '18px 22px',
         scrollbarWidth: 'thin',
@@ -215,7 +212,7 @@ const s = {
     },
     btnAceptar: {
         width: '100%', padding: '12px',
-        backgroundColor: '#be1e2d', color: 'white',
+        backgroundColor: '#BC0613', color: 'white',
         border: 'none', borderRadius: 8, cursor: 'pointer',
         fontWeight: 700, fontSize: '0.9rem',
         transition: 'background-color 0.2s',

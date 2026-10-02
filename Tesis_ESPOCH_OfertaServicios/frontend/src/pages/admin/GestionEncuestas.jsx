@@ -20,30 +20,30 @@ const ModalResultadoNotificacion = ({ visible, resumen, onCerrar }) => {
     return (
         <div onClick={onCerrar} style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1005 }}>
             <div onClick={(e) => e.stopPropagation()} style={{ background: 'white', borderRadius: 12, padding: '28px 32px', textAlign: 'center', maxWidth: 380, boxShadow: '0 10px 30px rgba(0,0,0,0.3)' }}>
-                <div style={{ fontSize: '2.5rem', marginBottom: 12 }}>
+                <div style={{ fontSize: '2.8rem', marginBottom: 12 }}>
                     {resumen.emailsFallidos === 0 ? '✅' : '⚠️'}
                 </div>
-                <h2 style={{ margin: '0 0 6px', fontSize: '1rem', fontWeight: '700', color: '#2c3e50' }}>Notificación enviada</h2>
-                <p style={{ margin: '0 0 20px', fontSize: '0.82rem', color: '#6c757d' }}>
+                <h2 style={{ margin: '0 0 6px', fontSize: '1.1rem', fontWeight: '700', color: '#2c3e50' }}>Notificación enviada</h2>
+                <p style={{ margin: '0 0 20px', fontSize: '1rem', color: '#6c757d' }}>
                     Se procesaron <strong>{resumen.total}</strong> graduados con tesis verificada.
                 </p>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 20 }}>
                     <div style={{ background: '#e8f5e9', border: '1px solid #c8e6c9', borderRadius: 8, padding: '10px 8px' }}>
-                        <p style={{ margin: 0, fontSize: '1.4rem', fontWeight: '800', color: '#2e7d32' }}>{resumen.notificacionesCreadas}</p>
-                        <p style={{ margin: 0, fontSize: '0.68rem', color: '#2e7d32', fontWeight: '600' }}>Notif. en app</p>
+                        <p style={{ margin: 0, fontSize: '1.51rem', fontWeight: '800', color: '#2e7d32' }}>{resumen.notificacionesCreadas}</p>
+                        <p style={{ margin: 0, fontSize: '0.85rem', color: '#2e7d32', fontWeight: '600' }}>Notif. en app</p>
                     </div>
                     <div style={{ background: '#e3f2fd', border: '1px solid #bbdefb', borderRadius: 8, padding: '10px 8px' }}>
-                        <p style={{ margin: 0, fontSize: '1.4rem', fontWeight: '800', color: '#1565c0' }}>{resumen.emailsEnviados}</p>
-                        <p style={{ margin: 0, fontSize: '0.68rem', color: '#1565c0', fontWeight: '600' }}>Emails enviados</p>
+                        <p style={{ margin: 0, fontSize: '1.51rem', fontWeight: '800', color: '#1565c0' }}>{resumen.emailsEnviados}</p>
+                        <p style={{ margin: 0, fontSize: '0.85rem', color: '#1565c0', fontWeight: '600' }}>Emails enviados</p>
                     </div>
                     {resumen.emailsFallidos > 0 && (
                         <div style={{ gridColumn: '1 / -1', background: '#fff8e1', border: '1px solid #ffe082', borderRadius: 8, padding: '10px 8px' }}>
-                            <p style={{ margin: 0, fontSize: '1rem', fontWeight: '800', color: '#f57f17' }}>{resumen.emailsFallidos}</p>
-                            <p style={{ margin: 0, fontSize: '0.68rem', color: '#f57f17', fontWeight: '600' }}>Emails no enviados (ver consola)</p>
+                            <p style={{ margin: 0, fontSize: '1.1rem', fontWeight: '800', color: '#f57f17' }}>{resumen.emailsFallidos}</p>
+                            <p style={{ margin: 0, fontSize: '0.85rem', color: '#f57f17', fontWeight: '600' }}>Emails no enviados (ver consola)</p>
                         </div>
                     )}
                 </div>
-                <button onClick={onCerrar} style={{ padding: '8px 24px', background: 'var(--color-espoch-rojo)', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontWeight: '700', fontSize: '0.85rem' }}>
+                <button onClick={onCerrar} style={{ padding: '8px 24px', background: '#BC0613', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontWeight: '700', fontSize: '1rem' }}>
                     Cerrar
                 </button>
             </div>
@@ -57,12 +57,12 @@ const ModalProximamente = ({ visible, onCerrar }) => {
     return (
         <div onClick={onCerrar} style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1005 }}>
             <div onClick={(e) => e.stopPropagation()} style={{ background: 'white', borderRadius: 12, padding: '32px 36px', textAlign: 'center', maxWidth: 360, boxShadow: '0 10px 30px rgba(0,0,0,0.3)' }}>
-                <div style={{ fontSize: '2.5rem', marginBottom: 14 }}>🚧</div>
-                <h2 style={{ margin: '0 0 8px', fontSize: '1rem', fontWeight: '700', color: '#2c3e50' }}>Próximamente</h2>
-                <p style={{ margin: '0 0 20px', fontSize: '0.83rem', color: '#6c757d', lineHeight: 1.6 }}>
+                <div style={{ fontSize: '2.8rem', marginBottom: 14 }}>🚧</div>
+                <h2 style={{ margin: '0 0 8px', fontSize: '1.1rem', fontWeight: '700', color: '#2c3e50' }}>Próximamente</h2>
+                <p style={{ margin: '0 0 20px', fontSize: '1rem', color: '#6c757d', lineHeight: 1.6 }}>
                     La notificación por correo a empleadores estará disponible en el siguiente sprint.
                 </p>
-                <button onClick={onCerrar} style={{ padding: '8px 24px', background: 'var(--color-espoch-rojo)', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontWeight: '700', fontSize: '0.85rem' }}>
+                <button onClick={onCerrar} style={{ padding: '8px 24px', background: '#BC0613', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontWeight: '700', fontSize: '1rem' }}>
                     Entendido
                 </button>
             </div>
@@ -79,9 +79,9 @@ const ModalConfirmar = ({ visible, titulo, mensaje, onConfirmar, onCancelar, pel
         return (
             <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1001 }}>
                 <div style={{ background: 'white', borderRadius: 14, padding: '36px 40px', textAlign: 'center', maxWidth: 320, boxShadow: '0 10px 40px rgba(0,0,0,0.3)' }}>
-                    <div style={{ width: 52, height: 52, border: '5px solid #f0f0f0', borderTop: '5px solid var(--color-espoch-rojo)', borderRadius: '50%', animation: 'spin-modal 0.8s linear infinite', margin: '0 auto 18px' }} />
-                    <h3 style={{ margin: '0 0 8px', fontSize: '1rem', fontWeight: '700', color: '#2c3e50' }}>{textoConfirmando || 'Procesando...'}</h3>
-                    <p style={{ margin: 0, fontSize: '0.78rem', color: '#adb5bd', lineHeight: 1.5 }}>Por favor espera, esto puede tomar unos segundos.</p>
+                    <div style={{ width: 52, height: 52, border: '5px solid #f0f0f0', borderTop: '5px solid #BC0613', borderRadius: '50%', animation: 'spin-modal 0.8s linear infinite', margin: '0 auto 18px' }} />
+                    <h3 style={{ margin: '0 0 8px', fontSize: '1.1rem', fontWeight: '700', color: '#2c3e50' }}>{textoConfirmando || 'Procesando...'}</h3>
+                    <p style={{ margin: 0, fontSize: '0.95rem', color: '#adb5bd', lineHeight: 1.5 }}>Por favor espera, esto puede tomar unos segundos.</p>
                 </div>
                 <style>{`@keyframes spin-modal { to { transform: rotate(360deg); } }`}</style>
             </div>
@@ -91,12 +91,12 @@ const ModalConfirmar = ({ visible, titulo, mensaje, onConfirmar, onCancelar, pel
     return (
         <div onClick={onCancelar} style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1001 }}>
             <div onClick={(e) => e.stopPropagation()} style={{ background: 'white', borderRadius: 12, padding: '24px 28px', textAlign: 'center', maxWidth: 350, boxShadow: '0 10px 30px rgba(0,0,0,0.3)' }}>
-                <div style={{ fontSize: '2rem', marginBottom: 12 }}>{peligroso ? '⚠️' : '❓'}</div>
-                <h2 style={{ margin: '0 0 10px', fontSize: '1rem', fontWeight: '700', color: '#2c3e50' }}>{titulo}</h2>
-                <p style={{ margin: '0 0 20px', color: '#6c757d', fontSize: '0.85rem' }}>{mensaje}</p>
+                <div style={{ fontSize: '2.3rem', marginBottom: 12 }}>{peligroso ? '⚠️' : '❓'}</div>
+                <h2 style={{ margin: '0 0 10px', fontSize: '1.1rem', fontWeight: '700', color: '#2c3e50' }}>{titulo}</h2>
+                <p style={{ margin: '0 0 20px', color: '#6c757d', fontSize: '1rem' }}>{mensaje}</p>
                 <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
-                    <button onClick={onCancelar} style={{ padding: '8px 18px', background: '#f0f0f0', border: 'none', borderRadius: 6, cursor: 'pointer', fontWeight: '600', fontSize: '0.8rem' }}>Cancelar</button>
-                    <button onClick={async () => { setProcesando(true); await onConfirmar(); setProcesando(false); }} style={{ padding: '8px 18px', background: peligroso ? '#c62828' : 'var(--color-espoch-rojo)', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontWeight: '600', fontSize: '0.8rem' }}>Confirmar</button>
+                    <button onClick={onCancelar} style={{ padding: '8px 18px', background: '#f0f0f0', border: 'none', borderRadius: 6, cursor: 'pointer', fontWeight: '600', fontSize: '1rem' }}>Cancelar</button>
+                    <button onClick={async () => { setProcesando(true); await onConfirmar(); setProcesando(false); }} style={{ padding: '8px 18px', background: peligroso ? '#c62828' : '#BC0613', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontWeight: '600', fontSize: '1rem' }}>Confirmar</button>
                 </div>
             </div>
         </div>
@@ -107,7 +107,7 @@ const ModalConfirmar = ({ visible, titulo, mensaje, onConfirmar, onCancelar, pel
 const TablaMatriz = ({ items, columnas, respuestas, onRespuesta, pregId, esOpcionMultiple }) => {
     return (
         <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.78rem' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.95rem' }}>
                 <thead>
                     <tr style={{ borderBottom: '2px solid #dee2e6' }}>
                         <th style={{ padding: '8px 10px', textAlign: 'left', width: '40%', color: '#555', fontWeight: '600' }}></th>
@@ -121,14 +121,14 @@ const TablaMatriz = ({ items, columnas, respuestas, onRespuesta, pregId, esOpcio
                         const itemId = `${pregId}_item_${rowIdx}`;
                         return (
                             <tr key={rowIdx} style={{ borderBottom: '1px solid #f0f0f0', background: rowIdx % 2 === 0 ? 'white' : '#fafafa' }}>
-                                <td style={{ padding: '10px', fontSize: '0.78rem', fontWeight: '600', color: '#2c3e50', lineHeight: 1.4 }}>{item}</td>
+                                <td style={{ padding: '10px', fontSize: '0.95rem', fontWeight: '600', color: '#2c3e50', lineHeight: 1.4 }}>{item}</td>
                                 {columnas.map((col, colIdx) => {
                                     const val = esOpcionMultiple ? col : colIdx + 1;
                                     const sel = respuestas[itemId] === val;
                                     return (
                                         <td key={colIdx} style={{ padding: '10px 6px', textAlign: 'center' }}>
                                             <label style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                                <input type="radio" name={itemId} checked={sel} onChange={() => onRespuesta(itemId, val)} style={{ width: 18, height: 18, cursor: 'pointer', accentColor: 'var(--color-espoch-rojo)' }} />
+                                                <input type="radio" name={itemId} checked={sel} onChange={() => onRespuesta(itemId, val)} style={{ width: 18, height: 18, cursor: 'pointer', accentColor: '#BC0613' }} />
                                             </label>
                                         </td>
                                     );
@@ -203,10 +203,10 @@ const ModalVistaPrevia = ({ visible, encuesta, onCerrar }) => {
             return (
                 <div key={preg._id} style={{
                     margin: '22px 0 10px', padding: '12px 16px',
-                    borderLeft: '4px solid var(--color-espoch-rojo)',
+                    borderLeft: '4px solid #BC0613',
                     background: '#FAFAFA', borderRadius: '0 6px 6px 0',
                 }}>
-                    <p style={{ margin: 0, fontSize: '0.88rem', fontWeight: '700', color: '#1a1a2e', letterSpacing: '0.2px' }}>
+                    <p style={{ margin: 0, fontSize: '1rem', fontWeight: '700', color: '#1a1a2e', letterSpacing: '0.2px' }}>
                         {preg.texto}
                     </p>
                 </div>
@@ -219,20 +219,20 @@ const ModalVistaPrevia = ({ visible, encuesta, onCerrar }) => {
             const columnas = preg.tipo === 'escala' ? [1, 2, 3, 4, 5] : (preg.opciones || []);
             return (
                 <div key={preg._id} style={base}>
-                    <p style={{ margin: '0 0 4px', fontSize: '0.85rem', fontWeight: '700', color: '#2c3e50' }}>
-                        <span style={{ color: 'var(--color-espoch-rojo)', marginRight: 6 }}>{num}.</span>
+                    <p style={{ margin: '0 0 4px', fontSize: '1rem', fontWeight: '700', color: '#2c3e50' }}>
+                        <span style={{ color: '#BC0613', marginRight: 6 }}>{num}.</span>
                         {preg.texto}
                         {preg.obligatoria && <span style={{ color: '#c62828', marginLeft: 4 }}>*</span>}
                     </p>
                     {preg.descripcionMatriz && (
-                        <p style={{ margin: '0 0 10px', fontSize: '0.75rem', color: '#666', lineHeight: 1.4 }}>
+                        <p style={{ margin: '0 0 10px', fontSize: '0.95rem', color: '#666', lineHeight: 1.4 }}>
                             {preg.descripcionMatriz}
                         </p>
                     )}
                     {preg.tipo === 'escala' && (
                         <div style={{ display: 'flex', gap: 12, marginBottom: 8 }}>
-                            {preg.etiquetaMin && <span style={{ fontSize: '0.7rem', color: '#adb5bd' }}>1 = {preg.etiquetaMin}</span>}
-                            {preg.etiquetaMax && <span style={{ fontSize: '0.7rem', color: '#adb5bd' }}>5 = {preg.etiquetaMax}</span>}
+                            {preg.etiquetaMin && <span style={{ fontSize: '0.95rem', color: '#adb5bd' }}>1 = {preg.etiquetaMin}</span>}
+                            {preg.etiquetaMax && <span style={{ fontSize: '0.95rem', color: '#adb5bd' }}>5 = {preg.etiquetaMax}</span>}
                         </div>
                     )}
                     <TablaMatriz
@@ -250,8 +250,8 @@ const ModalVistaPrevia = ({ visible, encuesta, onCerrar }) => {
         // ── Pregunta estándar ──
         return (
             <div key={preg._id} style={base}>
-                <p style={{ margin: '0 0 10px', fontSize: '0.85rem', fontWeight: '600', color: '#2c3e50', lineHeight: 1.45 }}>
-                    <span style={{ color: 'var(--color-espoch-rojo)', fontWeight: '700', marginRight: 6 }}>{num}.</span>
+                <p style={{ margin: '0 0 10px', fontSize: '1rem', fontWeight: '600', color: '#2c3e50', lineHeight: 1.45 }}>
+                    <span style={{ color: '#BC0613', fontWeight: '700', marginRight: 6 }}>{num}.</span>
                     {preg.texto}
                     {preg.obligatoria && <span style={{ color: '#c62828', marginLeft: 4 }}>*</span>}
                 </p>
@@ -261,7 +261,7 @@ const ModalVistaPrevia = ({ visible, encuesta, onCerrar }) => {
                         value={respuestas[preg._id] || ''}
                         onChange={(e) => manejarRespuesta(preg._id, e.target.value, preg.tipo)}
                         placeholder="Escribe tu respuesta aquí..."
-                        style={{ width: '100%', padding: '9px 12px', border: '1px solid #dee2e6', borderRadius: 5, fontSize: '0.82rem', minHeight: 68, outline: 'none', resize: 'vertical', boxSizing: 'border-box' }}
+                        style={{ width: '100%', padding: '9px 12px', border: '1px solid #dee2e6', borderRadius: 5, fontSize: '1rem', minHeight: 68, outline: 'none', resize: 'vertical', boxSizing: 'border-box' }}
                     />
                 )}
 
@@ -276,7 +276,7 @@ const ModalVistaPrevia = ({ visible, encuesta, onCerrar }) => {
                                 manejarRespuesta(preg._id, val, preg.tipo);
                         }}
                         placeholder="Ingresa un número..."
-                        style={{ width: 180, padding: '8px 10px', border: '1px solid #dee2e6', borderRadius: 5, fontSize: '0.82rem', outline: 'none' }}
+                        style={{ width: 180, padding: '8px 10px', border: '1px solid #dee2e6', borderRadius: 5, fontSize: '1rem', outline: 'none' }}
                     />
                 )}
 
@@ -285,17 +285,17 @@ const ModalVistaPrevia = ({ visible, encuesta, onCerrar }) => {
                         {(preg.opciones || []).map((op, i) => (
                             <label key={i} style={{
                                 display: 'flex', alignItems: 'center', gap: 9, cursor: 'pointer',
-                                padding: '9px 12px', borderRadius: 5, fontSize: '0.83rem',
+                                padding: '9px 12px', borderRadius: 5, fontSize: '1rem',
                                 background: respuestas[preg._id] === op ? '#ffebee' : '#fafafa',
-                                border: `1.5px solid ${respuestas[preg._id] === op ? 'var(--color-espoch-rojo)' : '#e9ecef'}`,
-                                color: respuestas[preg._id] === op ? 'var(--color-espoch-rojo)' : '#2c3e50',
+                                border: `1.5px solid ${respuestas[preg._id] === op ? '#BC0613' : '#e9ecef'}`,
+                                color: respuestas[preg._id] === op ? '#BC0613' : '#2c3e50',
                                 fontWeight: respuestas[preg._id] === op ? '600' : '400',
                                 transition: 'all 0.12s',
                             }}>
                                 <input type="radio" name={preg._id} value={op}
                                     checked={respuestas[preg._id] === op}
                                     onChange={() => manejarRespuesta(preg._id, op, preg.tipo)}
-                                    style={{ accentColor: 'var(--color-espoch-rojo)', flexShrink: 0 }} />
+                                    style={{ accentColor: '#BC0613', flexShrink: 0 }} />
                                 {op}
                             </label>
                         ))}
@@ -315,7 +315,7 @@ const ModalVistaPrevia = ({ visible, encuesta, onCerrar }) => {
                                             background: limiteAlcanzado ? '#ffebee' : '#fff8e1',
                                             border: `1px solid ${limiteAlcanzado ? '#ffcdd2' : '#ffe082'}`,
                                             color: limiteAlcanzado ? '#c62828' : '#6d4c00',
-                                            padding: '6px 10px', borderRadius: 5, fontSize: '0.72rem', fontWeight: 600,
+                                            padding: '6px 10px', borderRadius: 5, fontSize: '0.95rem', fontWeight: 600,
                                         }}>
                                             {limiteAlcanzado
                                                 ? `Has alcanzado el máximo de ${lim} selecciones — desmarca una para cambiar.`
@@ -329,10 +329,10 @@ const ModalVistaPrevia = ({ visible, encuesta, onCerrar }) => {
                                             <label key={i} style={{
                                                 display: 'flex', alignItems: 'center', gap: 9,
                                                 cursor: bloqueado ? 'not-allowed' : 'pointer',
-                                                padding: '9px 12px', borderRadius: 5, fontSize: '0.83rem',
+                                                padding: '9px 12px', borderRadius: 5, fontSize: '1rem',
                                                 background: sel ? '#ffebee' : (bloqueado ? '#f5f5f5' : '#fafafa'),
-                                                border: `1.5px solid ${sel ? 'var(--color-espoch-rojo)' : '#e9ecef'}`,
-                                                color: sel ? 'var(--color-espoch-rojo)' : (bloqueado ? '#adb5bd' : '#2c3e50'),
+                                                border: `1.5px solid ${sel ? '#BC0613' : '#e9ecef'}`,
+                                                color: sel ? '#BC0613' : (bloqueado ? '#adb5bd' : '#2c3e50'),
                                                 fontWeight: sel ? '600' : '400',
                                                 opacity: bloqueado ? 0.55 : 1,
                                                 transition: 'all 0.12s',
@@ -340,7 +340,7 @@ const ModalVistaPrevia = ({ visible, encuesta, onCerrar }) => {
                                                 <input type="checkbox" checked={sel}
                                                     disabled={bloqueado}
                                                     onChange={() => manejarCheckbox(preg._id, op, lim)}
-                                                    style={{ accentColor: 'var(--color-espoch-rojo)', flexShrink: 0 }} />
+                                                    style={{ accentColor: '#BC0613', flexShrink: 0 }} />
                                                 {op}
                                             </label>
                                         );
@@ -359,15 +359,15 @@ const ModalVistaPrevia = ({ visible, encuesta, onCerrar }) => {
                                     onClick={() => manejarRespuesta(preg._id, n, preg.tipo)}
                                     style={{
                                         width: 40, height: 40, borderRadius: '50%',
-                                        border: `2px solid ${respuestas[preg._id] === n ? 'var(--color-espoch-rojo)' : '#dee2e6'}`,
-                                        background: respuestas[preg._id] === n ? 'var(--color-espoch-rojo)' : 'white',
+                                        border: `2px solid ${respuestas[preg._id] === n ? '#BC0613' : '#dee2e6'}`,
+                                        background: respuestas[preg._id] === n ? '#BC0613' : 'white',
                                         color: respuestas[preg._id] === n ? 'white' : '#666',
-                                        cursor: 'pointer', fontWeight: '700', fontSize: '0.88rem',
+                                        cursor: 'pointer', fontWeight: '700', fontSize: '1rem',
                                         transition: 'all 0.15s',
                                     }}>{n}</button>
                             ))}
                         </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.68rem', color: '#adb5bd' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', color: '#adb5bd' }}>
                             <span>{preg.etiquetaMin || 'Muy malo'}</span>
                             <span>{preg.etiquetaMax || 'Excelente'}</span>
                         </div>
@@ -385,14 +385,14 @@ const ModalVistaPrevia = ({ visible, encuesta, onCerrar }) => {
                                         border: `2px solid ${respuestas[preg._id] === op ? (op === 'Sí' ? '#2e7d32' : '#c62828') : '#dee2e6'}`,
                                         background: respuestas[preg._id] === op ? (op === 'Sí' ? '#e8f5e9' : '#ffebee') : 'white',
                                         color: respuestas[preg._id] === op ? (op === 'Sí' ? '#2e7d32' : '#c62828') : '#666',
-                                        cursor: 'pointer', fontWeight: '700', fontSize: '0.87rem',
+                                        cursor: 'pointer', fontWeight: '700', fontSize: '1rem',
                                         transition: 'all 0.15s',
                                     }}>{op}</button>
                             ))}
                         </div>
                         {condicionalesVisibles[preg._id] === 'Sí' && preg.tieneCondicional && preg.preguntasCondicionalSi?.length > 0 && (
                             <div style={{ marginTop: 12, paddingLeft: 12, borderLeft: '3px solid #2e7d32' }}>
-                                <p style={{ margin: '0 0 8px', fontSize: '0.7rem', fontWeight: '700', color: '#2e7d32' }}>PREGUNTAS ADICIONALES</p>
+                                <p style={{ margin: '0 0 8px', fontSize: '0.95rem', fontWeight: '700', color: '#2e7d32' }}>PREGUNTAS ADICIONALES</p>
                                 {preg.preguntasCondicionalSi.map((t, j) =>
                                     renderSubPregunta(preg._id, 'si', j, t, preg.tiposCondicionalSi?.[j], preg.opcionesCondicionalSi?.[j])
                                 )}
@@ -400,7 +400,7 @@ const ModalVistaPrevia = ({ visible, encuesta, onCerrar }) => {
                         )}
                         {condicionalesVisibles[preg._id] === 'No' && preg.tieneCondicional && preg.preguntasCondicionalNo?.length > 0 && (
                             <div style={{ marginTop: 12, paddingLeft: 12, borderLeft: '3px solid #c62828' }}>
-                                <p style={{ margin: '0 0 8px', fontSize: '0.7rem', fontWeight: '700', color: '#c62828' }}>PREGUNTAS ADICIONALES</p>
+                                <p style={{ margin: '0 0 8px', fontSize: '0.95rem', fontWeight: '700', color: '#c62828' }}>PREGUNTAS ADICIONALES</p>
                                 {preg.preguntasCondicionalNo.map((t, j) =>
                                     renderSubPregunta(preg._id, 'no', j, t, preg.tiposCondicionalNo?.[j], preg.opcionesCondicionalNo?.[j])
                                 )}
@@ -416,13 +416,13 @@ const ModalVistaPrevia = ({ visible, encuesta, onCerrar }) => {
         const subId = `${pregPadreId}_${lado}_${idx}`;
         return (
             <div key={subId} style={{ marginBottom: 8, padding: '8px 10px', background: lado === 'si' ? '#f1f8e9' : '#fff3e0', border: `1px solid ${lado === 'si' ? '#c5e1a5' : '#ffcc80'}`, borderRadius: 5 }}>
-                <p style={{ margin: '0 0 6px', fontSize: '0.75rem', fontWeight: '600', color: '#2c3e50' }}>{texto}</p>
-                {tipo === 'texto_libre' && <textarea value={respuestas[subId] || ''} onChange={(e) => manejarRespuesta(subId, e.target.value, tipo)} placeholder="Escribe tu respuesta..." style={{ width: '100%', padding: '6px', border: '1px solid #dee2e6', borderRadius: 4, fontSize: '0.75rem', minHeight: 40, outline: 'none', resize: 'vertical' }} />}
+                <p style={{ margin: '0 0 6px', fontSize: '0.95rem', fontWeight: '600', color: '#2c3e50' }}>{texto}</p>
+                {tipo === 'texto_libre' && <textarea value={respuestas[subId] || ''} onChange={(e) => manejarRespuesta(subId, e.target.value, tipo)} placeholder="Escribe tu respuesta..." style={{ width: '100%', padding: '6px', border: '1px solid #dee2e6', borderRadius: 4, fontSize: '0.95rem', minHeight: 40, outline: 'none', resize: 'vertical' }} />}
                 {tipo === 'opcion_multiple' && (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                         {(opciones || []).map((op, k) => (
-                            <label key={k} style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', fontSize: '0.75rem' }}>
-                                <input type="radio" name={subId} value={op} checked={respuestas[subId] === op} onChange={() => manejarRespuesta(subId, op, tipo)} style={{ accentColor: 'var(--color-espoch-rojo)' }} />
+                            <label key={k} style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', fontSize: '0.95rem' }}>
+                                <input type="radio" name={subId} value={op} checked={respuestas[subId] === op} onChange={() => manejarRespuesta(subId, op, tipo)} style={{ accentColor: '#BC0613' }} />
                                 {op}
                             </label>
                         ))}
@@ -431,7 +431,7 @@ const ModalVistaPrevia = ({ visible, encuesta, onCerrar }) => {
                 {tipo === 'escala' && (
                     <div style={{ display: 'flex', gap: 4 }}>
                         {[1, 2, 3, 4, 5].map((n) => (
-                            <button key={n} onClick={() => manejarRespuesta(subId, n, tipo)} style={{ width: 28, height: 28, borderRadius: '50%', border: `2px solid ${respuestas[subId] === n ? 'var(--color-espoch-rojo)' : '#dee2e6'}`, background: respuestas[subId] === n ? 'var(--color-espoch-rojo)' : 'white', color: respuestas[subId] === n ? 'white' : '#666', cursor: 'pointer', fontWeight: '700', fontSize: '0.7rem' }}>{n}</button>
+                            <button key={n} onClick={() => manejarRespuesta(subId, n, tipo)} style={{ width: 28, height: 28, borderRadius: '50%', border: `2px solid ${respuestas[subId] === n ? '#BC0613' : '#dee2e6'}`, background: respuestas[subId] === n ? '#BC0613' : 'white', color: respuestas[subId] === n ? 'white' : '#666', cursor: 'pointer', fontWeight: '700', fontSize: '0.95rem' }}>{n}</button>
                         ))}
                     </div>
                 )}
@@ -444,30 +444,30 @@ const ModalVistaPrevia = ({ visible, encuesta, onCerrar }) => {
     return (
         <div onClick={onCerrar} style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1002 }}>
             <div onClick={(e) => e.stopPropagation()} style={{ background: '#f5f6f7', borderRadius: 14, width: '95%', maxWidth: 780, maxHeight: '90vh', overflow: 'auto', boxShadow: '0 15px 40px rgba(0,0,0,0.4)' }}>
-                <div style={{ padding: '14px 18px', background: 'var(--color-espoch-rojo)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderRadius: '14px 14px 0 0' }}>
+                <div style={{ padding: '14px 18px', background: '#BC0613', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderRadius: '14px 14px 0 0' }}>
                     <div>
-                        <p style={{ margin: 0, fontSize: '0.65rem', color: 'rgba(255,255,255,0.8)', fontWeight: '600' }}>👁️ VISTA PREVIA — así lo verá el encuestado</p>
-                        <h2 style={{ margin: 0, fontSize: '0.95rem', fontWeight: '700', color: 'white' }}>{encuesta?.titulo}</h2>
+                        <p style={{ margin: 0, fontSize: '0.85rem', color: 'rgba(255,255,255,0.8)', fontWeight: '600' }}>👁️ VISTA PREVIA — así lo verá el encuestado</p>
+                        <h2 style={{ margin: 0, fontSize: '1.1rem', fontWeight: '700', color: 'white' }}>{encuesta?.titulo}</h2>
                     </div>
-                    <button onClick={onCerrar} style={{ background: 'rgba(255,255,255,0.2)', border: 'none', borderRadius: 6, color: 'white', width: 30, height: 30, cursor: 'pointer', fontSize: '1rem', fontWeight: '700' }}>×</button>
+                    <button onClick={onCerrar} style={{ background: 'rgba(255,255,255,0.2)', border: 'none', borderRadius: 6, color: 'white', width: 30, height: 30, cursor: 'pointer', fontSize: '1.1rem', fontWeight: '700' }}>×</button>
                 </div>
                 <div style={{ padding: '18px' }}>
                     {paso === 'consentimiento' && (
                         <div style={{ background: 'white', borderRadius: 10, padding: '20px', border: '1px solid #e9ecef' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14, paddingBottom: 12, borderBottom: '2px solid #f0f0f0' }}>
-                                <div style={{ width: 36, height: 36, borderRadius: '50%', background: '#fff8e1', border: '2px solid #f57f17', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.1rem', flexShrink: 0 }}>📋</div>
+                                <div style={{ width: 36, height: 36, borderRadius: '50%', background: '#fff8e1', border: '2px solid #f57f17', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem', flexShrink: 0 }}>📋</div>
                                 <div>
-                                    <h3 style={{ margin: 0, fontSize: '0.95rem', fontWeight: '700', color: '#2c3e50' }}>Consentimiento Informado</h3>
-                                    <p style={{ margin: 0, fontSize: '0.7rem', color: '#adb5bd' }}>Lea detenidamente antes de participar</p>
+                                    <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: '700', color: '#2c3e50' }}>Consentimiento Informado</h3>
+                                    <p style={{ margin: 0, fontSize: '0.95rem', color: '#adb5bd' }}>Lea detenidamente antes de participar</p>
                                 </div>
                             </div>
                             <div style={{ background: '#fafafa', border: '1px solid #e9ecef', borderRadius: 8, padding: '14px', marginBottom: 16, lineHeight: 1.6 }}>
-                                <p style={{ margin: 0, fontSize: '0.82rem', color: '#444', textAlign: 'justify' }}>{encuesta?.consentimientoInformado}</p>
+                                <p style={{ margin: 0, fontSize: '1rem', color: '#444', textAlign: 'justify' }}>{encuesta?.consentimientoInformado}</p>
                             </div>
-                            <p style={{ margin: '0 0 12px', fontSize: '0.85rem', fontWeight: '700', color: '#2c3e50', textAlign: 'center' }}>Acepto participar en esta investigación:</p>
+                            <p style={{ margin: '0 0 12px', fontSize: '1rem', fontWeight: '700', color: '#2c3e50', textAlign: 'center' }}>Acepto participar en esta investigación:</p>
                             <div style={{ display: 'flex', gap: 10 }}>
-                                <button onClick={() => manejarConsentimiento(true)} style={{ flex: 1, padding: '12px', background: '#e8f5e9', border: '2px solid #2e7d32', borderRadius: 8, cursor: 'pointer', fontWeight: '700', fontSize: '0.9rem', color: '#2e7d32' }}>Sí, acepto participar</button>
-                                <button onClick={() => manejarConsentimiento(false)} style={{ flex: 1, padding: '12px', background: '#ffebee', border: '2px solid #c62828', borderRadius: 8, cursor: 'pointer', fontWeight: '700', fontSize: '0.9rem', color: '#c62828' }}>No, no acepto</button>
+                                <button onClick={() => manejarConsentimiento(true)} style={{ flex: 1, padding: '12px', background: '#e8f5e9', border: '2px solid #2e7d32', borderRadius: 8, cursor: 'pointer', fontWeight: '700', fontSize: '1.1rem', color: '#2e7d32' }}>Sí, acepto participar</button>
+                                <button onClick={() => manejarConsentimiento(false)} style={{ flex: 1, padding: '12px', background: '#ffebee', border: '2px solid #c62828', borderRadius: 8, cursor: 'pointer', fontWeight: '700', fontSize: '1.1rem', color: '#c62828' }}>No, no acepto</button>
                             </div>
                         </div>
                     )}
@@ -475,11 +475,11 @@ const ModalVistaPrevia = ({ visible, encuesta, onCerrar }) => {
                         <div>
                             <div style={{ background: '#e8f5e9', border: '1px solid #c8e6c9', borderRadius: 8, padding: '10px 14px', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 8 }}>
                                 <span></span>
-                                <p style={{ margin: 0, fontSize: '0.78rem', color: '#2e7d32', fontWeight: '600' }}>Consentimiento aceptado — puedes responder la encuesta</p>
+                                <p style={{ margin: 0, fontSize: '0.95rem', color: '#2e7d32', fontWeight: '600' }}>Consentimiento aceptado — puedes responder la encuesta</p>
                             </div>
                             {loading ? <p style={{ textAlign: 'center', color: '#adb5bd', padding: 20 }}>Cargando preguntas...</p>
                                 : preguntas.length === 0
-                                    ? <div style={{ background: 'white', borderRadius: 8, padding: 20, textAlign: 'center', border: '1px solid #e9ecef' }}><p style={{ color: '#adb5bd', fontSize: '0.85rem' }}>⚠️ Esta encuesta aún no tiene preguntas</p></div>
+                                    ? <div style={{ background: 'white', borderRadius: 8, padding: 20, textAlign: 'center', border: '1px solid #e9ecef' }}><p style={{ color: '#adb5bd', fontSize: '1rem' }}>⚠️ Esta encuesta aún no tiene preguntas</p></div>
                                     : (
                                         <>
                                             {(() => {
@@ -489,7 +489,7 @@ const ModalVistaPrevia = ({ visible, encuesta, onCerrar }) => {
                                                     return renderPregunta(preg, num);
                                                 });
                                             })()}
-                                            <button style={{ width: '100%', marginTop: 6, padding: '12px', background: 'var(--color-espoch-rojo)', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: '700', fontSize: '0.9rem' }} onClick={() => setPaso('enviado')}>Enviar respuestas</button>
+                                            <button style={{ width: '100%', marginTop: 6, padding: '12px', background: '#BC0613', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: '700', fontSize: '1.1rem' }} onClick={() => setPaso('enviado')}>Enviar respuestas</button>
                                         </>
                                     )}
                         </div>
@@ -497,10 +497,10 @@ const ModalVistaPrevia = ({ visible, encuesta, onCerrar }) => {
                     {paso === 'enviado' && (
                         <div style={{ background: 'white', borderRadius: 10, padding: '30px 20px', textAlign: 'center', border: '1px solid #e9ecef' }}>
                             {consentimiento
-                                ? <><div style={{ fontSize: '2.5rem', marginBottom: 10 }}>✅</div><h3 style={{ margin: '0 0 8px', fontSize: '1rem', fontWeight: '700', color: '#2e7d32' }}>¡Respuestas enviadas!</h3><p style={{ margin: '0 0 16px', fontSize: '0.82rem', color: '#666' }}>Gracias por tu participación. Tu información ha sido registrada correctamente (Modo Simulación).</p></>
-                                : <><div style={{ fontSize: '2.5rem', marginBottom: 10 }}>📋</div><h3 style={{ margin: '0 0 8px', fontSize: '1rem', fontWeight: '700', color: '#c62828' }}>Participación no consentida</h3><p style={{ margin: '0 0 16px', fontSize: '0.82rem', color: '#666' }}>Tu decisión ha sido registrada. No se recopilarán tus respuestas.</p></>
+                                ? <><div style={{ fontSize: '2.8rem', marginBottom: 10 }}>✅</div><h3 style={{ margin: '0 0 8px', fontSize: '1.1rem', fontWeight: '700', color: '#2e7d32' }}>¡Respuestas enviadas!</h3><p style={{ margin: '0 0 16px', fontSize: '1rem', color: '#666' }}>Gracias por tu participación. Tu información ha sido registrada correctamente (Modo Simulación).</p></>
+                                : <><div style={{ fontSize: '2.8rem', marginBottom: 10 }}>📋</div><h3 style={{ margin: '0 0 8px', fontSize: '1.1rem', fontWeight: '700', color: '#c62828' }}>Participación no consentida</h3><p style={{ margin: '0 0 16px', fontSize: '1rem', color: '#666' }}>Tu decisión ha sido registrada. No se recopilarán tus respuestas.</p></>
                             }
-                            <button onClick={() => { setPaso('consentimiento'); setConsentimiento(null); setRespuestas({}); setCondicionalesVisibles({}); }} style={{ padding: '8px 20px', background: '#f0f0f0', border: 'none', borderRadius: 6, cursor: 'pointer', fontWeight: '600', fontSize: '0.8rem', color: '#555' }}>↺ Ver desde el inicio</button>
+                            <button onClick={() => { setPaso('consentimiento'); setConsentimiento(null); setRespuestas({}); setCondicionalesVisibles({}); }} style={{ padding: '8px 20px', background: '#f0f0f0', border: 'none', borderRadius: 6, cursor: 'pointer', fontWeight: '600', fontSize: '1rem', color: '#555' }}>↺ Ver desde el inicio</button>
                         </div>
                     )}
                 </div>
@@ -516,20 +516,20 @@ const SeccionItemsMatriz = ({ items, onChange, placeholder = 'Ej: OE 01. Trabaja
     const cambiar = (i, val) => { const tmp = [...items]; tmp[i] = val; onChange(tmp); };
     return (
         <div style={{ marginTop: 10 }}>
-            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '700', marginBottom: 6, color: '#2c3e50' }}>
+            <label style={{ display: 'block', fontSize: '1rem', fontWeight: '700', marginBottom: 6, color: '#2c3e50' }}>
                 📋 Ítems / filas de la tabla *
                 <span style={{ fontWeight: '400', color: '#adb5bd', marginLeft: 6 }}>— cada ítem es una fila</span>
             </label>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                 {items.map((item, i) => (
                     <div key={i} style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-                        <div style={{ width: 22, height: 22, borderRadius: '50%', background: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.65rem', fontWeight: '700', color: '#888', flexShrink: 0 }}>{i + 1}</div>
-                        <input type="text" value={item} onChange={(e) => cambiar(i, e.target.value)} placeholder={placeholder} style={{ flex: 1, padding: '7px 10px', border: '1px solid #dee2e6', borderRadius: 5, fontSize: '0.78rem', outline: 'none' }} />
-                        {items.length > 1 && <button onClick={() => eliminar(i)} style={{ width: 26, height: 26, borderRadius: 4, border: '1px solid #ffcdd2', background: '#ffebee', color: '#c62828', cursor: 'pointer', fontSize: '0.6rem', flexShrink: 0 }}>✕</button>}
+                        <div style={{ width: 22, height: 22, borderRadius: '50%', background: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.85rem', fontWeight: '700', color: '#888', flexShrink: 0 }}>{i + 1}</div>
+                        <input type="text" value={item} onChange={(e) => cambiar(i, e.target.value)} placeholder={placeholder} style={{ flex: 1, padding: '7px 10px', border: '1px solid #dee2e6', borderRadius: 5, fontSize: '0.95rem', outline: 'none' }} />
+                        {items.length > 1 && <button onClick={() => eliminar(i)} style={{ width: 26, height: 26, borderRadius: 4, border: '1px solid #ffcdd2', background: '#ffebee', color: '#c62828', cursor: 'pointer', fontSize: '0.85rem', flexShrink: 0 }}>✕</button>}
                     </div>
                 ))}
             </div>
-            <button onClick={agregar} style={{ marginTop: 8, fontSize: '0.72rem', padding: '6px 10px', background: '#e3f2fd', color: '#1565c0', border: '1px solid #bbdefb', borderRadius: 4, cursor: 'pointer', fontWeight: '600' }}>+ Agregar ítem</button>
+            <button onClick={agregar} style={{ marginTop: 8, fontSize: '0.95rem', padding: '6px 10px', background: '#e3f2fd', color: '#1565c0', border: '1px solid #bbdefb', borderRadius: 4, cursor: 'pointer', fontWeight: '600' }}>+ Agregar ítem</button>
         </div>
     );
 };
@@ -659,34 +659,34 @@ const FormularioPregunta = ({ visible, encuestaId, preguntaEditar, onGuardar, on
         const border = esSi ? '#c8e6c9' : '#ffcdd2';
         return (
             <div style={{ padding: 10, background: bg, border: `2px solid ${border}`, borderRadius: 6 }}>
-                <h4 style={{ margin: '0 0 10px', fontSize: '0.8rem', fontWeight: '700', color, textAlign: 'center' }}>{esSi ? 'SI RESPONDE SÍ' : 'SI RESPONDE NO'}</h4>
+                <h4 style={{ margin: '0 0 10px', fontSize: '1rem', fontWeight: '700', color, textAlign: 'center' }}>{esSi ? 'SI RESPONDE SÍ' : 'SI RESPONDE NO'}</h4>
                 {preguntas.map((preg, i) => (
                     <div key={i} style={{ marginBottom: 10, padding: 8, background: 'white', border: `1px solid ${border}`, borderRadius: 4 }}>
                         <div style={{ display: 'flex', gap: 6, marginBottom: 6 }}>
-                            <input type="text" value={preg} onChange={(e) => cambiarTextoCond(lado, i, e.target.value)} placeholder="Escribe la pregunta..." style={{ flex: 1, padding: '6px 8px', border: `1px solid ${border}`, borderRadius: 3, fontSize: '0.75rem', outline: 'none' }} />
-                            {preguntas.length > 1 && <button onClick={() => eliminarFila(lado, i)} style={{ width: 24, height: 24, borderRadius: 3, border: '1px solid #ffcdd2', background: '#ffebee', color: '#c62828', cursor: 'pointer', fontSize: '0.6rem' }}>✕</button>}
+                            <input type="text" value={preg} onChange={(e) => cambiarTextoCond(lado, i, e.target.value)} placeholder="Escribe la pregunta..." style={{ flex: 1, padding: '6px 8px', border: `1px solid ${border}`, borderRadius: 3, fontSize: '0.95rem', outline: 'none' }} />
+                            {preguntas.length > 1 && <button onClick={() => eliminarFila(lado, i)} style={{ width: 24, height: 24, borderRadius: 3, border: '1px solid #ffcdd2', background: '#ffebee', color: '#c62828', cursor: 'pointer', fontSize: '0.85rem' }}>✕</button>}
                         </div>
                         <div style={{ marginBottom: 4 }}>
-                            <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: '700', marginBottom: 3, color }}>Tipo:</label>
-                            <select value={tipos[i] || 'texto_libre'} onChange={(e) => cambiarTipoCond(lado, i, e.target.value)} style={{ width: '100%', padding: '4px 6px', border: `1px solid ${border}`, borderRadius: 3, fontSize: '0.7rem', outline: 'none' }}>
+                            <label style={{ display: 'block', fontSize: '0.95rem', fontWeight: '700', marginBottom: 3, color }}>Tipo:</label>
+                            <select value={tipos[i] || 'texto_libre'} onChange={(e) => cambiarTipoCond(lado, i, e.target.value)} style={{ width: '100%', padding: '4px 6px', border: `1px solid ${border}`, borderRadius: 3, fontSize: '0.95rem', outline: 'none' }}>
                                 {tiposDisponibles.map((t) => <option key={t.value} value={t.value}>{t.label}</option>)}
                             </select>
                         </div>
                         {(tipos[i] === 'opcion_multiple' || tipos[i] === 'checkboxes') && (
                             <div style={{ marginTop: 6 }}>
-                                <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: '700', marginBottom: 2, color }}>Opciones:</label>
+                                <label style={{ display: 'block', fontSize: '0.95rem', fontWeight: '700', marginBottom: 2, color }}>Opciones:</label>
                                 {(opciones[i] || []).map((op, j) => (
                                     <div key={j} style={{ display: 'flex', gap: 4, marginBottom: 4 }}>
-                                        <input type="text" value={op} onChange={(e) => cambiarOpcionCond(lado, i, j, e.target.value)} placeholder={`Opción ${j + 1}`} style={{ flex: 1, padding: '4px 6px', border: `1px solid ${border}`, borderRadius: 3, fontSize: '0.7rem', outline: 'none' }} />
-                                        {(opciones[i] || []).length > 1 && <button onClick={() => eliminarOpcionCond(lado, i, j)} style={{ width: 20, height: 20, borderRadius: 2, border: '1px solid #ffcdd2', background: '#ffebee', color: '#c62828', cursor: 'pointer', fontSize: '0.5rem' }}>✕</button>}
+                                        <input type="text" value={op} onChange={(e) => cambiarOpcionCond(lado, i, j, e.target.value)} placeholder={`Opción ${j + 1}`} style={{ flex: 1, padding: '4px 6px', border: `1px solid ${border}`, borderRadius: 3, fontSize: '0.95rem', outline: 'none' }} />
+                                        {(opciones[i] || []).length > 1 && <button onClick={() => eliminarOpcionCond(lado, i, j)} style={{ width: 20, height: 20, borderRadius: 2, border: '1px solid #ffcdd2', background: '#ffebee', color: '#c62828', cursor: 'pointer', fontSize: '0.75rem' }}>✕</button>}
                                     </div>
                                 ))}
-                                <button onClick={() => agregarOpcionCond(lado, i)} style={{ fontSize: '0.65rem', padding: '3px 6px', background: 'white', color, border: `1px solid ${border}`, borderRadius: 3, cursor: 'pointer', fontWeight: '600' }}>+ Opción</button>
+                                <button onClick={() => agregarOpcionCond(lado, i)} style={{ fontSize: '0.85rem', padding: '3px 6px', background: 'white', color, border: `1px solid ${border}`, borderRadius: 3, cursor: 'pointer', fontWeight: '600' }}>+ Opción</button>
                             </div>
                         )}
                     </div>
                 ))}
-                <button onClick={() => agregarFila(lado)} style={{ fontSize: '0.7rem', padding: '6px 8px', background: border, color, border: `1px solid ${color}`, borderRadius: 4, cursor: 'pointer', fontWeight: '700', width: '100%' }}>+ Agregar pregunta en {esSi ? 'SÍ' : 'NO'}</button>
+                <button onClick={() => agregarFila(lado)} style={{ fontSize: '0.95rem', padding: '6px 8px', background: border, color, border: `1px solid ${color}`, borderRadius: 4, cursor: 'pointer', fontWeight: '700', width: '100%' }}>+ Agregar pregunta en {esSi ? 'SÍ' : 'NO'}</button>
             </div>
         );
     };
@@ -697,19 +697,19 @@ const FormularioPregunta = ({ visible, encuestaId, preguntaEditar, onGuardar, on
         <div onClick={onCerrar} style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1003 }}>
             <div onClick={(e) => e.stopPropagation()} style={{ background: 'white', borderRadius: 12, width: '95%', maxWidth: 750, maxHeight: '90vh', overflow: 'auto', boxShadow: '0 10px 30px rgba(0,0,0,0.3)' }}>
                 <div style={{ padding: '16px 20px', borderBottom: '2px solid #e9ecef', display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'sticky', top: 0, background: 'white', zIndex: 1 }}>
-                    <h2 style={{ margin: 0, fontSize: '1rem', fontWeight: '700' }}>{esEdicion ? '✏️ Editar Pregunta' : '➕ Agregar Pregunta'}</h2>
-                    <button onClick={onCerrar} style={{ background: 'none', border: 'none', fontSize: '1.3rem', cursor: 'pointer', color: '#adb5bd' }}>×</button>
+                    <h2 style={{ margin: 0, fontSize: '1.1rem', fontWeight: '700' }}>{esEdicion ? '✏️ Editar Pregunta' : '➕ Agregar Pregunta'}</h2>
+                    <button onClick={onCerrar} style={{ background: 'none', border: 'none', fontSize: '1.4rem', cursor: 'pointer', color: '#adb5bd' }}>×</button>
                 </div>
                 <div style={{ padding: '16px 20px' }}>
                     <div style={{ marginBottom: 12 }}>
-                        <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '700', marginBottom: 4 }}>
+                        <label style={{ display: 'block', fontSize: '1rem', fontWeight: '700', marginBottom: 4 }}>
                             {esTitulo ? 'Texto del título de sección *' : form.esMatriz ? 'Pregunta *' : 'Pregunta *'}
                         </label>
-                        <textarea value={form.texto} onChange={(e) => setForm({ ...form, texto: e.target.value })} placeholder={form.esMatriz ? 'Ej: Evaluación de Objetivos Educacionales' : 'Ej: ¿Usted trabaja actualmente?'} style={{ width: '100%', padding: '10px', border: '1px solid #dee2e6', borderRadius: 6, fontSize: '0.85rem', minHeight: 60, outline: 'none', resize: 'vertical' }} />
+                        <textarea value={form.texto} onChange={(e) => setForm({ ...form, texto: e.target.value })} placeholder={form.esMatriz ? 'Ej: Evaluación de Objetivos Educacionales' : 'Ej: ¿Usted trabaja actualmente?'} style={{ width: '100%', padding: '10px', border: '1px solid #dee2e6', borderRadius: 6, fontSize: '1rem', minHeight: 60, outline: 'none', resize: 'vertical' }} />
                     </div>
                     <div style={{ marginBottom: 12 }}>
-                        <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '700', marginBottom: 4 }}>Tipo *</label>
-                        <select value={form.tipo} onChange={(e) => setForm({ ...form, tipo: e.target.value, esMatriz: false })} style={{ width: '100%', padding: '10px', border: '1px solid #dee2e6', borderRadius: 6, fontSize: '0.85rem', outline: 'none' }}>
+                        <label style={{ display: 'block', fontSize: '1rem', fontWeight: '700', marginBottom: 4 }}>Tipo *</label>
+                        <select value={form.tipo} onChange={(e) => setForm({ ...form, tipo: e.target.value, esMatriz: false })} style={{ width: '100%', padding: '10px', border: '1px solid #dee2e6', borderRadius: 6, fontSize: '1rem', outline: 'none' }}>
                             <option value="titulo">Título de sección</option>
                             <option value="opcion_multiple">Opción múltiple</option>
                             <option value="si_no">Sí/No</option>
@@ -726,41 +726,41 @@ const FormularioPregunta = ({ visible, encuestaId, preguntaEditar, onGuardar, on
                                     <div style={{ position: 'absolute', top: 3, left: form.esMatriz ? 21 : 3, width: 18, height: 18, borderRadius: '50%', background: 'white', transition: 'left 0.2s', boxShadow: '0 1px 3px rgba(0,0,0,0.3)' }} />
                                 </div>
                                 <div>
-                                    <p style={{ margin: 0, fontSize: '0.8rem', fontWeight: '700', color: form.esMatriz ? '#1a237e' : '#555' }}>{form.esMatriz ? 'Modo tabla / matriz activado' : 'Activar modo tabla / matriz'}</p>
-                                    <p style={{ margin: 0, fontSize: '0.7rem', color: '#888' }}>{form.tipo === 'escala' ? 'Permite evaluar múltiples ítems con escala 1-5 en una tabla' : 'Permite evaluar múltiples ítems con las mismas opciones en una tabla'}</p>
+                                    <p style={{ margin: 0, fontSize: '1rem', fontWeight: '700', color: form.esMatriz ? '#1a237e' : '#555' }}>{form.esMatriz ? 'Modo tabla / matriz activado' : 'Activar modo tabla / matriz'}</p>
+                                    <p style={{ margin: 0, fontSize: '0.95rem', color: '#888' }}>{form.tipo === 'escala' ? 'Permite evaluar múltiples ítems con escala 1-5 en una tabla' : 'Permite evaluar múltiples ítems con las mismas opciones en una tabla'}</p>
                                 </div>
                             </label>
                         </div>
                     )}
                     {form.tipo === 'opcion_multiple' && !form.esMatriz && (
                         <div style={{ marginBottom: 12 }}>
-                            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '700', marginBottom: 4 }}>Opciones *</label>
+                            <label style={{ display: 'block', fontSize: '1rem', fontWeight: '700', marginBottom: 4 }}>Opciones *</label>
                             {form.opciones.map((op, i) => (
                                 <div key={i} style={{ display: 'flex', gap: 6, marginBottom: 6 }}>
-                                    <input type="text" value={op} onChange={(e) => { const tmp = [...form.opciones]; tmp[i] = e.target.value; setForm({ ...form, opciones: tmp }); }} placeholder={`Opción ${i + 1}`} style={{ flex: 1, padding: '8px 10px', border: '1px solid #dee2e6', borderRadius: 4, fontSize: '0.8rem', outline: 'none' }} />
-                                    {form.opciones.length > 2 && <button onClick={() => setForm({ ...form, opciones: form.opciones.filter((_, j) => j !== i) })} style={{ width: 28, height: 28, borderRadius: 4, border: '1px solid #ffcdd2', background: '#ffebee', color: '#c62828', cursor: 'pointer', fontSize: '0.7rem' }}>✕</button>}
+                                    <input type="text" value={op} onChange={(e) => { const tmp = [...form.opciones]; tmp[i] = e.target.value; setForm({ ...form, opciones: tmp }); }} placeholder={`Opción ${i + 1}`} style={{ flex: 1, padding: '8px 10px', border: '1px solid #dee2e6', borderRadius: 4, fontSize: '1rem', outline: 'none' }} />
+                                    {form.opciones.length > 2 && <button onClick={() => setForm({ ...form, opciones: form.opciones.filter((_, j) => j !== i) })} style={{ width: 28, height: 28, borderRadius: 4, border: '1px solid #ffcdd2', background: '#ffebee', color: '#c62828', cursor: 'pointer', fontSize: '0.95rem' }}>✕</button>}
                                 </div>
                             ))}
-                            <button onClick={() => setForm({ ...form, opciones: [...form.opciones, ''] })} style={{ fontSize: '0.75rem', padding: '6px 10px', background: '#e3f2fd', color: '#1565c0', border: '1px solid #bbdefb', borderRadius: 4, cursor: 'pointer', fontWeight: '600' }}>+ Opción</button>
+                            <button onClick={() => setForm({ ...form, opciones: [...form.opciones, ''] })} style={{ fontSize: '0.95rem', padding: '6px 10px', background: '#e3f2fd', color: '#1565c0', border: '1px solid #bbdefb', borderRadius: 4, cursor: 'pointer', fontWeight: '600' }}>+ Opción</button>
                         </div>
                     )}
                     {form.tipo === 'checkboxes' && (
                         <div style={{ marginBottom: 12 }}>
-                            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '700', marginBottom: 4 }}>Opciones de selección múltiple *<span style={{ fontWeight: '400', color: '#adb5bd', marginLeft: 6 }}>— el encuestado puede marcar varias</span></label>
+                            <label style={{ display: 'block', fontSize: '1rem', fontWeight: '700', marginBottom: 4 }}>Opciones de selección múltiple *<span style={{ fontWeight: '400', color: '#adb5bd', marginLeft: 6 }}>— el encuestado puede marcar varias</span></label>
                             {form.opciones.map((op, i) => (
                                 <div key={i} style={{ display: 'flex', gap: 6, marginBottom: 6 }}>
-                                    <input type="text" value={op} onChange={(e) => { const tmp = [...form.opciones]; tmp[i] = e.target.value; setForm({ ...form, opciones: tmp }); }} placeholder={`Opción ${i + 1}`} style={{ flex: 1, padding: '8px 10px', border: '1px solid #dee2e6', borderRadius: 4, fontSize: '0.8rem', outline: 'none' }} />
-                                    {form.opciones.length > 2 && <button onClick={() => setForm({ ...form, opciones: form.opciones.filter((_, j) => j !== i) })} style={{ width: 28, height: 28, borderRadius: 4, border: '1px solid #ffcdd2', background: '#ffebee', color: '#c62828', cursor: 'pointer', fontSize: '0.7rem' }}>✕</button>}
+                                    <input type="text" value={op} onChange={(e) => { const tmp = [...form.opciones]; tmp[i] = e.target.value; setForm({ ...form, opciones: tmp }); }} placeholder={`Opción ${i + 1}`} style={{ flex: 1, padding: '8px 10px', border: '1px solid #dee2e6', borderRadius: 4, fontSize: '1rem', outline: 'none' }} />
+                                    {form.opciones.length > 2 && <button onClick={() => setForm({ ...form, opciones: form.opciones.filter((_, j) => j !== i) })} style={{ width: 28, height: 28, borderRadius: 4, border: '1px solid #ffcdd2', background: '#ffebee', color: '#c62828', cursor: 'pointer', fontSize: '0.95rem' }}>✕</button>}
                                 </div>
                             ))}
-                            <button onClick={() => setForm({ ...form, opciones: [...form.opciones, ''] })} style={{ fontSize: '0.75rem', padding: '6px 10px', background: '#e3f2fd', color: '#1565c0', border: '1px solid #bbdefb', borderRadius: 4, cursor: 'pointer', fontWeight: '600' }}>+ Opción</button>
+                            <button onClick={() => setForm({ ...form, opciones: [...form.opciones, ''] })} style={{ fontSize: '0.95rem', padding: '6px 10px', background: '#e3f2fd', color: '#1565c0', border: '1px solid #bbdefb', borderRadius: 4, cursor: 'pointer', fontWeight: '600' }}>+ Opción</button>
 
                             {/* Límite de selección */}
                             <div style={{ marginTop: 14, padding: 10, background: '#fff8e1', border: '1px solid #ffe082', borderRadius: 6 }}>
-                                <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: '700', marginBottom: 4, color: '#5d4037' }}>
+                                <label style={{ display: 'block', fontSize: '0.95rem', fontWeight: '700', marginBottom: 4, color: '#5d4037' }}>
                                     Límite de selecciones
                                 </label>
-                                <p style={{ margin: '0 0 8px', fontSize: '0.7rem', color: '#6d4c00' }}>
+                                <p style={{ margin: '0 0 8px', fontSize: '0.95rem', color: '#6d4c00' }}>
                                     ¿Cuántas opciones puede marcar el encuestado como máximo? Escribe <strong>0</strong> para no poner límite.
                                 </p>
                                 <input
@@ -773,9 +773,9 @@ const FormularioPregunta = ({ visible, encuestaId, preguntaEditar, onGuardar, on
                                         if (isNaN(v) || v < 0) v = 0;
                                         setForm({ ...form, limiteSeleccion: v });
                                     }}
-                                    style={{ width: 120, padding: '7px 10px', border: '1px solid #ffe082', borderRadius: 4, fontSize: '0.85rem', outline: 'none', fontWeight: 700 }}
+                                    style={{ width: 120, padding: '7px 10px', border: '1px solid #ffe082', borderRadius: 4, fontSize: '1rem', outline: 'none', fontWeight: 700 }}
                                 />
-                                <span style={{ marginLeft: 10, fontSize: '0.72rem', color: '#6d4c00' }}>
+                                <span style={{ marginLeft: 10, fontSize: '0.95rem', color: '#6d4c00' }}>
                                     {Number(form.limiteSeleccion) > 0
                                         ? `Máximo ${form.limiteSeleccion} de ${form.opciones.length} opciones`
                                         : 'Sin límite (puede marcar todas)'}
@@ -789,34 +789,34 @@ const FormularioPregunta = ({ visible, encuestaId, preguntaEditar, onGuardar, on
                             {form.tipo === 'escala' && (
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 10 }}>
                                     <div>
-                                        <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: '700', marginBottom: 4, color: '#555' }}>Etiqueta valor 1</label>
-                                        <input type="text" value={form.etiquetaMin} onChange={(e) => setForm({ ...form, etiquetaMin: e.target.value })} placeholder="Ej: Excelente" style={{ width: '100%', padding: '7px 10px', border: '1px solid #c5cae9', borderRadius: 4, fontSize: '0.78rem', outline: 'none' }} />
+                                        <label style={{ display: 'block', fontSize: '0.95rem', fontWeight: '700', marginBottom: 4, color: '#555' }}>Etiqueta valor 1</label>
+                                        <input type="text" value={form.etiquetaMin} onChange={(e) => setForm({ ...form, etiquetaMin: e.target.value })} placeholder="Ej: Excelente" style={{ width: '100%', padding: '7px 10px', border: '1px solid #c5cae9', borderRadius: 4, fontSize: '0.95rem', outline: 'none' }} />
                                     </div>
                                     <div>
-                                        <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: '700', marginBottom: 4, color: '#555' }}>Etiqueta valor 5</label>
-                                        <input type="text" value={form.etiquetaMax} onChange={(e) => setForm({ ...form, etiquetaMax: e.target.value })} placeholder="Ej: Insuficiente" style={{ width: '100%', padding: '7px 10px', border: '1px solid #c5cae9', borderRadius: 4, fontSize: '0.78rem', outline: 'none' }} />
+                                        <label style={{ display: 'block', fontSize: '0.95rem', fontWeight: '700', marginBottom: 4, color: '#555' }}>Etiqueta valor 5</label>
+                                        <input type="text" value={form.etiquetaMax} onChange={(e) => setForm({ ...form, etiquetaMax: e.target.value })} placeholder="Ej: Insuficiente" style={{ width: '100%', padding: '7px 10px', border: '1px solid #c5cae9', borderRadius: 4, fontSize: '0.95rem', outline: 'none' }} />
                                     </div>
                                 </div>
                             )}
                             {form.tipo === 'opcion_multiple' && (
                                 <div style={{ marginBottom: 10 }}>
-                                    <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: '700', marginBottom: 6, color: '#555' }}>Opciones compartidas (columnas de la tabla) *</label>
+                                    <label style={{ display: 'block', fontSize: '0.95rem', fontWeight: '700', marginBottom: 6, color: '#555' }}>Opciones compartidas (columnas de la tabla) *</label>
                                     {form.opciones.map((op, i) => (
                                         <div key={i} style={{ display: 'flex', gap: 6, marginBottom: 5 }}>
-                                            <div style={{ width: 22, height: 22, borderRadius: '50%', background: '#e8eaf6', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.65rem', fontWeight: '700', color: '#3d5afe', flexShrink: 0 }}>{i + 1}</div>
-                                            <input type="text" value={op} onChange={(e) => { const tmp = [...form.opciones]; tmp[i] = e.target.value; setForm({ ...form, opciones: tmp }); }} placeholder={`Opción ${i + 1}`} style={{ flex: 1, padding: '6px 10px', border: '1px solid #c5cae9', borderRadius: 4, fontSize: '0.78rem', outline: 'none' }} />
-                                            {form.opciones.length > 2 && <button onClick={() => setForm({ ...form, opciones: form.opciones.filter((_, j) => j !== i) })} style={{ width: 24, height: 24, borderRadius: 4, border: '1px solid #ffcdd2', background: '#ffebee', color: '#c62828', cursor: 'pointer', fontSize: '0.6rem' }}>✕</button>}
+                                            <div style={{ width: 22, height: 22, borderRadius: '50%', background: '#e8eaf6', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.85rem', fontWeight: '700', color: '#3d5afe', flexShrink: 0 }}>{i + 1}</div>
+                                            <input type="text" value={op} onChange={(e) => { const tmp = [...form.opciones]; tmp[i] = e.target.value; setForm({ ...form, opciones: tmp }); }} placeholder={`Opción ${i + 1}`} style={{ flex: 1, padding: '6px 10px', border: '1px solid #c5cae9', borderRadius: 4, fontSize: '0.95rem', outline: 'none' }} />
+                                            {form.opciones.length > 2 && <button onClick={() => setForm({ ...form, opciones: form.opciones.filter((_, j) => j !== i) })} style={{ width: 24, height: 24, borderRadius: 4, border: '1px solid #ffcdd2', background: '#ffebee', color: '#c62828', cursor: 'pointer', fontSize: '0.85rem' }}>✕</button>}
                                         </div>
                                     ))}
-                                    <button onClick={() => setForm({ ...form, opciones: [...form.opciones, ''] })} style={{ marginTop: 4, fontSize: '0.72rem', padding: '5px 9px', background: '#e8eaf6', color: '#3d5afe', border: '1px solid #c5cae9', borderRadius: 4, cursor: 'pointer', fontWeight: '600' }}>+ Columna</button>
+                                    <button onClick={() => setForm({ ...form, opciones: [...form.opciones, ''] })} style={{ marginTop: 4, fontSize: '0.95rem', padding: '5px 9px', background: '#e8eaf6', color: '#3d5afe', border: '1px solid #c5cae9', borderRadius: 4, cursor: 'pointer', fontWeight: '600' }}>+ Columna</button>
                                 </div>
                             )}
                             <SeccionItemsMatriz items={form.items} onChange={(newItems) => setForm((f) => ({ ...f, items: newItems }))} />
                             {form.items.filter(i => i.trim()).length > 0 && (
                                 <div style={{ marginTop: 12, padding: '10px', background: 'white', border: '1px solid #c5cae9', borderRadius: 6 }}>
-                                    <p style={{ margin: '0 0 6px', fontSize: '0.7rem', fontWeight: '700', color: '#3d5afe' }}>👁️ Previsualización</p>
+                                    <p style={{ margin: '0 0 6px', fontSize: '0.95rem', fontWeight: '700', color: '#3d5afe' }}>👁️ Previsualización</p>
                                     <div style={{ overflowX: 'auto' }}>
-                                        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.7rem' }}>
+                                        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.95rem' }}>
                                             <thead>
                                                 <tr style={{ borderBottom: '1px solid #e8eaf6' }}>
                                                     <th style={{ padding: '4px 6px', textAlign: 'left', width: '40%' }}></th>
@@ -846,18 +846,18 @@ const FormularioPregunta = ({ visible, encuestaId, preguntaEditar, onGuardar, on
                     {form.tipo === 'escala' && !form.esMatriz && (
                         <div style={{ marginBottom: 12, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
                             <div>
-                                <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: '700', marginBottom: 4 }}>Etiqueta mínimo (1)</label>
-                                <input type="text" value={form.etiquetaMin} onChange={(e) => setForm({ ...form, etiquetaMin: e.target.value })} placeholder="Ej: Muy malo" style={{ width: '100%', padding: '8px 10px', border: '1px solid #dee2e6', borderRadius: 4, fontSize: '0.8rem', outline: 'none' }} />
+                                <label style={{ display: 'block', fontSize: '0.95rem', fontWeight: '700', marginBottom: 4 }}>Etiqueta mínimo (1)</label>
+                                <input type="text" value={form.etiquetaMin} onChange={(e) => setForm({ ...form, etiquetaMin: e.target.value })} placeholder="Ej: Muy malo" style={{ width: '100%', padding: '8px 10px', border: '1px solid #dee2e6', borderRadius: 4, fontSize: '1rem', outline: 'none' }} />
                             </div>
                             <div>
-                                <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: '700', marginBottom: 4 }}>Etiqueta máximo (5)</label>
-                                <input type="text" value={form.etiquetaMax} onChange={(e) => setForm({ ...form, etiquetaMax: e.target.value })} placeholder="Ej: Excelente" style={{ width: '100%', padding: '8px 10px', border: '1px solid #dee2e6', borderRadius: 4, fontSize: '0.8rem', outline: 'none' }} />
+                                <label style={{ display: 'block', fontSize: '0.95rem', fontWeight: '700', marginBottom: 4 }}>Etiqueta máximo (5)</label>
+                                <input type="text" value={form.etiquetaMax} onChange={(e) => setForm({ ...form, etiquetaMax: e.target.value })} placeholder="Ej: Excelente" style={{ width: '100%', padding: '8px 10px', border: '1px solid #dee2e6', borderRadius: 4, fontSize: '1rem', outline: 'none' }} />
                             </div>
                         </div>
                     )}
                     {form.tipo === 'si_no' && (
                         <div style={{ marginBottom: 12, padding: 12, background: '#fff8e1', border: '1px solid #ffe082', borderRadius: 6 }}>
-                            <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: '0.8rem', fontWeight: '700', marginBottom: 12 }}>
+                            <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: '1rem', fontWeight: '700', marginBottom: 12 }}>
                                 <input type="checkbox" checked={form.tieneCondicional} onChange={(e) => setForm({ ...form, tieneCondicional: e.target.checked })} />
                                 ¿Tiene preguntas condicionales según la respuesta?
                             </label>
@@ -872,13 +872,13 @@ const FormularioPregunta = ({ visible, encuestaId, preguntaEditar, onGuardar, on
                     {!esTitulo && (
                         <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', marginBottom: 10 }}>
                             <input type="checkbox" checked={form.obligatoria} onChange={(e) => setForm({ ...form, obligatoria: e.target.checked })} />
-                            <span style={{ fontSize: '0.8rem', fontWeight: '700' }}>Obligatoria</span>
+                            <span style={{ fontSize: '1rem', fontWeight: '700' }}>Obligatoria</span>
                         </label>
                     )}
-                    {error && <div style={{ padding: '10px', background: '#ffebee', color: '#c62828', border: '1px solid #ffcdd2', borderRadius: 6, fontSize: '0.75rem', marginBottom: 10 }}>⚠️ {error}</div>}
+                    {error && <div style={{ padding: '10px', background: '#ffebee', color: '#c62828', border: '1px solid #ffcdd2', borderRadius: 6, fontSize: '0.95rem', marginBottom: 10 }}>⚠️ {error}</div>}
                     <div style={{ display: 'flex', gap: 8 }}>
-                        <button onClick={onCerrar} style={{ flex: 1, padding: '8px', background: '#f0f0f0', border: 'none', borderRadius: 6, cursor: 'pointer', fontWeight: '600', fontSize: '0.8rem' }}>Cancelar</button>
-                        <button onClick={manejarGuardar} disabled={guardando} style={{ flex: 1, padding: '8px', background: 'var(--color-espoch-rojo)', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontWeight: '600', fontSize: '0.8rem' }}>{guardando ? 'Guardando...' : esEdicion ? 'Actualizar' : 'Guardar'}</button>
+                        <button onClick={onCerrar} style={{ flex: 1, padding: '8px', background: '#f0f0f0', border: 'none', borderRadius: 6, cursor: 'pointer', fontWeight: '600', fontSize: '1rem' }}>Cancelar</button>
+                        <button onClick={manejarGuardar} disabled={guardando} style={{ flex: 1, padding: '8px', background: '#BC0613', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontWeight: '600', fontSize: '1rem' }}>{guardando ? 'Guardando...' : esEdicion ? 'Actualizar' : 'Guardar'}</button>
                     </div>
                 </div>
             </div>
@@ -971,13 +971,13 @@ const ModalPreguntas = ({ visible, encuestaId, onCerrar }) => {
         <div onClick={onCerrar} style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
             <div onClick={(e) => e.stopPropagation()} style={{ background: 'white', borderRadius: 12, width: '95%', maxWidth: 900, maxHeight: '85vh', overflow: 'auto', boxShadow: '0 10px 30px rgba(0,0,0,0.3)' }}>
                 <div style={{ padding: '16px 20px', borderBottom: '2px solid #e9ecef', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <h2 style={{ margin: 0, fontSize: '1rem', fontWeight: '700' }}>Preguntas</h2>
-                    <button onClick={onCerrar} style={{ background: 'none', border: 'none', fontSize: '1.3rem', cursor: 'pointer', color: '#adb5bd' }}>×</button>
+                    <h2 style={{ margin: 0, fontSize: '1.1rem', fontWeight: '700' }}>Preguntas</h2>
+                    <button onClick={onCerrar} style={{ background: 'none', border: 'none', fontSize: '1.4rem', cursor: 'pointer', color: '#adb5bd' }}>×</button>
                 </div>
                 <div style={{ padding: '16px 20px' }}>
-                    <button onClick={() => setModalForm({ visible: true, pregunta: null })} style={{ width: '100%', padding: '10px', marginBottom: 8, background: 'var(--color-espoch-rojo)', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontWeight: '600', fontSize: '0.85rem' }}>+ Agregar pregunta</button>
+                    <button onClick={() => setModalForm({ visible: true, pregunta: null })} style={{ width: '100%', padding: '10px', marginBottom: 8, background: '#BC0613', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontWeight: '600', fontSize: '1rem' }}>+ Agregar pregunta</button>
                     {preguntas.length > 1 && (
-                        <p style={{ margin: '0 0 12px', fontSize: '0.7rem', color: '#6c757d', textAlign: 'center', fontStyle: 'italic' }}>
+                        <p style={{ margin: '0 0 12px', fontSize: '0.95rem', color: '#6c757d', textAlign: 'center', fontStyle: 'italic' }}>
                             <span style={{ color: '#adb5bd', fontWeight: 700, marginRight: 4 }}>⋮⋮</span>
                             Arrastra desde el icono para reordenar las preguntas
                         </p>
@@ -1002,8 +1002,8 @@ const ModalPreguntas = ({ visible, encuestaId, onCerrar }) => {
                                             }}
                                         >
                                             <div style={{
-                                                border: `1px solid ${dragOverId === preg._id && draggingId !== preg._id ? 'var(--color-espoch-rojo)' : (preg.esMatriz ? '#c5cae9' : '#dee2e6')}`,
-                                                borderTop: dragOverId === preg._id && draggingId !== preg._id ? '3px solid var(--color-espoch-rojo)' : (preg.esMatriz ? '1px solid #c5cae9' : '1px solid #dee2e6'),
+                                                border: `1px solid ${dragOverId === preg._id && draggingId !== preg._id ? '#BC0613' : (preg.esMatriz ? '#c5cae9' : '#dee2e6')}`,
+                                                borderTop: dragOverId === preg._id && draggingId !== preg._id ? '3px solid #BC0613' : (preg.esMatriz ? '1px solid #c5cae9' : '1px solid #dee2e6'),
                                                 borderRadius: 8,
                                                 padding: 10,
                                                 background: preg.esMatriz ? '#f8f9ff' : '#f8f9fa',
@@ -1015,14 +1015,14 @@ const ModalPreguntas = ({ visible, encuestaId, onCerrar }) => {
                                                         style={{
                                                             display: 'flex', alignItems: 'center', justifyContent: 'center',
                                                             width: 22, alignSelf: 'stretch', cursor: 'grab',
-                                                            color: '#adb5bd', fontSize: '1.05rem', userSelect: 'none',
+                                                            color: '#adb5bd', fontSize: '1.1rem', userSelect: 'none',
                                                             flexShrink: 0, fontWeight: 700, letterSpacing: -2,
                                                         }}
                                                     >⋮⋮</div>
-                                                    <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'var(--color-espoch-rojo)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: '700', flexShrink: 0 }}>{idx + 1}</div>
+                                                    <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#BC0613', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.95rem', fontWeight: '700', flexShrink: 0 }}>{idx + 1}</div>
                                                     <div style={{ flex: 1 }}>
-                                                        <p style={{ margin: '0 0 3px', fontSize: '0.8rem', fontWeight: '700', color: '#2c3e50' }}>{preg.texto}</p>
-                                                        <p style={{ margin: 0, fontSize: '0.7rem', color: '#666' }}>
+                                                        <p style={{ margin: '0 0 3px', fontSize: '1rem', fontWeight: '700', color: '#2c3e50' }}>{preg.texto}</p>
+                                                        <p style={{ margin: 0, fontSize: '0.95rem', color: '#666' }}>
                                                             {labelTipo(preg.tipo, preg.esMatriz)}
                                                             {preg.obligatoria && ' • Obligatoria'}
                                                             {preg.tieneCondicional && ' • Condicional'}
@@ -1031,9 +1031,9 @@ const ModalPreguntas = ({ visible, encuestaId, onCerrar }) => {
                                                         {preg.esMatriz && preg.items?.length > 0 && (
                                                             <div style={{ marginTop: 4, display: 'flex', flexWrap: 'wrap', gap: 4 }}>
                                                                 {preg.items.slice(0, 3).map((item, j) => (
-                                                                    <span key={j} style={{ fontSize: '0.65rem', padding: '2px 6px', background: '#e8eaf6', color: '#3d5afe', borderRadius: 3, maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item}</span>
+                                                                    <span key={j} style={{ fontSize: '0.85rem', padding: '2px 6px', background: '#e8eaf6', color: '#3d5afe', borderRadius: 3, maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item}</span>
                                                                 ))}
-                                                                {preg.items.length > 3 && <span style={{ fontSize: '0.65rem', color: '#adb5bd' }}>+{preg.items.length - 3} más</span>}
+                                                                {preg.items.length > 3 && <span style={{ fontSize: '0.85rem', color: '#adb5bd' }}>+{preg.items.length - 3} más</span>}
                                                             </div>
                                                         )}
                                                     </div>
@@ -1042,8 +1042,8 @@ const ModalPreguntas = ({ visible, encuestaId, onCerrar }) => {
                                                         draggable={false}
                                                         onDragStart={(e) => e.stopPropagation()}
                                                     >
-                                                        <button onClick={() => setModalForm({ visible: true, pregunta: preg })} style={{ width: 26, height: 26, borderRadius: 4, border: '1px solid #bbdefb', background: '#e3f2fd', cursor: 'pointer', color: '#1565c0', fontSize: '0.65rem' }}>✏️</button>
-                                                        <button onClick={() => setConfirmarElim({ visible: true, pregId: preg._id })} style={{ width: 26, height: 26, borderRadius: 4, border: '1px solid #ffcdd2', background: '#ffebee', cursor: 'pointer', color: '#c62828', fontSize: '0.65rem' }}>🗑</button>
+                                                        <button onClick={() => setModalForm({ visible: true, pregunta: preg })} style={{ width: 26, height: 26, borderRadius: 4, border: '1px solid #bbdefb', background: '#e3f2fd', cursor: 'pointer', color: '#1565c0', fontSize: '0.85rem' }}>✏️</button>
+                                                        <button onClick={() => setConfirmarElim({ visible: true, pregId: preg._id })} style={{ width: 26, height: 26, borderRadius: 4, border: '1px solid #ffcdd2', background: '#ffebee', cursor: 'pointer', color: '#c62828', fontSize: '0.85rem' }}>🗑</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1051,22 +1051,22 @@ const ModalPreguntas = ({ visible, encuestaId, onCerrar }) => {
                                                 <div style={{ marginLeft: 30, marginTop: 6, paddingLeft: 12, borderLeft: '3px solid #f57f17' }}>
                                                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                                                         <div>
-                                                            <p style={{ margin: '0 0 6px', fontSize: '0.7rem', fontWeight: '700', color: '#2e7d32' }}>Si responde SÍ:</p>
+                                                            <p style={{ margin: '0 0 6px', fontSize: '0.95rem', fontWeight: '700', color: '#2e7d32' }}>Si responde SÍ:</p>
                                                             {preg.preguntasCondicionalSi?.length > 0 ? preg.preguntasCondicionalSi.map((sub, j) => (
-                                                                <div key={j} style={{ padding: 6, background: '#e8f5e9', border: '1px solid #c8e6c9', borderRadius: 4, marginBottom: 4, fontSize: '0.7rem' }}>
+                                                                <div key={j} style={{ padding: 6, background: '#e8f5e9', border: '1px solid #c8e6c9', borderRadius: 4, marginBottom: 4, fontSize: '0.95rem' }}>
                                                                     <p style={{ margin: '0 0 2px', fontWeight: '600' }}>• {sub}</p>
-                                                                    <p style={{ margin: 0, fontSize: '0.65rem', color: '#666' }}>{labelTipo(preg.tiposCondicionalSi?.[j])}</p>
+                                                                    <p style={{ margin: 0, fontSize: '0.85rem', color: '#666' }}>{labelTipo(preg.tiposCondicionalSi?.[j])}</p>
                                                                 </div>
-                                                            )) : <p style={{ fontSize: '0.7rem', color: '#999', fontStyle: 'italic' }}>Sin preguntas</p>}
+                                                            )) : <p style={{ fontSize: '0.95rem', color: '#999', fontStyle: 'italic' }}>Sin preguntas</p>}
                                                         </div>
                                                         <div>
-                                                            <p style={{ margin: '0 0 6px', fontSize: '0.7rem', fontWeight: '700', color: '#c62828' }}>Si responde NO:</p>
+                                                            <p style={{ margin: '0 0 6px', fontSize: '0.95rem', fontWeight: '700', color: '#c62828' }}>Si responde NO:</p>
                                                             {preg.preguntasCondicionalNo?.length > 0 ? preg.preguntasCondicionalNo.map((sub, j) => (
-                                                                <div key={j} style={{ padding: 6, background: '#ffebee', border: '1px solid #ffcdd2', borderRadius: 4, marginBottom: 4, fontSize: '0.7rem' }}>
+                                                                <div key={j} style={{ padding: 6, background: '#ffebee', border: '1px solid #ffcdd2', borderRadius: 4, marginBottom: 4, fontSize: '0.95rem' }}>
                                                                     <p style={{ margin: '0 0 2px', fontWeight: '600' }}>• {sub}</p>
-                                                                    <p style={{ margin: 0, fontSize: '0.65rem', color: '#666' }}>{labelTipo(preg.tiposCondicionalNo?.[j])}</p>
+                                                                    <p style={{ margin: 0, fontSize: '0.85rem', color: '#666' }}>{labelTipo(preg.tiposCondicionalNo?.[j])}</p>
                                                                 </div>
-                                                            )) : <p style={{ fontSize: '0.7rem', color: '#999', fontStyle: 'italic' }}>Continúa normalmente</p>}
+                                                            )) : <p style={{ fontSize: '0.95rem', color: '#999', fontStyle: 'italic' }}>Continúa normalmente</p>}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1140,39 +1140,39 @@ const ModalEncuesta = ({ visible, encuesta, tipoActivo, onGuardar, onCerrar }) =
         <div onClick={onCerrar} style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
             <div onClick={(e) => e.stopPropagation()} style={{ background: 'white', borderRadius: 12, width: '90%', maxWidth: 540, maxHeight: '90vh', overflow: 'auto', boxShadow: '0 10px 30px rgba(0,0,0,0.3)' }}>
                 <div style={{ padding: '16px 20px', borderBottom: '2px solid #e9ecef', display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'sticky', top: 0, background: 'white', zIndex: 1 }}>
-                    <h2 style={{ margin: 0, fontSize: '1rem', fontWeight: '700' }}>{encuesta ? 'Editar' : 'Nueva'} Encuesta — {tipoActivo === 'empleadores' ? 'Empleadores' : 'Graduados'}</h2>
-                    <button onClick={onCerrar} style={{ background: 'none', border: 'none', fontSize: '1.3rem', cursor: 'pointer', color: '#adb5bd' }}>×</button>
+                    <h2 style={{ margin: 0, fontSize: '1.1rem', fontWeight: '700' }}>{encuesta ? 'Editar' : 'Nueva'} Encuesta — {tipoActivo === 'empleadores' ? 'Empleadores' : 'Graduados'}</h2>
+                    <button onClick={onCerrar} style={{ background: 'none', border: 'none', fontSize: '1.4rem', cursor: 'pointer', color: '#adb5bd' }}>×</button>
                 </div>
                 <div style={{ padding: '16px 20px' }}>
                     <div style={{ marginBottom: 12 }}>
-                        <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '700', marginBottom: 4 }}>Título *</label>
-                        <input type="text" value={form.titulo} onChange={(e) => setForm({ ...form, titulo: e.target.value })} placeholder="Título de la encuesta" style={{ width: '100%', padding: '10px', border: '1px solid #dee2e6', borderRadius: 6, fontSize: '0.85rem', outline: 'none' }} />
+                        <label style={{ display: 'block', fontSize: '1rem', fontWeight: '700', marginBottom: 4 }}>Título *</label>
+                        <input type="text" value={form.titulo} onChange={(e) => setForm({ ...form, titulo: e.target.value })} placeholder="Título de la encuesta" style={{ width: '100%', padding: '10px', border: '1px solid #dee2e6', borderRadius: 6, fontSize: '1rem', outline: 'none' }} />
                     </div>
                     <div style={{ marginBottom: 12 }}>
-                        <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '700', marginBottom: 4 }}>
+                        <label style={{ display: 'block', fontSize: '1rem', fontWeight: '700', marginBottom: 4 }}>
                             Consentimiento Informado *
                             <span style={{ fontWeight: '400', color: '#adb5bd', marginLeft: 6 }}>— texto que verá el encuestado antes de responder</span>
                         </label>
-                        <textarea value={form.consentimientoInformado} onChange={(e) => setForm({ ...form, consentimientoInformado: e.target.value })} placeholder="Escribe aquí el texto del consentimiento informado..." style={{ width: '100%', padding: '10px', border: '1px solid #dee2e6', borderRadius: 6, fontSize: '0.82rem', minHeight: 120, outline: 'none', resize: 'vertical', lineHeight: 1.5 }} />
-                        <p style={{ margin: '4px 0 0', fontSize: '0.7rem', color: '#adb5bd' }}>{form.consentimientoInformado.length}/3000 caracteres</p>
+                        <textarea value={form.consentimientoInformado} onChange={(e) => setForm({ ...form, consentimientoInformado: e.target.value })} placeholder="Escribe aquí el texto del consentimiento informado..." style={{ width: '100%', padding: '10px', border: '1px solid #dee2e6', borderRadius: 6, fontSize: '1rem', minHeight: 120, outline: 'none', resize: 'vertical', lineHeight: 1.5 }} />
+                        <p style={{ margin: '4px 0 0', fontSize: '0.95rem', color: '#adb5bd' }}>{form.consentimientoInformado.length}/3000 caracteres</p>
                     </div>
                     <div style={{ marginBottom: 12 }}>
-                        <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '700', marginBottom: 4 }}>Descripción interna</label>
-                        <textarea value={form.descripcion} onChange={(e) => setForm({ ...form, descripcion: e.target.value })} placeholder="Notas internas (no visible para el encuestado)" style={{ width: '100%', padding: '10px', border: '1px solid #dee2e6', borderRadius: 6, fontSize: '0.85rem', minHeight: 50, outline: 'none', resize: 'vertical' }} />
+                        <label style={{ display: 'block', fontSize: '1rem', fontWeight: '700', marginBottom: 4 }}>Descripción interna</label>
+                        <textarea value={form.descripcion} onChange={(e) => setForm({ ...form, descripcion: e.target.value })} placeholder="Notas internas (no visible para el encuestado)" style={{ width: '100%', padding: '10px', border: '1px solid #dee2e6', borderRadius: 6, fontSize: '1rem', minHeight: 50, outline: 'none', resize: 'vertical' }} />
                     </div>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 12 }}>
                         <div>
-                            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '700', marginBottom: 4 }}>Inicio *</label>
-                            <input type="date" value={form.fechaInicio} onChange={(e) => setForm({ ...form, fechaInicio: e.target.value })} style={{ width: '100%', padding: '10px', border: '1px solid #dee2e6', borderRadius: 6, fontSize: '0.85rem', outline: 'none' }} />
+                            <label style={{ display: 'block', fontSize: '1rem', fontWeight: '700', marginBottom: 4 }}>Inicio *</label>
+                            <input type="date" value={form.fechaInicio} onChange={(e) => setForm({ ...form, fechaInicio: e.target.value })} style={{ width: '100%', padding: '10px', border: '1px solid #dee2e6', borderRadius: 6, fontSize: '1rem', outline: 'none' }} />
                         </div>
                         <div>
-                            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '700', marginBottom: 4 }}>Cierre *</label>
-                            <input type="date" value={form.fechaCierre} onChange={(e) => setForm({ ...form, fechaCierre: e.target.value })} style={{ width: '100%', padding: '10px', border: '1px solid #dee2e6', borderRadius: 6, fontSize: '0.85rem', outline: 'none' }} />
+                            <label style={{ display: 'block', fontSize: '1rem', fontWeight: '700', marginBottom: 4 }}>Cierre *</label>
+                            <input type="date" value={form.fechaCierre} onChange={(e) => setForm({ ...form, fechaCierre: e.target.value })} style={{ width: '100%', padding: '10px', border: '1px solid #dee2e6', borderRadius: 6, fontSize: '1rem', outline: 'none' }} />
                         </div>
                     </div>
                     <div style={{ marginBottom: 12 }}>
-                        <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '700', marginBottom: 4 }}>Estado</label>
-                        <select value={form.estado} onChange={(e) => setForm({ ...form, estado: e.target.value })} style={{ width: '100%', padding: '10px', border: '1px solid #dee2e6', borderRadius: 6, fontSize: '0.85rem', outline: 'none' }}>
+                        <label style={{ display: 'block', fontSize: '1rem', fontWeight: '700', marginBottom: 4 }}>Estado</label>
+                        <select value={form.estado} onChange={(e) => setForm({ ...form, estado: e.target.value })} style={{ width: '100%', padding: '10px', border: '1px solid #dee2e6', borderRadius: 6, fontSize: '1rem', outline: 'none' }}>
                             <option value="borrador">Borrador</option>
                             <option value="activa">Activa</option>
                             <option value="cerrada">Cerrada</option>
@@ -1182,14 +1182,14 @@ const ModalEncuesta = ({ visible, encuesta, tipoActivo, onGuardar, onCerrar }) =
                     {/* AUDIENCIA — años de graduación destinatarios (solo encuestas de graduados) */}
                     {tipoActivo === 'graduados' && (
                         <div style={{ marginBottom: 12, padding: 12, background: '#f0f7ff', border: '1px solid #bee3f8', borderRadius: 6 }}>
-                            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '700', marginBottom: 4, color: '#1565c0' }}>
+                            <label style={{ display: 'block', fontSize: '1rem', fontWeight: '700', marginBottom: 4, color: '#1565c0' }}>
                                 Dirigida a — Años de graduación
                             </label>
-                            <p style={{ margin: '0 0 8px', fontSize: '0.7rem', color: '#4a6fa5', lineHeight: 1.45 }}>
+                            <p style={{ margin: '0 0 8px', fontSize: '0.95rem', color: '#4a6fa5', lineHeight: 1.45 }}>
                                 Marca los años de graduación que deben ver esta encuesta. Si <strong>NO marcas ninguno</strong>, la encuesta se mostrará a <strong>TODOS</strong> los graduados verificados.
                             </p>
                             {aniosDisponibles.length === 0 ? (
-                                <p style={{ margin: 0, fontSize: '0.72rem', color: '#7f8c8d', fontStyle: 'italic' }}>
+                                <p style={{ margin: 0, fontSize: '0.95rem', color: '#7f8c8d', fontStyle: 'italic' }}>
                                     Aún no hay graduados con tesis verificada y año registrado.
                                 </p>
                             ) : (
@@ -1204,7 +1204,7 @@ const ModalEncuesta = ({ visible, encuesta, tipoActivo, onGuardar, onCerrar }) =
                                                     background: sel ? '#1565c0' : 'white',
                                                     color: sel ? 'white' : '#1565c0',
                                                     border: `1px solid ${sel ? '#1565c0' : '#bee3f8'}`,
-                                                    fontSize: '0.75rem', fontWeight: 700,
+                                                    fontSize: '0.95rem', fontWeight: 700,
                                                     transition: 'all 0.12s',
                                                 }}>
                                                     <input type="checkbox" checked={!!sel} onChange={() => toggleAnio(anio)} style={{ accentColor: '#1565c0' }} />
@@ -1213,7 +1213,7 @@ const ModalEncuesta = ({ visible, encuesta, tipoActivo, onGuardar, onCerrar }) =
                                             );
                                         })}
                                     </div>
-                                    <p style={{ margin: '8px 0 0', fontSize: '0.7rem', color: form.aniosDirigidos?.length > 0 ? '#1565c0' : '#7f8c8d', fontStyle: 'italic', fontWeight: 600 }}>
+                                    <p style={{ margin: '8px 0 0', fontSize: '0.95rem', color: form.aniosDirigidos?.length > 0 ? '#1565c0' : '#7f8c8d', fontStyle: 'italic', fontWeight: 600 }}>
                                         {form.aniosDirigidos?.length > 0
                                             ? `Solo verán esta encuesta los graduados de: ${form.aniosDirigidos.join(', ')}`
                                             : 'Esta encuesta se mostrará a TODOS los graduados verificados (todos los años).'}
@@ -1223,10 +1223,10 @@ const ModalEncuesta = ({ visible, encuesta, tipoActivo, onGuardar, onCerrar }) =
                         </div>
                     )}
 
-                    {error && <div style={{ padding: '10px', background: '#ffebee', color: '#c62828', border: '1px solid #ffcdd2', borderRadius: 6, fontSize: '0.75rem', marginBottom: 10 }}>⚠️ {error}</div>}
+                    {error && <div style={{ padding: '10px', background: '#ffebee', color: '#c62828', border: '1px solid #ffcdd2', borderRadius: 6, fontSize: '0.95rem', marginBottom: 10 }}>⚠️ {error}</div>}
                     <div style={{ display: 'flex', gap: 8 }}>
-                        <button onClick={onCerrar} style={{ flex: 1, padding: '8px', background: '#f0f0f0', border: 'none', borderRadius: 6, cursor: 'pointer', fontWeight: '600', fontSize: '0.8rem' }}>Cancelar</button>
-                        <button onClick={manejarGuardar} style={{ flex: 1, padding: '8px', background: 'var(--color-espoch-rojo)', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontWeight: '600', fontSize: '0.8rem' }}>Guardar</button>
+                        <button onClick={onCerrar} style={{ flex: 1, padding: '8px', background: '#f0f0f0', border: 'none', borderRadius: 6, cursor: 'pointer', fontWeight: '600', fontSize: '1rem' }}>Cancelar</button>
+                        <button onClick={manejarGuardar} style={{ flex: 1, padding: '8px', background: '#BC0613', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontWeight: '600', fontSize: '1rem' }}>Guardar</button>
                     </div>
                 </div>
             </div>
@@ -1347,9 +1347,9 @@ const GestionEncuestas = () => {
 
             {/* TABS */}
             <div style={{ display: 'flex', borderBottom: '3px solid #e9ecef', marginBottom: 14 }}>
-                <button style={{ flex: 1, padding: '12px', background: 'transparent', border: 'none', cursor: 'pointer', fontSize: '0.9rem', fontWeight: '700', color: tipoActivo === 'graduados' ? 'var(--color-espoch-rojo)' : '#adb5bd', borderBottom: tipoActivo === 'graduados' ? '3px solid var(--color-espoch-rojo)' : 'none' }}
+                <button style={{ flex: 1, padding: '12px', background: 'transparent', border: 'none', cursor: 'pointer', fontSize: '1.1rem', fontWeight: '700', color: tipoActivo === 'graduados' ? '#BC0613' : '#adb5bd', borderBottom: tipoActivo === 'graduados' ? '3px solid #BC0613' : 'none' }}
                     onClick={() => cambiarTipo('graduados')}>Graduados</button>
-                <button style={{ flex: 1, padding: '12px', background: 'transparent', border: 'none', cursor: 'pointer', fontSize: '0.9rem', fontWeight: '700', color: tipoActivo === 'empleadores' ? 'var(--color-espoch-rojo)' : '#adb5bd', borderBottom: tipoActivo === 'empleadores' ? '3px solid var(--color-espoch-rojo)' : 'none' }}
+                <button style={{ flex: 1, padding: '12px', background: 'transparent', border: 'none', cursor: 'pointer', fontSize: '1.1rem', fontWeight: '700', color: tipoActivo === 'empleadores' ? '#BC0613' : '#adb5bd', borderBottom: tipoActivo === 'empleadores' ? '3px solid #BC0613' : 'none' }}
                     onClick={() => cambiarTipo('empleadores')}>Empleadores</button>
             </div>
 
@@ -1362,8 +1362,8 @@ const GestionEncuestas = () => {
                     { label: 'RESPUESTAS', val: totalRespuestas, bg: '#e3f2fd', border: '#bbdefb', color: '#1565c0' },
                 ].map((s) => (
                     <div key={s.label} style={{ background: s.bg, border: `1px solid ${s.border}`, borderRadius: 8, padding: 10, textAlign: 'center' }}>
-                        <p style={{ margin: '0 0 4px', fontSize: '0.7rem', fontWeight: '700', color: s.color }}>{s.label}</p>
-                        <p style={{ margin: 0, fontSize: '1.6rem', fontWeight: '700', color: s.color }}>{fmtNum(s.val)}</p>
+                        <p style={{ margin: '0 0 4px', fontSize: '0.95rem', fontWeight: '700', color: s.color }}>{s.label}</p>
+                        <p style={{ margin: 0, fontSize: '1.73rem', fontWeight: '700', color: s.color }}>{fmtNum(s.val)}</p>
                     </div>
                 ))}
             </div>
@@ -1371,24 +1371,24 @@ const GestionEncuestas = () => {
             {/* TABLA */}
             <div style={{ backgroundColor: 'white', borderRadius: 10, padding: 14, border: '1px solid #e9ecef' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-                    <h3 style={{ margin: 0, fontSize: '0.95rem', fontWeight: '700' }}>Encuestas ({total})</h3>
-                    <button onClick={() => { setEncuestaEditar(null); setModalVisible(true); }} style={{ padding: '8px 14px', background: 'var(--color-espoch-rojo)', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontSize: '0.8rem', fontWeight: '700' }}>+ Nueva</button>
+                    <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: '700' }}>Encuestas ({total})</h3>
+                    <button onClick={() => { setEncuestaEditar(null); setModalVisible(true); }} style={{ padding: '8px 14px', background: '#BC0613', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontSize: '1rem', fontWeight: '700' }}>+ Nueva</button>
                 </div>
                 <div style={{ display: 'flex', gap: 8, marginBottom: 10 }}>
-                    <input type="text" placeholder="Buscar..." value={buscar} onChange={(e) => { setBuscar(e.target.value); setPagina(1); }} style={{ flex: 1, padding: '8px 10px', border: '1px solid #dee2e6', borderRadius: 6, fontSize: '0.75rem', outline: 'none' }} />
-                    <select value={filtroEstado} onChange={(e) => { setFiltroEstado(e.target.value); setPagina(1); }} style={{ padding: '8px 10px', border: '1px solid #dee2e6', borderRadius: 6, fontSize: '0.75rem', outline: 'none' }}>
+                    <input type="text" placeholder="Buscar..." value={buscar} onChange={(e) => { setBuscar(e.target.value); setPagina(1); }} style={{ flex: 1, padding: '8px 10px', border: '1px solid #dee2e6', borderRadius: 6, fontSize: '0.95rem', outline: 'none' }} />
+                    <select value={filtroEstado} onChange={(e) => { setFiltroEstado(e.target.value); setPagina(1); }} style={{ padding: '8px 10px', border: '1px solid #dee2e6', borderRadius: 6, fontSize: '0.95rem', outline: 'none' }}>
                         <option value="">Todos</option>
                         <option value="borrador">Borrador</option>
                         <option value="activa">Activa</option>
                         <option value="cerrada">Cerrada</option>
                     </select>
                 </div>
-                {error && <div style={{ padding: 8, background: '#ffebee', color: '#c62828', border: '1px solid #ffcdd2', borderRadius: 6, fontSize: '0.7rem', marginBottom: 10 }}>⚠️ {error}</div>}
-                {loading ? <p style={{ textAlign: 'center', color: '#adb5bd', fontSize: '0.75rem' }}>Cargando...</p>
-                    : encuestas.length === 0 ? <p style={{ textAlign: 'center', color: '#adb5bd', padding: '15px', fontSize: '0.75rem' }}>Sin encuestas</p>
+                {error && <div style={{ padding: 8, background: '#ffebee', color: '#c62828', border: '1px solid #ffcdd2', borderRadius: 6, fontSize: '0.95rem', marginBottom: 10 }}>⚠️ {error}</div>}
+                {loading ? <p style={{ textAlign: 'center', color: '#adb5bd', fontSize: '0.95rem' }}>Cargando...</p>
+                    : encuestas.length === 0 ? <p style={{ textAlign: 'center', color: '#adb5bd', padding: '15px', fontSize: '0.95rem' }}>Sin encuestas</p>
                         : (
                             <div style={{ overflowX: 'auto' }}>
-                                <table style={{ width: '100%', fontSize: '0.8rem', borderCollapse: 'collapse' }}>
+                                <table style={{ width: '100%', fontSize: '1rem', borderCollapse: 'collapse' }}>
                                     <thead>
                                         <tr style={{ borderBottom: '2px solid #f0f0f0' }}>
                                             {['TÍTULO', 'ESTADO', 'FECHAS', 'RESP.', 'ACCIONES'].map((h) => (
@@ -1402,8 +1402,8 @@ const GestionEncuestas = () => {
                                             return (
                                                 <tr key={enc._id} style={{ borderBottom: '1px solid #f0f0f0' }}>
                                                     <td style={{ padding: '8px', fontWeight: '600', color: '#2c3e50' }}>{enc.titulo}</td>
-                                                    <td style={{ padding: '8px' }}><span style={{ fontSize: '0.7rem', fontWeight: '700', padding: '3px 7px', borderRadius: '12px', background: estado.bg, color: estado.color }}>{estado.label}</span></td>
-                                                    <td style={{ padding: '8px', color: '#666', fontSize: '0.75rem' }}>{new Date(enc.fechaInicio).toLocaleDateString('es')} - {new Date(enc.fechaCierre).toLocaleDateString('es')}</td>
+                                                    <td style={{ padding: '8px' }}><span style={{ fontSize: '0.95rem', fontWeight: '700', padding: '3px 7px', borderRadius: '12px', background: estado.bg, color: estado.color }}>{estado.label}</span></td>
+                                                    <td style={{ padding: '8px', color: '#666', fontSize: '0.95rem' }}>{new Date(enc.fechaInicio).toLocaleDateString('es')} - {new Date(enc.fechaCierre).toLocaleDateString('es')}</td>
                                                     <td style={{ padding: '8px', fontWeight: '700' }}>{enc.totalRespuestas || 0}</td>
                                                     <td style={{ padding: '8px', textAlign: 'right' }}>
                                                         <div style={{ display: 'flex', gap: 4, alignItems: 'center', justifyContent: 'flex-end' }}>
@@ -1434,7 +1434,7 @@ const GestionEncuestas = () => {
                                                                         <path d="M13.73 21a2 2 0 0 1-3.46 0" />
                                                                     </svg>
                                                                     {tipoActivo === 'empleadores' && (
-                                                                        <span style={{ position: 'absolute', top: -4, right: -4, width: 10, height: 10, borderRadius: '50%', fontSize: '0.45rem', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: '700' }}>!</span>
+                                                                        <span style={{ position: 'absolute', top: -4, right: -4, width: 10, height: 10, borderRadius: '50%', fontSize: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: '700' }}>!</span>
                                                                     )}
                                                                 </button>
                                                             )}
@@ -1465,11 +1465,11 @@ const GestionEncuestas = () => {
                         )}
                 {!loading && paginas > 1 && (
                     <div style={{ display: 'flex', gap: 4, justifyContent: 'center', marginTop: 10 }}>
-                        <button onClick={() => { const p = Math.max(1, pagina - 1); setPagina(p); cargar(buscar, filtroEstado, p); }} disabled={pagina === 1} style={{ minWidth: 28, height: 28, borderRadius: 4, border: '1px solid #dee2e6', background: 'white', cursor: 'pointer', fontSize: '0.7rem' }}>◀</button>
+                        <button onClick={() => { const p = Math.max(1, pagina - 1); setPagina(p); cargar(buscar, filtroEstado, p); }} disabled={pagina === 1} style={{ minWidth: 28, height: 28, borderRadius: 4, border: '1px solid #dee2e6', background: 'white', cursor: 'pointer', fontSize: '0.95rem' }}>◀</button>
                         {Array.from({ length: paginas }, (_, i) => i + 1).map((p) => (
-                            <button key={p} onClick={() => { setPagina(p); cargar(buscar, filtroEstado, p); }} style={{ minWidth: 28, height: 28, borderRadius: 4, border: p === pagina ? '1px solid var(--color-espoch-rojo)' : '1px solid #dee2e6', background: p === pagina ? 'var(--color-espoch-rojo)' : 'white', color: p === pagina ? 'white' : '#666', cursor: 'pointer', fontSize: '0.7rem', fontWeight: p === pagina ? '700' : '400' }}>{p}</button>
+                            <button key={p} onClick={() => { setPagina(p); cargar(buscar, filtroEstado, p); }} style={{ minWidth: 28, height: 28, borderRadius: 4, border: p === pagina ? '1px solid #BC0613' : '1px solid #dee2e6', background: p === pagina ? '#BC0613' : 'white', color: p === pagina ? 'white' : '#666', cursor: 'pointer', fontSize: '0.95rem', fontWeight: p === pagina ? '700' : '400' }}>{p}</button>
                         ))}
-                        <button onClick={() => { const p = Math.min(paginas, pagina + 1); setPagina(p); cargar(buscar, filtroEstado, p); }} disabled={pagina === paginas} style={{ minWidth: 28, height: 28, borderRadius: 4, border: '1px solid #dee2e6', background: 'white', cursor: 'pointer', fontSize: '0.7rem' }}>▶</button>
+                        <button onClick={() => { const p = Math.min(paginas, pagina + 1); setPagina(p); cargar(buscar, filtroEstado, p); }} disabled={pagina === paginas} style={{ minWidth: 28, height: 28, borderRadius: 4, border: '1px solid #dee2e6', background: 'white', cursor: 'pointer', fontSize: '0.95rem' }}>▶</button>
                     </div>
                 )}
             </div>
@@ -1502,11 +1502,11 @@ const GestionEncuestas = () => {
             {confirmarDup.visible && (
                 <div onClick={() => setConfirmarDup({ visible: false, encId: null })} style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
                     <div onClick={(e) => e.stopPropagation()} style={{ background: 'white', borderRadius: 10, padding: '20px 24px', textAlign: 'center', maxWidth: 320, boxShadow: '0 10px 30px rgba(0,0,0,0.3)' }}>
-                        <h3 style={{ margin: '0 0 10px', fontSize: '0.95rem', fontWeight: '700' }}>Duplicar Encuesta</h3>
-                        <input type="text" value={nuevoTitulo} onChange={(e) => setNuevoTitulo(e.target.value)} placeholder="Nuevo título..." style={{ width: '100%', padding: '8px 10px', border: '1px solid #dee2e6', borderRadius: 6, marginBottom: 12, fontSize: '0.8rem', outline: 'none' }} />
+                        <h3 style={{ margin: '0 0 10px', fontSize: '1.1rem', fontWeight: '700' }}>Duplicar Encuesta</h3>
+                        <input type="text" value={nuevoTitulo} onChange={(e) => setNuevoTitulo(e.target.value)} placeholder="Nuevo título..." style={{ width: '100%', padding: '8px 10px', border: '1px solid #dee2e6', borderRadius: 6, marginBottom: 12, fontSize: '1rem', outline: 'none' }} />
                         <div style={{ display: 'flex', gap: 8 }}>
-                            <button onClick={() => setConfirmarDup({ visible: false, encId: null })} style={{ flex: 1, padding: '7px', background: '#f0f0f0', border: 'none', borderRadius: 4, cursor: 'pointer', fontWeight: '600', fontSize: '0.75rem' }}>Cancelar</button>
-                            <button onClick={manejarDuplicar} style={{ flex: 1, padding: '7px', background: 'var(--color-espoch-rojo)', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer', fontWeight: '600', fontSize: '0.75rem' }}>Duplicar</button>
+                            <button onClick={() => setConfirmarDup({ visible: false, encId: null })} style={{ flex: 1, padding: '7px', background: '#f0f0f0', border: 'none', borderRadius: 4, cursor: 'pointer', fontWeight: '600', fontSize: '0.95rem' }}>Cancelar</button>
+                            <button onClick={manejarDuplicar} style={{ flex: 1, padding: '7px', background: '#BC0613', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer', fontWeight: '600', fontSize: '0.95rem' }}>Duplicar</button>
                         </div>
                     </div>
                 </div>

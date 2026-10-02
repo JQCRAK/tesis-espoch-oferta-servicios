@@ -215,6 +215,8 @@ const AdminLayout = () => {
             ? location.pathname === '/home-admin'
             : location.pathname.startsWith(path);
 
+    const tituloSeccion = NAV_ITEMS.find(item => estaActivo(item.path))?.label || 'Panel Principal';
+
     const sbW = expandido ? SIDEBAR_W : COLLAPSED;
 
     return (
@@ -259,7 +261,7 @@ const AdminLayout = () => {
                                     ...s.navItem,
                                     backgroundColor: activo ? '#fff5f5' : 'transparent',
                                     borderLeft: activo
-                                        ? '3px solid var(--color-espoch-rojo)'
+                                        ? '3px solid #BC0613'
                                         : '3px solid transparent',
                                     justifyContent: expandido ? 'flex-start' : 'center',
                                     paddingLeft: expandido ? 10 : 0,
@@ -269,7 +271,7 @@ const AdminLayout = () => {
                             >
                                 <Icon style={{
                                     fontSize: '0.85rem',
-                                    color: activo ? 'var(--color-espoch-rojo)' : '#adb5bd',
+                                    color: activo ? '#BC0613' : '#adb5bd',
                                     flexShrink: 0,
                                 }} />
                                 {expandido && (
@@ -317,7 +319,7 @@ const AdminLayout = () => {
                 {/* TOPBAR */}
                 <header style={s.topbar}>
                     <h1 style={s.topTitulo}>
-                        Panel Administrativo · Carrera de Software ESPOCH
+                        {tituloSeccion}
                     </h1>
                     <div style={s.topDer}>
 
@@ -328,7 +330,7 @@ const AdminLayout = () => {
                                 onClick={abrirPanel}
                                 title="Notificaciones"
                             >
-                                <FaBell style={{ fontSize: '0.82rem', color: '#6c757d' }} />
+                                <FaBell style={{ fontSize: '1rem', color: '#6c757d' }} />
                                 {noLeidas > 0 && (
                                     <span style={s.notifBadge}>
                                         {noLeidas > 9 ? '9+' : noLeidas}
@@ -391,7 +393,7 @@ const AdminLayout = () => {
                                                                     ...sn.item,
                                                                     backgroundColor: esNueva ? '#fff8f8' : 'transparent',
                                                                     borderLeft: esNueva
-                                                                        ? '3px solid var(--color-espoch-rojo)'
+                                                                        ? '3px solid #BC0613'
                                                                         : '3px solid transparent',
                                                                     cursor: 'pointer',
                                                                 }}
@@ -401,7 +403,7 @@ const AdminLayout = () => {
                                                                     {esNueva && (
                                                                         <FaCircle style={{
                                                                             fontSize: '0.45rem',
-                                                                            color: 'var(--color-espoch-rojo)',
+                                                                            color: '#BC0613',
                                                                         }} />
                                                                     )}
                                                                 </div>
@@ -411,7 +413,7 @@ const AdminLayout = () => {
                                                                         fontSize: '0.75rem',
                                                                         fontWeight: '700',
                                                                         color: esNueva
-                                                                            ? 'var(--color-espoch-rojo)'
+                                                                            ? '#BC0613'
                                                                             : '#adb5bd',
                                                                     }}>
                                                                         {n.titulo}
@@ -454,10 +456,6 @@ const AdminLayout = () => {
                                 </React.Fragment>
                             )}
                         </div>
-
-                        <div style={s.avatarTop} title={usuario.nombre}>
-                            {(usuario.nombre || 'A')[0].toUpperCase()}
-                        </div>
                     </div>
                 </header>
 
@@ -485,49 +483,48 @@ const s = {
     sidebar: { position: 'fixed', top: 0, left: 0, bottom: 0, backgroundColor: 'white', borderRight: '1px solid #e9ecef', display: 'flex', flexDirection: 'column', transition: 'width 0.2s ease', overflow: 'hidden', zIndex: 100, boxShadow: '2px 0 8px rgba(0,0,0,0.05)' },
     sbHead: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 10px', minHeight: 60, flexShrink: 0, gap: 8 },
     logoRow: { display: 'flex', alignItems: 'center', gap: 8, overflow: 'hidden', flex: 1 },
-    logoIco: { width: 28, height: 28, borderRadius: 7, backgroundColor: 'var(--color-espoch-rojo)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
-    logoMain: { margin: 0, fontSize: '0.8rem', fontWeight: '800', color: '#2c3e50', whiteSpace: 'nowrap' },
-    logoSub: { margin: 0, fontSize: '0.58rem', color: '#adb5bd', whiteSpace: 'nowrap' },
+    logoIco: { width: 28, height: 28, borderRadius: 7, backgroundColor: '#BC0613', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
+    logoMain: { margin: 0, fontSize: '0.9rem', fontWeight: '800', color: '#2c3e50', whiteSpace: 'nowrap' },
+    logoSub: { margin: 0, fontSize: '0.68rem', color: '#adb5bd', whiteSpace: 'nowrap' },
     btnToggle: { background: '#f8f9fa', border: '1px solid #e9ecef', borderRadius: 6, cursor: 'pointer', width: 26, height: 26, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
     linea: { height: 1, backgroundColor: '#f0f0f0', margin: '0 10px', flexShrink: 0 },
     nav: { flex: 1, padding: '8px 8px', display: 'flex', flexDirection: 'column', gap: 2, overflowY: 'auto', overflowX: 'hidden' },
     navItem: { display: 'flex', alignItems: 'center', gap: 9, padding: '9px 10px', borderRadius: 7, border: 'none', cursor: 'pointer', width: '100%', minHeight: 38, transition: 'background 0.12s', textAlign: 'left' },
-    navLabel: { fontSize: '0.8rem', whiteSpace: 'nowrap' },
+    navLabel: { fontSize: '0.9rem', whiteSpace: 'nowrap' },
     sbFoot: { flexShrink: 0, paddingBottom: 8 },
     footRow: { display: 'flex', alignItems: 'center', gap: 8, padding: '10px 10px' },
-    avatarFoot: { width: 28, height: 28, borderRadius: '50%', backgroundColor: 'var(--color-espoch-rojo)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.68rem', fontWeight: '700', flexShrink: 0 },
-    footNombre: { margin: 0, fontSize: '0.72rem', fontWeight: '600', color: '#2c3e50', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' },
-    footRol: { margin: 0, fontSize: '0.58rem', color: '#adb5bd' },
+    avatarFoot: { width: 28, height: 28, borderRadius: '50%', backgroundColor: '#BC0613', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.68rem', fontWeight: '700', flexShrink: 0 },
+    footNombre: { margin: 0, fontSize: '0.82rem', fontWeight: '600', color: '#2c3e50', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' },
+    footRol: { margin: 0, fontSize: '0.68rem', color: '#adb5bd' },
     btnSalir: { background: '#f8f9fa', border: '1px solid #e9ecef', borderRadius: 6, cursor: 'pointer', width: 26, height: 26, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
-    main: { flex: 1, display: 'flex', flexDirection: 'column', minHeight: '100vh' },
-    topbar: { position: 'sticky', top: 0, zIndex: 50, height: 58, backgroundColor: 'white', borderBottom: '1px solid #e9ecef', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 24px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)', flexShrink: 0 },
-    topTitulo: { margin: 0, fontSize: '0.9rem', fontWeight: '700', color: '#2c3e50' },
-    topDer: { display: 'flex', alignItems: 'center', gap: 10 },
-    btnIcono: { position: 'relative', background: '#f8f9fa', border: '1px solid #e9ecef', borderRadius: 8, cursor: 'pointer', width: 34, height: 34, display: 'flex', alignItems: 'center', justifyContent: 'center' },
-    notifBadge: { position: 'absolute', top: 5, right: 5, backgroundColor: 'var(--color-espoch-rojo)', color: 'white', borderRadius: '50%', fontSize: '0.52rem', fontWeight: '700', width: 14, height: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1.5px solid white', lineHeight: 1 },
-    avatarTop: { width: 32, height: 32, borderRadius: '50%', backgroundColor: '#2c3e50', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.72rem', fontWeight: '700', cursor: 'pointer' },
-    contenido: { flex: 1, padding: '22px 26px', backgroundColor: '#f0f2f5', overflowY: 'auto' },
+    main: { flex: 1, display: 'flex', flexDirection: 'column', minHeight: '100vh', minWidth: 0 },
+    topbar: { position: 'sticky', top: 0, zIndex: 50, height: 72, backgroundColor: 'white', borderBottom: '1px solid #e9ecef', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 28px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)', flexShrink: 0 },
+    topTitulo: { margin: 0, fontSize: '1.15rem', fontWeight: '700', color: '#2c3e50', letterSpacing: '-0.01em', flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginRight: 14 },
+    topDer: { display: 'flex', alignItems: 'center', gap: 14, flexShrink: 0 },
+    btnIcono: { position: 'relative', background: '#f8f9fa', border: '1px solid #e9ecef', borderRadius: 9, cursor: 'pointer', width: 40, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center' },
+    notifBadge: { position: 'absolute', top: 4, right: 4, backgroundColor: '#BC0613', color: 'white', borderRadius: '50%', fontSize: '0.64rem', fontWeight: '700', width: 16, height: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1.5px solid white', lineHeight: 1 },
+    contenido: { flex: 1, padding: '24px 28px', backgroundColor: '#f0f2f5', overflowY: 'auto', minWidth: 0 },
 };
 
 // ══════════════════════════════════════════════
 // ESTILOS PANEL NOTIFICACIONES
 // ══════════════════════════════════════════════
 const sn = {
-    panel: { position: 'absolute', top: 'calc(100% + 10px)', right: 0, width: 340, backgroundColor: 'white', border: '1px solid #e9ecef', borderRadius: 10, boxShadow: '0 8px 28px rgba(0,0,0,0.16)', zIndex: 200, overflow: 'hidden' },
+    panel: { position: 'absolute', top: 'calc(100% + 10px)', right: 0, width: 360, backgroundColor: 'white', border: '1px solid #e9ecef', borderRadius: 10, boxShadow: '0 8px 28px rgba(0,0,0,0.16)', zIndex: 200, overflow: 'hidden' },
     header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '11px 14px 9px', borderBottom: '1px solid #f0f0f0', backgroundColor: '#fafafa' },
-    titulo: { fontSize: '0.84rem', fontWeight: '700', color: '#2c3e50' },
-    btnMarcarTodas: { display: 'flex', alignItems: 'center', background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.72rem', color: 'var(--color-espoch-rojo)', fontWeight: '600', padding: 0 },
+    titulo: { fontSize: '0.95rem', fontWeight: '700', color: '#2c3e50' },
+    btnMarcarTodas: { display: 'flex', alignItems: 'center', background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.8rem', color: '#BC0613', fontWeight: '600', padding: 0 },
     lista: { maxHeight: 360, overflowY: 'auto' },
     item: { display: 'flex', gap: 10, padding: '10px 14px', borderBottom: '1px solid #f5f5f5', transition: 'background-color 0.15s' },
     itemDot: { width: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, paddingTop: 3 },
     fecha: { fontSize: '0.66rem', color: '#adb5bd' },
-    countBadge: { fontSize: '0.62rem', backgroundColor: '#fff1f2', color: 'var(--color-espoch-rojo)', border: '1px solid #fecdd3', borderRadius: 20, padding: '1px 6px', fontWeight: '600' },
+    countBadge: { fontSize: '0.62rem', backgroundColor: '#fff1f2', color: '#BC0613', border: '1px solid #fecdd3', borderRadius: 20, padding: '1px 6px', fontWeight: '600' },
     vacio: { textAlign: 'center', padding: '28px 16px', display: 'flex', flexDirection: 'column', alignItems: 'center' },
     footer: { textAlign: 'center', padding: '8px', fontSize: '0.72rem', color: '#adb5bd', backgroundColor: '#fafafa', borderTop: '1px solid #f0f0f0' },
     detalle: { maxHeight: 420, overflowY: 'auto', padding: '12px 14px' },
-    btnVolver: { background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.74rem', color: 'var(--color-espoch-rojo)', fontWeight: '700', padding: '0 0 10px', display: 'block' },
+    btnVolver: { background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.74rem', color: '#BC0613', fontWeight: '700', padding: '0 0 10px', display: 'block' },
     detalleGrad: { display: 'flex', alignItems: 'center', gap: 10, backgroundColor: '#f8fafc', border: '1px solid #e9ecef', borderRadius: 8, padding: '10px 12px', marginBottom: 8 },
-    detalleGradFoto: { width: 36, height: 36, borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--color-espoch-rojo)', flexShrink: 0 },
+    detalleGradFoto: { width: 36, height: 36, borderRadius: '50%', objectFit: 'cover', border: '2px solid #BC0613', flexShrink: 0 },
     detalleGradNombre: { margin: '0 0 1px', fontSize: '0.82rem', fontWeight: '700', color: '#0f172a' },
     detalleGradSub: { margin: 0, fontSize: '0.65rem', color: '#64748b' },
     detalleFecha: { margin: '0 0 10px', fontSize: '0.66rem', color: '#adb5bd' },
@@ -538,7 +535,7 @@ const sn = {
     solicNombre: { fontSize: '0.78rem', fontWeight: '700', color: '#0f172a' },
     solicFecha: { fontSize: '0.62rem', color: '#adb5bd' },
     solicEmpresa: { margin: '0 0 3px', fontSize: '0.7rem', color: '#64748b' },
-    solicEmail: { display: 'inline-flex', alignItems: 'center', fontSize: '0.7rem', color: 'var(--color-espoch-rojo)', fontWeight: '600', textDecoration: 'none', marginBottom: 5 },
+    solicEmail: { display: 'inline-flex', alignItems: 'center', fontSize: '0.7rem', color: '#BC0613', fontWeight: '600', textDecoration: 'none', marginBottom: 5 },
     solicMensaje: { margin: 0, fontSize: '0.72rem', color: '#374151', lineHeight: 1.5, fontStyle: 'italic', borderLeft: '3px solid #e9ecef', paddingLeft: 8 },
 };
 

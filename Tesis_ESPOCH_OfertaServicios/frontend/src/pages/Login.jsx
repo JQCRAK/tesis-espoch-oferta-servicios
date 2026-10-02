@@ -82,7 +82,7 @@ const PasswordInput = ({ value, onChange, placeholder = 'Contraseña', name = 'p
 const Campo = ({ label, children, required: req, extra }) => (
     <div style={s.campoWrapper}>
         <label style={s.campoLabel}>
-            {label} {req && <span style={{ color: 'var(--color-espoch-rojo)' }}>*</span>}
+            {label} {req && <span style={{ color: '#BC0613' }}>*</span>}
             {extra && <span style={s.campoExtra}>{extra}</span>}
         </label>
         {children}
@@ -92,15 +92,15 @@ const Campo = ({ label, children, required: req, extra }) => (
 const BarraProgreso = ({ paso, total, labelPaso }) => (
     <div style={{ marginBottom: 20 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-            <span style={{ fontSize: '0.72rem', color: 'var(--color-texto-secundario)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            <span style={{ fontSize: '0.85rem', color: 'var(--color-texto-secundario)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                 Paso {paso} de {total}{labelPaso ? `: ${labelPaso}` : ''}
             </span>
-            <span style={{ fontSize: '0.72rem', color: 'var(--color-espoch-rojo)', fontWeight: 700 }}>
+            <span style={{ fontSize: '0.85rem', color: '#BC0613', fontWeight: 700 }}>
                 {Math.round((paso / total) * 100)}%
             </span>
         </div>
         <div style={{ height: 4, backgroundColor: '#e9ecef', borderRadius: 4 }}>
-            <div style={{ height: '100%', width: `${(paso / total) * 100}%`, backgroundColor: 'var(--color-espoch-rojo)', borderRadius: 4, transition: 'width 0.4s ease' }} />
+            <div style={{ height: '100%', width: `${(paso / total) * 100}%`, backgroundColor: '#BC0613', borderRadius: 4, transition: 'width 0.4s ease' }} />
         </div>
     </div>
 );
@@ -109,22 +109,22 @@ const ImageUploader = ({ label, required: req, preview, onChange, onQuitar, acce
     <div style={{ marginBottom: 10 }}>
         <label style={{ ...s.campoLabel, marginBottom: 4 }}>
             {label}
-            {req && <span style={{ color: 'var(--color-espoch-rojo)', marginLeft: 3 }}>*</span>}
-            {opcional && <span style={{ fontSize: '0.67rem', color: '#9ca3af', marginLeft: 6, fontWeight: 400 }}>(opcional)</span>}
+            {req && <span style={{ color: '#BC0613', marginLeft: 3 }}>*</span>}
+            {opcional && <span style={{ fontSize: '0.78rem', color: '#9ca3af', marginLeft: 6, fontWeight: 400 }}>(opcional)</span>}
         </label>
         {preview ? (
             <div style={s.imgPreviewWrap}>
                 <img src={preview} alt={label} style={s.imgPreviewCompacta} />
                 <button type="button" onClick={onQuitar} style={s.btnQuitarImg}>
-                    <FaTimes style={{ fontSize: '0.6rem', marginRight: 2 }} />Quitar
+                    <FaTimes style={{ fontSize: '0.78rem', marginRight: 2 }} />Quitar
                 </button>
             </div>
         ) : (
             <div style={s.uploadZoneCompacta} onClick={() => inputRef.current?.click()}>
-                <FaImage style={{ fontSize: '1.1rem', color: '#adb5bd', marginRight: 8, flexShrink: 0 }} />
+                <FaImage style={{ fontSize: '1.2rem', color: '#adb5bd', marginRight: 8, flexShrink: 0 }} />
                 <div>
-                    <p style={{ margin: 0, fontSize: '0.75rem', color: '#6b7280', fontWeight: 500 }}>Haz clic para subir imagen</p>
-                    <p style={{ margin: 0, fontSize: '0.65rem', color: '#9ca3af' }}>JPG, PNG o WEBP · Máx 5MB</p>
+                    <p style={{ margin: 0, fontSize: '0.85rem', color: '#6b7280', fontWeight: 500 }}>Haz clic para subir imagen</p>
+                    <p style={{ margin: 0, fontSize: '0.78rem', color: '#9ca3af' }}>JPG, PNG o WEBP · Máx 5MB</p>
                 </div>
             </div>
         )}
@@ -217,9 +217,14 @@ const Login = () => {
     }, [error]);
 
     const imagenActual = () => {
-        if (modo === 'registro') return pasoRegistro === 1 ? '/img/campus2.png' : '/img/campus3.jpg';
-        return '/img/campus1.png';
+        if (modo === 'registro' && pasoRegistro === 1) return '/img/campus2.jpg';
+        return '/img/campus1.jpg';
     };
+
+    // Precarga las imágenes de fondo para que el panel izquierdo nunca aparezca vacío al cambiar de paso
+    useEffect(() => {
+        ['/img/campus1.jpg', '/img/campus2.jpg'].forEach(src => { const im = new Image(); im.src = src; });
+    }, []);
 
     const textoLateral = () => {
         if (mostrarRecuperacion) return {
@@ -627,11 +632,15 @@ const Login = () => {
 
     const contenedorFormStyle = isMobile
         ? { width: '100%', maxWidth: '100%' }
-        : { ...s.contenedorForm, maxWidth: isTablet ? '380px' : '420px' };
+        : { ...s.contenedorForm, maxWidth: isTablet ? '420px' : (modo === 'registro' ? '600px' : '420px') };
 
     const flujoOpcionesStyle = isMobile
         ? { display: 'flex', flexDirection: 'column', gap: 8 }
         : s.flujoOpciones;
+
+    const grid2Style = isMobile
+        ? { display: 'flex', flexDirection: 'column' }
+        : { display: 'grid', gridTemplateColumns: '1fr 1fr', columnGap: 12 };
 
     const gridCedulasStyle = isMobile
         ? { display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 10 }
@@ -639,7 +648,7 @@ const Login = () => {
 
     const BannerMovil = () => (
         <div style={{
-            background: `linear-gradient(135deg, rgba(190,30,45,0.92) 0%, rgba(120,10,18,0.95) 100%), url("${imagenActual()}")`,
+            background: `linear-gradient(135deg, rgba(188,6,19,0.55) 0%, rgba(80,4,12,0.85) 100%), url("${imagenActual()}")`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             padding: '20px 20px 18px',
@@ -649,15 +658,13 @@ const Login = () => {
                 <button style={s.btnVolverPublicoMovil} onClick={() => navigate('/')}>
                     <FaArrowLeft style={{ marginRight: 5 }} /> Ver graduados
                 </button>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
-                    <img src="/img/ESPOCH_LOGO.png" alt="ESPOCH"
-                        style={{ height: 26, objectFit: 'contain' }}
-                        onError={e => e.target.style.display = 'none'} />
-                    <span style={{ color: 'white', fontSize: '0.78rem', fontWeight: 700 }}>Portal Graduados</span>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <img src="/img/logo-espoch-blanco.png" alt="Escuela Superior Politécnica de Chimborazo"
+                        style={{ height: 34, width: 'auto', display: 'block' }} />
                 </div>
             </div>
             <h2 style={{
-                margin: 0, fontSize: '1.1rem', fontWeight: 800,
+                margin: 0, fontSize: '1.2rem', fontWeight: 800,
                 color: 'white', lineHeight: 1.3,
                 textShadow: '0 1px 6px rgba(0,0,0,0.4)',
             }}>
@@ -676,18 +683,18 @@ const Login = () => {
                             width: 48, height: 48, borderRadius: '50%',
                             backgroundColor: '#fffbeb', border: '2px solid #fde68a',
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            margin: '0 auto 12px', fontSize: '1.4rem'
+                            margin: '0 auto 12px', fontSize: '1.51rem'
                         }}>⚠️</div>
-                        <h3 style={{ margin: '0 0 6px', fontSize: '1.05rem', fontWeight: 800, color: '#1a1a1a' }}>
+                        <h3 style={{ margin: '0 0 6px', fontSize: '1rem', fontWeight: 800, color: '#1a1a1a' }}>
                             ¿Los nombres son correctos?
                         </h3>
-                        <p style={{ margin: '0 0 14px', fontSize: '0.83rem', color: '#6b7280' }}>
+                        <p style={{ margin: '0 0 14px', fontSize: '0.92rem', color: '#6b7280' }}>
                             Detectamos que ingresaste:
                         </p>
                         <div style={{
                             backgroundColor: '#f9fafb', border: '1px solid #e5e7eb',
                             borderRadius: 8, padding: '10px 14px', marginBottom: 12,
-                            textAlign: 'left', fontSize: '0.85rem', color: '#111827'
+                            textAlign: 'left', fontSize: '0.92rem', color: '#111827'
                         }}>
                             <p style={{ margin: '0 0 4px' }}>Nombres: <strong>{formData.nombres}</strong></p>
                             <p style={{ margin: 0 }}>Apellidos: <strong>{formData.apellidos}</strong></p>
@@ -695,7 +702,7 @@ const Login = () => {
                         <div style={{
                             backgroundColor: '#fffbeb', border: '1px solid #fde68a',
                             borderRadius: 7, padding: '9px 12px', marginBottom: 16,
-                            fontSize: '0.77rem', color: '#92400e', textAlign: 'left',
+                            fontSize: '0.85rem', color: '#92400e', textAlign: 'left',
                             display: 'flex', gap: 7, alignItems: 'flex-start'
                         }}>
                             <span style={{ flexShrink: 0 }}>⚠️</span>
@@ -723,9 +730,9 @@ const Login = () => {
             {confirmarSalida && (
                 <div style={s.overlaySalida}>
                     <div style={s.overlayCard}>
-                        <FaExclamationTriangle style={{ fontSize: '1.9rem', color: '#f59e0b', marginBottom: 10 }} />
-                        <h3 style={{ margin: '0 0 8px', fontSize: '1.05rem', fontWeight: 800, color: '#1a1a1a' }}>¿Salir de la verificación?</h3>
-                        <p style={{ margin: '0 0 16px', fontSize: '0.85rem', color: '#6b7280', lineHeight: 1.5 }}>
+                        <FaExclamationTriangle style={{ fontSize: '2.05rem', color: '#f59e0b', marginBottom: 10 }} />
+                        <h3 style={{ margin: '0 0 8px', fontSize: '1rem', fontWeight: 800, color: '#1a1a1a' }}>¿Salir de la verificación?</h3>
+                        <p style={{ margin: '0 0 16px', fontSize: '0.92rem', color: '#6b7280', lineHeight: 1.5 }}>
                             Si sales ahora se descartará tu registro pendiente y deberás solicitar un nuevo código si quieres volver a intentarlo.
                         </p>
                         <div style={{ display: 'flex', gap: 8 }}>
@@ -750,12 +757,10 @@ const Login = () => {
                         </button>
                         <div style={s.contenidoImagen}>
                             <div style={s.logoLateral}>
-                                <img src="/img/ESPOCH_LOGO.png" alt="ESPOCH"
-                                    style={{ height: 36, objectFit: 'contain' }}
-                                    onError={e => e.target.style.display = 'none'} />
-                                <span style={s.logoLateralText}>Portal de Graduados ESPOCH</span>
+                                <img src="/img/logo-espoch-blanco.png" alt="Escuela Superior Politécnica de Chimborazo"
+                                    style={{ height: 74, width: "auto", display: "block" }} />
                             </div>
-                            <h1 style={{ ...s.heroTitulo, fontSize: isTablet ? '1.6rem' : '2rem' }}>
+                            <h1 style={{ ...s.heroTitulo, fontSize: isTablet ? '1.73rem' : '2.4rem' }}>
                                 {lateral.titulo}
                             </h1>
                             <p style={s.heroSub}>{lateral.sub}</p>
@@ -792,7 +797,7 @@ const Login = () => {
                                                 onChange={e => setEmailRecuperacionIngresado(soloEmailValido(e.target.value))} required />
                                         </div>
                                     </Campo>
-                                    <p style={s.hint}>📧 Recibirás un código de 6 dígitos en este correo.</p>
+                                    <p style={s.hint}>Recibirás un código de 6 dígitos en este correo.</p>
                                     <button type="submit" style={s.btnPrincipal} disabled={cargando}>
                                         {cargando ? <><FaSpinner style={s.spin} /> Enviando...</> : 'Solicitar Código'}
                                     </button>
@@ -800,11 +805,11 @@ const Login = () => {
                                 </form>
                             ) : !verificandoCodigoRec ? (
                                 <div style={{ textAlign: 'center' }}>
-                                    <div style={s.iconoExito}><FaCheckCircle style={{ fontSize: '2rem', color: '#2e7d32' }} /></div>
+                                    <div style={s.iconoExito}><FaCheckCircle style={{ fontSize: '2.4rem', color: '#2e7d32' }} /></div>
                                     <h3 style={s.subTituloSeccion}>Código enviado</h3>
-                                    <p style={{ color: 'var(--color-texto-secundario)', fontSize: '0.84rem', marginBottom: 4 }}>Hemos enviado un código a:</p>
-                                    <strong style={{ fontSize: '0.85rem', color: 'var(--color-texto-principal)', wordBreak: 'break-all' }}>{emailRecuperacionIngresado}</strong>
-                                    <p style={{ fontSize: '0.77rem', color: 'var(--color-texto-secundario)', margin: '16px 0 6px' }}>Revisa tu bandeja (y carpeta Spam), luego presiona:</p>
+                                    <p style={{ color: 'var(--color-texto-secundario)', fontSize: '0.92rem', marginBottom: 4 }}>Hemos enviado un código a:</p>
+                                    <strong style={{ fontSize: '0.92rem', color: 'var(--color-texto-principal)', wordBreak: 'break-all' }}>{emailRecuperacionIngresado}</strong>
+                                    <p style={{ fontSize: '0.85rem', color: 'var(--color-texto-secundario)', margin: '16px 0 6px' }}>Revisa tu bandeja (y carpeta Spam), luego presiona:</p>
                                     <button onClick={() => setVerificandoCodigoRec(true)} style={s.btnPrincipal} disabled={cargando}>
                                         {cargando ? <><FaSpinner style={s.spin} /></> : 'Ingresar código'}
                                     </button>
@@ -853,11 +858,11 @@ const Login = () => {
                                 <h2 style={s.titulo}>Verificar Correo</h2>
                                 <p style={s.subtitulo}>Carrera de Software · ESPOCH</p>
                             </div>
-                            <div style={s.iconoExito}><FaCheckCircle style={{ fontSize: '2rem', color: '#2e7d32' }} /></div>
+                            <div style={s.iconoExito}><FaCheckCircle style={{ fontSize: '2.4rem', color: '#2e7d32' }} /></div>
                             <h3 style={s.subTituloSeccion}>Código enviado</h3>
-                            <p style={{ color: 'var(--color-texto-secundario)', fontSize: '0.84rem', marginBottom: 4 }}>Hemos enviado un código a:</p>
-                            <strong style={{ fontSize: '0.85rem', color: 'var(--color-texto-principal)', wordBreak: 'break-all' }}>{formData.emailInstitucional}</strong>
-                            <p style={{ fontSize: '0.77rem', color: 'var(--color-texto-secundario)', margin: '16px 0 6px' }}>Revisa tu bandeja (y carpeta Spam), luego presiona:</p>
+                            <p style={{ color: 'var(--color-texto-secundario)', fontSize: '0.92rem', marginBottom: 4 }}>Hemos enviado un código a:</p>
+                            <strong style={{ fontSize: '0.92rem', color: 'var(--color-texto-principal)', wordBreak: 'break-all' }}>{formData.emailInstitucional}</strong>
+                            <p style={{ fontSize: '0.85rem', color: 'var(--color-texto-secundario)', margin: '16px 0 6px' }}>Revisa tu bandeja (y carpeta Spam), luego presiona:</p>
                             <button onClick={() => setVerificandoCodigo(true)} style={s.btnPrincipal} disabled={cargando}>Ingresar código</button>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 10 }}>
                                 <button onClick={reenviarCodigo} disabled={tiempoRestante > 0 || cargando}
@@ -897,8 +902,8 @@ const Login = () => {
                                 <p style={s.subtitulo}>Carrera de Software · ESPOCH</p>
                             </div>
                             <div style={{ textAlign: 'center', marginBottom: 16 }}>
-                                <FaExclamationTriangle style={{ fontSize: '1.8rem', color: '#f59e0b', marginBottom: 8 }} />
-                                <p style={{ color: 'var(--color-texto-secundario)', fontSize: '0.84rem', margin: 0 }}>Revisa que tus datos sean correctos antes de continuar.</p>
+                                <FaExclamationTriangle style={{ fontSize: '1.94rem', color: '#f59e0b', marginBottom: 8 }} />
+                                <p style={{ color: 'var(--color-texto-secundario)', fontSize: '0.92rem', margin: 0 }}>Revisa que tus datos sean correctos antes de continuar.</p>
                             </div>
                             <div style={s.resumen}>
                                 <div style={isMobile
@@ -936,8 +941,7 @@ const Login = () => {
                     ) : modo === 'login' ? (
                         <>
                             <div style={s.encabezado}>
-                                <img src="/img/ESPOCH_LOGO.png" alt="ESPOCH" style={s.logo}
-                                    onError={e => e.target.style.display = 'none'} />
+                                <img src="/img/desafiamos-el-futuro.png" alt="Desafiamos el futuro" style={s.logo} />
                                 <h2 style={s.titulo}>Iniciar Sesión</h2>
                                 <p style={s.subtitulo}>Bienvenido de nuevo. Por favor, ingresa tus credenciales.</p>
                             </div>
@@ -962,7 +966,7 @@ const Login = () => {
                                     {cargando ? <><FaSpinner style={s.spin} /> Cargando...</> : 'INGRESAR'}
                                 </button>
                             </form>
-                            <p style={{ textAlign: 'center', margin: '14px 0 0', fontSize: '0.84rem', color: 'var(--color-texto-secundario)' }}>
+                            <p style={{ textAlign: 'center', margin: '14px 0 0', fontSize: '0.92rem', color: 'var(--color-texto-secundario)' }}>
                                 ¿No tienes cuenta?{' '}
                                 <button type="button" style={s.linkSwitch}
                                     onClick={() => { setModo('registro'); setPasoRegistro(1); setError(''); }}>
@@ -1063,7 +1067,7 @@ const Login = () => {
 
                                 <div style={s.flujoSelector}>
                                     <p style={s.flujoSelectorLabel}>
-                                        <FaUniversity style={{ marginRight: 6, color: 'var(--color-espoch-rojo)' }} />
+                                        <FaUniversity style={{ marginRight: 6, color: '#BC0613' }} />
                                         ¿Tienes acceso a tu correo <strong>@espoch.edu.ec</strong>?
                                     </p>
                                     <div style={flujoOpcionesStyle}>
@@ -1072,7 +1076,7 @@ const Login = () => {
                                             style={{ ...s.flujoBtn, ...(flujoRegistro === 'conCorreo' ? s.flujoBtnActivo : {}) }}
                                             onClick={() => { setFlujoRegistro('conCorreo'); setError(''); }}
                                         >
-                                            <FaCheckCircle style={{ marginRight: 6, fontSize: '0.85rem' }} />
+                                            <FaCheckCircle style={{ marginRight: 6, fontSize: '0.92rem' }} />
                                             Sí, tengo acceso
                                         </button>
                                         <button
@@ -1080,7 +1084,7 @@ const Login = () => {
                                             style={{ ...s.flujoBtn, ...(flujoRegistro === 'sinCorreo' ? s.flujoBtnActivoB : {}) }}
                                             onClick={() => { setFlujoRegistro('sinCorreo'); setError(''); }}
                                         >
-                                            <FaShieldAlt style={{ marginRight: 6, fontSize: '0.85rem' }} />
+                                            <FaShieldAlt style={{ marginRight: 6, fontSize: '0.92rem' }} />
                                             No tengo acceso
                                         </button>
                                     </div>
@@ -1108,7 +1112,7 @@ const Login = () => {
                                 </div>
                             </form>
 
-                            <p style={{ textAlign: 'center', margin: '14px 0 0', fontSize: '0.84rem', color: 'var(--color-texto-secundario)' }}>
+                            <p style={{ textAlign: 'center', margin: '14px 0 0', fontSize: '0.92rem', color: 'var(--color-texto-secundario)' }}>
                                 ¿Ya tienes cuenta?{' '}
                                 <button type="button" style={s.linkSwitch} onClick={() => { setModo('login'); setError(''); }}>
                                     Iniciar sesión
@@ -1124,38 +1128,40 @@ const Login = () => {
                             <BarraProgreso paso={2} total={totalPasos} labelPaso={labelPaso()} />
 
                             <form onSubmit={handlePaso2A}>
-                                <Campo label="Correo personal" required>
-                                    <div style={s.inputGroupIcon}>
-                                        <FaEnvelope style={s.ico} />
-                                        <input type="email" name="emailPersonal" placeholder="ejemplo@gmail.com"
-                                            style={s.inp} value={formData.emailPersonal} onChange={handleChange} required />
-                                    </div>
-                                </Campo>
-                                <Campo label="Correo @espoch.edu.ec" required extra="Requerido">
-                                    <div style={s.inputGroupVerde}>
-                                        <FaUniversity style={s.icoVerde} />
-                                        <input type="email" name="emailInstitucional"
-                                            placeholder="nombre.apellido@espoch.edu.ec"
-                                            style={s.inp} value={formData.emailInstitucional}
-                                            onChange={handleChange}
-                                            pattern=".+@espoch\.edu\.ec" title="Debe ser @espoch.edu.ec" required />
-                                    </div>
-                                    <p style={{ ...s.hint, marginTop: 4 }}>
-                                        <FaInfoCircle style={{ marginRight: 4 }} />
-                                        Necesario para validar tu identidad como graduado.
-                                    </p>
-                                </Campo>
+                                <div style={grid2Style}>
+                                    <Campo label="Correo personal" required>
+                                        <div style={s.inputGroupIcon}>
+                                            <FaEnvelope style={s.ico} />
+                                            <input type="email" name="emailPersonal" placeholder="ejemplo@gmail.com"
+                                                style={s.inp} value={formData.emailPersonal} onChange={handleChange} required />
+                                        </div>
+                                    </Campo>
+                                    <Campo label="Correo @espoch.edu.ec" required>
+                                        <div style={s.inputGroupVerde}>
+                                            <FaUniversity style={s.icoVerde} />
+                                            <input type="email" name="emailInstitucional"
+                                                placeholder="nombre.apellido@espoch.edu.ec"
+                                                style={s.inp} value={formData.emailInstitucional}
+                                                onChange={handleChange}
+                                                pattern=".+@espoch\.edu\.ec" title="Debe ser @espoch.edu.ec" required />
+                                        </div>
+                                    </Campo>
+                                </div>
+                                <p style={{ ...s.hint, marginTop: -6, marginBottom: 12 }}>
+                                    <FaInfoCircle style={{ marginRight: 4 }} />
+                                    El correo @espoch.edu.ec es necesario para validar tu identidad como graduado.
+                                </p>
                                 <Campo label="Contraseña" required>
                                     <PasswordInput value={formData.password} onChange={handleChange}
                                         placeholder="Contraseña segura" name="password" />
-                                    <div style={s.checklistPass}>
-                                        <p style={s.checklistTitulo}>La contraseña debe contener:</p>
-                                        <p style={checkItem(formData.password.length >= 8)}>✓ Al menos 8 caracteres</p>
-                                        <p style={checkItem(/[A-Z]/.test(formData.password))}>✓ Una letra mayúscula</p>
-                                        <p style={checkItem(/[0-9]/.test(formData.password))}>✓ Un número</p>
-                                        <p style={checkItem(/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(formData.password))}>✓ Un carácter especial</p>
-                                    </div>
                                 </Campo>
+                                <div style={s.checklistPass}>
+                                    <p style={s.checklistTitulo}>La contraseña debe contener:</p>
+                                    <p style={checkItem(formData.password.length >= 8)}>✓ Al menos 8 caracteres</p>
+                                    <p style={checkItem(/[A-Z]/.test(formData.password))}>✓ Una letra mayúscula</p>
+                                    <p style={checkItem(/[0-9]/.test(formData.password))}>✓ Un número</p>
+                                    <p style={checkItem(/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(formData.password))}>✓ Un carácter especial</p>
+                                </div>
                                 <div style={{
                                     display: 'flex',
                                     justifyContent: 'space-between',
@@ -1216,31 +1222,33 @@ const Login = () => {
                                         style={s.inp} value={urlDspaceB}
                                         onChange={e => { setUrlDspaceB(soloUrlValida(e.target.value)); setVerificadoB(false); setDatosVerificadosB(null); }} />
                                 </div>
-                                <span style={{ fontSize: '0.68rem', color: 'var(--color-texto-secundario)', marginTop: 3, display: 'block' }}>
+                                <span style={{ fontSize: '0.78rem', color: 'var(--color-texto-secundario)', marginTop: 3, display: 'block' }}>
                                     Ve a <a href="https://dspace.espoch.edu.ec" target="_blank" rel="noopener noreferrer"
                                         style={{ color: '#1d4ed8', fontWeight: 600 }}>dspace.espoch.edu.ec</a>, busca tu tesis y copia la URL completa
                                 </span>
                             </Campo>
 
-                            <Campo label="Correo personal" required>
-                                <div style={s.inputGroupIcon}>
-                                    <FaEnvelope style={s.ico} />
-                                    <input type="email" name="emailPersonal" placeholder="ejemplo@gmail.com"
-                                        style={s.inp} value={formData.emailPersonal} onChange={handleChange} required />
-                                </div>
-                            </Campo>
+                            <div style={grid2Style}>
+                                <Campo label="Correo personal" required>
+                                    <div style={s.inputGroupIcon}>
+                                        <FaEnvelope style={s.ico} />
+                                        <input type="email" name="emailPersonal" placeholder="ejemplo@gmail.com"
+                                            style={s.inp} value={formData.emailPersonal} onChange={handleChange} required />
+                                    </div>
+                                </Campo>
 
-                            <Campo label="Contraseña" required>
-                                <PasswordInput value={formData.password} onChange={handleChange}
-                                    placeholder="Contraseña segura" name="password" />
-                                <div style={s.checklistPass}>
-                                    <p style={s.checklistTitulo}>La contraseña debe contener:</p>
-                                    <p style={checkItem(formData.password.length >= 8)}>✓ Al menos 8 caracteres</p>
-                                    <p style={checkItem(/[A-Z]/.test(formData.password))}>✓ Una letra mayúscula</p>
-                                    <p style={checkItem(/[0-9]/.test(formData.password))}>✓ Un número</p>
-                                    <p style={checkItem(/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(formData.password))}>✓ Un carácter especial</p>
-                                </div>
-                            </Campo>
+                                <Campo label="Contraseña" required>
+                                    <PasswordInput value={formData.password} onChange={handleChange}
+                                        placeholder="Contraseña segura" name="password" />
+                                </Campo>
+                            </div>
+                            <div style={s.checklistPass}>
+                                <p style={s.checklistTitulo}>La contraseña debe contener:</p>
+                                <p style={checkItem(formData.password.length >= 8)}>✓ Al menos 8 caracteres</p>
+                                <p style={checkItem(/[A-Z]/.test(formData.password))}>✓ Una letra mayúscula</p>
+                                <p style={checkItem(/[0-9]/.test(formData.password))}>✓ Un número</p>
+                                <p style={checkItem(/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(formData.password))}>✓ Un carácter especial</p>
+                            </div>
 
                             <div style={{
                                 display: 'flex',
@@ -1281,7 +1289,7 @@ const Login = () => {
 };
 
 const checkItem = (cumple) => ({
-    margin: '2px 0', fontSize: '0.73rem',
+    margin: '2px 0', fontSize: '0.85rem',
     color: cumple ? '#2e7d32' : 'var(--color-texto-secundario)',
     display: 'flex', alignItems: 'center', gap: 4
 });
@@ -1315,6 +1323,7 @@ const s = {
     },
     ladoImagen: {
         flex: '0 0 42%',
+        backgroundColor: '#7a0a12',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         position: 'relative',
@@ -1325,33 +1334,33 @@ const s = {
     },
     capaOscura: {
         position: 'absolute', inset: 0,
-        backgroundColor: 'rgba(160, 20, 35, 0.88)',
+        background: 'linear-gradient(180deg, rgba(188,6,19,0.30) 0%, rgba(140,5,15,0.55) 50%, rgba(70,4,10,0.90) 100%)',
         display: 'flex', flexDirection: 'column',
         alignItems: 'flex-start', justifyContent: 'flex-end',
         color: 'white', padding: '40px 44px',
     },
     btnVolverPublico: {
         display: 'flex', alignItems: 'center',
-        position: 'absolute', top: 20, left: 20,
-        padding: '7px 14px',
+        position: 'absolute', top: 24, left: 24,
+        padding: '12px 24px',
         backgroundColor: 'rgba(255,255,255,0.15)',
-        border: '1px solid rgba(255,255,255,0.35)',
-        borderRadius: 8, color: 'white', cursor: 'pointer',
-        fontSize: '0.78rem', fontWeight: 600, backdropFilter: 'blur(4px)',
+        border: '1px solid rgba(255,255,255,0.6)',
+        borderRadius: 4, color: 'white', cursor: 'pointer',
+        fontSize: '1rem', fontWeight: 500, backdropFilter: 'blur(4px)',
     },
     btnVolverPublicoMovil: {
         display: 'flex', alignItems: 'center',
-        padding: '6px 12px',
+        padding: '10px 18px',
         backgroundColor: 'rgba(255,255,255,0.15)',
-        border: '1px solid rgba(255,255,255,0.35)',
-        borderRadius: 8, color: 'white', cursor: 'pointer',
-        fontSize: '0.74rem', fontWeight: 600,
+        border: '1px solid rgba(255,255,255,0.6)',
+        borderRadius: 4, color: 'white', cursor: 'pointer',
+        fontSize: '0.95rem', fontWeight: 500,
     },
-    contenidoImagen: { maxWidth: 360 },
-    logoLateral: { display: 'flex', alignItems: 'center', gap: 10, marginBottom: 32 },
-    logoLateralText: { fontSize: '0.9rem', fontWeight: 700, color: 'white', letterSpacing: '-0.01em' },
-    heroTitulo: { fontSize: '2rem', fontWeight: 800, margin: '0 0 14px', lineHeight: 1.2, letterSpacing: '-0.02em' },
-    heroSub: { fontSize: '0.9rem', lineHeight: 1.65, margin: 0, color: 'rgba(255,255,255,0.82)' },
+    contenidoImagen: { maxWidth: 440 },
+    logoLateral: { display: 'flex', alignItems: 'center', marginBottom: 36 },
+    logoLateralText: { fontSize: '1rem', fontWeight: 700, color: 'white', letterSpacing: '-0.01em' },
+    heroTitulo: { fontSize: '2.4rem', fontWeight: 800, margin: '0 0 14px', lineHeight: 1.2, letterSpacing: '-0.02em' },
+    heroSub: { fontSize: '1rem', lineHeight: 1.65, margin: 0, color: 'rgba(255,255,255,0.82)' },
     ladoFormulario: {
         flex: 1,
         backgroundColor: '#ffffff',
@@ -1363,40 +1372,40 @@ const s = {
     },
     contenedorForm: { width: '100%', maxWidth: '420px' },
     encabezado: { marginBottom: 20 },
-    logo: { width: 80, height: 'auto', display: 'block', margin: '0 auto 16px', objectFit: 'contain' },
-    titulo: { color: '#1a1a1a', margin: '0 0 4px', fontSize: '1.6rem', fontWeight: 800, letterSpacing: '-0.02em' },
-    subtitulo: { color: '#6b7280', margin: 0, fontSize: '0.82rem' },
-    subTituloSeccion: { color: '#1a1a1a', margin: '0 0 16px', fontSize: '1.1rem', fontWeight: 700 },
+    logo: { height: 84, width: "auto", display: "block", margin: "0 auto 26px" },
+    titulo: { color: '#1a1a1a', margin: '0 0 4px', fontSize: '1.73rem', fontWeight: 800, letterSpacing: '-0.02em' },
+    subtitulo: { color: '#6b7280', margin: 0, fontSize: '0.92rem' },
+    subTituloSeccion: { color: '#1a1a1a', margin: '0 0 16px', fontSize: '1.2rem', fontWeight: 700 },
     alertaError: {
         display: 'flex', alignItems: 'flex-start',
         backgroundColor: '#fef2f2', color: '#dc2626',
-        padding: '10px 12px', borderRadius: 8, fontSize: '0.81rem',
+        padding: '10px 12px', borderRadius: 8, fontSize: '0.92rem',
         border: '1px solid #fecaca', marginBottom: 16, lineHeight: 1.5, gap: 8,
     },
     alertaExito: {
         display: 'flex', alignItems: 'flex-start',
         backgroundColor: '#f0fdf4', color: '#16a34a',
-        padding: '10px 12px', borderRadius: 8, fontSize: '0.81rem',
+        padding: '10px 12px', borderRadius: 8, fontSize: '0.92rem',
         border: '1px solid #bbf7d0', marginBottom: 16, lineHeight: 1.5, gap: 8,
     },
     avisoInfo: {
         display: 'flex', alignItems: 'center',
         backgroundColor: '#fefce8', border: '1px solid #fde68a',
-        borderRadius: 7, padding: '8px 12px', fontSize: '0.78rem',
+        borderRadius: 7, padding: '8px 12px', fontSize: '0.85rem',
         color: '#92400e', marginBottom: 16,
     },
     avisoBloqueado: {
         display: 'flex', alignItems: 'flex-start',
         backgroundColor: '#f9fafb', border: '1px solid #e5e7eb',
-        borderRadius: 7, padding: '10px 12px', fontSize: '0.74rem',
+        borderRadius: 7, padding: '10px 12px', fontSize: '0.85rem',
         color: '#6b7280', marginTop: 16, lineHeight: 1.6, gap: 8,
     },
     campoWrapper: { marginBottom: 14 },
     campoLabel: {
-        display: 'block', fontSize: '0.78rem', fontWeight: 600,
+        display: 'block', fontSize: '0.85rem', fontWeight: 600,
         color: '#374151', marginBottom: 5, letterSpacing: '0.01em',
     },
-    campoExtra: { marginLeft: 8, fontSize: '0.7rem', color: '#16a34a', fontWeight: 600 },
+    campoExtra: { marginLeft: 8, fontSize: '0.85rem', color: '#16a34a', fontWeight: 600 },
     filaDoble: { display: 'flex', gap: 10 },
     inputGroup: {
         flex: 1, backgroundColor: 'white', borderRadius: 8,
@@ -1412,17 +1421,17 @@ const s = {
         borderRadius: 8, padding: '10px 12px', border: '2px solid #16a34a',
         gap: 8, width: '100%', boxSizing: 'border-box',
     },
-    ico: { color: '#9ca3af', fontSize: '0.88rem', flexShrink: 0 },
-    icoVerde: { color: '#16a34a', fontSize: '0.88rem', flexShrink: 0 },
+    ico: { color: '#9ca3af', fontSize: '0.92rem', flexShrink: 0 },
+    icoVerde: { color: '#16a34a', fontSize: '0.92rem', flexShrink: 0 },
     inp: {
         border: 'none', backgroundColor: 'transparent',
-        width: '100%', outline: 'none', fontSize: '0.87rem',
+        width: '100%', outline: 'none', fontSize: '0.92rem',
         color: '#111827', fontFamily: "'Rotis', 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif",
     },
     ojito: {
         background: 'none', border: 'none', cursor: 'pointer',
         color: '#9ca3af', padding: '0 2px', flexShrink: 0,
-        display: 'flex', alignItems: 'center', fontSize: '0.95rem',
+        display: 'flex', alignItems: 'center', fontSize: '1rem',
         lineHeight: 1, transition: 'color 0.2s', userSelect: 'none',
         WebkitUserSelect: 'none',
     },
@@ -1431,25 +1440,26 @@ const s = {
         borderRadius: 10, padding: '12px 16px',
     },
     inpCodigo: {
-        fontSize: '1.8rem', textAlign: 'center', letterSpacing: '8px',
+        fontSize: '1.94rem', textAlign: 'center', letterSpacing: '8px',
         fontWeight: 900, border: 'none', backgroundColor: 'transparent',
         borderRadius: 6, padding: '4px', width: '100%', fontFamily: "'Rotis', 'Segoe UI', sans-serif",
         color: '#1d4ed8', outline: 'none', boxSizing: 'border-box',
     },
     checklistPass: {
         backgroundColor: '#f9fafb', border: '1px solid #e5e7eb',
-        borderRadius: 7, padding: '10px 12px', marginTop: 8,
+        borderRadius: 7, padding: '10px 14px', marginTop: 4, marginBottom: 12,
+        display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))', columnGap: 12,
     },
-    checklistTitulo: { margin: '0 0 5px', fontSize: '0.73rem', fontWeight: 700, color: '#374151' },
+    checklistTitulo: { margin: '0 0 4px', fontSize: '0.85rem', fontWeight: 700, color: '#374151', gridColumn: '1 / -1' },
     hint: {
-        fontSize: '0.72rem', color: '#6b7280', paddingLeft: 2,
+        fontSize: '0.85rem', color: '#6b7280', paddingLeft: 2,
         marginTop: 4, lineHeight: 1.5, display: 'flex', alignItems: 'center', gap: 4,
     },
     btnPrincipal: {
         width: '100%', padding: '12px',
-        backgroundColor: '#be1e2d', color: 'white',
+        backgroundColor: '#BC0613', color: 'white',
         border: 'none', borderRadius: 8, cursor: 'pointer',
-        fontWeight: 700, fontSize: '0.9rem',
+        fontWeight: 700, fontSize: '1rem',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         gap: 6, marginBottom: 4, letterSpacing: '0.4px',
         transition: 'background-color 0.2s',
@@ -1457,30 +1467,30 @@ const s = {
     btnSecundario: {
         width: '100%', padding: '10px', backgroundColor: '#2563eb',
         color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer',
-        fontWeight: 600, fontSize: '0.83rem',
+        fontWeight: 600, fontSize: '0.92rem',
         display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
     },
     btnCancelar: {
         padding: '10px 18px', backgroundColor: '#f3f4f6',
         border: '1px solid #e5e7eb', borderRadius: 8, cursor: 'pointer',
-        fontWeight: 600, fontSize: '0.85rem', color: '#374151', whiteSpace: 'nowrap',
+        fontWeight: 600, fontSize: '0.92rem', color: '#374151', whiteSpace: 'nowrap',
     },
     btnTexto: {
         background: 'none', border: 'none', cursor: 'pointer',
-        color: '#6b7280', fontSize: '0.83rem', padding: '8px 0',
+        color: '#6b7280', fontSize: '0.92rem', padding: '8px 0',
         display: 'block', width: '100%', textAlign: 'center',
     },
     linkSwitch: {
-        background: 'none', border: 'none', color: '#be1e2d',
-        fontWeight: 700, cursor: 'pointer', fontSize: '0.84rem', padding: 0,
+        background: 'none', border: 'none', color: '#BC0613',
+        fontWeight: 700, cursor: 'pointer', fontSize: '0.92rem', padding: 0,
     },
     linkOlvide: {
-        background: 'none', border: 'none', color: '#be1e2d',
-        fontWeight: 600, cursor: 'pointer', fontSize: '0.8rem', padding: 0,
+        background: 'none', border: 'none', color: '#BC0613',
+        fontWeight: 600, cursor: 'pointer', fontSize: '0.92rem', padding: 0,
     },
     resumen: {
         textAlign: 'left', backgroundColor: '#f9fafb', padding: '14px',
-        borderRadius: 8, marginBottom: 12, fontSize: '0.76rem',
+        borderRadius: 8, marginBottom: 12, fontSize: '0.85rem',
         lineHeight: 1.8, color: '#111827', border: '1px solid #e5e7eb',
     },
     resumenGrid: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 },
@@ -1496,14 +1506,14 @@ const s = {
         borderRadius: 10, padding: '12px 14px', marginBottom: 12,
     },
     flujoSelectorLabel: {
-        margin: '0 0 10px', fontSize: '0.82rem', fontWeight: 600,
+        margin: '0 0 10px', fontSize: '0.92rem', fontWeight: 600,
         color: '#1e293b', display: 'flex', alignItems: 'center',
     },
     flujoOpciones: { display: 'flex', gap: 8 },
     flujoBtn: {
         flex: 1, padding: '9px 12px', borderRadius: 8,
         border: '1.5px solid #e2e8f0', backgroundColor: 'white',
-        cursor: 'pointer', fontSize: '0.78rem', fontWeight: 600,
+        cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600,
         color: '#475569', display: 'flex', alignItems: 'center',
         justifyContent: 'center', transition: 'all 0.2s',
     },
@@ -1521,7 +1531,7 @@ const s = {
         display: 'inline-flex', alignItems: 'center',
         padding: '2px 7px', backgroundColor: 'rgba(0,0,0,0.6)',
         color: 'white', border: 'none', borderRadius: 4,
-        cursor: 'pointer', fontSize: '0.67rem', fontWeight: 600,
+        cursor: 'pointer', fontSize: '0.78rem', fontWeight: 600,
     },
     overlaySalida: {
         position: 'fixed', inset: 0, zIndex: 1000,

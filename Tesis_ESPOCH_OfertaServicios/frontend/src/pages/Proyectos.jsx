@@ -26,8 +26,8 @@ const CSS = `
 .proy-card:hover { box-shadow:0 10px 28px rgba(0,0,0,.12) !important; transform:translateY(-2px); }
 .pill-btn  { transition: background .15s, color .15s, border-color .15s; cursor:pointer; }
 .ver-btn   { transition: background .15s, color .15s; }
-.ver-btn:hover { background:#be1e2d !important; color:white !important; }
-.pag-btn:hover:not([disabled]) { background:#be1e2d !important; color:white !important; }
+.ver-btn:hover { background:#BC0613 !important; color:white !important; }
+.pag-btn:hover:not([disabled]) { background:#BC0613 !important; color:white !important; }
 img { -webkit-touch-callout:none; user-select:none; }
 * { box-sizing:border-box; }
 `;
@@ -74,12 +74,12 @@ const ProyectoCard = ({ proyecto, navigate }) => {
                     ? <img src={urlMedia(proyecto.imagen)} alt={proyecto.titulo}
                            style={card.img} onContextMenu={e => e.preventDefault()} draggable={false} />
                     : <div style={card.imgPlaceholder}>
-                        <FaBriefcase style={{ fontSize: '1.8rem', color: '#cbd5e1' }} />
+                        <FaBriefcase style={{ fontSize: '1.94rem', color: '#cbd5e1' }} />
                       </div>
                 }
                 {proyecto.fechaRealizacion && (
                     <span style={card.anio}>
-                        <FaCalendarAlt style={{ marginRight: 3, fontSize: '0.5rem' }} />
+                        <FaCalendarAlt style={{ marginRight: 3, fontSize: '0.8rem' }} />
                         {new Date(proyecto.fechaRealizacion).getFullYear()}
                     </span>
                 )}
@@ -104,7 +104,7 @@ const ProyectoCard = ({ proyecto, navigate }) => {
                         {g?.fotoPerfil
                             ? <img src={urlMedia(g.fotoPerfil)} alt="" style={card.avatarImg}
                                    onContextMenu={e => e.preventDefault()} draggable={false} />
-                            : <FaUserCircle style={{ fontSize: '1.3rem', color: '#cbd5e1' }} />
+                            : <FaUserCircle style={{ fontSize: '1.4rem', color: '#cbd5e1' }} />
                         }
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
@@ -116,7 +116,7 @@ const ProyectoCard = ({ proyecto, navigate }) => {
                         )}
                         {g?.ciudad && (
                             <p style={{ ...card.gradCiudad, fontFamily: FONT }}>
-                                <FaMapMarkerAlt style={{ marginRight: 3, fontSize: '0.5rem' }} />{g.ciudad}
+                                <FaMapMarkerAlt style={{ marginRight: 3, fontSize: '0.8rem' }} />{g.ciudad}
                             </p>
                         )}
                     </div>
@@ -125,14 +125,14 @@ const ProyectoCard = ({ proyecto, navigate }) => {
                     {proyecto.urlRepositorio && (
                         <a href={proyecto.urlRepositorio} target="_blank" rel="noopener noreferrer"
                            style={{ ...card.repoLink, fontFamily: FONT }} onClick={e => e.stopPropagation()}>
-                            <FaExternalLinkAlt style={{ marginRight: 3, fontSize: '0.58rem' }} />Repo
+                            <FaExternalLinkAlt style={{ marginRight: 3, fontSize: '0.8rem' }} />Repo
                         </a>
                     )}
                     {g && (
                         <button className="ver-btn"
                             onClick={() => navigate(`/perfil/${g._id}`)}
                             style={{ ...card.verBtn, fontFamily: FONT }}>
-                            Ver perfil <FaArrowRight style={{ marginLeft: 4, fontSize: '0.58rem' }} />
+                            Ver perfil <FaArrowRight style={{ marginLeft: 4, fontSize: '0.8rem' }} />
                         </button>
                     )}
                 </div>
@@ -235,7 +235,7 @@ const Proyectos = () => {
         fetchProyectos({ q: busqueda, tech: techActiva, todos: mostrarTodos, page: pg });
     };
 
-    const tendColor = tendencia?.color || '#be1e2d';
+    const tendColor = tendencia?.color || '#BC0613';
 
     const gridCols = isMobile
         ? '1fr'
@@ -260,16 +260,16 @@ const Proyectos = () => {
                 }}>
                     <div style={p.heroIzq}>
                         <p style={{ ...p.heroEtiqueta, fontFamily: FONT }}>
-                            <FaLayerGroup style={{ marginRight: 6, fontSize: '0.68rem' }} />
+                            <FaLayerGroup style={{ marginRight: 6, fontSize: '0.8rem' }} />
                             GALERÍA DE EXCELENCIA
                         </p>
                         <h1 style={{
                             ...p.heroTitulo,
                             fontFamily: FONT,
-                            fontSize: isMobile ? '1.7rem' : isTablet ? '1.9rem' : '2.1rem',
+                            fontSize: isMobile ? '1.84rem' : isTablet ? '2.05rem' : '2.5rem',
                         }}>
                             Proyectos de<br />
-                            <span style={{ color: '#be1e2d' }}>Graduados</span>
+                            <span style={{ color: '#BC0613' }}>Graduados</span>
                         </h1>
                         {!isMobile && (
                             <p style={{ ...p.heroSub, fontFamily: FONT }}>
@@ -281,7 +281,7 @@ const Proyectos = () => {
 
                     <div style={p.heroDer}>
                         <div style={p.buscadorBox}>
-                            <FaSearch style={{ color: '#94a3b8', fontSize: '0.9rem', flexShrink: 0 }} />
+                            <FaSearch style={{ color: '#94a3b8', fontSize: '1.1rem', flexShrink: 0 }} />
                             <input
                                 type="text"
                                 value={busqueda}
@@ -292,7 +292,7 @@ const Proyectos = () => {
                             />
                             {busqueda && (
                                 <button onClick={limpiarBusqueda} style={p.buscadorX}>
-                                    <FaTimes style={{ fontSize: '0.7rem' }} />
+                                    <FaTimes style={{ fontSize: '0.9rem' }} />
                                 </button>
                             )}
                         </div>
@@ -319,7 +319,7 @@ const Proyectos = () => {
                         gap: isMobile ? 10 : 14,
                     }}>
                         <div style={{ ...p.tendIco, backgroundColor: tendColor + '18', flexShrink: 0 }}>
-                            <FaFire style={{ color: tendColor, fontSize: '1rem' }} />
+                            <FaFire style={{ color: tendColor, fontSize: '1.1rem' }} />
                         </div>
                         <div style={{ flex: 1, minWidth: 0 }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 2 }}>
@@ -344,7 +344,7 @@ const Proyectos = () => {
                                 ...p.btnToggle,
                                 fontFamily: FONT,
                                 background: mostrarTodos ? '#f1f5f9' : 'white',
-                                color:      mostrarTodos ? '#be1e2d' : '#64748b',
+                                color:      mostrarTodos ? '#BC0613' : '#64748b',
                                 alignSelf: isMobile ? 'flex-start' : 'center',
                             }}
                         >
@@ -394,7 +394,7 @@ const Proyectos = () => {
 
                 {/* Contador */}
                 {!cargando && !error && (
-                    <p style={{ ...p.contador, fontFamily: FONT, fontSize: isMobile ? '0.7rem' : '0.74rem' }}>
+                    <p style={{ ...p.contador, fontFamily: FONT, fontSize: isMobile ? '0.9rem' : '0.9rem' }}>
                         {busqueda
                             ? <><strong>{total}</strong> resultado{total !== 1 ? 's' : ''} para "<em>{busqueda}</em>"</>
                             : techActiva
@@ -422,7 +422,7 @@ const Proyectos = () => {
                     </div>
                 ) : proyectos.length === 0 && !error ? (
                     <div style={p.empty}>
-                        <FaBriefcase style={{ fontSize: '2.4rem', color: '#cbd5e1', marginBottom: 12 }} />
+                        <FaBriefcase style={{ fontSize: '2.8rem', color: '#cbd5e1', marginBottom: 12 }} />
                         <p style={{ ...p.emptyTit, fontFamily: FONT }}>Sin proyectos</p>
                         <p style={{ ...p.emptySub, fontFamily: FONT }}>
                             {busqueda
@@ -458,7 +458,7 @@ const Proyectos = () => {
                             onClick={() => page > 1 && irPagina(page - 1)}
                             disabled={page <= 1}
                         >
-                            <FaChevronLeft style={{ fontSize: '0.65rem' }} />
+                            <FaChevronLeft style={{ fontSize: '0.8rem' }} />
                         </button>
 
                         {Array.from({ length: pages }, (_, i) => i + 1)
@@ -473,9 +473,9 @@ const Proyectos = () => {
                                 : <button key={item} className="pag-btn"
                                     style={{
                                         ...p.pagBtn, fontFamily: FONT,
-                                        background:  item === page ? '#be1e2d' : 'white',
+                                        background:  item === page ? '#BC0613' : 'white',
                                         color:       item === page ? 'white'   : '#475569',
-                                        borderColor: item === page ? '#be1e2d' : '#e2e8f0',
+                                        borderColor: item === page ? '#BC0613' : '#e2e8f0',
                                         fontWeight:  item === page ? 700 : 500,
                                     }}
                                     onClick={() => irPagina(item)}
@@ -488,7 +488,7 @@ const Proyectos = () => {
                             onClick={() => page < pages && irPagina(page + 1)}
                             disabled={page >= pages}
                         >
-                            <FaChevronRight style={{ fontSize: '0.65rem' }} />
+                            <FaChevronRight style={{ fontSize: '0.8rem' }} />
                         </button>
                     </div>
                 )}
@@ -504,39 +504,39 @@ const p = {
     hero:         { backgroundColor: 'white' },
     heroInner:    { maxWidth: 1160, margin: '0 auto', display: 'grid', alignItems: 'center' },
     heroIzq:      {},
-    heroEtiqueta: { margin: '0 0 12px', fontSize: '0.62rem', fontWeight: 700, color: '#94a3b8', letterSpacing: '0.1em', textTransform: 'uppercase', display: 'flex', alignItems: 'center' },
+    heroEtiqueta: { margin: '0 0 12px', fontSize: '0.8rem', fontWeight: 700, color: '#94a3b8', letterSpacing: '0.1em', textTransform: 'uppercase', display: 'flex', alignItems: 'center' },
     heroTitulo:   { margin: '0 0 12px', fontWeight: 900, color: '#0f172a', lineHeight: 1.15, letterSpacing: '-0.02em' },
-    heroSub:      { margin: 0, fontSize: '0.84rem', color: '#64748b', lineHeight: 1.65, maxWidth: 420 },
+    heroSub:      { margin: 0, fontSize: '1rem', color: '#64748b', lineHeight: 1.65, maxWidth: 420 },
     heroDer:      {},
-    heroDivider:  { height: 3, background: 'linear-gradient(90deg, #be1e2d 0%, #e11d48 50%, transparent 100%)' },
+    heroDivider:  { height: 3, background: 'linear-gradient(90deg, #BC0613 0%, #e11d48 50%, transparent 100%)' },
     buscadorBox:  { display: 'flex', alignItems: 'center', gap: 10, backgroundColor: '#f8fafc', border: '1.5px solid #e2e8f0', borderRadius: 10, padding: '11px 14px', boxShadow: '0 1px 4px rgba(0,0,0,.05)' },
-    buscadorInp:  { flex: 1, border: 'none', outline: 'none', fontSize: '0.86rem', color: '#0f172a', backgroundColor: 'transparent' },
+    buscadorInp:  { flex: 1, border: 'none', outline: 'none', fontSize: '1rem', color: '#0f172a', backgroundColor: 'transparent' },
     buscadorX:    { background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8', display: 'flex', alignItems: 'center', padding: 3 },
-    buscadorHint: { margin: '8px 0 0 2px', fontSize: '0.64rem', color: '#94a3b8', lineHeight: 1.5 },
+    buscadorHint: { margin: '8px 0 0 2px', fontSize: '0.8rem', color: '#94a3b8', lineHeight: 1.5 },
     pagina:       { maxWidth: 1160, margin: '0 auto' },
     tendBanner:   { display: 'flex', alignItems: 'flex-start', backgroundColor: 'white', border: '1px solid #e9ecef', borderRadius: 12, padding: '14px 16px', marginBottom: 18, boxShadow: '0 1px 6px rgba(0,0,0,.05)' },
     tendIco:      { width: 40, height: 40, borderRadius: 9, display: 'flex', alignItems: 'center', justifyContent: 'center' },
-    tendLabel:    { fontSize: '0.6rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.07em' },
-    tendCat:      { margin: '0 0 2px', fontSize: '0.95rem', fontWeight: 800, lineHeight: 1.2 },
-    tendDesc:     { margin: 0, fontSize: '0.73rem', color: '#64748b', lineHeight: 1.5 },
-    badgeManual:  { fontSize: '0.57rem', fontWeight: 700, backgroundColor: '#fef9c3', color: '#a16207', border: '1px solid #fde047', borderRadius: 20, padding: '2px 7px' },
-    badgeFallback:{ fontSize: '0.57rem', fontWeight: 700, backgroundColor: '#f1f5f9', color: '#64748b', border: '1px solid #e2e8f0', borderRadius: 20, padding: '2px 7px' },
-    btnToggle:    { display: 'inline-flex', alignItems: 'center', padding: '6px 12px', border: '1px solid #e2e8f0', borderRadius: 7, cursor: 'pointer', fontSize: '0.71rem', fontWeight: 600, flexShrink: 0, whiteSpace: 'nowrap' },
+    tendLabel:    { fontSize: '0.8rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.07em' },
+    tendCat:      { margin: '0 0 2px', fontSize: '1.1rem', fontWeight: 800, lineHeight: 1.2 },
+    tendDesc:     { margin: 0, fontSize: '0.9rem', color: '#64748b', lineHeight: 1.5 },
+    badgeManual:  { fontSize: '0.8rem', fontWeight: 700, backgroundColor: '#fef9c3', color: '#a16207', border: '1px solid #fde047', borderRadius: 20, padding: '2px 7px' },
+    badgeFallback:{ fontSize: '0.8rem', fontWeight: 700, backgroundColor: '#f1f5f9', color: '#64748b', border: '1px solid #e2e8f0', borderRadius: 20, padding: '2px 7px' },
+    btnToggle:    { display: 'inline-flex', alignItems: 'center', padding: '6px 12px', border: '1px solid #e2e8f0', borderRadius: 7, cursor: 'pointer', fontSize: '0.9rem', fontWeight: 600, flexShrink: 0, whiteSpace: 'nowrap' },
     pillsArea:    {},
-    pillsLabel:   { display: 'flex', alignItems: 'center', fontSize: '0.71rem', fontWeight: 700, color: '#475569', marginBottom: 8 },
+    pillsLabel:   { display: 'flex', alignItems: 'center', fontSize: '0.9rem', fontWeight: 700, color: '#475569', marginBottom: 8 },
     pillsRow:     { display: 'flex', gap: 7 },
-    pill:         { padding: '5px 14px', borderRadius: 20, border: '1px solid', fontSize: '0.74rem' },
+    pill:         { padding: '5px 14px', borderRadius: 20, border: '1px solid', fontSize: '0.9rem' },
     contador:     { margin: '0 0 14px', color: '#94a3b8' },
     grid:         { display: 'grid', gap: 18 },
     empty:        { textAlign: 'center', padding: '52px 20px', display: 'flex', flexDirection: 'column', alignItems: 'center' },
-    emptyTit:     { margin: '0 0 6px', fontSize: '0.96rem', fontWeight: 700, color: '#0f172a' },
-    emptySub:     { margin: '0 0 16px', fontSize: '0.76rem', color: '#94a3b8', lineHeight: 1.6 },
-    btnVacioLimpiar: { padding: '7px 18px', backgroundColor: '#be1e2d', color: 'white', border: 'none', borderRadius: 7, cursor: 'pointer', fontSize: '0.77rem', fontWeight: 700 },
-    errorBox:     { backgroundColor: '#fef2f2', border: '1px solid #fecaca', borderRadius: 10, padding: '14px 18px', color: '#b91c1c', fontSize: '0.8rem', textAlign: 'center', marginBottom: 18, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 },
-    btnRetry:     { display: 'inline-flex', alignItems: 'center', padding: '5px 14px', backgroundColor: '#be1e2d', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontSize: '0.75rem', fontWeight: 600 },
+    emptyTit:     { margin: '0 0 6px', fontSize: '1.1rem', fontWeight: 700, color: '#0f172a' },
+    emptySub:     { margin: '0 0 16px', fontSize: '0.9rem', color: '#94a3b8', lineHeight: 1.6 },
+    btnVacioLimpiar: { padding: '7px 18px', backgroundColor: '#BC0613', color: 'white', border: 'none', borderRadius: 7, cursor: 'pointer', fontSize: '0.9rem', fontWeight: 700 },
+    errorBox:     { backgroundColor: '#fef2f2', border: '1px solid #fecaca', borderRadius: 10, padding: '14px 18px', color: '#b91c1c', fontSize: '1rem', textAlign: 'center', marginBottom: 18, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 },
+    btnRetry:     { display: 'inline-flex', alignItems: 'center', padding: '5px 14px', backgroundColor: '#BC0613', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontSize: '0.9rem', fontWeight: 600 },
     paginacion:   { display: 'flex', justifyContent: 'center', alignItems: 'center' },
-    pagBtn:       { width: 34, height: 34, borderRadius: 7, border: '1px solid #e2e8f0', backgroundColor: 'white', color: '#475569', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.8rem', transition: 'background .15s, color .15s' },
-    pagSep:       { color: '#94a3b8', fontSize: '0.78rem', padding: '0 3px' },
+    pagBtn:       { width: 34, height: 34, borderRadius: 7, border: '1px solid #e2e8f0', backgroundColor: 'white', color: '#475569', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1rem', transition: 'background .15s, color .15s' },
+    pagSep:       { color: '#94a3b8', fontSize: '0.9rem', padding: '0 3px' },
 };
 
 const card = {
@@ -544,23 +544,23 @@ const card = {
     imgBox:       { position: 'relative', height: 160, overflow: 'hidden', backgroundColor: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center' },
     img:          { width: '100%', height: '100%', objectFit: 'cover', display: 'block' },
     imgPlaceholder:{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f1f5f9' },
-    anio:         { position: 'absolute', top: 9, right: 9, display: 'inline-flex', alignItems: 'center', backgroundColor: 'rgba(15,23,42,.65)', color: 'white', padding: '3px 7px', borderRadius: 20, fontSize: '0.58rem', fontWeight: 700, backdropFilter: 'blur(4px)' },
+    anio:         { position: 'absolute', top: 9, right: 9, display: 'inline-flex', alignItems: 'center', backgroundColor: 'rgba(15,23,42,.65)', color: 'white', padding: '3px 7px', borderRadius: 20, fontSize: '0.8rem', fontWeight: 700, backdropFilter: 'blur(4px)' },
     body:         { padding: '12px 14px 8px', flex: 1 },
-    titulo:       { margin: '0 0 5px', fontSize: '0.86rem', fontWeight: 800, color: '#0f172a', lineHeight: 1.35, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' },
-    desc:         { margin: '0 0 9px', fontSize: '0.72rem', color: '#64748b', lineHeight: 1.6, display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' },
+    titulo:       { margin: '0 0 5px', fontSize: '1rem', fontWeight: 800, color: '#0f172a', lineHeight: 1.35, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' },
+    desc:         { margin: '0 0 9px', fontSize: '0.9rem', color: '#64748b', lineHeight: 1.6, display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' },
     tagsRow:      { display: 'flex', flexWrap: 'wrap', gap: 4 },
-    tag:          { backgroundColor: '#eff6ff', color: '#1d4ed8', padding: '2px 7px', borderRadius: 20, fontSize: '0.6rem', fontWeight: 600, border: '1px solid #bfdbfe' },
-    tagMas:       { backgroundColor: '#f1f5f9', color: '#94a3b8', padding: '2px 6px', borderRadius: 20, fontSize: '0.6rem' },
+    tag:          { backgroundColor: '#eff6ff', color: '#1d4ed8', padding: '2px 7px', borderRadius: 20, fontSize: '0.8rem', fontWeight: 600, border: '1px solid #bfdbfe' },
+    tagMas:       { backgroundColor: '#f1f5f9', color: '#94a3b8', padding: '2px 6px', borderRadius: 20, fontSize: '0.8rem' },
     footer:       { padding: '9px 14px 12px', borderTop: '1px solid #f1f5f9', display: 'flex', flexDirection: 'column', gap: 8 },
     gradRow:      { display: 'flex', alignItems: 'flex-start', gap: 8 },
     avatarWrap:   { width: 30, height: 30, borderRadius: '50%', overflow: 'hidden', border: '1.5px solid #e2e8f0', flexShrink: 0, backgroundColor: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center' },
     avatarImg:    { width: '100%', height: '100%', objectFit: 'cover', display: 'block' },
-    gradNombre:   { margin: 0, fontSize: '0.72rem', fontWeight: 700, color: '#0f172a', lineHeight: 1.3 },
-    gradEsp:      { margin: '1px 0 0', fontSize: '0.6rem', fontWeight: 600, color: '#be1e2d' },
-    gradCiudad:   { margin: '1px 0 0', fontSize: '0.6rem', color: '#94a3b8', display: 'inline-flex', alignItems: 'center' },
+    gradNombre:   { margin: 0, fontSize: '0.9rem', fontWeight: 700, color: '#0f172a', lineHeight: 1.3 },
+    gradEsp:      { margin: '1px 0 0', fontSize: '0.8rem', fontWeight: 600, color: '#BC0613' },
+    gradCiudad:   { margin: '1px 0 0', fontSize: '0.8rem', color: '#94a3b8', display: 'inline-flex', alignItems: 'center' },
     footerBtns:   { display: 'flex', alignItems: 'center', gap: 8, justifyContent: 'flex-end' },
-    repoLink:     { display: 'inline-flex', alignItems: 'center', fontSize: '0.62rem', color: '#2563eb', fontWeight: 600, textDecoration: 'none' },
-    verBtn:       { display: 'inline-flex', alignItems: 'center', padding: '4px 10px', backgroundColor: 'white', border: '1px solid #e2e8f0', borderRadius: 6, cursor: 'pointer', fontSize: '0.63rem', fontWeight: 700, color: '#475569' },
+    repoLink:     { display: 'inline-flex', alignItems: 'center', fontSize: '0.8rem', color: '#2563eb', fontWeight: 600, textDecoration: 'none' },
+    verBtn:       { display: 'inline-flex', alignItems: 'center', padding: '4px 10px', backgroundColor: 'white', border: '1px solid #e2e8f0', borderRadius: 6, cursor: 'pointer', fontSize: '0.8rem', fontWeight: 700, color: '#475569' },
 };
 
 export default Proyectos;

@@ -48,7 +48,7 @@ const useWindowWidth = () => {
 const FilaEmail = ({ email }) => (
     <div style={nd.fila}>
         <div style={nd.filaIco}>
-            <FaEnvelope style={{ fontSize: '0.62rem', color: '#64748b' }} />
+            <FaEnvelope style={{ fontSize: '0.8rem', color: '#64748b' }} />
         </div>
         <div style={nd.filaInfo}>
             <span style={nd.filaLabel}>Correo</span>
@@ -72,7 +72,7 @@ const DetalleContacto = ({ notif, onVolver }) => {
 
             <div style={nd.cabecera}>
                 <div style={nd.iconoWrap}>
-                    <FaEnvelope style={{ color: '#be1e2d', fontSize: '1rem' }} />
+                    <FaEnvelope style={{ color: '#BC0613', fontSize: '1.1rem' }} />
                 </div>
                 <div>
                     <p style={nd.cabeceraH}>Alguien está interesado en tu perfil</p>
@@ -90,7 +90,7 @@ const DetalleContacto = ({ notif, onVolver }) => {
 
                 <div style={nd.fila}>
                     <div style={nd.filaIco}>
-                        <FaUser style={{ fontSize: '0.62rem', color: '#be1e2d' }} />
+                        <FaUser style={{ fontSize: '0.8rem', color: '#BC0613' }} />
                     </div>
                     <div style={nd.filaInfo}>
                         <span style={nd.filaLabel}>Nombre</span>
@@ -101,7 +101,7 @@ const DetalleContacto = ({ notif, onVolver }) => {
                 {meta.empresa ? (
                     <div style={nd.fila}>
                         <div style={nd.filaIco}>
-                            <FaBuilding style={{ fontSize: '0.62rem', color: '#64748b' }} />
+                            <FaBuilding style={{ fontSize: '0.8rem', color: '#64748b' }} />
                         </div>
                         <div style={nd.filaInfo}>
                             <span style={nd.filaLabel}>Empresa</span>
@@ -123,7 +123,7 @@ const DetalleContacto = ({ notif, onVolver }) => {
             </div>
 
             <div style={nd.aviso}>
-                <FaEnvelope style={{ color: '#be1e2d', flexShrink: 0, fontSize: '0.68rem', marginTop: 1 }} />
+                <FaEnvelope style={{ color: '#BC0613', flexShrink: 0, fontSize: '0.8rem', marginTop: 1 }} />
                 <span style={nd.avisoTxt}>
                     También recibiste estos datos en tu correo personal.
                     Puedes responder directamente a <strong>{meta.email}</strong>.
@@ -275,14 +275,14 @@ const LayoutGraduado = () => {
     // ESTILOS RESPONSIVOS DINÁMICOS
     // ══════════════════════════════════════════════
     const navbarStyle = {
-        height: isMobile ? '56px' : '62px',
-        minHeight: isMobile ? '56px' : '62px',
-        backgroundColor: 'var(--color-espoch-rojo)',
+        height: isMobile ? '68px' : '89px',
+        minHeight: isMobile ? '68px' : '89px',
+        backgroundColor: '#BC0613',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        padding: isMobile ? '0 14px' : isTablet ? '0 16px' : '0 24px',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+        padding: isMobile ? '0 14px' : isTablet ? '0 16px' : '0 calc(max(24px, (100% - 1295px) / 2) + 15px) 0 max(24px, calc((100% - 1295px) / 2))',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.18)',
         flexShrink: 0,
         zIndex: 100,
         position: 'relative',
@@ -290,7 +290,7 @@ const LayoutGraduado = () => {
 
     const notifPanelStyle = {
         position: 'fixed',
-        top: isMobile ? '56px' : 'auto',
+        top: isMobile ? '68px' : 'auto',
         right: isMobile ? '0' : '0',
         left: isMobile ? '0' : 'auto',
         bottom: isMobile ? '0' : 'auto',
@@ -304,7 +304,7 @@ const LayoutGraduado = () => {
         overflow: 'hidden',
         display: 'flex',
         flexDirection: 'column',
-        maxHeight: isMobile ? 'calc(100vh - 56px)' : '420px',
+        maxHeight: isMobile ? 'calc(100vh - 68px)' : '420px',
     };
 
     return (
@@ -314,31 +314,11 @@ const LayoutGraduado = () => {
 
                 {/* Logo */}
                 <div style={styles.logoArea}>
-                    <div style={styles.logoBadge}>
-                        <img
-                            src="/img/ESPOCH_LOGO.png"
-                            alt="ESPOCH"
-                            style={{ height: '28px', width: '28px', objectFit: 'contain' }}
-                            onError={e => {
-                                if (!e.target.dataset.fallback) {
-                                    e.target.dataset.fallback = '1';
-                                    e.target.src = '/img/FIE_LOGO.png';
-                                } else {
-                                    e.target.style.display = 'none';
-                                    e.target.parentElement.innerHTML =
-                                        '<span style="color:white;font-weight:800;font-size:0.85rem">ES</span>';
-                                }
-                            }}
-                        />
-                    </div>
-                    <div>
-                        <div style={{ ...styles.logoTitulo, fontSize: isMobile ? '0.78rem' : '0.9rem' }}>
-                            Portal de Graduados
-                        </div>
-                        {!isMobile && (
-                            <div style={styles.logoSub}>Carrera de Software · ESPOCH</div>
-                        )}
-                    </div>
+                    <img
+                        src="/img/logo-software-blanco.png"
+                        alt="Carrera de Software ESPOCH"
+                        style={{ height: isMobile ? 40 : 62, width: 'auto', display: 'block' }}
+                    />
                 </div>
 
                 {/* Nav central — solo en desktop/tablet */}
@@ -427,14 +407,14 @@ const LayoutGraduado = () => {
                                         <div style={{ ...styles.notifLista, flex: 1, overflowY: 'auto' }}>
                                             {cargandoNotif ? (
                                                 <div style={styles.notifVacio}>
-                                                    <p style={{ margin: 0, fontSize: '0.78rem', color: '#adb5bd' }}>
+                                                    <p style={{ margin: 0, fontSize: '0.9rem', color: '#adb5bd' }}>
                                                         Cargando...
                                                     </p>
                                                 </div>
                                             ) : notificaciones.length === 0 ? (
                                                 <div style={styles.notifVacio}>
-                                                    <FaBell style={{ fontSize: '1.6rem', color: '#dee2e6', marginBottom: 6 }} />
-                                                    <p style={{ margin: 0, fontSize: '0.78rem', color: '#adb5bd' }}>
+                                                    <FaBell style={{ fontSize: '1.73rem', color: '#dee2e6', marginBottom: 6 }} />
+                                                    <p style={{ margin: 0, fontSize: '0.9rem', color: '#adb5bd' }}>
                                                         Sin notificaciones por ahora
                                                     </p>
                                                 </div>
@@ -447,29 +427,29 @@ const LayoutGraduado = () => {
                                                             backgroundColor: n.leido ? 'transparent' : '#fff8f8',
                                                             borderLeft: n.leido
                                                                 ? '3px solid transparent'
-                                                                : '3px solid var(--color-espoch-rojo)',
+                                                                : '3px solid #BC0613',
                                                             cursor: 'pointer',
                                                         }}
                                                         onClick={() => handleClickNotif(n)}
                                                     >
                                                         <div style={styles.notifDot}>
                                                             {!n.leido && (
-                                                                <FaCircle style={{ fontSize: '0.45rem', color: 'var(--color-espoch-rojo)' }} />
+                                                                <FaCircle style={{ fontSize: '0.8rem', color: '#BC0613' }} />
                                                             )}
                                                         </div>
 
                                                         <div style={{ flex: 1, minWidth: 0 }}>
                                                             <p style={{
                                                                 margin: '0 0 2px',
-                                                                fontSize: '0.75rem',
+                                                                fontSize: '0.9rem',
                                                                 fontWeight: '700',
-                                                                color: n.leido ? '#adb5bd' : 'var(--color-espoch-rojo)',
+                                                                color: n.leido ? '#adb5bd' : '#BC0613',
                                                             }}>
                                                                 {n.titulo}
                                                             </p>
                                                             <p style={{
                                                                 margin: '0 0 3px',
-                                                                fontSize: '0.78rem',
+                                                                fontSize: '0.9rem',
                                                                 color: '#2c3e50',
                                                                 fontWeight: n.leido ? '400' : '600',
                                                                 lineHeight: 1.45,
@@ -555,8 +535,8 @@ const LayoutGraduado = () => {
                             borderBottom: '1px solid rgba(255,255,255,0.15)',
                             marginBottom: 4,
                         }}>
-                            <span style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.7)' }}>Hola, </span>
-                            <span style={{ fontSize: '0.82rem', fontWeight: '700', color: 'white' }}>
+                            <span style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.7)' }}>Hola, </span>
+                            <span style={{ fontSize: '1rem', fontWeight: '700', color: 'white' }}>
                                 {usuario.nombres?.split(' ')[0] || usuario.nombre?.split(' ')[0]}
                             </span>
                         </div>
@@ -579,13 +559,13 @@ const LayoutGraduado = () => {
                                     border: 'none',
                                     borderLeft: activo ? '3px solid white' : '3px solid transparent',
                                     color: activo ? 'white' : 'rgba(255,255,255,0.75)',
-                                    fontSize: '0.87rem',
+                                    fontSize: '1rem',
                                     fontWeight: activo ? '700' : '500',
                                     cursor: 'pointer',
                                     textAlign: 'left',
                                 }}
                             >
-                                <Icon style={{ fontSize: '0.9rem', flexShrink: 0 }} />
+                                <Icon style={{ fontSize: '1.1rem', flexShrink: 0 }} />
                                 {label}
                             </button>
                         );
@@ -604,7 +584,7 @@ const LayoutGraduado = () => {
                                 background: 'transparent',
                                 border: 'none',
                                 color: 'rgba(255,255,255,0.65)',
-                                fontSize: '0.85rem',
+                                fontSize: '1rem',
                                 fontWeight: '500',
                                 cursor: 'pointer',
                                 textAlign: 'left',
@@ -640,28 +620,28 @@ const styles = {
     root:           { display: 'flex', flexDirection: 'column', height: '100vh', width: '100vw', backgroundColor: 'var(--color-fondo-web)', overflow: 'hidden' },
     logoArea:       { display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0 },
     logoBadge:      { width: '38px', height: '38px', backgroundColor: 'white', border: '1px solid rgba(255,255,255,0.3)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, overflow: 'hidden', padding: '3px' },
-    logoTitulo:     { color: 'white', fontWeight: '700', fontSize: '0.9rem', lineHeight: 1.2 },
-    logoSub:        { color: 'rgba(255,255,255,0.55)', fontSize: '0.62rem', letterSpacing: '0.04em', marginTop: '1px' },
+    logoTitulo:     { color: 'white', fontWeight: '700', fontSize: '1.1rem', lineHeight: 1.2 },
+    logoSub:        { color: 'rgba(255,255,255,0.55)', fontSize: '0.8rem', letterSpacing: '0.04em', marginTop: '1px' },
     navCentro:      { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '2px', flexWrap: 'nowrap' },
-    navBtn:         { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', padding: '6px 14px', border: 'none', background: 'transparent', cursor: 'pointer', borderRadius: '0', color: 'rgba(255,255,255,0.55)', fontSize: '0.82rem', fontWeight: '500', whiteSpace: 'nowrap', transition: 'color 0.15s' },
-    navBtnActivo:   { color: 'white', fontWeight: '700' },
-    navIcon:        { fontSize: '0.82rem', flexShrink: 0 },
+    navBtn:         { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', padding: '8px 16px', border: 'none', background: 'transparent', cursor: 'pointer', borderRadius: '0', color: 'rgba(255,255,255,0.85)', fontSize: '1rem', fontWeight: '500', whiteSpace: 'nowrap', transition: 'color 0.15s' },
+    navBtnActivo:   { color: 'white', fontWeight: '600' },
+    navIcon:        { fontSize: '1rem', flexShrink: 0 },
     navDerecha:     { display: 'flex', alignItems: 'center', gap: '10px', justifyContent: 'flex-end', flexShrink: 0 },
-    userName:       { fontSize: '0.8rem', fontWeight: '500', color: 'rgba(255,255,255,0.88)' },
-    btnSalir:       { display: 'flex', alignItems: 'center', gap: '5px', padding: '6px 13px', backgroundColor: 'transparent', border: '1px solid rgba(255,255,255,0.25)', borderRadius: '6px', color: 'rgba(255,255,255,0.70)', cursor: 'pointer', fontSize: '0.78rem', fontWeight: '500', transition: 'background-color 0.15s', whiteSpace: 'nowrap' },
+    userName:       { fontSize: '1rem', fontWeight: '500', color: '#FFFFFF' },
+    btnSalir:       { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 22px', backgroundColor: 'transparent', border: '1px solid rgba(255,255,255,0.7)', borderRadius: '4px', color: '#FFFFFF', cursor: 'pointer', fontSize: '1rem', fontWeight: '500', transition: 'background-color 0.15s', whiteSpace: 'nowrap' },
     contenido:      { flex: 1, overflowY: 'auto', overflowX: 'hidden', backgroundColor: 'var(--color-fondo-web)' },
     btnCampana:     { position: 'relative', background: 'transparent', border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.80)', padding: '6px 8px', display: 'flex', alignItems: 'center', borderRadius: 6, transition: 'color 0.15s' },
-    badge:          { position: 'absolute', top: 2, right: 2, backgroundColor: '#ff3d3d', color: 'white', borderRadius: '50%', fontSize: '0.58rem', fontWeight: '700', width: 14, height: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1.5px solid var(--color-espoch-rojo)', lineHeight: 1 },
+    badge:          { position: 'absolute', top: 2, right: 2, backgroundColor: '#ff3d3d', color: 'white', borderRadius: '50%', fontSize: '0.8rem', fontWeight: '700', width: 14, height: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1.5px solid #BC0613', lineHeight: 1 },
     notifHeader:    { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '11px 14px 9px', borderBottom: '1px solid #f0f0f0', backgroundColor: '#fafafa', flexShrink: 0 },
-    notifTitulo:    { fontSize: '0.84rem', fontWeight: '700', color: '#2c3e50' },
-    btnMarcarTodas: { display: 'flex', alignItems: 'center', background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.72rem', color: 'var(--color-espoch-rojo)', fontWeight: '600', padding: 0 },
+    notifTitulo:    { fontSize: '1rem', fontWeight: '700', color: '#2c3e50' },
+    btnMarcarTodas: { display: 'flex', alignItems: 'center', background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.9rem', color: '#BC0613', fontWeight: '600', padding: 0 },
     notifLista:     { maxHeight: 340, overflowY: 'auto' },
     notifItem:      { display: 'flex', gap: 10, padding: '10px 14px', transition: 'background-color 0.15s', borderBottom: '1px solid #f5f5f5' },
     notifDot:       { width: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, paddingTop: 3 },
-    notifFecha:     { fontSize: '0.68rem', color: '#adb5bd' },
-    tipoBadge:      { fontSize: '0.62rem', color: '#be1e2d', fontWeight: '700' },
+    notifFecha:     { fontSize: '0.8rem', color: '#adb5bd' },
+    tipoBadge:      { fontSize: '0.8rem', color: '#BC0613', fontWeight: '700' },
     notifVacio:     { textAlign: 'center', padding: '28px 16px', display: 'flex', flexDirection: 'column', alignItems: 'center' },
-    notifFooter:    { textAlign: 'center', padding: '8px', fontSize: '0.72rem', color: '#adb5bd', backgroundColor: '#fafafa', borderTop: '1px solid #f0f0f0', flexShrink: 0 },
+    notifFooter:    { textAlign: 'center', padding: '8px', fontSize: '0.9rem', color: '#adb5bd', backgroundColor: '#fafafa', borderTop: '1px solid #f0f0f0', flexShrink: 0 },
 };
 
 // ══════════════════════════════════════════════
@@ -669,23 +649,23 @@ const styles = {
 // ══════════════════════════════════════════════
 const nd = {
     wrap:       { padding: '12px 14px' },
-    btnVolver:  { background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.74rem', color: 'var(--color-espoch-rojo)', fontWeight: '700', padding: '0 0 10px', display: 'block' },
+    btnVolver:  { background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.9rem', color: '#BC0613', fontWeight: '700', padding: '0 0 10px', display: 'block' },
     cabecera:   { display: 'flex', alignItems: 'flex-start', gap: 10, backgroundColor: '#fff1f2', border: '1px solid #fecdd3', borderRadius: 8, padding: '10px 12px', marginBottom: 12 },
     iconoWrap:  { width: 32, height: 32, borderRadius: 8, backgroundColor: 'white', border: '1px solid #fecdd3', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
-    cabeceraH:  { margin: '0 0 2px', fontSize: '0.78rem', fontWeight: '700', color: '#0f172a', lineHeight: 1.35 },
-    cabeceraF:  { margin: 0, fontSize: '0.64rem', color: '#64748b' },
+    cabeceraH:  { margin: '0 0 2px', fontSize: '0.9rem', fontWeight: '700', color: '#0f172a', lineHeight: 1.35 },
+    cabeceraF:  { margin: 0, fontSize: '0.8rem', color: '#64748b' },
     seccion:    { marginBottom: 10 },
-    secTitulo:  { margin: '0 0 6px', fontSize: '0.62rem', fontWeight: '700', color: '#94a3b8', letterSpacing: '0.06em' },
+    secTitulo:  { margin: '0 0 6px', fontSize: '0.8rem', fontWeight: '700', color: '#94a3b8', letterSpacing: '0.06em' },
     fila:       { display: 'flex', alignItems: 'flex-start', gap: 8, padding: '6px 10px', backgroundColor: '#f8fafc', border: '1px solid #f1f5f9', borderRadius: 7, marginBottom: 5 },
     filaIco:    { width: 20, height: 20, borderRadius: 5, backgroundColor: 'white', border: '1px solid #e9ecef', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 1 },
     filaInfo:   { display: 'flex', flexDirection: 'column', gap: 1, flex: 1, minWidth: 0 },
-    filaLabel:  { fontSize: '0.6rem', fontWeight: '700', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em' },
-    filaVal:    { fontSize: '0.76rem', fontWeight: '600', color: '#0f172a', wordBreak: 'break-word' },
-    emailLink:  { fontSize: '0.76rem', fontWeight: '600', color: '#be1e2d', textDecoration: 'none', wordBreak: 'break-all' },
-    mensajeBox: { backgroundColor: '#f8fafc', border: '1px solid #e9ecef', borderLeft: '3px solid #be1e2d', borderRadius: 7, padding: '10px 12px' },
-    mensajeTxt: { margin: 0, fontSize: '0.76rem', color: '#374151', lineHeight: 1.65, fontStyle: 'italic' },
+    filaLabel:  { fontSize: '0.8rem', fontWeight: '700', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em' },
+    filaVal:    { fontSize: '0.9rem', fontWeight: '600', color: '#0f172a', wordBreak: 'break-word' },
+    emailLink:  { fontSize: '0.9rem', fontWeight: '600', color: '#BC0613', textDecoration: 'none', wordBreak: 'break-all' },
+    mensajeBox: { backgroundColor: '#f8fafc', border: '1px solid #e9ecef', borderLeft: '3px solid #BC0613', borderRadius: 7, padding: '10px 12px' },
+    mensajeTxt: { margin: 0, fontSize: '0.9rem', color: '#374151', lineHeight: 1.65, fontStyle: 'italic' },
     aviso:      { display: 'flex', alignItems: 'flex-start', gap: 7, backgroundColor: '#fff8f0', border: '1px solid #fed7aa', borderRadius: 7, padding: '8px 10px', marginTop: 10 },
-    avisoTxt:   { margin: 0, fontSize: '0.66rem', color: '#64748b', lineHeight: 1.5 },
+    avisoTxt:   { margin: 0, fontSize: '0.8rem', color: '#64748b', lineHeight: 1.5 },
 };
 
 export default LayoutGraduado;

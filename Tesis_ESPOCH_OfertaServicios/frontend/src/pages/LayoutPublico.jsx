@@ -8,6 +8,7 @@ import {
 } from 'react-icons/fa';
 
 const FONT = "'Rotis', 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif";
+const ROJO = '#BC0613'; // rojo oficial del sitio de la ESPOCH
 
 // ── Hook responsive ──────────────────────────────────────────────────────────
 const useWindowWidth = () => {
@@ -128,27 +129,16 @@ const LayoutPublico = () => {
             <nav style={s.navbar}>
                 <div style={{
                     ...s.navInner,
+                    height: isMobile ? 68 : 89,
                     padding: isMobile ? '0 16px' : '0 24px',
                 }}>
                     {/* Brand */}
                     <div style={s.navBrand} onClick={() => irA('/')}>
                         <img
-                            src="/img/ESPOCH_LOGO.png"
-                            alt="ESPOCH"
-                            style={{ height: isMobile ? 28 : 36, objectFit: 'contain' }}
-                            onError={e => e.target.style.display = 'none'}
+                            src="/img/logo-espoch-blanco.png"
+                            alt="Escuela Superior Politécnica de Chimborazo"
+                            style={{ height: isMobile ? 32 : 46, width: 'auto', display: 'block' }}
                         />
-                        <div>
-                            <div style={{
-                                ...s.navBrandPrincipal,
-                                fontSize: isMobile ? '0.82rem' : '0.92rem',
-                            }}>
-                                Carrera de Software
-                            </div>
-                            {!isMobile && (
-                                <div style={s.navBrandSub}>FIE · ESPOCH · Riobamba</div>
-                            )}
-                        </div>
                     </div>
 
                     {/* Links desktop/tablet */}
@@ -176,8 +166,8 @@ const LayoutPublico = () => {
                                     style={{
                                         ...s.navLink,
                                         ...(esActivo(item.path) ? s.navLinkActivo : {}),
-                                        padding: '7px 10px',
-                                        fontSize: '0.78rem',
+                                        padding: '8px 10px',
+                                        fontSize: '0.9rem',
                                     }}
                                     onClick={() => irA(item.path)}
                                 >
@@ -201,7 +191,7 @@ const LayoutPublico = () => {
                                 style={{
                                     ...s.navBtnLogin,
                                     backgroundColor: 'white',
-                                    color: 'var(--color-espoch-rojo)',
+                                    color: ROJO,
                                     border: '1px solid white',
                                 }}
                                 onClick={() => navigate('/login', { state: { modo: 'registro' } })}
@@ -240,14 +230,10 @@ const LayoutPublico = () => {
                             <div style={s.menuPanelHeader}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                                     <img
-                                        src="/img/ESPOCH_LOGO.png"
-                                        alt="ESPOCH"
-                                        style={{ height: 28, objectFit: 'contain' }}
-                                        onError={e => e.target.style.display = 'none'}
+                                        src="/img/logo-espoch-blanco.png"
+                                        alt="Escuela Superior Politécnica de Chimborazo"
+                                        style={{ height: 30, width: 'auto', display: 'block' }}
                                     />
-                                    <span style={{ color: 'white', fontWeight: 700, fontSize: '0.82rem', fontFamily: FONT }}>
-                                        Carrera de Software
-                                    </span>
                                 </div>
                                 <button
                                     style={s.menuPanelClose}
@@ -270,7 +256,7 @@ const LayoutPublico = () => {
                                     >
                                         <span style={{
                                             ...s.menuPanelItemIco,
-                                            color: esActivo(item.path) ? '#be1e2d' : '#6b7280',
+                                            color: esActivo(item.path) ? ROJO : '#6b7280',
                                         }}>
                                             {item.icon}
                                         </span>
@@ -298,8 +284,8 @@ const LayoutPublico = () => {
                                         ...s.menuPanelLoginBtn,
                                         marginTop: 8,
                                         backgroundColor: 'transparent',
-                                        border: '1px solid #be1e2d',
-                                        color: '#be1e2d',
+                                        border: '1px solid #BC0613',
+                                        color: ROJO,
                                         boxShadow: 'none',
                                     }}
                                     onClick={() => { navigate('/login', { state: { modo: 'registro' } }); setMenuAbierto(false); }}
@@ -331,32 +317,12 @@ const LayoutPublico = () => {
 
             {/* Columna 1 — Identidad */}
             <div style={s.footerCol}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 }}>
-                    <div style={s.footerFieLogoWrap}>
-                        <img
-                            src="/img/FIE_LOGO.png"
-                            alt="FIE ESPOCH"
-                            style={s.footerFieLogo}
-                            onError={e => {
-                                e.target.parentElement.style.display = 'none';
-                                const fallback = e.target.parentElement.nextSibling;
-                                if (fallback) fallback.style.display = 'flex';
-                            }}
-                        />
-                    </div>
-                    <div style={{ ...s.footerFieLogoFallback, display: 'none' }}>
-                        <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.55rem', fontWeight: 700 }}>FIE</span>
-                    </div>
-                    <div>
-                        <div style={s.footerBrand}>Facultad de Informática y Electrónica</div>
-                        <div style={s.footerBrandSub}>Escuela Superior Politécnica de Chimborazo</div>
-                    </div>
-                </div>
-                <p style={{ ...s.footerDesc, lineHeight: 1.7, marginBottom: 16 }}>
-                    Escuela Superior Politécnica de Chimborazo<br />
-                    © {new Date().getFullYear()}. Todos los derechos reservados.
-                </p>
-                <div style={{ display: 'flex', gap: 8 }}>
+                <img
+                    src="/img/logo-fie-blanco.png"
+                    alt="Facultad de Informática y Electrónica ESPOCH"
+                    style={s.footerFieLogo}
+                />
+                <div style={{ display: 'flex', gap: 8, marginTop: 20 }}>
                     <a href="https://www.facebook.com/ESPOCH.FIE" target="_blank" rel="noopener noreferrer"
                         style={s.iconBtn} title="Facebook · FIE ESPOCH">
                         <FaFacebook />
@@ -400,16 +366,12 @@ const LayoutPublico = () => {
                     </div>
                 </div>
                 <div style={{ marginTop: 14 }}>
-                    <p style={{ ...s.footerDesc, fontWeight: 700, color: 'rgba(255,255,255,0.75)', marginBottom: 4, fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.6px' }}>
-                        Coordinador
+                    <p style={{ ...s.footerDesc, fontWeight: 700, marginBottom: 4, textTransform: 'uppercase' }}>
+                        Coordinadora
                     </p>
-                    <p style={{ ...s.footerDesc, color: 'rgba(255,255,255,0.65)', marginBottom: 5 }}>
-                        Ing. Omar Salvador Gómez Gómez
+                    <p style={{ ...s.footerDesc, marginBottom: 5 }}>
+                        Gladys Lorena Aguirre Sailema
                     </p>
-                    <div style={s.footerContactoItem}>
-                        <FaEnvelope style={{ ...s.footerIco, marginTop: 1 }} />
-                        <span style={{ fontSize: '0.76rem' }}>ogomez@espoch.edu.ec</span>
-                    </div>
                 </div>
             </div>
 
@@ -437,9 +399,9 @@ const LayoutPublico = () => {
                 <button style={s.btnAcceso} onClick={() => navigate('/login')}>
                     Iniciar Sesión
                 </button>
-                <p style={{ ...s.footerDesc, marginTop: 10, fontSize: '0.73rem', lineHeight: 1.6 }}>
+                <p style={{ ...s.footerDesc, marginTop: 10 }}>
                     Acceso exclusivo con correo<br />
-                    <strong style={{ color: 'rgba(255,255,255,0.7)' }}>@espoch.edu.ec</strong>
+                    <strong>@espoch.edu.ec</strong>
                 </p>
             </div>
         </div>
@@ -465,20 +427,18 @@ const s = {
     main: { flex: 1 },
 
     // NAVBAR
-    navbar: { backgroundColor: 'var(--color-espoch-rojo)', boxShadow: '0 2px 12px rgba(0,0,0,0.25)', position: 'sticky', top: 0, zIndex: 100 },
-    navInner: { maxWidth: 1200, margin: '0 auto', display: 'flex', alignItems: 'center', height: 64, gap: 16 },
-    navBrand: { display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', flexShrink: 0 },
-    navBrandPrincipal: { color: 'white', fontWeight: 800, fontSize: '0.92rem', letterSpacing: '0.2px', fontFamily: FONT },
-    navBrandSub: { color: 'rgba(255,255,255,0.62)', fontSize: '0.67rem', fontWeight: 400, fontFamily: FONT },
+    navbar: { backgroundColor: ROJO, boxShadow: '0 2px 8px rgba(0,0,0,0.18)', position: 'sticky', top: 0, zIndex: 100 },
+    navInner: { maxWidth: 1200, margin: '0 auto', display: 'flex', alignItems: 'center', height: 89, gap: 16 },
+    navBrand: { display: 'flex', alignItems: 'center', cursor: 'pointer', flexShrink: 0 },
     navLinks: { display: 'flex', gap: 4, marginLeft: 'auto', alignItems: 'center' },
-    navLink: { display: 'flex', alignItems: 'center', gap: 6, padding: '7px 14px', borderRadius: 6, backgroundColor: 'transparent', border: 'none', color: 'rgba(255,255,255,0.82)', cursor: 'pointer', fontSize: '0.84rem', fontWeight: 500, fontFamily: FONT },
-    navLinkActivo: { backgroundColor: 'rgba(255,255,255,0.18)', color: 'white', fontWeight: 700 },
+    navLink: { display: 'flex', alignItems: 'center', gap: 8, padding: '10px 16px', borderRadius: 4, backgroundColor: 'transparent', border: 'none', color: '#FFFFFF', cursor: 'pointer', fontSize: '1rem', fontWeight: 500, fontFamily: FONT },
+    navLinkActivo: { backgroundColor: 'rgba(255,255,255,0.20)', color: 'white', fontWeight: 600 },
     navBtnLogin: {
-        marginLeft: 8, padding: '7px 16px',
-        backgroundColor: 'rgba(255,255,255,0.15)',
-        border: '1px solid rgba(255,255,255,0.35)',
-        borderRadius: 7, color: 'white', cursor: 'pointer',
-        fontSize: '0.8rem', fontWeight: 700, fontFamily: FONT,
+        marginLeft: 8, padding: '12px 24px',
+        backgroundColor: 'transparent',
+        border: '1px solid rgba(255,255,255,0.7)',
+        borderRadius: 4, color: 'white', cursor: 'pointer',
+        fontSize: '1rem', fontWeight: 500, fontFamily: FONT,
         flexShrink: 0, whiteSpace: 'nowrap',
         transition: 'background-color 0.15s',
     },
@@ -514,7 +474,7 @@ const s = {
         display: 'flex', alignItems: 'center',
         justifyContent: 'space-between',
         padding: '16px 20px',
-        backgroundColor: 'var(--color-espoch-rojo)',
+        backgroundColor: ROJO,
         flexShrink: 0,
     },
     menuPanelClose: {
@@ -543,7 +503,7 @@ const s = {
     },
     menuPanelItemActivo: {
         backgroundColor: '#fff1f2',
-        color: '#be1e2d',
+        color: ROJO,
         fontWeight: 700,
     },
     menuPanelItemIco: {
@@ -555,7 +515,7 @@ const s = {
         marginLeft: 'auto',
         width: 6, height: 6,
         borderRadius: '50%',
-        backgroundColor: '#be1e2d',
+        backgroundColor: ROJO,
         flexShrink: 0,
     },
     menuPanelDivider: {
@@ -564,7 +524,7 @@ const s = {
     },
     menuPanelLoginBtn: {
         width: '100%', padding: '11px',
-        backgroundColor: '#be1e2d', color: 'white',
+        backgroundColor: ROJO, color: 'white',
         border: 'none', borderRadius: 8,
         cursor: 'pointer', fontWeight: 700,
         fontSize: '0.88rem', fontFamily: FONT,
@@ -574,113 +534,99 @@ const s = {
     },
 
     // FOOTER
-    footer: { backgroundColor: 'var(--color-texto-principal)' },
+    footer: { backgroundColor: ROJO },
     footerInner: {
-        maxWidth: 1200, margin: '0 auto',
-        padding: '40px 24px 36px',
+        maxWidth: 1300, margin: '0 auto',
+        padding: '48px 24px 40px',
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))',
-        gap: 36,
+        gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))',
+        gap: 40,
     },
     footerCol: { display: 'flex', flexDirection: 'column' },
-    footerFieLogoWrap: {
-        width: 72, height: 56, backgroundColor: '#ffffff',
-        borderRadius: 8, padding: '5px 7px',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        flexShrink: 0, boxShadow: '0 1px 4px rgba(0,0,0,0.25)',
-    },
-    footerFieLogo: { width: '100%', height: '100%', objectFit: 'contain' },
-    footerFieLogoFallback: {
-        width: 72, height: 56, borderRadius: 8,
-        backgroundColor: 'rgba(255,255,255,0.1)',
-        border: '1px solid rgba(255,255,255,0.2)',
-        alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-    },
-    footerBrand: { color: 'white', fontWeight: 800, fontSize: '0.88rem', fontFamily: FONT, lineHeight: 1.3 },
-    footerBrandSub: { color: 'rgba(255,255,255,0.45)', fontSize: '0.7rem', fontFamily: FONT, lineHeight: 1.4 },
-    footerDesc: { color: 'rgba(255,255,255,0.50)', fontSize: '0.8rem', lineHeight: 1.7, margin: 0, fontFamily: FONT },
+    footerFieLogo: { width: 190, maxWidth: '100%', height: 'auto', display: 'block' },
+    footerDesc: { color: '#FFFFFF', fontSize: '0.9rem', fontWeight: 500, lineHeight: 1.6, margin: 0, fontFamily: FONT },
     footerTitulo: {
-        color: '#FFFFFF', fontWeight: 700, fontSize: '0.76rem',
-        margin: '0 0 14px', textTransform: 'uppercase', letterSpacing: '1.2px',
-        fontFamily: FONT, paddingBottom: 8,
-        borderBottom: '1px solid rgba(255,255,255,0.09)',
+        color: '#FFFFFF', fontWeight: 700, fontSize: '0.94rem',
+        margin: '0 0 16px', textTransform: 'uppercase',
+        fontFamily: FONT, paddingBottom: 10,
+        borderBottom: '1px solid rgba(255,255,255,0.30)',
     },
     footerLink: {
         display: 'flex', alignItems: 'center', background: 'none',
-        border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.55)',
-        fontSize: '0.82rem', padding: '5px 0', textAlign: 'left', fontFamily: FONT,
+        border: 'none', cursor: 'pointer', color: '#FFFFFF',
+        fontSize: '0.9rem', fontWeight: 500, padding: '5px 0', textAlign: 'left', fontFamily: FONT,
     },
     footerContactoItem: {
-        color: 'rgba(255,255,255,0.55)', fontSize: '0.8rem',
+        color: '#FFFFFF', fontSize: '0.9rem', fontWeight: 500,
         display: 'flex', alignItems: 'flex-start', gap: 10,
         lineHeight: 1.55, fontFamily: FONT,
     },
-    footerIco: { color: 'var(--color-espoch-rojo)', flexShrink: 0, marginTop: 3 },
+    footerIco: { color: '#FFFFFF', flexShrink: 0, marginTop: 4 },
     footerWebLink: {
         display: 'flex', alignItems: 'center',
-        color: 'var(--color-tech-azul-claro)', fontSize: '0.8rem',
+        color: '#FFFFFF', fontSize: '0.9rem',
         textDecoration: 'none', fontWeight: 600, fontFamily: FONT,
     },
     iconBtn: {
-        width: 34, height: 34, borderRadius: '50%',
-        backgroundColor: 'rgba(255,255,255,0.07)',
-        border: '1px solid rgba(255,255,255,0.14)',
-        color: 'rgba(255,255,255,0.62)',
+        width: 38, height: 38, borderRadius: '50%',
+        backgroundColor: 'rgba(255,255,255,0.14)',
+        border: '1px solid rgba(255,255,255,0.45)',
+        color: '#FFFFFF',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        textDecoration: 'none', fontSize: '0.88rem',
+        textDecoration: 'none', fontSize: '1rem',
     },
     btnAcceso: {
-        marginTop: 14, padding: '11px 20px',
-        backgroundColor: 'var(--color-espoch-rojo)', color: 'white',
-        border: 'none', borderRadius: 8, cursor: 'pointer',
-        fontWeight: 700, fontSize: '0.88rem', alignSelf: 'flex-start',
-        fontFamily: FONT, boxShadow: '0 2px 8px rgba(190,30,45,0.4)',
+        marginTop: 14, padding: '12px 24px',
+        backgroundColor: '#FFFFFF', color: ROJO,
+        border: 'none', borderRadius: 4, cursor: 'pointer',
+        fontWeight: 600, fontSize: '1rem', alignSelf: 'flex-start',
+        fontFamily: FONT,
     },
     fichaWrap: { display: 'flex', gap: 10, marginTop: 14, flexWrap: 'wrap' },
     fichaItem: {
         display: 'flex', flexDirection: 'column',
-        backgroundColor: 'rgba(255,255,255,0.05)',
-        border: '1px solid rgba(255,255,255,0.09)',
-        borderRadius: 7, padding: '7px 12px',
+        backgroundColor: 'rgba(255,255,255,0.12)',
+        border: '1px solid rgba(255,255,255,0.30)',
+        borderRadius: 4, padding: '8px 14px',
     },
     fichaLabel: {
-        fontSize: '0.59rem', fontWeight: 700,
-        color: 'var(--color-espoch-rojo)', textTransform: 'uppercase',
-        letterSpacing: '0.6px', fontFamily: FONT,
+        fontSize: '0.7rem', fontWeight: 700,
+        color: '#FFFFFF', textTransform: 'uppercase',
+        letterSpacing: '0.4px', fontFamily: FONT, opacity: 0.85,
     },
     fichaValor: {
-        fontSize: '0.82rem', color: 'rgba(255,255,255,0.7)',
+        fontSize: '0.94rem', color: '#FFFFFF',
         fontWeight: 600, fontFamily: FONT, marginTop: 2,
     },
-    footerBottom: { borderTop: '1px solid rgba(255,255,255,0.07)', padding: '16px 24px', textAlign: 'center' },
-    footerCopy: { color: 'rgba(255,255,255,0.28)', fontSize: '0.71rem', margin: '3px 0', fontFamily: FONT },
+    footerBottom: { borderTop: '1px solid rgba(255,255,255,0.30)', padding: '18px 24px', textAlign: 'center' },
+    footerCopy: { color: 'rgba(255,255,255,0.9)', fontSize: '0.85rem', margin: '3px 0', fontFamily: FONT },
 };
 
 const ac = {
-    bloque: { borderTop: '1px solid rgba(255,255,255,0.08)' },
+    bloque: { borderTop: '1px solid rgba(255,255,255,0.30)' },
     encabezado: {
         width: '100%', background: 'none', border: 'none', cursor: 'pointer',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        padding: '10px 0', gap: 8,
+        padding: '12px 0', gap: 8,
     },
     encabezadoTxt: {
-        fontSize: '0.72rem', fontWeight: 700, color: 'rgba(255,255,255,0.68)',
-        textAlign: 'left', fontFamily: FONT, textTransform: 'uppercase', letterSpacing: '0.7px',
+        fontSize: '0.9rem', fontWeight: 700, color: '#FFFFFF',
+        textAlign: 'left', fontFamily: FONT, textTransform: 'uppercase',
     },
-    chevron: { color: '#BE1E2D', fontSize: '0.68rem', flexShrink: 0 },
-    cuerpo: { paddingBottom: 12, display: 'flex', flexDirection: 'column', gap: 9 },
+    chevron: { color: '#FFFFFF', fontSize: '0.8rem', flexShrink: 0 },
+    cuerpo: { paddingBottom: 12, display: 'flex', flexDirection: 'column', gap: 10 },
     fila: { display: 'flex', alignItems: 'flex-start', gap: 8 },
     cod: {
-        display: 'inline-block', minWidth: 32,
-        backgroundColor: '#BE1E2D', color: '#FFFFFF',
-        fontSize: '0.6rem', fontWeight: 800,
-        padding: '2px 5px', borderRadius: 4,
-        letterSpacing: '0.3px', fontFamily: FONT,
+        display: 'inline-block', minWidth: 36,
+        backgroundColor: '#FFFFFF', color: ROJO,
+        fontSize: '0.72rem', fontWeight: 700,
+        padding: '2px 6px', borderRadius: 3,
+        fontFamily: FONT,
         marginTop: 2, flexShrink: 0,
-        boxShadow: '0 0 0 1px rgba(255,255,255,0.15)',
+        textAlign: 'center',
     },
     texto: {
-        fontSize: '0.73rem', color: 'rgba(255,255,255,0.50)',
+        fontSize: '0.85rem', fontWeight: 500, color: '#FFFFFF',
         lineHeight: 1.55, margin: 0, fontFamily: FONT,
     },
 };
