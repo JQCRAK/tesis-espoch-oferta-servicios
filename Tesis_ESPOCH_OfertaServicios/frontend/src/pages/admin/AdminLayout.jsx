@@ -6,6 +6,7 @@ import {
     FaChartBar, FaChartPie, FaCalendarAlt, FaSignOutAlt, FaBars,
     FaTimes, FaBell, FaShieldAlt, FaBuilding,
     FaCircle, FaCheckDouble, FaUserCircle, FaEnvelope,
+    FaBookOpen, FaUserFriends, FaTools, FaChevronRight,
 } from 'react-icons/fa';
 import axios from 'axios';
 import { leerSesion, eliminarSesion } from '../../utils/storageSeguro';
@@ -109,6 +110,7 @@ const AdminLayout = () => {
     const notifRef = useRef(null);
 
     const [expandido, setExpandido] = useState(true);
+    const [guiaAbierta, setGuiaAbierta] = useState(false);
     const [notifAbierto, setNotifAbierto] = useState(false);
     const [notificaciones, setNotificaciones] = useState([]);
     const [noLeidas, setNoLeidas] = useState(0);
@@ -322,6 +324,55 @@ const AdminLayout = () => {
                         {tituloSeccion}
                     </h1>
                     <div style={s.topDer}>
+
+                        {/* ══ GUÍA DE USUARIO ══ */}
+                        <div style={{ position: 'relative' }}>
+                            <button
+                                style={s.btnIcono}
+                                onClick={() => setGuiaAbierta(v => !v)}
+                                title="Guía de Usuario"
+                            >
+                                <FaBookOpen style={{ fontSize: '0.95rem', color: '#6c757d' }} />
+                            </button>
+
+                            {guiaAbierta && (
+                                <React.Fragment>
+                                    <div
+                                        style={{ position: 'fixed', inset: 0, zIndex: 199 }}
+                                        onClick={() => setGuiaAbierta(false)}
+                                    />
+                                    <div style={sg.panel}>
+                                        <div style={sg.header}>Guía de Usuario</div>
+                                        <button
+                                            style={sg.opcion}
+                                            onClick={() => { window.open('/home-admin/documentacion', '_blank', 'noopener'); setGuiaAbierta(false); }}
+                                        >
+                                            <div style={{ ...sg.opcionIco, backgroundColor: '#fff1f2', color: '#BC0613' }}>
+                                                <FaUserFriends />
+                                            </div>
+                                            <div style={{ flex: 1, minWidth: 0 }}>
+                                                <p style={sg.opcionTitulo}>Manual de Usuario</p>
+                                                <p style={sg.opcionSub}>Cómo usar cada módulo del panel</p>
+                                            </div>
+                                            <FaChevronRight style={{ fontSize: '0.7rem', color: '#cbd5e1', flexShrink: 0 }} />
+                                        </button>
+                                        <button
+                                            style={sg.opcion}
+                                            onClick={() => { window.open('/home-admin/documentacion-tecnica', '_blank', 'noopener'); setGuiaAbierta(false); }}
+                                        >
+                                            <div style={{ ...sg.opcionIco, backgroundColor: '#eff6ff', color: '#1d4ed8' }}>
+                                                <FaTools />
+                                            </div>
+                                            <div style={{ flex: 1, minWidth: 0 }}>
+                                                <p style={sg.opcionTitulo}>Manual Técnico</p>
+                                                <p style={sg.opcionSub}>Arquitectura, API, base de datos y despliegue</p>
+                                            </div>
+                                            <FaChevronRight style={{ fontSize: '0.7rem', color: '#cbd5e1', flexShrink: 0 }} />
+                                        </button>
+                                    </div>
+                                </React.Fragment>
+                            )}
+                        </div>
 
                         {/* ══ CAMPANA ══ */}
                         <div ref={notifRef} style={{ position: 'relative' }}>
@@ -537,6 +588,18 @@ const sn = {
     solicEmpresa: { margin: '0 0 3px', fontSize: '0.7rem', color: '#64748b' },
     solicEmail: { display: 'inline-flex', alignItems: 'center', fontSize: '0.7rem', color: '#BC0613', fontWeight: '600', textDecoration: 'none', marginBottom: 5 },
     solicMensaje: { margin: 0, fontSize: '0.72rem', color: '#374151', lineHeight: 1.5, fontStyle: 'italic', borderLeft: '3px solid #e9ecef', paddingLeft: 8 },
+};
+
+// ══════════════════════════════════════════════
+// ESTILOS MENÚ GUÍA DE USUARIO
+// ══════════════════════════════════════════════
+const sg = {
+    panel: { position: 'absolute', top: 'calc(100% + 10px)', right: 0, width: 280, backgroundColor: 'white', border: '1px solid #e9ecef', borderRadius: 10, boxShadow: '0 8px 28px rgba(0,0,0,0.16)', zIndex: 200, overflow: 'hidden', padding: 6 },
+    header: { fontSize: '0.78rem', fontWeight: '800', color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.5px', padding: '8px 10px 6px' },
+    opcion: { display: 'flex', alignItems: 'center', gap: 10, width: '100%', padding: '9px 10px', background: 'none', border: 'none', borderRadius: 8, cursor: 'pointer', textAlign: 'left' },
+    opcionIco: { width: 32, height: 32, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: '0.9rem' },
+    opcionTitulo: { margin: 0, fontSize: '0.85rem', fontWeight: '700', color: '#2c3e50' },
+    opcionSub: { margin: '1px 0 0', fontSize: '0.7rem', color: '#9ca3af' },
 };
 
 export default AdminLayout;

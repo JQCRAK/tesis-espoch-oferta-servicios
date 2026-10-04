@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import axios from 'axios';
 import {
     FaEnvelope, FaLock, FaUniversity,
@@ -8,7 +8,7 @@ import {
     FaRedo, FaArrowLeft, FaUserGraduate,
     FaVenusMars, FaCalendarAlt, FaWheelchair,
     FaEye, FaEyeSlash, FaArrowRight, FaInfoCircle,
-    FaImage, FaTimes, FaSearch, FaShieldAlt
+    FaImage, FaTimes, FaSearch, FaShieldAlt, FaBookOpen
 } from 'react-icons/fa';
 import '../index.css';
 import { guardarSesion } from '../utils/storageSeguro';
@@ -1282,6 +1282,13 @@ const Login = () => {
                             </div>
                         </>
                     )}
+
+                    <p style={{ textAlign: 'center', margin: '18px 0 0', fontSize: '0.85rem' }}>
+                        <Link to="/documentacion" style={{ color: '#6b7280', textDecoration: 'none', fontWeight: 500 }}>
+                            <FaBookOpen style={{ marginRight: 6, verticalAlign: 'middle' }} />
+                            ¿Necesitas ayuda? Consulta la Guía de Usuario
+                        </Link>
+                    </p>
                 </div>
             </div>
         </div>

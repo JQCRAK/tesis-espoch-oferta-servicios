@@ -5,6 +5,7 @@ import LayoutPublico from './pages/LayoutPublico';
 import PublicHome from './pages/PublicHome';
 import Noticias from './pages/Noticias';
 import Proyectos from './pages/Proyectos';
+import Documentacion from './pages/docs/Documentacion';
 import Login from './pages/Login';
 import EncuestaEmpleador from './pages/EncuestaEmpleador';
 import PerfilPublico from './pages/PerfilPublico';
@@ -93,6 +94,8 @@ function App() {
                     <Route path="/"           element={<PublicHome />} />
                     <Route path="/noticias"   element={<Noticias />} />
                     <Route path="/proyectos"  element={<Proyectos />} />
+                    <Route path="/documentacion"                 element={<Documentacion seccion="publico" />} />
+                    <Route path="/documentacion/:slug"           element={<Documentacion seccion="publico" />} />
                 </Route>
 
                 <Route path="/perfil/:id" element={<PerfilPublico />} />
@@ -118,6 +121,8 @@ function App() {
                     <Route path="notificaciones"
                         element={<Proximamente titulo="Notificaciones" />}
                     />
+                    <Route path="documentacion"       element={<Documentacion seccion="graduado" />} />
+                    <Route path="documentacion/:slug" element={<Documentacion seccion="graduado" />} />
                 </Route>
 
                 {/* ════════════════════════════════
@@ -148,6 +153,12 @@ function App() {
 
                     {/* Eventos y webinars */}
                     <Route path="eventos"    element={<GestionEventos />} />
+
+                    {/* Guía de Usuario y Manual Técnico */}
+                    <Route path="documentacion"               element={<Documentacion seccion="admin" />} />
+                    <Route path="documentacion/:slug"         element={<Documentacion seccion="admin" />} />
+                    <Route path="documentacion-tecnica"       element={<Documentacion seccion="tecnico" />} />
+                    <Route path="documentacion-tecnica/:slug" element={<Documentacion seccion="tecnico" />} />
 
                     {/* Resultados — próximamente */}
                     <Route

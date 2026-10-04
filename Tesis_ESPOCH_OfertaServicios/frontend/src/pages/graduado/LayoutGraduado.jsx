@@ -7,6 +7,7 @@ import {
     FaBell, FaBullhorn, FaSignOutAlt,
     FaCircle, FaCheckDouble, FaEnvelope,
     FaBuilding, FaUser, FaBars, FaTimes,
+    FaBookOpen,
 } from 'react-icons/fa';
 import { leerSesion, eliminarSesion } from '../../utils/storageSeguro';
 import useInactivityTimeout from '../../utils/useInactivityTimeout';
@@ -356,6 +357,17 @@ const LayoutGraduado = () => {
                         </span>
                     )}
 
+                    {/* ── GUÍA DE USUARIO ── */}
+                    {!isMobile && (
+                        <button
+                            style={styles.btnCampana}
+                            onClick={() => window.open('/graduado/documentacion', '_blank', 'noopener')}
+                            title="Guía de Usuario"
+                        >
+                            <FaBookOpen size={15} />
+                        </button>
+                    )}
+
                     {/* ── CAMPANA ── */}
                     <div ref={notifRef} style={{ position: 'relative' }}>
                         <button
@@ -571,8 +583,28 @@ const LayoutGraduado = () => {
                         );
                     })}
 
-                    {/* Cerrar sesión */}
+                    {/* Guía de Usuario + Cerrar sesión */}
                     <div style={{ borderTop: '1px solid rgba(255,255,255,0.15)', marginTop: 6, paddingTop: 6 }}>
+                        <button
+                            onClick={() => window.open('/graduado/documentacion', '_blank', 'noopener')}
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 10,
+                                width: '100%',
+                                padding: '10px 18px',
+                                background: 'transparent',
+                                border: 'none',
+                                color: 'rgba(255,255,255,0.75)',
+                                fontSize: '1rem',
+                                fontWeight: '500',
+                                cursor: 'pointer',
+                                textAlign: 'left',
+                            }}
+                        >
+                            <FaBookOpen size={13} />
+                            Guía de Usuario
+                        </button>
                         <button
                             onClick={cerrarSesion}
                             style={{

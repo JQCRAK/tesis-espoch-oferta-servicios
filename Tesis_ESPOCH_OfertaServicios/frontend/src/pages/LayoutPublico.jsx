@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Outlet, Link } from 'react-router-dom';
 import {
-    FaBars, FaNewspaper, FaProjectDiagram, FaUsers,
+    FaBars, FaNewspaper, FaProjectDiagram, FaUsers, FaBookOpen,
     FaMapMarkerAlt, FaEnvelope, FaPhoneAlt, FaGlobe,
     FaFacebook, FaChevronDown, FaChevronUp, FaTimes,
 } from 'react-icons/fa';
@@ -396,9 +396,15 @@ const LayoutPublico = () => {
                     ¿Eres graduado de la Carrera de Software? Accede a tu perfil profesional
                     y gestiona tu portafolio de manera segura.
                 </p>
-                <button style={s.btnAcceso} onClick={() => navigate('/login')}>
-                    Iniciar Sesión
-                </button>
+                <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                    <button style={s.btnAcceso} onClick={() => navigate('/login')}>
+                        Iniciar Sesión
+                    </button>
+                    <button style={s.btnGuia} onClick={() => navigate('/documentacion')}>
+                        <FaBookOpen style={{ marginRight: 7 }} />
+                        Guía de Usuario
+                    </button>
+                </div>
                 <p style={{ ...s.footerDesc, marginTop: 10 }}>
                     Acceso exclusivo con correo<br />
                     <strong>@espoch.edu.ec</strong>
@@ -579,6 +585,14 @@ const s = {
         marginTop: 14, padding: '12px 24px',
         backgroundColor: '#FFFFFF', color: ROJO,
         border: 'none', borderRadius: 4, cursor: 'pointer',
+        fontWeight: 600, fontSize: '1rem', alignSelf: 'flex-start',
+        fontFamily: FONT,
+    },
+    btnGuia: {
+        marginTop: 14, padding: '12px 24px',
+        display: 'flex', alignItems: 'center',
+        backgroundColor: 'transparent', color: '#FFFFFF',
+        border: '1px solid rgba(255,255,255,0.7)', borderRadius: 4, cursor: 'pointer',
         fontWeight: 600, fontSize: '1rem', alignSelf: 'flex-start',
         fontFamily: FONT,
     },
