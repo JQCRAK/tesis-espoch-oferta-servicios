@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
+const Admin = require('../models/Admin');
 
-const protegerRuta = (req, res, next) => {
+const protegerRuta = async (req, res, next) => {
     const authHeader = req.header('Authorization');
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -9,13 +10,25 @@ const protegerRuta = (req, res, next) => {
 
     const token = authHeader.replace('Bearer ', '');
 
+    let decoded;
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secreto_super_seguro');
-        req.usuario = decoded;
-        next();
+        decoded = jwt.verify(token, process.env.JWT_SECRET || 'secreto_super_seguro');
     } catch (err) {
         return res.status(401).json({ msg: 'Token inválido o expirado.' });
     }
+
+    // Un administrador eliminado pierde el acceso aunque su token siga vigente
+    if (decoded.rol === 'admin') {
+        try {
+            if (!await Admin.exists({ _id: decoded.id }))
+                return res.status(401).json({ msg: 'La cuenta de administrador ya no existe.' });
+        } catch (err) {
+            return res.status(500).json({ msg: 'Error al validar la sesión.' });
+        }
+    }
+
+    req.usuario = decoded;
+    next();
 };
 
 const soloRol = (...roles) => {

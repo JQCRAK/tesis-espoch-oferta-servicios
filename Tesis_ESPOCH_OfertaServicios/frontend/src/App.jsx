@@ -22,6 +22,7 @@ import GestionEstadisticas from './pages/admin/GestionEstadisticas';
 import GestionReportes  from './pages/admin/GestionReportes';
 import GestionEventos   from './pages/admin/GestionEventos';
 import GestionEmpleadores from './pages/admin/GestionEmpleadores';
+import GestionAdministradores from './pages/admin/GestionAdministradores';
 
 /* ──────────────────────────────────────────────────────
    PLACEHOLDER — Página "Próximamente"
@@ -153,6 +154,9 @@ function App() {
 
                     {/* Eventos y webinars */}
                     <Route path="eventos"    element={<GestionEventos />} />
+
+                    {/* Cuentas de administrador */}
+                    <Route path="administradores" element={<GestionAdministradores />} />
 
                     {/* Guía de Usuario y Manual Técnico */}
                     <Route path="documentacion"               element={<Documentacion seccion="admin" />} />

@@ -28,6 +28,35 @@ const CARRERA = 'Carrera de Software';
 const ESPOCH = 'ESCUELA SUPERIOR POLITÉCNICA DE CHIMBORAZO';
 const DEPTO = 'SEGUIMIENTO A GRADUADOS E INSERCIÓN LABORAL';
 
+// Tipografía oficial ESPOCH (Rotis) para los PDF. jsPDF solo acepta TTF,
+// por eso se usan las versiones .ttf de las fuentes de /fonts.
+const FUENTES_ROTIS = {
+    normal: '/fonts/RotisIISansPro-Regular.ttf',
+    bold: '/fonts/RotisIISansPro-SemiBold.ttf',
+};
+let fuentesRotis = null;
+
+const cargarFuentesRotis = async () => {
+    if (fuentesRotis) return;
+    const entradas = await Promise.all(Object.entries(FUENTES_ROTIS).map(async ([estilo, url]) => {
+        const bytes = new Uint8Array(await (await fetch(url)).arrayBuffer());
+        let bin = '';
+        for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+        return [estilo, btoa(bin)];
+    }));
+    fuentesRotis = Object.fromEntries(entradas);
+};
+
+// Registra Rotis en el documento; si aún no cargó, se usa Helvetica
+const fuentePDF = (doc) => {
+    if (!fuentesRotis) return 'helvetica';
+    Object.entries(fuentesRotis).forEach(([estilo, base64]) => {
+        doc.addFileToVFS(`Rotis-${estilo}.ttf`, base64);
+        doc.addFont(`Rotis-${estilo}.ttf`, 'Rotis', estilo);
+    });
+    return 'Rotis';
+};
+
 const fmtPeriodo = (ini, fin) => {
     if (!ini) return 'Todos los períodos';
     if (!fin || ini === fin) return `${ini}`;
@@ -38,7 +67,8 @@ const fmtPeriodo = (ini, fin) => {
 // PDF — Graduados
 // ════════════════════════════════════════════════════════════
 const generarPDFGraduados = (datos, anioInicio, anioFin) => {
-    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4', compress: true });
+    const F = fuentePDF(doc);
     const W = doc.internal.pageSize.getWidth();
     const periodoTxt = fmtPeriodo(anioInicio, anioFin);
 
@@ -46,9 +76,9 @@ const generarPDFGraduados = (datos, anioInicio, anioFin) => {
         const hX = 10, hY = 10, hW = W - 20;
 
         // ── Logos ──
-        try { doc.addImage('/img/logo_espoch.png', 'PNG', hX + 1, hY + 2, 20, 24); } catch { }
-        try { doc.addImage('/img/logo_vinculacion.png', 'PNG', hX + hW - 30, hY + 1, 28, 25); } catch {
-            doc.setFont('helvetica', 'bold'); doc.setFontSize(5.5); doc.setTextColor(0, 0, 0);
+        try { doc.addImage('/img/logo_espoch.png', 'PNG', hX + 1, hY + 2, 19.8, 24); } catch { }
+        try { doc.addImage('/img/logo_vinculacion.png', 'PNG', hX + hW - 30, hY + 3, 28, 20.4); } catch {
+            doc.setFont(F, 'bold'); doc.setFontSize(5.5); doc.setTextColor(0, 0, 0);
             doc.text('Decanato', hX + hW - 12, hY + 6, { align: 'center' });
             doc.text('de Vinculación', hX + hW - 12, hY + 10, { align: 'center' });
             doc.text('Espoch', hX + hW - 12, hY + 14, { align: 'center' });
@@ -59,12 +89,12 @@ const generarPDFGraduados = (datos, anioInicio, anioFin) => {
         // ── Textos centrales ──
         const cx = hX + 24 + (hW - 46) / 2;
         doc.setTextColor(0, 0, 0);
-        doc.setFont('helvetica', 'bold'); doc.setFontSize(9);
+        doc.setFont(F, 'bold'); doc.setFontSize(9);
         doc.text('ESCUELA SUPERIOR POLITÉCNICA DE CHIMBORAZO', cx, hY + 9, { align: 'center' });
-        doc.setFont('helvetica', 'normal'); doc.setFontSize(8);
+        doc.setFont(F, 'normal'); doc.setFontSize(8);
         doc.text('DECANATO DE VINCULACIÓN', cx, hY + 15, { align: 'center' });
         doc.text('SEGUIMIENTO A GRADUADOS E INSERCIÓN LABORAL', cx, hY + 21, { align: 'center' });
-        doc.setFont('helvetica', 'bold'); doc.setFontSize(8.5);
+        doc.setFont(F, 'bold'); doc.setFontSize(8.5);
         doc.text('DATOS GRADUADOS', cx, hY + 29, { align: 'center' });
 
         // ── Filas FACULTAD / CARRERA / PERÍODO — sin bordes ──
@@ -78,10 +108,10 @@ const generarPDFGraduados = (datos, anioInicio, anioFin) => {
         doc.setFontSize(7.5); doc.setTextColor(0, 0, 0);
         filas.forEach((fila, i) => {
             const y = infoY + i * rowH + 5.5;
-            doc.setFont('helvetica', 'bold');
+            doc.setFont(F, 'bold');
             const anchoLabel = doc.getTextWidth(fila.label + ' ');
             doc.text(fila.label, hX + 3, y);
-            doc.setFont('helvetica', 'normal');
+            doc.setFont(F, 'normal');
             doc.text(fila.valor, hX + 3 + anchoLabel, y);
         });
     };
@@ -103,7 +133,7 @@ const generarPDFGraduados = (datos, anioInicio, anioFin) => {
         body: datos.graduados,
         theme: 'grid',
         styles: {
-            fontSize: 7.5, cellPadding: 2, font: 'helvetica',
+            fontSize: 7.5, cellPadding: 2, font: F,
             textColor: [0, 0, 0], lineColor: [0, 0, 0], lineWidth: 0.3,
             fillColor: [255, 255, 255],
         },
@@ -137,7 +167,8 @@ const generarPDFGraduados = (datos, anioInicio, anioFin) => {
 // PDF — Empleadores
 // ════════════════════════════════════════════════════════════
 const generarPDFEmpleadores = (datos, anioInicio, anioFin) => {
-    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' }); // ← portrait
+    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4', compress: true }); // ← portrait
+    const F = fuentePDF(doc);
     const W = doc.internal.pageSize.getWidth();
     const periodoTxt = fmtPeriodo(anioInicio, anioFin);
 
@@ -145,11 +176,11 @@ const generarPDFEmpleadores = (datos, anioInicio, anioFin) => {
         const hX = 10, hY = 10, hW = W - 20;
 
         // ── Logo ESPOCH izquierda ──
-        try { doc.addImage('/img/logo_espoch.png', 'PNG', hX + 1, hY + 2, 20, 24); } catch { }
+        try { doc.addImage('/img/logo_espoch.png', 'PNG', hX + 1, hY + 2, 19.8, 24); } catch { }
 
         // ── Logo Vinculación derecha — más grande y sin distorsión ──
-        try { doc.addImage('/img/logo_vinculacion.png', 'PNG', hX + hW - 30, hY + 1, 28, 25); } catch {
-            doc.setFont('helvetica', 'bold'); doc.setFontSize(5.5); doc.setTextColor(0, 0, 0);
+        try { doc.addImage('/img/logo_vinculacion.png', 'PNG', hX + hW - 30, hY + 3, 28, 20.4); } catch {
+            doc.setFont(F, 'bold'); doc.setFontSize(5.5); doc.setTextColor(0, 0, 0);
             doc.text('Decanato', hX + hW - 12, hY + 6, { align: 'center' });
             doc.text('de Vinculación', hX + hW - 12, hY + 10, { align: 'center' });
             doc.text('Espoch', hX + hW - 12, hY + 14, { align: 'center' });
@@ -160,12 +191,12 @@ const generarPDFEmpleadores = (datos, anioInicio, anioFin) => {
         // ── Textos centrales ──
         const cx = hX + 24 + (hW - 52) / 2;
         doc.setTextColor(0, 0, 0);
-        doc.setFont('helvetica', 'bold'); doc.setFontSize(9);
+        doc.setFont(F, 'bold'); doc.setFontSize(9);
         doc.text('ESCUELA SUPERIOR POLITÉCNICA DE CHIMBORAZO', cx, hY + 9, { align: 'center' });
-        doc.setFont('helvetica', 'normal'); doc.setFontSize(8);
+        doc.setFont(F, 'normal'); doc.setFontSize(8);
         doc.text('DECANATO DE VINCULACIÓN', cx, hY + 15, { align: 'center' });
         doc.text('SEGUIMIENTO A GRADUADOS E INSERCIÓN LABORAL', cx, hY + 21, { align: 'center' });
-        doc.setFont('helvetica', 'bold'); doc.setFontSize(8.5);
+        doc.setFont(F, 'bold'); doc.setFontSize(8.5);
         doc.text('DATOS EMPLEADORES', cx, hY + 29, { align: 'center' });
 
         // ── Filas FACULTAD / CARRERA / PERÍODO — sin bordes ──
@@ -179,10 +210,10 @@ const generarPDFEmpleadores = (datos, anioInicio, anioFin) => {
         doc.setFontSize(7.5); doc.setTextColor(0, 0, 0);
         filas.forEach((fila, i) => {
             const y = infoY + i * rowH + 5.5;
-            doc.setFont('helvetica', 'bold');
+            doc.setFont(F, 'bold');
             const anchoLabel = doc.getTextWidth(fila.label + ' ');
             doc.text(fila.label, hX + 3, y);
-            doc.setFont('helvetica', 'normal');
+            doc.setFont(F, 'normal');
             doc.text(fila.valor, hX + 3 + anchoLabel, y);
         });
     };
@@ -205,7 +236,7 @@ const generarPDFEmpleadores = (datos, anioInicio, anioFin) => {
         body: datos.empleadores,
         theme: 'grid',
         styles: {
-            fontSize: 7, cellPadding: 2, font: 'helvetica',
+            fontSize: 7, cellPadding: 2, font: F,
             textColor: [0, 0, 0], lineColor: [0, 0, 0], lineWidth: 0.3,
             fillColor: [255, 255, 255],
         },
@@ -583,6 +614,8 @@ const GestionReportes = () => {
     const [modalGrad, setModalGrad] = useState(false);
     const [modalEmp, setModalEmp] = useState(false);
     const [modalReporte, setModalReporte] = useState(false);
+
+    useEffect(() => { cargarFuentesRotis().catch(() => { }); }, []);
 
     useEffect(() => {
         const cargarMetricas = async () => {

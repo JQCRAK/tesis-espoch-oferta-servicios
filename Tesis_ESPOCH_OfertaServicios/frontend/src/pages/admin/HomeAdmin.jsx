@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import {
     FaUserGraduate, FaGlobe, FaClipboardList, FaCalendarAlt,
-    FaFileExport, FaArrowRight,
+    FaFileExport, FaArrowRight, FaUserShield,
 } from 'react-icons/fa';
 
 const API = import.meta.env.VITE_API_URL || 'http://localhost:8351/api';
@@ -51,6 +51,7 @@ const ACCIONES = [
     { icon: FaCalendarAlt, label: 'Crear Eventos', color: '#1976d2', bg: '#e3f2fd', border: '#bbdefb', path: '/home-admin/eventos' },
     { icon: FaClipboardList, label: 'Crear Encuestas', color: '#2e7d32', bg: '#e8f5e9', border: '#c8e6c9', path: '/home-admin/encuestas' },
     { icon: FaFileExport, label: 'Ver Reportes', color: '#6a1b9a', bg: '#f3e8ff', border: '#ddd6fe', path: '/home-admin/reportes' },
+    { icon: FaUserShield, label: 'Administradores', color: '#c62828', bg: '#ffebee', border: '#ffcdd2', path: '/home-admin/administradores' },
 ];
 
 // ══════════════════════════════════════════════════════════

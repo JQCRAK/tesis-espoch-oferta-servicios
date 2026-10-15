@@ -1,6 +1,6 @@
 // frontend/src/pages/admin/TabIndicadoresGraduados.jsx
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
-import { MapContainer, TileLayer, GeoJSON, useMap } from 'react-leaflet';
+import { MapContainer, GeoJSON, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import {
     FaChartPie, FaMapMarkerAlt, FaCode, FaBriefcase,
@@ -57,7 +57,7 @@ if (typeof document !== 'undefined' && !document.getElementById('tab-ind-kf')) {
         @keyframes est-spin   { to { transform: rotate(360deg); } }
         @keyframes est-fadein { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
         .est-anim { animation: est-fadein 0.28s ease both; }
-        .leaflet-container { font-family: 'Rotis', 'Segoe UI', system-ui, sans-serif !important; }
+        .leaflet-container { font-family: 'Rotis', 'Segoe UI', system-ui, sans-serif !important; background: #f8fafc !important; }
         .leaflet-tooltip {
             font-family: 'Rotis', 'Segoe UI', system-ui, sans-serif !important;
             border-radius: 6px !important; border: 1px solid #e2e8f0 !important;
@@ -811,9 +811,6 @@ const MapaGraduados = ({ porProvincia, porCanton, filtros, geoData }) => {
             maxBounds={[[-5.5, -82.0], [2.0, -74.5]]} maxBoundsViscosity={0.9}
             style={{ width: '100%', height: '100%', borderRadius: 8, zIndex: 1 }}
             scrollWheelZoom zoomControl>
-            <TileLayer url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png"
-                attribution='&copy; <a href="https://carto.com/" target="_blank">CARTO</a>'
-                subdomains="abcd" maxZoom={19} />
             <GeoJSON key="ec" data={geoData.ecuador} style={estEc} />
             <GeoJSON key={keyC} ref={refC} data={geoData.cantones} style={estCanton} onEachFeature={onEach} />
             <GeoJSON key={keyP} ref={refP} data={geoData.provincias} style={estProv} />

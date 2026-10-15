@@ -1,6 +1,7 @@
 // frontend/src/pages/admin/GestionEncuestas.jsx
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
+import { FaCheckCircle, FaPencilAlt, FaLock, FaClipboardCheck } from 'react-icons/fa';
 import { leerSesion } from '../../utils/storageSeguro';
 const API = import.meta.env.VITE_API_URL || 'http://localhost:8351/api';
 const hdrs = () => {
@@ -1354,16 +1355,23 @@ const GestionEncuestas = () => {
             </div>
 
             {/* STATS */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: 8, marginBottom: 14 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: 14, marginBottom: 14 }}>
                 {[
-                    { label: 'ACTIVAS', val: estadActiva, bg: '#e8f5e9', border: '#c8e6c9', color: '#2e7d32' },
-                    { label: 'BORRADOR', val: estadBorrador, bg: '#fff8e1', border: '#ffe082', color: '#f57f17' },
-                    { label: 'CERRADAS', val: estadCerrada, bg: '#ffebee', border: '#ffcdd2', color: '#c62828' },
-                    { label: 'RESPUESTAS', val: totalRespuestas, bg: '#e3f2fd', border: '#bbdefb', color: '#1565c0' },
+                    { label: 'ACTIVAS', val: estadActiva, Icon: FaCheckCircle, bg: '#e8f5e9', border: '#c8e6c9', color: '#2e7d32' },
+                    { label: 'BORRADOR', val: estadBorrador, Icon: FaPencilAlt, bg: '#fff8e1', border: '#ffe082', color: '#f57f17' },
+                    { label: 'CERRADAS', val: estadCerrada, Icon: FaLock, bg: '#ffebee', border: '#ffcdd2', color: '#c62828' },
+                    { label: 'RESPUESTAS', val: totalRespuestas, Icon: FaClipboardCheck, bg: '#e3f2fd', border: '#bbdefb', color: '#1565c0' },
                 ].map((s) => (
-                    <div key={s.label} style={{ background: s.bg, border: `1px solid ${s.border}`, borderRadius: 8, padding: 10, textAlign: 'center' }}>
-                        <p style={{ margin: '0 0 4px', fontSize: '0.95rem', fontWeight: '700', color: s.color }}>{s.label}</p>
-                        <p style={{ margin: 0, fontSize: '1.73rem', fontWeight: '700', color: s.color }}>{fmtNum(s.val)}</p>
+                    <div key={s.label} style={{ backgroundColor: 'white', borderRadius: 10, padding: '14px 16px', border: '1px solid #e9ecef', borderTop: `3px solid ${s.color}`, boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}>
+                            <div>
+                                <p style={{ margin: '0 0 5px', fontSize: '0.75rem', fontWeight: '700', color: '#adb5bd', letterSpacing: '0.8px' }}>{s.label}</p>
+                                <p style={{ margin: 0, fontSize: '1.94rem', fontWeight: '800', color: '#2c3e50', lineHeight: 1 }}>{fmtNum(s.val)}</p>
+                            </div>
+                            <div style={{ width: 38, height: 38, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, background: s.bg, border: `1px solid ${s.border}` }}>
+                                <s.Icon style={{ fontSize: '1.1rem', color: s.color }} />
+                            </div>
+                        </div>
                     </div>
                 ))}
             </div>

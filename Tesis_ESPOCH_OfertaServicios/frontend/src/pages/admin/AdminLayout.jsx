@@ -6,7 +6,7 @@ import {
     FaChartBar, FaChartPie, FaCalendarAlt, FaSignOutAlt, FaBars,
     FaTimes, FaBell, FaShieldAlt, FaBuilding,
     FaCircle, FaCheckDouble, FaUserCircle, FaEnvelope,
-    FaBookOpen, FaUserFriends, FaTools, FaChevronRight,
+    FaBookOpen, FaUserFriends, FaTools, FaChevronRight, FaUserShield,
 } from 'react-icons/fa';
 import axios from 'axios';
 import { leerSesion, eliminarSesion } from '../../utils/storageSeguro';
@@ -39,6 +39,7 @@ const NAV_ITEMS = [
     { key: 'estadisticas', label: 'Estadísticas', icon: FaChartPie, path: '/home-admin/estadisticas' },
     { key: 'reportes', label: 'Reportes', icon: FaChartBar, path: '/home-admin/reportes' },
     { key: 'eventos', label: 'Eventos', icon: FaCalendarAlt, path: '/home-admin/eventos' },
+    { key: 'administradores', label: 'Administradores', icon: FaUserShield, path: '/home-admin/administradores' },
 ];
 
 const SIDEBAR_W = 200;

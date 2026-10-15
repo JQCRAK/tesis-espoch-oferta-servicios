@@ -1,7 +1,7 @@
 // frontend/src/pages/admin/TabEEmpleadores.jsx
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import axios from 'axios';
-import { MapContainer, TileLayer, GeoJSON, useMap } from 'react-leaflet';
+import { MapContainer, GeoJSON, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import {
     FaBuilding, FaSyncAlt, FaExclamationTriangle, FaFilter, FaTimes,
@@ -43,7 +43,7 @@ if(typeof document!=='undefined'&&!document.getElementById('tee5-kf')){
         .t5pag:hover:not(:disabled){background:#BC0613 !important;color:white !important;border-color:#BC0613 !important;}
         .t5tab:hover{background:#f1f5f9 !important;}
         .t5gh:hover{background:#f8fafc !important;cursor:pointer;}
-        .leaflet-container{font-family:'Rotis', 'Segoe UI',system-ui,sans-serif !important;}
+        .leaflet-container{font-family:'Rotis', 'Segoe UI',system-ui,sans-serif !important;background:#f8fafc !important;}
         .leaflet-tooltip{font-family:'Rotis', 'Segoe UI',system-ui,sans-serif !important;border-radius:6px !important;border:1px solid #e2e8f0 !important;box-shadow:0 4px 12px rgba(0,0,0,.15) !important;padding:8px 12px !important;font-size:.78rem !important;color:#0f172a !important;background:white !important;}
         .leaflet-tooltip::before{display:none !important;}
         .leaflet-control-zoom{border:1px solid #e2e8f0 !important;border-radius:8px !important;overflow:hidden !important;}
@@ -487,7 +487,6 @@ const MapaEmp=({porProv,porCiud,filtros,geoData})=>{
         return <div style={{width:'100%',height:'100%',background:'linear-gradient(135deg,#f8fafc,#f1f5f9)',borderRadius:8,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:10}}><FaGlobeAmericas style={{fontSize:'2.3rem',color:'#94a3b8'}}/><p style={{margin:0,fontSize:'1rem',color:'#475569',fontFamily:FONT,fontWeight:700}}>{!geoData?.cantones?'Cargando mapa...':'Sin datos geográficos'}</p></div>;
 
     return <MapContainer bounds={EC} boundsOptions={{padding:[8,8]}} minZoom={6.4} maxZoom={13} maxBounds={[[-5.5,-82.0],[2.0,-74.5]]} maxBoundsViscosity={0.9} style={{width:'100%',height:'100%',borderRadius:8,zIndex:1}} scrollWheelZoom zoomControl>
-        <TileLayer url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png" attribution='&copy; CARTO' subdomains="abcd" maxZoom={19}/>
         <GeoJSON key="ec5" data={geoData.ecuador} style={estE}/>
         <GeoJSON key={kC} data={geoData.cantones} style={estC} onEachFeature={onE}/>
         <GeoJSON key={kP} data={geoData.provincias} style={estP}/>

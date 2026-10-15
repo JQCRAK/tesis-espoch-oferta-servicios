@@ -4,6 +4,7 @@ const router   = express.Router();
 const multer   = require('multer');
 const { protegerRuta, soloRol } = require('../middleware/auth');
 const ctrl     = require('../controllers/adminController');
+const ctrlAdmins = require('../controllers/administradorController');
 const ctrlStats = require('../controllers/estadisticasController');
 const { getEstadisticasEmpleadores } = require('../controllers/estadisticasEmpleadorController');
 
@@ -56,6 +57,13 @@ router.get('/estadisticas-empleadores', ...guard, getEstadisticasEmpleadores);
 router.get('/reportes/metricas',            ...guard, ctrl.getMetricasReportes);
 router.get('/reportes/anexo25-graduados',   ...guard, ctrl.getReporteAnexo25Graduados);
 router.get('/reportes/anexo25-empleadores', ...guard, ctrl.getReporteAnexo25Empleadores);
+
+// ── ADMINISTRADORES ───────────────────────────────────────
+router.get   ('/administradores/historial', ...guard, ctrlAdmins.historialAdministradores);
+router.get   ('/administradores',           ...guard, ctrlAdmins.listarAdministradores);
+router.post  ('/administradores',           ...guard, ctrlAdmins.crearAdministrador);
+router.patch ('/administradores/:id',       ...guard, ctrlAdmins.editarAdministrador);
+router.delete('/administradores/:id',       ...guard, ctrlAdmins.eliminarAdministrador);
 
 // ── ESTADÍSTICAS GENERALES ────────────────────────────────
 router.get('/estadisticas',              ...guard, ctrlStats.obtenerEstadisticasGenerales);

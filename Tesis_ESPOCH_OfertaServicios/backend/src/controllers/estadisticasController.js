@@ -374,6 +374,8 @@ const obtenerEstadisticasEncuesta = async (req, res) => {
                     (g.tipo === 'opcion_multiple' && preg.tipo === 'checkboxes') ||
                     (g.tipo === 'checkboxes' && preg.tipo === 'opcion_multiple');
                 if (!mismoTipo) continue;
+                // Solo se agrupan preguntas equivalentes de encuestas distintas
+                if (g.encuestasAparece.includes(preg.encuesta.toString())) continue;
                 if (similitudEnc(g.textoCanonical, preg.texto) >= 0.72) {
                     g.preguntaIds.push(preg._id.toString());
                     if (!g.encuestasAparece.includes(preg.encuesta.toString()))
